@@ -5,9 +5,7 @@
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-#if NET8_0_OR_GREATER
 using System.Runtime.Intrinsics;
-#endif
 using static Box2D.NET.B2Arrays;
 using static Box2D.NET.B2Cores;
 using static Box2D.NET.B2Diagnostics;
@@ -916,36 +914,14 @@ namespace Box2D.NET
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2MinW(in Vector4 a, in Vector4 b)
         {
-#if NET8_0_OR_GREATER
-            Vector128<float> va = a.AsVector128();
-            Vector128<float> vb = b.AsVector128();
-            return Vector128.ConditionalSelect(Vector128.LessThanOrEqual(va, vb), va, vb).AsVector4();
-#else
-            return new Vector4(
-                a.X <= b.X ? a.X : b.X,
-                a.Y <= b.Y ? a.Y : b.Y,
-                a.Z <= b.Z ? a.Z : b.Z,
-                a.W <= b.W ? a.W : b.W
-            );
-#endif
+            return Vector4.ConditionalSelect(Vector4.LessThanOrEqual(a, b), a, b);
         }
 
         // a >= b ? a : b per lane
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2MaxW(in Vector4 a, in Vector4 b)
         {
-#if NET8_0_OR_GREATER
-            Vector128<float> va = a.AsVector128();
-            Vector128<float> vb = b.AsVector128();
-            return Vector128.ConditionalSelect(Vector128.GreaterThanOrEqual(va, vb), va, vb).AsVector4();
-#else
-            return new Vector4(
-                a.X >= b.X ? a.X : b.X,
-                a.Y >= b.Y ? a.Y : b.Y,
-                a.Z >= b.Z ? a.Z : b.Z,
-                a.W >= b.W ? a.W : b.W
-            );
-#endif
+            return Vector4.ConditionalSelect(Vector4.GreaterThanOrEqual(a, b), a, b);
         }
 
         // a = clamp(a, -b, b)
@@ -953,104 +929,49 @@ namespace Box2D.NET
         public static Vector4 b2SymClampW(in Vector4 a, in Vector4 b)
         {
             // a = clamp(a, -b, b)
-#if NET8_0_OR_GREATER
-            // Same as b2ClampFloat: a < lower ? lower : (a > upper ? upper : a)
-            Vector128<float> va = a.AsVector128();
-            Vector128<float> upper = b.AsVector128();
-            Vector128<float> lower = Vector128.Xor(upper, Vector128.Create(-0.0f));
-            Vector128<float> r = Vector128.ConditionalSelect(Vector128.GreaterThan(va, upper), upper, va);
-            return Vector128.ConditionalSelect(Vector128.LessThan(va, lower), lower, r).AsVector4();
-#else
-            return new Vector4(
-                b2ClampFloat(a.X, -b.X, b.X),
-                b2ClampFloat(a.Y, -b.Y, b.Y),
-                b2ClampFloat(a.Z, -b.Z, b.Z),
-                b2ClampFloat(a.W, -b.W, b.W)
-            );
-#endif
+            // Same as b2ClampFloat: a < lower ? lower : (a > upper ? upper : a).
+            // Vector4.Clamp is not used because it follows IEEE min/max semantics.
+            Vector4 lower = Vector4.Xor(b, Vector4.Create(-0.0f));
+            Vector4 r = Vector4.ConditionalSelect(Vector4.GreaterThan(a, b), b, a);
+            return Vector4.ConditionalSelect(Vector4.LessThan(a, lower), lower, r);
         }
 
         // Masks are stored as 1.0f (true) or 0.0f (false) per lane.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2AndW(in Vector4 a, in Vector4 b)
         {
-#if NET8_0_OR_GREATER
-            Vector128<float> zero = Vector128<float>.Zero;
-            Vector128<float> anyZero = Vector128.Equals(a.AsVector128(), zero) | Vector128.Equals(b.AsVector128(), zero);
-            return Vector128.AndNot(Vector128.Create(1.0f), anyZero).AsVector4();
-#else
-            return new Vector4(
-                a.X != 0.0f && b.X != 0.0f ? 1.0f : 0.0f,
-                a.Y != 0.0f && b.Y != 0.0f ? 1.0f : 0.0f,
-                a.Z != 0.0f && b.Z != 0.0f ? 1.0f : 0.0f,
-                a.W != 0.0f && b.W != 0.0f ? 1.0f : 0.0f
-            );
-#endif
+            Vector4 anyZero = Vector4.Equals(a, Vector4.Zero) | Vector4.Equals(b, Vector4.Zero);
+            return Vector4.AndNot(Vector4.One, anyZero);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2GreaterThanW(in Vector4 a, in Vector4 b)
         {
-#if NET8_0_OR_GREATER
-            return (Vector128.GreaterThan(a.AsVector128(), b.AsVector128()) & Vector128.Create(1.0f)).AsVector4();
-#else
-            return new Vector4(
-                a.X > b.X ? 1.0f : 0.0f,
-                a.Y > b.Y ? 1.0f : 0.0f,
-                a.Z > b.Z ? 1.0f : 0.0f,
-                a.W > b.W ? 1.0f : 0.0f
-            );
-#endif
+            return Vector4.GreaterThan(a, b) & Vector4.One;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2EqualsW(in Vector4 a, in Vector4 b)
         {
-#if NET8_0_OR_GREATER
-            return (Vector128.Equals(a.AsVector128(), b.AsVector128()) & Vector128.Create(1.0f)).AsVector4();
-#else
-            return new Vector4(
-                a.X == b.X ? 1.0f : 0.0f,
-                a.Y == b.Y ? 1.0f : 0.0f,
-                a.Z == b.Z ? 1.0f : 0.0f,
-                a.W == b.W ? 1.0f : 0.0f
-            );
-#endif
+            return Vector4.Equals(a, b) & Vector4.One;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2LessThanW(in Vector4 a, in Vector4 b)
         {
-#if NET8_0_OR_GREATER
-            return (Vector128.LessThan(a.AsVector128(), b.AsVector128()) & Vector128.Create(1.0f)).AsVector4();
-#else
-            return new Vector4(
-                a.X < b.X ? 1.0f : 0.0f,
-                a.Y < b.Y ? 1.0f : 0.0f,
-                a.Z < b.Z ? 1.0f : 0.0f,
-                a.W < b.W ? 1.0f : 0.0f
-            );
-#endif
+            return Vector4.LessThan(a, b) & Vector4.One;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool b2AnyTrueW(in Vector4 mask)
         {
-#if NET8_0_OR_GREATER
-            return Vector128.EqualsAll(mask.AsVector128(), Vector128<float>.Zero) == false;
-#else
-            return mask.X != 0.0f || mask.Y != 0.0f || mask.Z != 0.0f || mask.W != 0.0f;
-#endif
+            return Vector4.EqualsAll(mask, Vector4.Zero) == false;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool b2AllZeroW(in Vector4 a)
         {
-#if NET8_0_OR_GREATER
-            return Vector128.EqualsAll(a.AsVector128(), Vector128<float>.Zero);
-#else
-            return a.X == 0.0f && a.Y == 0.0f && a.Z == 0.0f && a.W == 0.0f;
-#endif
+            return Vector4.EqualsAll(a, Vector4.Zero);
         }
 
         // component-wise returns mask ? b : a
@@ -1058,34 +979,16 @@ namespace Box2D.NET
         public static Vector4 b2BlendW(in Vector4 a, in Vector4 b, in Vector4 mask)
         {
             // component-wise returns mask ? b : a
-#if NET8_0_OR_GREATER
-            Vector128<float> isZero = Vector128.Equals(mask.AsVector128(), Vector128<float>.Zero);
-            return Vector128.ConditionalSelect(isZero, a.AsVector128(), b.AsVector128()).AsVector4();
-#else
-            return new Vector4(
-                mask.X != 0.0f ? b.X : a.X,
-                mask.Y != 0.0f ? b.Y : a.Y,
-                mask.Z != 0.0f ? b.Z : a.Z,
-                mask.W != 0.0f ? b.W : a.W
-            );
-#endif
+            return Vector4.ConditionalSelect(Vector4.Equals(mask, Vector4.Zero), a, b);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2SoftMaskW(ReadOnlySpan<int> indexA, ReadOnlySpan<int> indexB)
         {
-#if NET8_0_OR_GREATER
+            // Integer lanes: Vector4 has no int API, so this stays on Vector128<int>.
             Vector128<int> zero = Vector128<int>.Zero;
             Vector128<int> mask = Vector128.Equals(Vector128.Create(indexA), zero) | Vector128.Equals(Vector128.Create(indexB), zero);
             return (mask.AsSingle() & Vector128.Create(1.0f)).AsVector4();
-#else
-            return new Vector4(
-                indexA[0] == 0 || indexB[0] == 0 ? 1.0f : 0.0f,
-                indexA[1] == 0 || indexB[1] == 0 ? 1.0f : 0.0f,
-                indexA[2] == 0 || indexB[2] == 0 ? 1.0f : 0.0f,
-                indexA[3] == 0 || indexB[3] == 0 ? 1.0f : 0.0f
-            );
-#endif
         }
 
         // a - b

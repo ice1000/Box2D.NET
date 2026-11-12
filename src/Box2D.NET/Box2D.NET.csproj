@@ -5,7 +5,7 @@
     <PackageId>Box2D.NET.Fork</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>ice1000</Authors>
-    <Description>Box2D.NET - Box2D.NET - a port of Box2D, is a 2D physics engine for games, .NET C#, Unity3D, servers</Description>
+    <Description>Box2D.NET - Box2D.NET - a port of Box2D, is a 2D physics engine for games, .NET C#</Description>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/ice1000/Box2D.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ice1000/Box2D.NET</RepositoryUrl>
@@ -26,8 +26,4 @@
     <DefineConstants>$(DefineConstants);B2_SNOOP_TOI_COUNTERS;ENABLED;B2_SNOOP_TABLE_COUNTERS;B2_SNOOP_PAIR_COUNTERS</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2"/>
-  </ItemGroup>
-  
 </Project>

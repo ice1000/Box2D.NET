@@ -4,6 +4,7 @@
 
 using System;
 using System.Globalization;
+using System.Numerics;
 using static Box2D.NET.B2Diagnostics;
 using static Box2D.NET.B2MathFunction;
 using static Box2D.NET.B2Constants;

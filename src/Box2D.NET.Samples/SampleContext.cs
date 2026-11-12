@@ -4,6 +4,7 @@
 
 using System;
 using System.IO;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using Box2D.NET.Samples.Graphics;
 using Box2D.NET.Samples.Samples;

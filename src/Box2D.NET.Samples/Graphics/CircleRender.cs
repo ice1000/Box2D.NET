@@ -7,20 +7,13 @@ using Box2D.NET.Samples.Primitives;
 
 namespace Box2D.NET.Samples.Graphics;
 
-public struct CircleRender
+public struct CircleRender()
 {
-    public List<CircleData> circles;
+    public List<CircleData> circles = new();
 
-    public uint[] vaoId;
-    public uint[] vboIds;
+    public uint[] vaoId = new uint[1];
+    public uint[] vboIds = new uint[2];
     public uint programId;
     public int projectionUniform;
     public int pixelScaleUniform;
-
-    public CircleRender()
-    {
-        circles = new List<CircleData>();
-        vaoId = new uint[1];
-        vboIds = new uint[2];
-    }
 }

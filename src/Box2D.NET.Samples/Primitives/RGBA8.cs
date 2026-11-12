@@ -4,17 +4,9 @@
 
 namespace Box2D.NET.Samples.Primitives;
 
-public struct RGBA8
+public struct RGBA8(byte r, byte g, byte b, byte a)
 {
-    public byte r, g, b, a;
-
-    public RGBA8(byte r, byte g, byte b, byte a)
-    {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
-    }
+    public byte r = r, g = g, b = b, a = a;
 
     public static RGBA8 MakeRGBA8(B2HexColor c, float alpha)
     {

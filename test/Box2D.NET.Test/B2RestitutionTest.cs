@@ -1076,37 +1076,32 @@ public class B2RestitutionTest
         Assert.That(failed, Is.EqualTo(0));
     }
 
-    private readonly struct EnergyScene
+    private readonly struct EnergyScene(
+        string name,
+        float safetyFactor,
+        float friction,
+        float angle,
+        float spin,
+        float height,
+        float velocityY,
+        float halfWidth,
+        float halfHeight,
+        bool bullet,
+        bool stack,
+        int stepCount)
     {
-        public readonly string name;
-        public readonly float safetyFactor;
-        public readonly float friction;
-        public readonly float angle;
-        public readonly float spin;
-        public readonly float height;
-        public readonly float velocityY;
-        public readonly float halfWidth;
-        public readonly float halfHeight;
-        public readonly bool bullet;
-        public readonly bool stack;
-        public readonly int stepCount;
-
-        public EnergyScene(string name, float safetyFactor, float friction, float angle, float spin, float height, float velocityY,
-            float halfWidth, float halfHeight, bool bullet, bool stack, int stepCount)
-        {
-            this.name = name;
-            this.safetyFactor = safetyFactor;
-            this.friction = friction;
-            this.angle = angle;
-            this.spin = spin;
-            this.height = height;
-            this.velocityY = velocityY;
-            this.halfWidth = halfWidth;
-            this.halfHeight = halfHeight;
-            this.bullet = bullet;
-            this.stack = stack;
-            this.stepCount = stepCount;
-        }
+        public readonly string name = name;
+        public readonly float safetyFactor = safetyFactor;
+        public readonly float friction = friction;
+        public readonly float angle = angle;
+        public readonly float spin = spin;
+        public readonly float height = height;
+        public readonly float velocityY = velocityY;
+        public readonly float halfWidth = halfWidth;
+        public readonly float halfHeight = halfHeight;
+        public readonly bool bullet = bullet;
+        public readonly bool stack = stack;
+        public readonly int stepCount = stepCount;
     }
 
     // Peak energy over the run relative to the start, for every dynamic body in the scene. Perfectly

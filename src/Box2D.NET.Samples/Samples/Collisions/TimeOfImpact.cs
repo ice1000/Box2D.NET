@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
 using static Box2D.NET.B2MathFunction;
 using static Box2D.NET.B2Distances;
 using static Box2D.NET.B2Constants;

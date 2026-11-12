@@ -8,16 +8,10 @@ namespace Box2D.NET
 {
     /// A world transform with a world position translation and a float rotation.
     /// Upstream uses double precision translation in large world mode.
-    public struct B2WorldTransform
+    public struct B2WorldTransform(B2Pos p, B2Rot q)
     {
-        public B2Pos p;
-        public B2Rot q;
-
-        public B2WorldTransform(B2Pos p, B2Rot q)
-        {
-            this.p = p;
-            this.q = q;
-        }
+        public B2Pos p = p;
+        public B2Rot q = q;
 
         public bool TryWriteBytes(Span<byte> bytes)
         {

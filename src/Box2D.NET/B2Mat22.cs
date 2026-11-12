@@ -7,15 +7,9 @@ using System.Numerics;
 namespace Box2D.NET
 {
     /// A 2-by-2 Matrix
-    public struct B2Mat22
+    public struct B2Mat22(Vector2 cx, Vector2 cy)
     {
         /// columns
-        public Vector2 cx, cy;
-
-        public B2Mat22(Vector2 cx, Vector2 cy)
-        {
-            this.cx = cx;
-            this.cy = cy;
-        }
+        public Vector2 cx = cx, cy = cy;
     }
 }

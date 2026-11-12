@@ -10,21 +10,14 @@ using Serilog.Formatting;
 
 namespace Box2D.NET.Samples.Helpers;
 
-public class LogMessageBrokerSink : ILogEventSink
+public class LogMessageBrokerSink(ITextFormatter formatter) : ILogEventSink
 {
     public static event Action<int, string> OnEmitted;
-
-    private readonly ITextFormatter _formatter;
-
-    public LogMessageBrokerSink(ITextFormatter formatter)
-    {
-        _formatter = formatter;
-    }
 
     public void Emit(LogEvent logEvent)
     {
         using var writer = new StringWriter();
-        _formatter.Format(logEvent, writer);
+        formatter.Format(logEvent, writer);
         OnEmitted?.Invoke((int)logEvent.Level, writer.ToString());
     }
 }

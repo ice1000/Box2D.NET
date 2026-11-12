@@ -2,17 +2,13 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET.Samples.Primitives;
 
-public struct VertexData
+public struct VertexData(Vector2 position, RGBA8 rgba)
 {
-    public Vector2 position;
-    public RGBA8 rgba;
-
-    public VertexData(Vector2 position, RGBA8 rgba)
-    {
-        this.position = position;
-        this.rgba = rgba;
-    }
+    public Vector2 position = position;
+    public RGBA8 rgba = rgba;
 }
 

@@ -21,18 +21,12 @@ namespace Box2D.NET
      * @{
      */
     /// A begin touch event is generated when a shape starts to overlap a sensor shape.
-    public struct B2SensorBeginTouchEvent
+    public struct B2SensorBeginTouchEvent(B2ShapeId sensorShapeId, B2ShapeId visitorShapeId)
     {
         /// The id of the sensor shape
-        public B2ShapeId sensorShapeId;
+        public B2ShapeId sensorShapeId = sensorShapeId;
 
         /// The id of the shape that began touching the sensor shape
-        public B2ShapeId visitorShapeId;
-
-        public B2SensorBeginTouchEvent(B2ShapeId sensorShapeId, B2ShapeId visitorShapeId)
-        {
-            this.sensorShapeId = sensorShapeId;
-            this.visitorShapeId = visitorShapeId;
-        }
+        public B2ShapeId visitorShapeId = visitorShapeId;
     }
 }

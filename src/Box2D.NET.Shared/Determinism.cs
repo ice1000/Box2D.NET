@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using static Box2D.NET.B2Ids;
 using static Box2D.NET.B2Geometries;
 using static Box2D.NET.B2Types;
@@ -55,8 +56,8 @@ namespace Box2D.NET.Shared
                 jointDef.dampingRatio = 1.0f;
                 jointDef.enableMotor = true;
                 jointDef.maxMotorTorque = 0.25f;
-                jointDef.@base.localFrameA.p = new B2Vec2(-h, h);
-                jointDef.@base.localFrameB.p = new B2Vec2(-h, -h);
+                jointDef.@base.localFrameA.p = new Vector2(-h, h);
+                jointDef.@base.localFrameB.p = new Vector2(-h, -h);
                 jointDef.@base.constraintHertz = 60.0f;
                 jointDef.@base.constraintDampingRatio = 0.0f;
                 jointDef.@base.drawScale = 0.5f;

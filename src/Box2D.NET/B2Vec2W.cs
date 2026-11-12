@@ -7,15 +7,9 @@ using System.Numerics;
 namespace Box2D.NET
 {
     // Wide vec2
-    public struct B2Vec2W
+    public struct B2Vec2W(in Vector4 x, in Vector4 y)
     {
-        public Vector4 X;
-        public Vector4 Y;
-
-        public B2Vec2W(in Vector4 X, in Vector4 Y)
-        {
-            this.X = X;
-            this.Y = Y;
-        }
+        public Vector4 X = x;
+        public Vector4 Y = y;
     }
 }

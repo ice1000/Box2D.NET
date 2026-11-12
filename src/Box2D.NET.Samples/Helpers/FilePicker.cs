@@ -16,16 +16,10 @@ internal sealed class FilePicker
     // Bright ANSI blue, the conventional `ls` color for directories on a dark terminal.
     private static readonly System.Numerics.Vector4 DirectoryColor = new System.Numerics.Vector4(0.33f, 0.48f, 1.0f, 1.0f);
 
-    internal readonly struct Filter
+    internal readonly struct Filter(string name, params string[] extensions)
     {
-        public readonly string Name;
-        private readonly string[] m_extensions;
-
-        public Filter(string name, params string[] extensions)
-        {
-            Name = name;
-            m_extensions = extensions ?? Array.Empty<string>();
-        }
+        public readonly string Name = name;
+        private readonly string[] m_extensions = extensions ?? Array.Empty<string>();
 
         public bool Matches(string path)
         {
@@ -84,25 +78,20 @@ internal sealed class FilePicker
     private bool m_openRequested;
     private bool m_overwriteRequested;
 
-    private readonly struct Entry
+    private readonly struct Entry(
+        string name,
+        string fullPath,
+        bool isDirectory,
+        long length,
+        DateTime modified,
+        bool openOnSingleClick = false)
     {
-        public readonly string Name;
-        public readonly string FullPath;
-        public readonly bool IsDirectory;
-        public readonly bool OpenOnSingleClick;
-        public readonly long Length;
-        public readonly DateTime Modified;
-
-        public Entry(string name, string fullPath, bool isDirectory, long length, DateTime modified,
-            bool openOnSingleClick = false)
-        {
-            Name = name;
-            FullPath = fullPath;
-            IsDirectory = isDirectory;
-            OpenOnSingleClick = openOnSingleClick;
-            Length = length;
-            Modified = modified;
-        }
+        public readonly string Name = name;
+        public readonly string FullPath = fullPath;
+        public readonly bool IsDirectory = isDirectory;
+        public readonly bool OpenOnSingleClick = openOnSingleClick;
+        public readonly long Length = length;
+        public readonly DateTime Modified = modified;
     }
 
     public FilePicker(string title, string id, params Filter[] filters)

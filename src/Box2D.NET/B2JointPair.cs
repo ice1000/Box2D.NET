@@ -4,15 +4,9 @@
 
 namespace Box2D.NET
 {
-    public struct B2JointPair
+    public struct B2JointPair(B2Joint joint, B2JointSim jointSim)
     {
-        public B2Joint joint;
-        public B2JointSim jointSim;
-
-        public B2JointPair(B2Joint joint, B2JointSim jointSim)
-        {
-            this.joint = joint;
-            this.jointSim = jointSim;
-        }
+        public B2Joint joint = joint;
+        public B2JointSim jointSim = jointSim;
     }
 }

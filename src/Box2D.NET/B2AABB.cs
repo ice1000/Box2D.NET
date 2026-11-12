@@ -7,15 +7,9 @@ using System.Numerics;
 namespace Box2D.NET
 {
     /// Axis-aligned bounding box
-    public struct B2AABB
+    public struct B2AABB(Vector2 lowerBound, Vector2 upperBound)
     {
-        public Vector2 lowerBound;
-        public Vector2 upperBound;
-
-        public B2AABB(Vector2 lowerBound, Vector2 upperBound)
-        {
-            this.lowerBound = lowerBound;
-            this.upperBound = upperBound;
-        }
+        public Vector2 lowerBound = lowerBound;
+        public Vector2 upperBound = upperBound;
     }
 }

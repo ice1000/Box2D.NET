@@ -4,21 +4,12 @@
 
 namespace Box2D.NET
 {
-    public struct B2ExplosionContext
+    public struct B2ExplosionContext(B2World world, B2Pos position, float radius, float falloff, float impulsePerLength)
     {
-        public B2World world;
-        public B2Pos position;
-        public float radius;
-        public float falloff;
-        public float impulsePerLength;
-
-        public B2ExplosionContext(B2World world, B2Pos position, float radius, float falloff, float impulsePerLength)
-        {
-            this.world = world;
-            this.position = position;
-            this.radius = radius;
-            this.falloff = falloff;
-            this.impulsePerLength = impulsePerLength;
-        }
+        public B2World world = world;
+        public B2Pos position = position;
+        public float radius = radius;
+        public float falloff = falloff;
+        public float impulsePerLength = impulsePerLength;
     }
 }

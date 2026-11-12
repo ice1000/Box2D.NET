@@ -1,13 +1,7 @@
 namespace Box2D.NET.Test.Primitives;
 
-public struct DummyStruct
+public struct DummyStruct(int key, float value)
 {
-    public int Key;
-    public float Value;
-
-    public DummyStruct(int key, float value)
-    {
-        Key = key;
-        Value = value;
-    }
+    public int Key = key;
+    public float Value = value;
 }

@@ -15,22 +15,15 @@ namespace Box2D.NET
      * @{
      */
     /// Low level ray cast input data
-    public struct B2RayCastInput
+    public struct B2RayCastInput(Vector2 origin, Vector2 translation, float maxFraction)
     {
         /// Start point of the ray cast
-        public Vector2 origin;
+        public Vector2 origin = origin;
 
         /// Translation of the ray cast
-        public Vector2 translation;
+        public Vector2 translation = translation;
 
         /// The maximum fraction of the translation to consider, typically 1
-        public float maxFraction;
-
-        public B2RayCastInput(Vector2 origin, Vector2 translation, float maxFraction)
-        {
-            this.origin = origin;
-            this.translation = translation;
-            this.maxFraction = maxFraction;
-        }
+        public float maxFraction = maxFraction;
     }
 }

@@ -4,15 +4,9 @@
 
 namespace Box2D.NET
 {
-    public struct B2NodePair
+    public struct B2NodePair(B2TreeNode a, B2TreeNode b)
     {
-        public B2TreeNode a;
-        public B2TreeNode b;
-
-        public B2NodePair(B2TreeNode a, B2TreeNode b)
-        {
-            this.a = a;
-            this.b = b;
-        }
+        public B2TreeNode a = a;
+        public B2TreeNode b = b;
     }
 }

@@ -9,9 +9,9 @@ using static Box2D.NET.B2Ids;
 
 namespace Box2D.NET.Test.Helpers;
 
-public class B2TestContext : IDisposable
+public class B2TestContext(B2WorldId worldId) : IDisposable
 {
-    public B2WorldId WorldId { get; private set; }
+    public B2WorldId WorldId { get; private set; } = worldId;
 
     public static B2TestContext CreateFor()
     {
@@ -25,11 +25,6 @@ public class B2TestContext : IDisposable
         B2WorldId worldId = b2CreateWorld(worldDef);
 
         return new B2TestContext(worldId);
-    }
-
-    public B2TestContext(B2WorldId worldId)
-    {
-        WorldId = worldId;
     }
 
     public void Dispose()

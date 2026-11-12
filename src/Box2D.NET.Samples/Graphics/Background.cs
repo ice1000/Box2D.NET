@@ -5,18 +5,12 @@
 
 namespace Box2D.NET.Samples.Graphics;
 
-public struct Background
+public struct Background()
 {
-    public uint[] vaoId;
-    public uint[] vboId;
+    public uint[] vaoId = new uint[1];
+    public uint[] vboId = new uint[1];
     public uint programId;
     public int timeUniform;
     public int resolutionUniform;
     public int baseColorUniform;
-
-    public Background()
-    {
-        vaoId = new uint[1];
-        vboId = new uint[1];
-    }
 }

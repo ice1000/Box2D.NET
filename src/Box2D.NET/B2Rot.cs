@@ -9,15 +9,9 @@ namespace Box2D.NET
     /// 2D rotation
     /// This is similar to using a complex number for rotation
     [StructLayout(LayoutKind.Sequential)]
-    public struct B2Rot
+    public struct B2Rot(float c, float s)
     {
         /// cosine and sine
-        public float c, s;
-
-        public B2Rot(float c, float s)
-        {
-            this.c = c;
-            this.s = s;
-        }
+        public float c = c, s = s;
     }
 }

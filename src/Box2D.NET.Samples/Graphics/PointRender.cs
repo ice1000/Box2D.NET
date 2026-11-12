@@ -7,19 +7,12 @@ using Box2D.NET.Samples.Primitives;
 
 namespace Box2D.NET.Samples.Graphics;
 
-public struct PointRender
+public struct PointRender()
 {
-    public List<PointData> points;
+    public List<PointData> points = new();
 
-    public uint[] vaoId;
-    public uint[] vboId;
+    public uint[] vaoId = new uint[1];
+    public uint[] vboId = new uint[1];
     public uint programId;
     public int projectionUniform;
-
-    public PointRender()
-    {
-        points = new List<PointData>();
-        vaoId = new uint[1];
-        vboId = new uint[1];
-    }
 }

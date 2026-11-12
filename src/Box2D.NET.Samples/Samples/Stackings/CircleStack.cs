@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System.Collections.Generic;
+using System.Numerics;
 using static Box2D.NET.B2Types;
 using static Box2D.NET.B2Bodies;
 using static Box2D.NET.B2Shapes;
@@ -23,15 +24,9 @@ public class CircleStack : Sample
         return new CircleStack(context);
     }
 
-    public struct Event
+    public struct Event(int indexA, int indexB)
     {
-        public int indexA, indexB;
-
-        public Event(int indexA, int indexB)
-        {
-            this.indexA = indexA;
-            this.indexB = indexB;
-        }
+        public int indexA = indexA, indexB = indexB;
     };
 
     public CircleStack(SampleContext context) : base(context)

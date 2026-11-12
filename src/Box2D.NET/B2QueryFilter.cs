@@ -8,19 +8,13 @@ namespace Box2D.NET
     /// you may want a ray-cast representing a projectile to hit players and the static environment
     /// but not debris.
     /// @ingroup shape
-    public struct B2QueryFilter
+    public struct B2QueryFilter(ulong categoryBits, ulong maskBits)
     {
         /// The collision category bits of this query. Normally you would just set one bit.
-        public ulong categoryBits;
+        public ulong categoryBits = categoryBits;
 
         /// The collision mask bits. This states the shape categories that this
         /// query would accept for collision.
-        public ulong maskBits;
-
-        public B2QueryFilter(ulong categoryBits, ulong maskBits)
-        {
-            this.categoryBits = categoryBits;
-            this.maskBits = maskBits;
-        }
+        public ulong maskBits = maskBits;
     }
 }

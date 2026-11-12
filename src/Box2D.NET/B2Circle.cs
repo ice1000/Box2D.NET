@@ -7,18 +7,12 @@ using System.Numerics;
 namespace Box2D.NET
 {
     /// A solid circle
-    public struct B2Circle
+    public struct B2Circle(Vector2 center, float radius)
     {
         /// The local center
-        public Vector2 center;
+        public Vector2 center = center;
 
         /// The radius
-        public float radius;
-
-        public B2Circle(Vector2 center, float radius)
-        {
-            this.center = center;
-            this.radius = radius;
-        }
+        public float radius = radius;
     }
 }

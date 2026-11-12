@@ -7,20 +7,13 @@ using Box2D.NET.Samples.Primitives;
 
 namespace Box2D.NET.Samples.Graphics;
 
-public struct SolidCapsuleRender
+public struct SolidCapsuleRender()
 {
-    public List<CapsuleData> capsules;
+    public List<CapsuleData> capsules = new();
 
-    public uint[] vaoId;
-    public uint[] vboIds;
+    public uint[] vaoId = new uint[1];
+    public uint[] vboIds = new uint[2];
     public uint programId;
     public int projectionUniform;
     public int pixelScaleUniform;
-
-    public SolidCapsuleRender()
-    {
-        capsules = new List<CapsuleData>();
-        vaoId = new uint[1];
-        vboIds = new uint[2];
-    }
 }

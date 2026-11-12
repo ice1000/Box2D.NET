@@ -4,18 +4,10 @@
 
 namespace Box2D.NET.Samples.Primitives;
 
-public struct CapsuleData
+public struct CapsuleData(in B2Transform transform, float radius, float length, RGBA8 rgba)
 {
-    public B2Transform transform;
-    public float radius;
-    public float length;
-    public RGBA8 rgba;
-
-    public CapsuleData(in B2Transform transform, float radius, float length, RGBA8 rgba)
-    {
-        this.transform = transform;
-        this.radius = radius;
-        this.length = length;
-        this.rgba = rgba;
-    }
+    public B2Transform transform = transform;
+    public float radius = radius;
+    public float length = length;
+    public RGBA8 rgba = rgba;
 }

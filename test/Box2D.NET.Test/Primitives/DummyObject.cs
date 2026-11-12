@@ -1,16 +1,10 @@
 namespace Box2D.NET.Test.Primitives;
 
-public class DummyObject<T>
+public class DummyObject<T>(T value)
 {
-    public T Value;
+    public T Value = value;
 
-    public DummyObject()
+    public DummyObject() : this(default(T))
     {
-        Value = default(T);
-    }
-
-    public DummyObject(T value)
-    {
-        Value = value;
     }
 }

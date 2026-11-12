@@ -42,7 +42,7 @@ public class SampleApp
     private IWindow _window;
     private IInputContext _input;
     private ImGuiController _imgui;
-    private SampleContext _context;
+    private SampleContext _context = SampleContext.Create();
     private bool s_rightMouseDown = false;
     private Vector2 s_clickPointWS = Vector2Zero;
     private float s_framebufferScale = 1.0f;
@@ -50,11 +50,6 @@ public class SampleApp
     private double _frameStartTime = 0.0;
     private byte[] _fontData;
     private GCHandle _fontDataHandle;
-
-    public SampleApp()
-    {
-        _context = SampleContext.Create();
-    }
 
     public int Run(string[] args)
     {

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using Silk.NET.GLFW;
 using Silk.NET.OpenGL;
 using static Box2D.NET.Samples.EmbeddedShaders;

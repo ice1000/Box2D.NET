@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using static Box2D.NET.B2Constants;
 using static Box2D.NET.B2Geometries;
@@ -62,9 +63,9 @@ namespace Box2D.NET.Shared
 
         // Random vector with coordinates in range [lo, hi]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 RandomVec2(float lo, float hi)
+        public static Vector2 RandomVec2(float lo, float hi)
         {
-            B2Vec2 v;
+            Vector2 v;
             v.X = RandomFloatRange(lo, hi);
             v.Y = RandomFloatRange(lo, hi);
             return v;
@@ -91,7 +92,7 @@ namespace Box2D.NET.Shared
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static B2Polygon RandomPolygon(float extent)
         {
-            Span<B2Vec2> points = stackalloc B2Vec2[B2_MAX_POLYGON_VERTICES];
+            Span<Vector2> points = stackalloc Vector2[B2_MAX_POLYGON_VERTICES];
 
             int count = 3 + RandomInt() % 6;
             for (int i = 0; i < count; ++i)

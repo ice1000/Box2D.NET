@@ -13,16 +13,10 @@ namespace Box2D.NET
     /// (BOX2D_DOUBLE_PRECISION). Box2D.NET only supports single precision, so this holds floats,
     /// but it is kept as a distinct type so the API matches upstream.
     [StructLayout(LayoutKind.Sequential)]
-    public struct B2Pos : IEquatable<B2Pos>
+    public struct B2Pos(float x, float y) : IEquatable<B2Pos>
     {
         /// coordinates
-        public float X, Y;
-
-        public B2Pos(float x, float y)
-        {
-            X = x;
-            Y = y;
-        }
+        public float X = x, Y = y;
 
         /// Offset a world position by a vector
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

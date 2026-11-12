@@ -7,20 +7,13 @@ using Box2D.NET.Samples.Primitives;
 
 namespace Box2D.NET.Samples.Graphics;
 
-public struct SolidPolygonRender
+public struct SolidPolygonRender()
 {
-    public List<PolygonData> polygons;
+    public List<PolygonData> polygons = new(10 * SolidPolygons.e_batchSize);
 
-    public uint[] vaoId;
-    public uint[] vboIds;
+    public uint[] vaoId = new uint[1];
+    public uint[] vboIds = new uint[2];
     public uint programId;
     public int projectionUniform;
     public int pixelScaleUniform;
-
-    public SolidPolygonRender()
-    {
-        polygons = new List<PolygonData>(10 * SolidPolygons.e_batchSize);
-        vaoId = new uint[1];
-        vboIds = new uint[2];
-    }
 }

@@ -10,20 +10,14 @@ using System.Runtime.InteropServices;
 namespace Box2D.NET
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct B2FixedArray2<T> where T : unmanaged
+    public struct B2FixedArray2<T>(T v0000, T v0001)
+        where T : unmanaged
     {
         public const int Size = 2;
 
-        private T _v0000;
-        private T _v0001;
+        private T _v0001 = v0001;
 
         public int Length => Size;
-
-        public B2FixedArray2(T v0000, T v0001)
-        {
-            _v0000 = v0000;
-            _v0001 = v0001;
-        }
 
         // readonly so an "in" or "ref readonly" receiver does not force a defensive
         // copy. This matches Span<T>.this[int], which is also a readonly ref T indexer.
@@ -36,13 +30,13 @@ namespace Box2D.NET
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal readonly Span<T> AsSpanUnsafe()
         {
-            return MemoryMarshal.CreateSpan(ref Unsafe.AsRef(in _v0000), Size);
+            return MemoryMarshal.CreateSpan(ref Unsafe.AsRef(in v0000), Size);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly ReadOnlySpan<T> AsReadOnlySpan()
         {
-            return MemoryMarshal.CreateReadOnlySpan(ref Unsafe.AsRef(in _v0000), Size);
+            return MemoryMarshal.CreateReadOnlySpan(ref Unsafe.AsRef(in v0000), Size);
         }
 
     }

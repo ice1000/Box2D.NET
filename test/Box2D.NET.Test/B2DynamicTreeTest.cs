@@ -590,18 +590,11 @@ public class B2DynamicTreeTest
         Assert.That(hits.count, Is.EqualTo(expectedCount));
     }
 
-    private class TreeCastHit
+    private class TreeCastHit(B2DynamicTree tree, int proxyId, float fraction)
     {
-        public B2DynamicTree tree;
-        public int proxyId;
-        public float fraction;
-
-        public TreeCastHit(B2DynamicTree tree, int proxyId, float fraction)
-        {
-            this.tree = tree;
-            this.proxyId = proxyId;
-            this.fraction = fraction;
-        }
+        public B2DynamicTree tree = tree;
+        public int proxyId = proxyId;
+        public float fraction = fraction;
     }
 
     // Entry fraction along the full translation, negative for a miss

@@ -167,18 +167,11 @@ public class Sample : IDisposable
         c += c;
     }
 
-    private readonly struct RowDef
+    private readonly struct RowDef(string name, int indent, System.Numerics.Vector4 color)
     {
-        public readonly string name;
-        public readonly int indent;
-        public readonly System.Numerics.Vector4 color;
-
-        public RowDef(string name, int indent, System.Numerics.Vector4 color)
-        {
-            this.name = name;
-            this.indent = indent;
-            this.color = color;
-        }
+        public readonly string name = name;
+        public readonly int indent = indent;
+        public readonly System.Numerics.Vector4 color = color;
     }
 
     private static float AddSegment(ImDrawListPtr dl, float availWidth, float t, float stepNow, System.Numerics.Vector4 col, float x,

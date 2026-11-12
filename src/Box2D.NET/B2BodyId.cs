@@ -9,18 +9,11 @@ using static Box2D.NET.B2Ids;
 namespace Box2D.NET
 {
     /// Body id references a body instance. This should be treated as an opaque handle.
-    public readonly struct B2BodyId : IEquatable<B2BodyId>
+    public readonly struct B2BodyId(int index1, ushort world0, ushort generation) : IEquatable<B2BodyId>
     {
-        public readonly int index1;
-        public readonly ushort world0;
-        public readonly ushort generation;
-
-        public B2BodyId(int index1, ushort world0, ushort generation)
-        {
-            this.index1 = index1;
-            this.world0 = world0;
-            this.generation = generation;
-        }
+        public readonly int index1 = index1;
+        public readonly ushort world0 = world0;
+        public readonly ushort generation = generation;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(B2BodyId a, B2BodyId b)

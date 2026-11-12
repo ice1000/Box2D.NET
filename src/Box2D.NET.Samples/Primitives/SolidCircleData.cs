@@ -4,17 +4,10 @@
 
 namespace Box2D.NET.Samples.Primitives;
 
-public struct SolidCircleData
+public struct SolidCircleData(in B2Transform transform, float radius, RGBA8 rgba)
 {
-    public B2Transform transform;
-    public float radius;
-    public RGBA8 rgba;
-
-    public SolidCircleData(in B2Transform transform, float radius, RGBA8 rgba)
-    {
-        this.transform = transform;
-        this.radius = radius;
-        this.rgba = rgba;
-    }
+    public B2Transform transform = transform;
+    public float radius = radius;
+    public RGBA8 rgba = rgba;
 }
 

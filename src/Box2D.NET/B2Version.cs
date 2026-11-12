@@ -6,22 +6,15 @@ namespace Box2D.NET
 {
     /// Version numbering scheme.
     /// See https://semver.org/
-    public struct B2Version
+    public struct B2Version(int major, int minor, int revision)
     {
         /// Significant changes
-        public int major;
+        public int major = major;
 
         /// Incremental changes
-        public int minor;
+        public int minor = minor;
 
         /// Bug fixes
-        public int revision;
-
-        public B2Version(int major, int minor, int revision)
-        {
-            this.major = major;
-            this.minor = minor;
-            this.revision = revision;
-        }
+        public int revision = revision;
     }
 }

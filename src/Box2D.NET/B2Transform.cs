@@ -8,16 +8,10 @@ using System.Numerics;
 namespace Box2D.NET
 {
     /// A 2D rigid transform
-    public struct B2Transform
+    public struct B2Transform(Vector2 p, B2Rot q)
     {
-        public Vector2 p;
-        public B2Rot q;
-
-        public B2Transform(Vector2 p, B2Rot q)
-        {
-            this.p = p;
-            this.q = q;
-        }
+        public Vector2 p = p;
+        public B2Rot q = q;
 
         public bool TryWriteBytes(Span<byte> bytes)
         {

@@ -4,15 +4,9 @@
 
 namespace Box2D.NET
 {
-    public struct B2IndexPair
+    public struct B2IndexPair(int a, int b)
     {
-        public int a;
-        public int b;
-
-        public B2IndexPair(int a, int b)
-        {
-            this.a = a;
-            this.b = b;
-        }
+        public int a = a;
+        public int b = b;
     }
 }

@@ -21,20 +21,12 @@ namespace Box2D.NET.PhysicsBenchmark
         private delegate object CreateFcn(B2WorldId worldId);
         private delegate float StepFcn(object state, B2WorldId worldId, int stepCount);
 
-        private sealed class Benchmark
+        private sealed class Benchmark(string name, CreateFcn createFcn, StepFcn stepFcn, int totalStepCount)
         {
-            public Benchmark(string name, CreateFcn createFcn, StepFcn stepFcn, int totalStepCount)
-            {
-                Name = name;
-                Create = createFcn;
-                Step = stepFcn;
-                TotalStepCount = totalStepCount;
-            }
-
-            public string Name { get; }
-            public CreateFcn Create { get; }
-            public StepFcn Step { get; }
-            public int TotalStepCount { get; }
+            public string Name { get; } = name;
+            public CreateFcn Create { get; } = createFcn;
+            public StepFcn Step { get; } = stepFcn;
+            public int TotalStepCount { get; } = totalStepCount;
         }
 
         public static int Main(string[] args)

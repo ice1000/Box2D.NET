@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using Silk.NET.OpenGL;
 using Box2D.NET.Samples.Helpers;

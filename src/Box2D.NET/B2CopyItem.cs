@@ -4,15 +4,9 @@
 
 namespace Box2D.NET
 {
-    public struct B2CopyItem
+    public struct B2CopyItem(int oldPair, int newIndex)
     {
-        public int oldPair;
-        public int newIndex;
-
-        public B2CopyItem(int oldPair, int newIndex)
-        {
-            this.oldPair = oldPair;
-            this.newIndex = newIndex;
-        }
+        public int oldPair = oldPair;
+        public int newIndex = newIndex;
     }
 }

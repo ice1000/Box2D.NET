@@ -7,7 +7,7 @@ namespace Box2D.NET
     /// This is used to filter collision on shapes. It affects shape-vs-shape collision
     /// and shape-versus-query collision (such as b2World_CastRay).
     /// @ingroup shape
-    public struct B2Filter
+    public struct B2Filter(ulong categoryBits, ulong maskBits, int groupIndex)
     {
         /// The collision category bits. Normally you would just set one bit. The category bits should
         /// represent your application object types. For example:
@@ -21,7 +21,7 @@ namespace Box2D.NET
         ///    // etc
         /// };
         /// @endcode
-        public ulong categoryBits;
+        public ulong categoryBits = categoryBits;
 
         /// The collision mask bits. This states the categories that this
         /// shape would accept for collision.
@@ -30,7 +30,7 @@ namespace Box2D.NET
         /// @code{.c}
         /// maskBits = Static | Player;
         /// @endcode
-        public ulong maskBits;
+        public ulong maskBits = maskBits;
 
         /// Collision groups allow a certain group of objects to never collide (negative)
         /// or always collide (positive). A group index of zero has no effect. Non-zero group filtering
@@ -38,13 +38,6 @@ namespace Box2D.NET
         /// For example, you may want ragdolls to collide with other ragdolls but you don't want
         /// ragdoll self-collision. In this case you would give each ragdoll a unique negative group index
         /// and apply that group index to all shapes on the ragdoll.
-        public int groupIndex;
-
-        public B2Filter(ulong categoryBits, ulong maskBits, int groupIndex)
-        {
-            this.categoryBits = categoryBits;
-            this.maskBits = maskBits;
-            this.groupIndex = groupIndex;
-        }
+        public int groupIndex = groupIndex;
     }
 }

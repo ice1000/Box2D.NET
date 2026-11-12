@@ -37,7 +37,7 @@ public class PrismaticJoint : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 8.0f);
+            m_camera.center = new Vector2(0.0f, 8.0f);
             m_camera.zoom = 25.0f * 0.5f;
         }
 
@@ -58,7 +58,7 @@ public class PrismaticJoint : Sample
 
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 10.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 10.0f));
             bodyDef.type = B2BodyType.b2_dynamicBody;
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
@@ -66,9 +66,9 @@ public class PrismaticJoint : Sample
             B2Polygon box = b2MakeBox(0.5f, 2.0f);
             b2CreatePolygonShape(bodyId, shapeDef, box);
 
-            B2Vec2 pivot = new B2Vec2(0.0f, 9.0f);
+            Vector2 pivot = new Vector2(0.0f, 9.0f);
             // B2Vec2 axis = b2Normalize({1.0f, 0.0f});
-            B2Vec2 axis = b2Normalize(new B2Vec2(1.0f, 1.0f));
+            Vector2 axis = b2Normalize(new Vector2(1.0f, 1.0f));
             B2PrismaticJointDef jointDef = b2DefaultPrismaticJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = bodyId;

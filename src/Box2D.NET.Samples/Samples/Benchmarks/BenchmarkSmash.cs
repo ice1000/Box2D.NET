@@ -30,7 +30,7 @@ public class BenchmarkSmash : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(60.0f, 6.0f);
+            m_camera.center = new Vector2(60.0f, 6.0f);
             m_camera.zoom = 25.0f * 1.6f;
         }
 

@@ -20,7 +20,7 @@ public class Weeble : Sample
     private static readonly int SampleWeeble = SampleFactory.Shared.RegisterSample("Bodies", "Weeble", Create);
 
     private B2BodyId m_weebleId;
-    private B2Vec2 m_explosionPosition;
+    private Vector2 m_explosionPosition;
     private float m_explosionRadius;
     private float m_explosionMagnitude;
 
@@ -33,7 +33,7 @@ public class Weeble : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(2.3f, 10.0f);
+            m_camera.center = new Vector2(2.3f, 10.0f);
             m_camera.zoom = 25.0f * 0.5f;
         }
 
@@ -46,7 +46,7 @@ public class Weeble : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             groundId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Segment segment = new B2Segment(new B2Vec2(-20.0f, 0.0f), new B2Vec2(20.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
@@ -55,11 +55,11 @@ public class Weeble : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 3.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 3.0f));
             bodyDef.rotation = b2MakeRot(0.25f * B2_PI);
             m_weebleId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Capsule capsule = new B2Capsule(new B2Vec2(0.0f, -1.0f), new B2Vec2(0.0f, 1.0f), 1.0f);
+            B2Capsule capsule = new B2Capsule(new Vector2(0.0f, -1.0f), new Vector2(0.0f, 1.0f), 1.0f);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             b2CreateCapsuleShape(m_weebleId, shapeDef, capsule);
 
@@ -71,11 +71,11 @@ public class Weeble : Sample
             // See: https://en.wikipedia.org/wiki/Parallel_axis_theorem
             inertiaTensor += mass * offset * offset;
 
-            B2MassData massData = new B2MassData(mass, new B2Vec2(0.0f, -offset), inertiaTensor);
+            B2MassData massData = new B2MassData(mass, new Vector2(0.0f, -offset), inertiaTensor);
             b2Body_SetMassData(m_weebleId, massData);
         }
 
-        m_explosionPosition = new B2Vec2(0.0f, 0.0f);
+        m_explosionPosition = new Vector2(0.0f, 0.0f);
         m_explosionRadius = 2.0f;
         m_explosionMagnitude = 8.0f;
     }
@@ -96,7 +96,7 @@ public class Weeble : Sample
 
         if (ImGui.Button("Teleport"))
         {
-            b2Body_SetTransform(m_weebleId, b2ToPos(new B2Vec2(0.0f, 5.0f)), b2MakeRot(0.95f * B2_PI));
+            b2Body_SetTransform(m_weebleId, b2ToPos(new Vector2(0.0f, 5.0f)), b2MakeRot(0.95f * B2_PI));
         }
 
         if (ImGui.Button("Explode"))
@@ -126,13 +126,13 @@ public class Weeble : Sample
         DrawCircle(m_draw, m_explosionPosition, m_explosionRadius, B2HexColor.b2_colorAzure);
 
         // This shows how to get the velocity of a point on a body
-        B2Vec2 localPoint = new B2Vec2(0.0f, 2.0f);
-        B2Vec2 worldPoint = b2ToVec2(b2Body_GetWorldPoint(m_weebleId, localPoint));
+        Vector2 localPoint = new Vector2(0.0f, 2.0f);
+        Vector2 worldPoint = b2ToVec2(b2Body_GetWorldPoint(m_weebleId, localPoint));
 
-        B2Vec2 v1 = b2Body_GetLocalPointVelocity(m_weebleId, localPoint);
-        B2Vec2 v2 = b2Body_GetWorldPointVelocity(m_weebleId, b2ToPos(worldPoint));
+        Vector2 v1 = b2Body_GetLocalPointVelocity(m_weebleId, localPoint);
+        Vector2 v2 = b2Body_GetWorldPointVelocity(m_weebleId, b2ToPos(worldPoint));
 
-        B2Vec2 offset = new B2Vec2(0.05f, 0.0f);
+        Vector2 offset = new Vector2(0.05f, 0.0f);
         DrawLine(m_draw, worldPoint, worldPoint + v1, B2HexColor.b2_colorRed);
         DrawLine(m_draw, worldPoint + offset, worldPoint + v2 + offset, B2HexColor.b2_colorGreen);
     }

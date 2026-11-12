@@ -49,13 +49,13 @@ public class Driving : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             groundId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Vec2[] points = new B2Vec2[25];
+            Vector2[] points = new Vector2[25];
             int count = 24;
 
             // fill in reverse to match line list convention
-            points[count--] = new B2Vec2(-20.0f, -20.0f);
-            points[count--] = new B2Vec2(-20.0f, 0.0f);
-            points[count--] = new B2Vec2(20.0f, 0.0f);
+            points[count--] = new Vector2(-20.0f, -20.0f);
+            points[count--] = new Vector2(-20.0f, 0.0f);
+            points[count--] = new Vector2(20.0f, 0.0f);
 
             float[] hs = new float[10] { 0.25f, 1.0f, 4.0f, 0.0f, 0.0f, -1.0f, -2.0f, -2.0f, -1.25f, 0.0f };
             float x = 20.0f, dx = 5.0f;
@@ -65,14 +65,14 @@ public class Driving : Sample
                 for (int i = 0; i < 10; ++i)
                 {
                     float y2 = hs[i];
-                    points[count--] = new B2Vec2(x + dx, y2);
+                    points[count--] = new Vector2(x + dx, y2);
                     x += dx;
                 }
             }
 
             // flat before bridge
-            points[count--] = new B2Vec2(x + 40.0f, 0.0f);
-            points[count--] = new B2Vec2(x + 40.0f, -20.0f);
+            points[count--] = new Vector2(x + 40.0f, 0.0f);
+            points[count--] = new Vector2(x + 40.0f, -20.0f);
 
             B2_ASSERT(count == -1);
 
@@ -85,28 +85,28 @@ public class Driving : Sample
             // flat after bridge
             x += 80.0f;
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(x, 0.0f), new B2Vec2(x + 40.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(x, 0.0f), new Vector2(x + 40.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
 
             // jump ramp
             x += 40.0f;
-            segment = new B2Segment(new B2Vec2(x, 0.0f), new B2Vec2(x + 10.0f, 5.0f));
+            segment = new B2Segment(new Vector2(x, 0.0f), new Vector2(x + 10.0f, 5.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
 
             // final corner
             x += 20.0f;
-            segment = new B2Segment(new B2Vec2(x, 0.0f), new B2Vec2(x + 40.0f, 0.0f));
+            segment = new B2Segment(new Vector2(x, 0.0f), new Vector2(x + 40.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
 
             x += 40.0f;
-            segment = new B2Segment(new B2Vec2(x, 0.0f), new B2Vec2(x, 20.0f));
+            segment = new B2Segment(new Vector2(x, 0.0f), new Vector2(x, 20.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
         // Teeter
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(140.0f, 1.0f));
+            bodyDef.position = b2ToPos(new Vector2(140.0f, 1.0f));
             bodyDef.angularVelocity = 1.0f;
             bodyDef.type = B2BodyType.b2_dynamicBody;
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
@@ -115,7 +115,7 @@ public class Driving : Sample
             B2Polygon box = b2MakeBox(10.0f, 0.25f);
             b2CreatePolygonShape(bodyId, shapeDef, box);
 
-            B2Vec2 pivot = b2ToVec2(bodyDef.position);
+            Vector2 pivot = b2ToVec2(bodyDef.position);
             B2RevoluteJointDef jointDef = b2DefaultRevoluteJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = bodyId;
@@ -131,7 +131,7 @@ public class Driving : Sample
         {
             int N = 20;
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Capsule capsule = new B2Capsule(new B2Vec2(-1.0f, 0.0f), new B2Vec2(1.0f, 0.0f), 0.125f);
+            B2Capsule capsule = new B2Capsule(new Vector2(-1.0f, 0.0f), new Vector2(1.0f, 0.0f), 0.125f);
 
             B2RevoluteJointDef jointDef = b2DefaultRevoluteJointDef();
 
@@ -140,11 +140,11 @@ public class Driving : Sample
             {
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
-                bodyDef.position = b2ToPos(new B2Vec2(161.0f + 2.0f * i, -0.125f));
+                bodyDef.position = b2ToPos(new Vector2(161.0f + 2.0f * i, -0.125f));
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
                 b2CreateCapsuleShape(bodyId, shapeDef, capsule);
 
-                B2Vec2 pivot = new B2Vec2(160.0f + 2.0f * i, -0.125f);
+                Vector2 pivot = new Vector2(160.0f + 2.0f * i, -0.125f);
                 jointDef.@base.bodyIdA = prevBodyId;
                 jointDef.@base.bodyIdB = bodyId;
                 jointDef.@base.localFrameA.p = b2Body_GetLocalPoint(jointDef.@base.bodyIdA, b2ToPos(pivot));
@@ -155,7 +155,7 @@ public class Driving : Sample
             }
 
             {
-                B2Vec2 pivot = new B2Vec2(160.0f + 2.0f * N, -0.125f);
+                Vector2 pivot = new Vector2(160.0f + 2.0f * N, -0.125f);
                 jointDef.@base.bodyIdA = prevBodyId;
                 jointDef.@base.bodyIdB = groundId;
                 jointDef.@base.localFrameA.p = b2Body_GetLocalPoint(jointDef.@base.bodyIdA, b2ToPos(pivot));
@@ -180,23 +180,23 @@ public class Driving : Sample
             shapeDef.material.restitution = 0.25f;
             shapeDef.density = 0.25f;
 
-            bodyDef.position = b2ToPos(new B2Vec2(230.0f, 0.5f));
+            bodyDef.position = b2ToPos(new Vector2(230.0f, 0.5f));
             bodyId = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(bodyId, shapeDef, box);
 
-            bodyDef.position = b2ToPos(new B2Vec2(230.0f, 1.5f));
+            bodyDef.position = b2ToPos(new Vector2(230.0f, 1.5f));
             bodyId = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(bodyId, shapeDef, box);
 
-            bodyDef.position = b2ToPos(new B2Vec2(230.0f, 2.5f));
+            bodyDef.position = b2ToPos(new Vector2(230.0f, 2.5f));
             bodyId = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(bodyId, shapeDef, box);
 
-            bodyDef.position = b2ToPos(new B2Vec2(230.0f, 3.5f));
+            bodyDef.position = b2ToPos(new Vector2(230.0f, 3.5f));
             bodyId = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(bodyId, shapeDef, box);
 
-            bodyDef.position = b2ToPos(new B2Vec2(230.0f, 4.5f));
+            bodyDef.position = b2ToPos(new Vector2(230.0f, 4.5f));
             bodyId = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(bodyId, shapeDef, box);
         }
@@ -209,7 +209,7 @@ public class Driving : Sample
         m_hertz = 5.0f;
         m_dampingRatio = 0.7f;
 
-        m_car.Spawn(m_worldId, new B2Vec2(0.0f, 0.0f), 1.0f, m_hertz, m_dampingRatio, m_torque, B2UserData.Empty);
+        m_car.Spawn(m_worldId, new Vector2(0.0f, 0.0f), 1.0f, m_hertz, m_dampingRatio, m_torque, B2UserData.Empty);
     }
 
     public override bool DrawControls()
@@ -274,12 +274,12 @@ public class Driving : Sample
         DrawScreenTextLine("Keys: left = a, brake = s, right = d");
 
 
-        B2Vec2 linearVelocity = b2Body_GetLinearVelocity(m_car.m_chassisId);
+        Vector2 linearVelocity = b2Body_GetLinearVelocity(m_car.m_chassisId);
         float kph = linearVelocity.X * 3.6f;
         DrawScreenTextLine($"speed in kph: {FormatFloat(kph, 2)}");
 
 
-        B2Vec2 carPosition = b2ToVec2(b2Body_GetPosition(m_car.m_chassisId));
+        Vector2 carPosition = b2ToVec2(b2Body_GetPosition(m_car.m_chassisId));
         m_camera.center.X = carPosition.X;
     }
 }

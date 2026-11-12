@@ -23,7 +23,7 @@ public class ConveyorBelt : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(2.0f, 7.5f);
+            m_camera.center = new Vector2(2.0f, 7.5f);
             m_camera.zoom = 12.0f;
         }
 
@@ -33,14 +33,14 @@ public class ConveyorBelt : Sample
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(-20.0f, 0.0f), new B2Vec2(20.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
         // Platform
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(-5.0f, 5.0f));
+            bodyDef.position = b2ToPos(new Vector2(-5.0f, 5.0f));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2Polygon box = b2MakeRoundedBox(10.0f, 0.25f, 0.25f);
@@ -60,7 +60,7 @@ public class ConveyorBelt : Sample
             {
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
-                bodyDef.position = b2ToPos(new B2Vec2(-10.0f + 2.0f * i, 7.0f));
+                bodyDef.position = b2ToPos(new Vector2(-10.0f + 2.0f * i, 7.0f));
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
                 b2CreatePolygonShape(bodyId, shapeDef, cube);

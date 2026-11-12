@@ -26,7 +26,7 @@ public class SingleBox : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 2.5f);
+            m_camera.center = new Vector2(0.0f, 2.5f);
             m_camera.zoom = 3.5f;
         }
 
@@ -39,13 +39,13 @@ public class SingleBox : Sample
         B2ShapeDef shapeDef = b2DefaultShapeDef();
         //shapeDef.friction = 0.5f;
 
-        B2Segment segment = new B2Segment(new B2Vec2(-0.5f * 2.0f * groundWidth, 0.0f), new B2Vec2(0.5f * 2.0f * groundWidth, 0.0f));
+        B2Segment segment = new B2Segment(new Vector2(-0.5f * 2.0f * groundWidth, 0.0f), new Vector2(0.5f * 2.0f * groundWidth, 0.0f));
         b2CreateSegmentShape(groundId, shapeDef, segment);
         bodyDef.type = B2BodyType.b2_dynamicBody;
 
         B2Polygon box = b2MakeBox(extent, extent);
-        bodyDef.position = b2ToPos(new B2Vec2(0.0f, 1.0f));
-        bodyDef.linearVelocity = new B2Vec2(5.0f, 0.0f);
+        bodyDef.position = b2ToPos(new Vector2(0.0f, 1.0f));
+        bodyDef.linearVelocity = new Vector2(5.0f, 0.0f);
         m_bodyId = b2CreateBody(m_worldId, bodyDef);
         b2CreatePolygonShape(m_bodyId, shapeDef, box);
     }
@@ -57,7 +57,7 @@ public class SingleBox : Sample
 
         // m_context.g_draw.DrawCircle({0.0f, 2.0f}, 1.0f, b2HexColor.b2_colorWhite);
 
-        B2Vec2 position = b2ToVec2(b2Body_GetPosition(m_bodyId));
+        Vector2 position = b2ToVec2(b2Body_GetPosition(m_bodyId));
         DrawScreenTextLine($"(x, y) = ({FormatFloat(position.X, 2)}, {FormatFloat(position.Y, 2)})");
     }
 }

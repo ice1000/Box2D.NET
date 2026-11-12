@@ -22,15 +22,15 @@ public class WorkbenchWorld : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 5.0f);
+            m_camera.center = new Vector2(0.0f, 5.0f);
             m_camera.zoom = 25.0f * 0.5f;
         }
 
-        B2ShapeId shapeIdA = CreateCircle(m_worldId, new B2Vec2(0.0f, 0.0f), 1.0f);
-        B2ShapeId shapeIdB = CreateCircle(m_worldId, new B2Vec2(1.0f, 1.0f), 1.0f);
+        B2ShapeId shapeIdA = CreateCircle(m_worldId, new Vector2(0.0f, 0.0f), 1.0f);
+        B2ShapeId shapeIdB = CreateCircle(m_worldId, new Vector2(1.0f, 1.0f), 1.0f);
     }
     
-    public static B2ShapeId CreateCircle(B2WorldId worldId, B2Vec2 position, float radius)
+    public static B2ShapeId CreateCircle(B2WorldId worldId, Vector2 position, float radius)
     {
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
@@ -42,7 +42,7 @@ public class WorkbenchWorld : Sample
         shapeDef.density = 1.0f;
         shapeDef.material.friction = 0.5f;
 
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), radius);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), radius);
         B2ShapeId shapeId = b2CreateCircleShape(bodyIdA, shapeDef, circle);
         
         return shapeId;

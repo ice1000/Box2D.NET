@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     public struct B2DistanceJoint
@@ -24,9 +26,9 @@ namespace Box2D.NET
 
         public int indexA;
         public int indexB;
-        public B2Vec2 anchorA;
-        public B2Vec2 anchorB;
-        public B2Vec2 deltaCenter;
+        public Vector2 anchorA;
+        public Vector2 anchorB;
+        public Vector2 deltaCenter;
         public B2Softness distanceSoftness;
         public float axialMass;
 

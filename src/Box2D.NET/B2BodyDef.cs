@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     /// A body definition holds all the data needed to construct a rigid body.
@@ -23,7 +25,7 @@ namespace Box2D.NET
         public B2Rot rotation;
 
         /// The initial linear velocity of the body's origin. Usually in meters per second.
-        public B2Vec2 linearVelocity;
+        public Vector2 linearVelocity;
 
         /// The initial angular velocity of the body. Radians per second.
         public float angularVelocity;

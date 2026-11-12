@@ -46,7 +46,7 @@ public class ContactEvent : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 0.0f);
+            m_camera.center = new Vector2(0.0f, 0.0f);
             m_camera.zoom = 25.0f * 1.75f;
         }
 
@@ -54,7 +54,7 @@ public class ContactEvent : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Vec2[] points = new B2Vec2[] { new B2Vec2(40.0f, -40.0f), new B2Vec2(-40.0f, -40.0f), new B2Vec2(-40.0f, 40.0f), new B2Vec2(40.0f, 40.0f) };
+            Vector2[] points = new Vector2[] { new Vector2(40.0f, -40.0f), new Vector2(-40.0f, -40.0f), new Vector2(-40.0f, 40.0f), new Vector2(40.0f, 40.0f) };
 
             B2ChainDef chainDef = b2DefaultChainDef();
             chainDef.pointCount = 4;
@@ -74,7 +74,7 @@ public class ContactEvent : Sample
             bodyDef.isBullet = true;
             m_playerId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 1.0f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 1.0f);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
 
             // Enable contact events for the player shape
@@ -113,9 +113,9 @@ public class ContactEvent : Sample
         // Debris
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(RandomFloatRange(-38.0f, 38.0f), RandomFloatRange(-38.0f, 38.0f)));
+        bodyDef.position = b2ToPos(new Vector2(RandomFloatRange(-38.0f, 38.0f), RandomFloatRange(-38.0f, 38.0f)));
         bodyDef.rotation = b2MakeRot(RandomFloatRange(-B2_PI, B2_PI));
-        bodyDef.linearVelocity = new B2Vec2(RandomFloatRange(-5.0f, 5.0f), RandomFloatRange(-5.0f, 5.0f));
+        bodyDef.linearVelocity = new Vector2(RandomFloatRange(-5.0f, 5.0f), RandomFloatRange(-5.0f, 5.0f));
         bodyDef.angularVelocity = RandomFloatRange(-1.0f, 1.0f);
         bodyDef.gravityScale = 0.0f;
         bodyDef.userData = m_bodyUserData[index];
@@ -129,12 +129,12 @@ public class ContactEvent : Sample
 
         if ((index + 1) % 3 == 0)
         {
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
             b2CreateCircleShape(m_debrisIds[index], shapeDef, circle);
         }
         else if ((index + 1) % 2 == 0)
         {
-            B2Capsule capsule = new B2Capsule(new B2Vec2(0.0f, -0.25f), new B2Vec2(0.0f, 0.25f), 0.25f);
+            B2Capsule capsule = new B2Capsule(new Vector2(0.0f, -0.25f), new Vector2(0.0f, 0.25f), 0.25f);
             b2CreateCapsuleShape(m_debrisIds[index], shapeDef, capsule);
         }
         else
@@ -155,26 +155,26 @@ public class ContactEvent : Sample
 
     public override void Step()
     {
-        B2Vec2 position = b2ToVec2(b2Body_GetPosition(m_playerId));
+        Vector2 position = b2ToVec2(b2Body_GetPosition(m_playerId));
 
         if (GetKey(Keys.A) == InputAction.Press)
         {
-            b2Body_ApplyForce(m_playerId, new B2Vec2(-m_force, 0.0f), b2ToPos(position), true);
+            b2Body_ApplyForce(m_playerId, new Vector2(-m_force, 0.0f), b2ToPos(position), true);
         }
 
         if (GetKey(Keys.D) == InputAction.Press)
         {
-            b2Body_ApplyForce(m_playerId, new B2Vec2(m_force, 0.0f), b2ToPos(position), true);
+            b2Body_ApplyForce(m_playerId, new Vector2(m_force, 0.0f), b2ToPos(position), true);
         }
 
         if (GetKey(Keys.W) == InputAction.Press)
         {
-            b2Body_ApplyForce(m_playerId, new B2Vec2(0.0f, m_force), b2ToPos(position), true);
+            b2Body_ApplyForce(m_playerId, new Vector2(0.0f, m_force), b2ToPos(position), true);
         }
 
         if (GetKey(Keys.S) == InputAction.Press)
         {
-            b2Body_ApplyForce(m_playerId, new B2Vec2(0.0f, -m_force), b2ToPos(position), true);
+            b2Body_ApplyForce(m_playerId, new Vector2(0.0f, -m_force), b2ToPos(position), true);
         }
 
         base.Step();
@@ -221,7 +221,7 @@ public class ContactEvent : Sample
                         B2_ASSERT(B2_ID_EQUALS(idA, @event.shapeIdA) || B2_ID_EQUALS(idB, @event.shapeIdA));
 
                         B2Manifold manifold = contactData[j].manifold;
-                        B2Vec2 normal = manifold.normal;
+                        Vector2 normal = manifold.normal;
                         B2_ASSERT(b2AbsFloat(b2Length(normal) - 1.0f) < 4.0f * FLT_EPSILON);
                         B2BodyId bidA = b2Shape_GetBody(idA);
 
@@ -256,7 +256,7 @@ public class ContactEvent : Sample
                         B2_ASSERT(B2_ID_EQUALS(idA, @event.shapeIdB) || B2_ID_EQUALS(idB, @event.shapeIdB));
 
                         B2Manifold manifold = contactData[j].manifold;
-                        B2Vec2 normal = manifold.normal;
+                        Vector2 normal = manifold.normal;
                         B2_ASSERT(b2AbsFloat(b2Length(normal) - 1.0f) < 4.0f * FLT_EPSILON);
                         B2BodyId bidA = b2Shape_GetBody(idA);
 

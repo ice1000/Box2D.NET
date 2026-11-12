@@ -36,7 +36,7 @@ public class BreakableJoint : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 8.0f);
+            m_camera.center = new Vector2(0.0f, 8.0f);
             m_camera.zoom = 25.0f * 0.7f;
         }
 
@@ -44,7 +44,7 @@ public class BreakableJoint : Sample
         B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
-        B2Segment segment = new B2Segment(new B2Vec2(-40.0f, 0.0f), new B2Vec2(40.0f, 0.0f));
+        B2Segment segment = new B2Segment(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
         b2CreateSegmentShape(groundId, shapeDef, segment);
 
         for (int i = 0; i < e_count; ++i)
@@ -52,7 +52,7 @@ public class BreakableJoint : Sample
             m_jointIds[i] = b2_nullJointId;
         }
 
-        B2Vec2 position = new B2Vec2(-12.5f, 10.0f);
+        Vector2 position = new Vector2(-12.5f, 10.0f);
         bodyDef.type = B2BodyType.b2_dynamicBody;
         bodyDef.enableSleep = false;
 
@@ -69,8 +69,8 @@ public class BreakableJoint : Sample
             b2CreatePolygonShape(bodyId, shapeDef, box);
 
             float length = 2.0f;
-            B2Vec2 pivot1 = new B2Vec2(position.X, position.Y + 1.0f + length);
-            B2Vec2 pivot2 = new B2Vec2(position.X, position.Y + 1.0f);
+            Vector2 pivot1 = new Vector2(position.X, position.Y + 1.0f + length);
+            Vector2 pivot2 = new Vector2(position.X, position.Y + 1.0f);
             B2DistanceJointDef jointDef = b2DefaultDistanceJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = bodyId;
@@ -113,7 +113,7 @@ public class BreakableJoint : Sample
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(bodyId, shapeDef, box);
 
-            B2Vec2 pivot = new B2Vec2(position.X - 1.0f, position.Y);
+            Vector2 pivot = new Vector2(position.X - 1.0f, position.Y);
             B2PrismaticJointDef jointDef = b2DefaultPrismaticJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = bodyId;
@@ -134,7 +134,7 @@ public class BreakableJoint : Sample
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(bodyId, shapeDef, box);
 
-            B2Vec2 pivot = new B2Vec2(position.X - 1.0f, position.Y);
+            Vector2 pivot = new Vector2(position.X - 1.0f, position.Y);
             B2RevoluteJointDef jointDef = b2DefaultRevoluteJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = bodyId;
@@ -155,7 +155,7 @@ public class BreakableJoint : Sample
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(bodyId, shapeDef, box);
 
-            B2Vec2 pivot = new B2Vec2(position.X - 1.0f, position.Y);
+            Vector2 pivot = new Vector2(position.X - 1.0f, position.Y);
             B2WeldJointDef jointDef = b2DefaultWeldJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = bodyId;
@@ -176,7 +176,7 @@ public class BreakableJoint : Sample
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(bodyId, shapeDef, box);
 
-            B2Vec2 pivot = new B2Vec2(position.X - 1.0f, position.Y);
+            Vector2 pivot = new Vector2(position.X - 1.0f, position.Y);
             B2WheelJointDef jointDef = b2DefaultWheelJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = bodyId;
@@ -205,7 +205,7 @@ public class BreakableJoint : Sample
         ImGui.PushItemWidth(6.0f * ImGui.GetFontSize());
         ImGui.SliderFloat("break force", ref m_breakForce, 0.0f, 10000.0f, "%.1f");
 
-        B2Vec2 gravity = b2World_GetGravity(m_worldId);
+        Vector2 gravity = b2World_GetGravity(m_worldId);
         if (ImGui.SliderFloat("gravity", ref gravity.Y, -50.0f, 50.0f, "%.1f"))
         {
             b2World_SetGravity(m_worldId, gravity);
@@ -225,7 +225,7 @@ public class BreakableJoint : Sample
                 continue;
             }
 
-            B2Vec2 force = b2Joint_GetConstraintForce(m_jointIds[i]);
+            Vector2 force = b2Joint_GetConstraintForce(m_jointIds[i]);
             if (b2LengthSquared(force) > m_breakForce * m_breakForce)
             {
                 b2DestroyJoint(m_jointIds[i]);
@@ -247,7 +247,7 @@ public class BreakableJoint : Sample
                 continue;
             }
 
-            B2Vec2 force = b2Joint_GetConstraintForce(m_jointIds[i]);
+            Vector2 force = b2Joint_GetConstraintForce(m_jointIds[i]);
             if (b2LengthSquared(force) <= m_breakForce * m_breakForce)
             {
                 B2Transform localFrame = b2Joint_GetLocalFrameA(m_jointIds[i]);

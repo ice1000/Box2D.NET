@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using NUnit.Framework;
 using static Box2D.NET.B2Bodies;
 using static Box2D.NET.B2Geometries;
@@ -18,14 +19,14 @@ public class B2DebugDrawTests
 {
     private sealed class PointCapture
     {
-        public readonly List<B2Vec2> Points = new List<B2Vec2>();
+        public readonly List<Vector2> Points = new List<Vector2>();
     }
 
     [Test]
     public void ContactDrawingUsesSelectedBodyAnchor()
     {
         B2WorldDef worldDef = b2DefaultWorldDef();
-        worldDef.gravity = new B2Vec2(0.0f, -10.0f);
+        worldDef.gravity = new Vector2(0.0f, -10.0f);
         B2WorldId worldId = b2CreateWorld(worldDef);
 
         try
@@ -37,7 +38,7 @@ public class B2DebugDrawTests
 
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 0.9f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 0.9f));
             B2BodyId bodyId = b2CreateBody(worldId, bodyDef);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.density = 1.0f;
@@ -57,13 +58,13 @@ public class B2DebugDrawTests
             draw.drawContacts = true;
             draw.drawAnchorA = false;
             b2World_Draw(worldId, draw);
-            B2Vec2[] anchorBPoints = capture.Points.ToArray();
+            Vector2[] anchorBPoints = capture.Points.ToArray();
             Assert.That(anchorBPoints, Is.Not.Empty);
 
             capture.Points.Clear();
             draw.drawAnchorA = true;
             b2World_Draw(worldId, draw);
-            B2Vec2[] anchorAPoints = capture.Points.ToArray();
+            Vector2[] anchorAPoints = capture.Points.ToArray();
 
             Assert.That(anchorAPoints, Has.Length.EqualTo(anchorBPoints.Length));
             Assert.That(AnyPointDiffers(anchorAPoints, anchorBPoints), Is.True,
@@ -93,7 +94,7 @@ public class B2DebugDrawTests
         ((PointCapture)context).Points.Add(b2ToVec2(point));
     }
 
-    private static bool AnyPointDiffers(B2Vec2[] pointsA, B2Vec2[] pointsB)
+    private static bool AnyPointDiffers(Vector2[] pointsA, Vector2[] pointsB)
     {
         for (int i = 0; i < pointsA.Length; ++i)
         {

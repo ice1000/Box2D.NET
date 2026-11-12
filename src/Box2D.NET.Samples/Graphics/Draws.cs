@@ -42,27 +42,27 @@ public static partial class Draws
         DestroyPolygons(draw.gl, ref draw.polygons);
     }
 
-    public static void DrawPolygon(Draw draw, ReadOnlySpan<B2Vec2> vertices, int vertexCount, B2HexColor color)
+    public static void DrawPolygon(Draw draw, ReadOnlySpan<Vector2> vertices, int vertexCount, B2HexColor color)
     {
-        B2Vec2 p1 = vertices[vertexCount - 1];
+        Vector2 p1 = vertices[vertexCount - 1];
         for (int i = 0; i < vertexCount; ++i)
         {
-            B2Vec2 p2 = vertices[i];
+            Vector2 p2 = vertices[i];
             AddLine(ref draw.lines, p1, p2, color);
             p1 = p2;
         }
     }
 
-    public static void DrawSolidPolygon(Draw draw, in B2Transform transform, ReadOnlySpan<B2Vec2> vertices, int vertexCount, float radius, B2HexColor color)
+    public static void DrawSolidPolygon(Draw draw, in B2Transform transform, ReadOnlySpan<Vector2> vertices, int vertexCount, float radius, B2HexColor color)
     {
         AddPolygon(ref draw.polygons, transform, vertices, vertexCount, radius, color);
     }
 
     public static void DrawTransform(Draw draw, in B2Transform transform, float scale)
     {
-        B2Vec2 p1 = transform.p;
+        Vector2 p1 = transform.p;
 
-        B2Vec2 p2 = b2MulAdd(p1, scale, b2Rot_GetXAxis(transform.q));
+        Vector2 p2 = b2MulAdd(p1, scale, b2Rot_GetXAxis(transform.q));
         AddLine(ref draw.lines, p1, p2, B2HexColor.b2_colorRed);
 
         p2 = b2MulAdd(p1, scale, b2Rot_GetYAxis(transform.q));
@@ -71,10 +71,10 @@ public static partial class Draws
 
     public static void DrawBounds(Draw draw, in B2AABB aabb, B2HexColor c)
     {
-        B2Vec2 p1 = aabb.lowerBound;
-        B2Vec2 p2 = new B2Vec2(aabb.upperBound.X, aabb.lowerBound.Y);
-        B2Vec2 p3 = aabb.upperBound;
-        B2Vec2 p4 = new B2Vec2(aabb.lowerBound.X, aabb.upperBound.Y);
+        Vector2 p1 = aabb.lowerBound;
+        Vector2 p2 = new Vector2(aabb.upperBound.X, aabb.lowerBound.Y);
+        Vector2 p3 = aabb.upperBound;
+        Vector2 p4 = new Vector2(aabb.lowerBound.X, aabb.upperBound.Y);
 
         AddLine(ref draw.lines, p1, p2, c);
         AddLine(ref draw.lines, p2, p3, c);
@@ -82,7 +82,7 @@ public static partial class Draws
         AddLine(ref draw.lines, p4, p1, c);
     }
     
-    public static void DrawCircle(Draw draw, B2Vec2 center, float radius, B2HexColor color)
+    public static void DrawCircle(Draw draw, Vector2 center, float radius, B2HexColor color)
     {
         AddCircle(ref draw.hollowCircles, center, radius, color);
     }
@@ -92,18 +92,18 @@ public static partial class Draws
         AddSolidCircle(ref draw.circles, transform, radius, color);
     }
 
-    public static void DrawSolidCapsule(Draw draw, B2Vec2 p1, B2Vec2 p2, float radius, B2HexColor color)
+    public static void DrawSolidCapsule(Draw draw, Vector2 p1, Vector2 p2, float radius, B2HexColor color)
     {
         AddCapsule(ref draw.capsules, p1, p2, radius, color);
     }
 
-    public static void DrawLine(Draw draw, B2Vec2 p1, B2Vec2 p2, B2HexColor color)
+    public static void DrawLine(Draw draw, Vector2 p1, Vector2 p2, B2HexColor color)
     {
         AddLine(ref draw.lines, p1, p2, color);
     }
 
 
-    public static void DrawPoint(Draw draw, B2Vec2 p, float size, B2HexColor color)
+    public static void DrawPoint(Draw draw, Vector2 p, float size, B2HexColor color)
     {
         AddPoint(ref draw.points, p, size, color);
     }

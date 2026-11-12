@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     /// A distance proxy is used by the GJK algorithm. It encapsulates any shape.
@@ -9,7 +11,7 @@ namespace Box2D.NET
     public struct B2ShapeProxy
     {
         /// The point cloud
-        public B2FixedArray8<B2Vec2> points;
+        public B2FixedArray8<Vector2> points;
 
         /// The number of points. Must be greater than 0.
         public int count;

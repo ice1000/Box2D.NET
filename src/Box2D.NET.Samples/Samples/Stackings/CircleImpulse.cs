@@ -46,7 +46,7 @@ public class CircleImpulse : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(0.0f, 2.7f);
+            m_context.camera.center = new Vector2(0.0f, 2.7f);
             m_context.camera.zoom = 3.4f;
         }
 
@@ -56,7 +56,7 @@ public class CircleImpulse : Sample
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
 
-            B2Segment segment = new B2Segment(new B2Vec2(-10.0f, 0.0f), new B2Vec2(10.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-10.0f, 0.0f), new Vector2(10.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 

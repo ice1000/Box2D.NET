@@ -52,17 +52,17 @@ public static class SolidPolygons
 
         // Vertex buffer for single quad
         float a = 1.1f;
-        B2Vec2[] vertices = new B2Vec2[]
+        Vector2[] vertices = new Vector2[]
         {
-            new B2Vec2(-a, -a),
-            new B2Vec2(a, -a),
-            new B2Vec2(-a, a),
-            new B2Vec2(a, -a),
-            new B2Vec2(a, a),
-            new B2Vec2(-a, a),
+            new Vector2(-a, -a),
+            new Vector2(a, -a),
+            new Vector2(-a, a),
+            new Vector2(a, -a),
+            new Vector2(a, a),
+            new Vector2(-a, a),
         };
         gl.BindBuffer(GLEnum.ArrayBuffer, render.vboIds[0]);
-        gl.BufferData<B2Vec2>(GLEnum.ArrayBuffer, vertices, GLEnum.StaticDraw);
+        gl.BufferData<Vector2>(GLEnum.ArrayBuffer, vertices, GLEnum.StaticDraw);
         gl.VertexAttribPointer(vertexAttribute, 2, VertexAttribPointerType.Float, false, 0, IntPtr.Zero);
 
         // Polygon buffer
@@ -113,7 +113,7 @@ public static class SolidPolygons
         }
     }
 
-    public static void AddPolygon(ref SolidPolygonRender render, in B2Transform transform, ReadOnlySpan<B2Vec2> points, int count, float radius, B2HexColor color)
+    public static void AddPolygon(ref SolidPolygonRender render, in B2Transform transform, ReadOnlySpan<Vector2> points, int count, float radius, B2HexColor color)
     {
         PolygonData data = new PolygonData();
         data.transform = transform;

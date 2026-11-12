@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
 using NUnit.Framework;
 using static Box2D.NET.B2Worlds;
 using static Box2D.NET.B2Types;
@@ -30,14 +31,14 @@ public class B2WorldTest
     {
         // Construct a world object, which will hold and simulate the rigid bodies.
         B2WorldDef worldDef = b2DefaultWorldDef();
-        worldDef.gravity = new B2Vec2(0.0f, -10.0f);
+        worldDef.gravity = new Vector2(0.0f, -10.0f);
 
         B2WorldId worldId = b2CreateWorld(worldDef);
         Assert.That(b2World_IsValid(worldId));
 
         // Define the ground body.
         B2BodyDef groundBodyDef = b2DefaultBodyDef();
-        groundBodyDef.position = b2ToPos(new B2Vec2(0.0f, -10.0f));
+        groundBodyDef.position = b2ToPos(new Vector2(0.0f, -10.0f));
 
         // Call the body factory which allocates memory for the ground body
         // from a pool and creates the ground box shape (also from a pool).
@@ -55,7 +56,7 @@ public class B2WorldTest
         // Define the dynamic body. We set its position and call the body factory.
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(0.0f, 4.0f));
+        bodyDef.position = b2ToPos(new Vector2(0.0f, 4.0f));
 
         B2BodyId bodyId = b2CreateBody(worldId, bodyDef);
 
@@ -146,7 +147,7 @@ public class B2WorldTest
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(0.0f, 4.0f));
+        bodyDef.position = b2ToPos(new Vector2(0.0f, 4.0f));
 
         B2BodyId bodyId = b2CreateBody(worldId, bodyDef);
         b2CreatePolygonShape(bodyId, shapeDef, b2MakeBox(0.5f, 0.5f));
@@ -333,9 +334,9 @@ public class B2WorldTest
         b2World_SetCustomFilterCallback(worldId, CustomFilter, null);
         b2World_SetPreSolveCallback(worldId, PreSolveStatic, null, null);
 
-        B2Vec2 g = new B2Vec2(1.0f, 2.0f);
+        Vector2 g = new Vector2(1.0f, 2.0f);
         b2World_SetGravity(worldId, g);
-        B2Vec2 v = b2World_GetGravity(worldId);
+        Vector2 v = b2World_GetGravity(worldId);
         Assert.That(v.X, Is.EqualTo(g.X));
         Assert.That(v.Y, Is.EqualTo(g.Y));
 
@@ -388,13 +389,13 @@ public class B2WorldTest
         bodyDef.type = B2BodyType.b2_dynamicBody;
         bodyDef.isBullet = true;
         bodyDef.gravityScale = 0.0f;
-        bodyDef.position = b2ToPos(new B2Vec2(7.39814f, 4.0f));
-        bodyDef.linearVelocity = new B2Vec2(-20.0f, 0.0f);
+        bodyDef.position = b2ToPos(new Vector2(7.39814f, 4.0f));
+        bodyDef.linearVelocity = new Vector2(-20.0f, 0.0f);
         B2BodyId bulletId = b2CreateBody(worldId, bodyDef);
         shapeDef = b2DefaultShapeDef();
         shapeDef.isSensor = true;
         shapeDef.enableSensorEvents = true;
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.1f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.1f);
         b2CreateCircleShape(bulletId, shapeDef, circle);
 
         int beginCount = 0;
@@ -477,17 +478,17 @@ public class B2WorldTest
     public void ChainSegmentShapeTest()
     {
         B2WorldDef worldDef = b2DefaultWorldDef();
-        worldDef.gravity = new B2Vec2(0.0f, -10.0f);
+        worldDef.gravity = new Vector2(0.0f, -10.0f);
         B2WorldId worldId = b2CreateWorld(worldDef);
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
         B2BodyId groundId = b2CreateBody(worldId, bodyDef);
 
         B2ChainSegment cs = new B2ChainSegment();
-        cs.ghost1 = new B2Vec2(2.0f, 0.0f);
-        cs.segment.point1 = new B2Vec2(1.0f, 0.0f);
-        cs.segment.point2 = new B2Vec2(-1.0f, 0.0f);
-        cs.ghost2 = new B2Vec2(-2.0f, 0.0f);
+        cs.ghost1 = new Vector2(2.0f, 0.0f);
+        cs.segment.point1 = new Vector2(1.0f, 0.0f);
+        cs.segment.point2 = new Vector2(-1.0f, 0.0f);
+        cs.ghost2 = new Vector2(-2.0f, 0.0f);
         cs.chainId = 99;
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -512,9 +513,9 @@ public class B2WorldTest
 
         B2BodyDef dynamicDef = b2DefaultBodyDef();
         dynamicDef.type = B2BodyType.b2_dynamicBody;
-        dynamicDef.position = b2ToPos(new B2Vec2(0.0f, 2.0f));
+        dynamicDef.position = b2ToPos(new Vector2(0.0f, 2.0f));
         B2BodyId circleBodyId = b2CreateBody(worldId, dynamicDef);
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
         B2ShapeDef circleShapeDef = b2DefaultShapeDef();
         b2CreateCircleShape(circleBodyId, circleShapeDef, circle);
 
@@ -527,10 +528,10 @@ public class B2WorldTest
         Assert.That(circlePos.Y, Is.GreaterThan(0.0f));
 
         B2ChainSegment cs2 = new B2ChainSegment();
-        cs2.ghost1 = new B2Vec2(3.0f, 0.0f);
-        cs2.segment.point1 = new B2Vec2(2.0f, 0.0f);
-        cs2.segment.point2 = new B2Vec2(-2.0f, 0.0f);
-        cs2.ghost2 = new B2Vec2(-3.0f, 0.0f);
+        cs2.ghost1 = new Vector2(3.0f, 0.0f);
+        cs2.segment.point1 = new Vector2(2.0f, 0.0f);
+        cs2.segment.point2 = new Vector2(-2.0f, 0.0f);
+        cs2.ghost2 = new Vector2(-3.0f, 0.0f);
         cs2.chainId = B2_NULL_INDEX;
 
         b2Shape_SetChainSegment(orphanShape, cs2);
@@ -550,7 +551,7 @@ public class B2WorldTest
         Assert.That(B2_IS_NULL(parentChain2));
 
         B2BodyId convBody = b2CreateBody(worldId, bodyDef);
-        B2Circle convCircle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.25f);
+        B2Circle convCircle = new B2Circle(new Vector2(0.0f, 0.0f), 0.25f);
         B2ShapeId convShape = b2CreateCircleShape(convBody, shapeDef, convCircle);
         Assert.That(b2Shape_GetType(convShape), Is.EqualTo(B2ShapeType.b2_circleShape));
 
@@ -584,7 +585,7 @@ public class B2WorldTest
         B2ShapeDef shapeDef = b2DefaultShapeDef();
         shapeDef.updateBodyMass = false;
 
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
         b2CreateCircleShape(bodyId, shapeDef, circle);
 
         b2Body_UpdateMassFromShapes(bodyId);
@@ -701,14 +702,14 @@ public class B2WorldTest
         Assert.That(empty.upperBound.X, Is.EqualTo(0.0f));
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
-        bodyDef.position = b2ToPos(new B2Vec2(-10.0f, 0.0f));
+        bodyDef.position = b2ToPos(new Vector2(-10.0f, 0.0f));
         B2BodyId staticId = b2CreateBody(worldId, bodyDef);
         B2ShapeDef shapeDef = b2DefaultShapeDef();
         B2Polygon box = b2MakeBox(1.0f, 1.0f);
         b2CreatePolygonShape(staticId, shapeDef, box);
 
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(10.0f, 5.0f));
+        bodyDef.position = b2ToPos(new Vector2(10.0f, 5.0f));
         B2BodyId dynamicId = b2CreateBody(worldId, bodyDef);
         b2CreatePolygonShape(dynamicId, shapeDef, box);
 
@@ -739,7 +740,7 @@ public class B2WorldTest
     private static void EnlargedProxyDestroyed(int workerCount)
     {
         B2WorldDef worldDef = b2DefaultWorldDef();
-        worldDef.gravity = b2Vec2_zero;
+        worldDef.gravity = Vector2Zero;
         worldDef.workerCount = workerCount;
         B2WorldId worldId = b2CreateWorld(worldDef);
 
@@ -750,7 +751,7 @@ public class B2WorldTest
         bodyDef.type = B2BodyType.b2_dynamicBody;
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
-        B2Circle circle = new B2Circle(b2Vec2_zero, 0.25f);
+        B2Circle circle = new B2Circle(Vector2Zero, 0.25f);
 
         // Resting bodies keep the tree deep enough that the mover has an ancestor that outlives it
         for (int i = 0; i < 8; ++i)
@@ -762,7 +763,7 @@ public class B2WorldTest
 
         // This body outruns its AABB margin every step
         bodyDef.position = new B2Pos(7.0f, 1.0f);
-        bodyDef.linearVelocity = new B2Vec2(6.0f, 0.0f);
+        bodyDef.linearVelocity = new Vector2(6.0f, 0.0f);
         B2BodyId moverId = b2CreateBody(worldId, bodyDef);
         b2CreateCircleShape(moverId, shapeDef, circle);
 
@@ -818,7 +819,7 @@ public class B2WorldTest
     private static B2WorldId CreatePairWorld(int workerCount)
     {
         B2WorldDef worldDef = b2DefaultWorldDef();
-        worldDef.gravity = b2Vec2_zero;
+        worldDef.gravity = Vector2Zero;
         worldDef.enableSleep = false;
         worldDef.workerCount = workerCount;
         return b2CreateWorld(worldDef);
@@ -965,7 +966,7 @@ public class B2WorldTest
         B2WeldJointDef jointDef = b2DefaultWeldJointDef();
         jointDef.@base.bodyIdA = boxA.bodyId;
         jointDef.@base.bodyIdB = boxB.bodyId;
-        jointDef.@base.localFrameB.p = new B2Vec2(-0.5f, 0.0f);
+        jointDef.@base.localFrameB.p = new Vector2(-0.5f, 0.0f);
         B2JointId jointId = b2CreateWeldJoint(worldId, jointDef);
         StepPairWorld(worldId);
         Assert.That(PairContactCount(worldId), Is.EqualTo(0));
@@ -1062,7 +1063,7 @@ public class B2WorldTest
     private static void PairSleepEscape(int workerCount, bool sleepBeforePairs)
     {
         B2WorldDef worldDef = b2DefaultWorldDef();
-        worldDef.gravity = b2Vec2_zero;
+        worldDef.gravity = Vector2Zero;
         worldDef.workerCount = workerCount;
         B2WorldId worldId = b2CreateWorld(worldDef);
 
@@ -1072,7 +1073,7 @@ public class B2WorldTest
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
         bodyDef.position = new B2Pos(-2.0f, 0.0f);
-        bodyDef.linearVelocity = new B2Vec2(58.0f, 0.0f);
+        bodyDef.linearVelocity = new Vector2(58.0f, 0.0f);
         B2BodyId moverId = b2CreateBody(worldId, bodyDef);
         B2Polygon square = b2MakeSquare(0.5f);
         b2CreatePolygonShape(moverId, shapeDef, square);
@@ -1230,7 +1231,7 @@ public class B2WorldTest
     private static void PairSleepingStatic(int workerCount)
     {
         B2WorldDef worldDef = b2DefaultWorldDef();
-        worldDef.gravity = b2Vec2_zero;
+        worldDef.gravity = Vector2Zero;
         worldDef.workerCount = workerCount;
         B2WorldId worldId = b2CreateWorld(worldDef);
 
@@ -1313,7 +1314,7 @@ public class B2WorldTest
     private static B2WorldId CreateLocatorWorld(int workerCount, bool enableSleep)
     {
         B2WorldDef worldDef = b2DefaultWorldDef();
-        worldDef.gravity = new B2Vec2(0.0f, -10.0f);
+        worldDef.gravity = new Vector2(0.0f, -10.0f);
         worldDef.enableSleep = enableSleep;
         worldDef.workerCount = workerCount;
         return b2CreateWorld(worldDef);
@@ -1461,7 +1462,7 @@ public class B2WorldTest
         StepLocatorWorld(worldId, 30);
         Assert.That(b2Body_IsAwake(sleeper), Is.False);
 
-        b2Body_SetLinearVelocity(mover, new B2Vec2(-2.0f, 0.0f));
+        b2Body_SetLinearVelocity(mover, new Vector2(-2.0f, 0.0f));
         StepLocatorWorld(worldId, 10);
         Assert.That(b2Body_IsAwake(sleeper), Is.True);
 
@@ -1559,13 +1560,13 @@ public class B2WorldTest
     private static ulong LocatorFastBody(int workerCount)
     {
         B2WorldDef worldDef = b2DefaultWorldDef();
-        worldDef.gravity = b2Vec2_zero;
+        worldDef.gravity = Vector2Zero;
         worldDef.workerCount = workerCount;
         B2WorldId worldId = b2CreateWorld(worldDef);
 
         CreateLocatorBox(worldId, B2BodyType.b2_staticBody, 10.0f, 0.0f);
         B2BodyId bullet = CreateLocatorBox(worldId, B2BodyType.b2_dynamicBody, 0.0f, 0.0f);
-        b2Body_SetLinearVelocity(bullet, new B2Vec2(40.0f, 0.0f));
+        b2Body_SetLinearVelocity(bullet, new Vector2(40.0f, 0.0f));
 
         // A step carries it two thirds of a meter, well past half its minimum extent
         StepLocatorWorld(worldId, 4);
@@ -1596,7 +1597,7 @@ public class B2WorldTest
         for (int pass = 0; pass < 2; ++pass)
         {
             B2WorldDef worldDef = b2DefaultWorldDef();
-            worldDef.gravity = b2Vec2_zero;
+            worldDef.gravity = Vector2Zero;
             worldDef.enableSleep = pass == 0;
             worldDef.workerCount = workerCount;
             B2WorldId worldId = b2CreateWorld(worldDef);
@@ -1611,7 +1612,7 @@ public class B2WorldTest
             Assert.That(b2Body_IsAwake(boxes[0]), Is.EqualTo(pass == 1));
 
             B2BodyId impactor = CreateLocatorBox(worldId, B2BodyType.b2_dynamicBody, -5.0f, 0.0f);
-            b2Body_SetLinearVelocity(impactor, new B2Vec2(5.0f, 0.0f));
+            b2Body_SetLinearVelocity(impactor, new Vector2(5.0f, 0.0f));
 
             StepLocatorWorld(worldId, 120);
             Assert.That(b2Body_IsAwake(boxes[2]), Is.True);
@@ -1698,7 +1699,7 @@ public class B2WorldTest
     public void NonDynamicJointDisableTest()
     {
         B2WorldDef worldDef = b2DefaultWorldDef();
-        worldDef.gravity = b2Vec2_zero;
+        worldDef.gravity = Vector2Zero;
         B2WorldId worldId = b2CreateWorld(worldDef);
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
@@ -1795,7 +1796,7 @@ public class B2WorldTest
         B2BodyId bodyId = b2CreateBody(worldId, bodyDef);
 
         shapeDef.enablePreSolveEvents = true;
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), radius);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), radius);
         b2CreateCircleShape(bodyId, shapeDef, circle);
 
         b2World_Step(worldId, 1.0f / 60.0f, 4);
@@ -1855,7 +1856,7 @@ public class B2WorldTest
         bodyDef.position = new B2Pos(0.0f, radius + 0.2f);
         B2BodyId bodyId = b2CreateBody(worldId, bodyDef);
 
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), radius);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), radius);
         B2ShapeId ballId = b2CreateCircleShape(bodyId, shapeDef, circle);
 
         // Let the ball settle so the contact recycles

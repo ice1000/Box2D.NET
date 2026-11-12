@@ -39,7 +39,7 @@ public class BenchmarkSleep : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 50.0f);
+            m_camera.center = new Vector2(0.0f, 50.0f);
             m_camera.zoom = 25.0f * 2.2f;
         }
 
@@ -83,7 +83,7 @@ public class BenchmarkSleep : Sample
                 for (int j = i; j < count; ++j)
                 {
                     float x = 0.5f * i * shift + (j - i) * shift - centerx;
-                    bodyDef.position = b2ToPos(new B2Vec2(x, y));
+                    bodyDef.position = b2ToPos(new Vector2(x, y));
 
                     B2_ASSERT(index < e_maxBodyCount);
                     m_bodies[index] = b2CreateBody(m_worldId, bodyDef);

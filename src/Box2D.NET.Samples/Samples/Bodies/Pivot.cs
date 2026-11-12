@@ -29,7 +29,7 @@ public class Pivot : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.8f, 6.4f);
+            m_camera.center = new Vector2(0.8f, 6.4f);
             m_camera.zoom = 25.0f * 0.4f;
         }
 
@@ -38,25 +38,25 @@ public class Pivot : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             groundId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Segment segment = new B2Segment(new B2Vec2(-20.0f, 0.0f), new B2Vec2(20.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
         // Create a separate body on the ground
         {
-            B2Vec2 v = new B2Vec2(5.0f, 0.0f);
+            Vector2 v = new Vector2(5.0f, 0.0f);
 
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 3.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 3.0f));
             bodyDef.gravityScale = 1.0f;
             bodyDef.linearVelocity = v;
 
             m_bodyId = b2CreateBody(m_worldId, bodyDef);
 
             m_lever = 3.0f;
-            B2Vec2 r = new B2Vec2(0.0f, -m_lever);
+            Vector2 r = new Vector2(0.0f, -m_lever);
 
             float omega = b2Cross(v, r) / b2Dot(r, r);
             b2Body_SetAngularVelocity(m_bodyId, omega);
@@ -72,11 +72,11 @@ public class Pivot : Sample
     {
         base.Draw();
 
-        B2Vec2 v = b2Body_GetLinearVelocity(m_bodyId);
+        Vector2 v = b2Body_GetLinearVelocity(m_bodyId);
         float omega = b2Body_GetAngularVelocity(m_bodyId);
-        B2Vec2 r = b2Body_GetWorldVector(m_bodyId, new B2Vec2(0.0f, -m_lever));
+        Vector2 r = b2Body_GetWorldVector(m_bodyId, new Vector2(0.0f, -m_lever));
 
-        B2Vec2 vp = v + b2CrossSV(omega, r);
+        Vector2 vp = v + b2CrossSV(omega, r);
         DrawScreenTextLine($"pivot velocity = ({FormatFloat(vp.X)}, {FormatFloat(vp.Y)})");
         
     }

@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
 using NUnit.Framework;
 using static Box2D.NET.B2MathFunction;
 
@@ -40,12 +41,12 @@ public class B2TransformTest
         // 1. Rotates 90 degrees counter-clockwise
         // 2. Translates by (1,2)
         var transform = new B2Transform(
-            new B2Vec2(1.0f, 2.0f),  // Translation
+            new Vector2(1.0f, 2.0f),  // Translation
             b2MakeRot(B2_PI / 2)     // 90 degree rotation
         );
 
         // Test transforming a point from local to world space
-        var localPoint = new B2Vec2(1.0f, 0.0f);  // Point at (1,0) in local space
+        var localPoint = new Vector2(1.0f, 0.0f);  // Point at (1,0) in local space
         var worldPoint = b2TransformPoint(transform, localPoint);
 
         // Expected result:
@@ -60,12 +61,12 @@ public class B2TransformTest
     {
         // Create the same transform as above
         var transform = new B2Transform(
-            new B2Vec2(1.0f, 2.0f),
+            new Vector2(1.0f, 2.0f),
             b2MakeRot(B2_PI / 2)
         );
 
         // Test transforming a point from world to local space
-        var worldPoint = new B2Vec2(1.0f, 3.0f);  // Point at (1,3) in world space
+        var worldPoint = new Vector2(1.0f, 3.0f);  // Point at (1,3) in world space
         var localPoint = b2InvTransformPoint(transform, worldPoint);
 
         // Expected result:
@@ -82,11 +83,11 @@ public class B2TransformTest
         // 1. First transform: rotate 45 degrees and translate by (1,0)
         // 2. Second transform: rotate 45 degrees and translate by (0,1)
         var transform1 = new B2Transform(
-            new B2Vec2(1.0f, 0.0f),
+            new Vector2(1.0f, 0.0f),
             b2MakeRot(B2_PI / 4)
         );
         var transform2 = new B2Transform(
-            new B2Vec2(0.0f, 1.0f),
+            new Vector2(0.0f, 1.0f),
             b2MakeRot(B2_PI / 4)
         );
 
@@ -94,7 +95,7 @@ public class B2TransformTest
         var combined = b2MulTransforms(transform1, transform2);
 
         // Test transforming a point through the combined transform
-        var localPoint = new B2Vec2(1.0f, 0.0f);
+        var localPoint = new Vector2(1.0f, 0.0f);
         var worldPoint = b2TransformPoint(combined, localPoint);
 
         // Expected result:
@@ -113,12 +114,12 @@ public class B2TransformTest
     {
         // Create a transform that rotates 90 degrees
         var transform = new B2Transform(
-            new B2Vec2(1.0f, 2.0f),  // Translation doesn't affect vectors
+            new Vector2(1.0f, 2.0f),  // Translation doesn't affect vectors
             b2MakeRot(B2_PI / 2)
         );
 
         // Test rotating a vector (direction only, no position)
-        var localVector = new B2Vec2(1.0f, 0.0f);  // Vector pointing right
+        var localVector = new Vector2(1.0f, 0.0f);  // Vector pointing right
         var worldVector = b2RotateVector(transform.q, localVector);
 
         // Expected result:
@@ -132,7 +133,7 @@ public class B2TransformTest
     {
         // Test valid transform
         var validTransform = new B2Transform(
-            new B2Vec2(1.0f, 2.0f),
+            new Vector2(1.0f, 2.0f),
             b2MakeRot(B2_PI / 4)
         );
         Assert.That(b2IsValidVec2(validTransform.p) && b2IsValidRot(validTransform.q), 
@@ -140,7 +141,7 @@ public class B2TransformTest
 
         // Test invalid position (NaN)
         var invalidPosTransform = new B2Transform(
-            new B2Vec2(float.NaN, 2.0f),
+            new Vector2(float.NaN, 2.0f),
             b2MakeRot(B2_PI / 4)
         );
         Assert.That(b2IsValidVec2(invalidPosTransform.p) && b2IsValidRot(invalidPosTransform.q), 
@@ -148,7 +149,7 @@ public class B2TransformTest
 
         // Test invalid rotation (not normalized)
         var invalidRotTransform = new B2Transform(
-            new B2Vec2(1.0f, 2.0f),
+            new Vector2(1.0f, 2.0f),
             new B2Rot(2.0f, 0.0f)  // Not normalized
         );
         Assert.That(b2IsValidVec2(invalidRotTransform.p) && b2IsValidRot(invalidRotTransform.q), 

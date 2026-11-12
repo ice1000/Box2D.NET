@@ -19,7 +19,7 @@ public class BenchmarkJointGrid : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(60.0f, -57.0f);
+            m_camera.center = new Vector2(60.0f, -57.0f);
             m_camera.zoom = 25.0f * 2.5f;
             m_context.enableSleep = false;
         }

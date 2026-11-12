@@ -30,7 +30,7 @@ public class ScaleRagdoll : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(0.0f, 4.5f);
+            m_context.camera.center = new Vector2(0.0f, 4.5f);
             m_context.camera.zoom = 6.0f;
         }
 
@@ -39,7 +39,7 @@ public class ScaleRagdoll : Sample
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
 
-            B2Polygon box = b2MakeOffsetBox(20.0f, 1.0f, new B2Vec2(0.0f, -1.0f), b2Rot_identity);
+            B2Polygon box = b2MakeOffsetBox(20.0f, 1.0f, new Vector2(0.0f, -1.0f), b2Rot_identity);
             b2CreatePolygonShape(groundId, shapeDef, box);
         }
 
@@ -55,7 +55,7 @@ public class ScaleRagdoll : Sample
         float jointFrictionTorque = 0.03f;
         float jointHertz = 1.0f;
         float jointDampingRatio = 0.5f;
-        CreateHuman(ref m_human, m_worldId, b2ToPos(new B2Vec2(0.0f, 5.0f)), m_scale, jointFrictionTorque, jointHertz, jointDampingRatio, 1, B2UserData.Empty, false);
+        CreateHuman(ref m_human, m_worldId, b2ToPos(new Vector2(0.0f, 5.0f)), m_scale, jointFrictionTorque, jointHertz, jointDampingRatio, 1, B2UserData.Empty, false);
         Human_ApplyRandomAngularImpulse(ref m_human, 0.1f);
     }
 

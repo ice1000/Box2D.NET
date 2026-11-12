@@ -18,7 +18,7 @@ public class ConvexHull : Sample
 
     public const int e_count = B2_MAX_POLYGON_VERTICES;
 
-    private B2Vec2[] m_points = new B2Vec2[B2_MAX_POLYGON_VERTICES];
+    private Vector2[] m_points = new Vector2[B2_MAX_POLYGON_VERTICES];
     private int m_count;
     private int m_generation;
     private bool m_auto;
@@ -39,7 +39,7 @@ public class ConvexHull : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.5f, 0.0f);
+            m_camera.center = new Vector2(0.5f, 0.0f);
             m_camera.zoom = 25.0f * 0.3f;
         }
 
@@ -85,8 +85,8 @@ public class ConvexHull : Sample
         float angle = B2_PI * RandomFloat();
         B2Rot r = b2MakeRot(angle);
 
-        B2Vec2 lowerBound = new B2Vec2(-4.0f, -4.0f);
-        B2Vec2 upperBound = new B2Vec2(4.0f, 4.0f);
+        Vector2 lowerBound = new Vector2(-4.0f, -4.0f);
+        Vector2 upperBound = new Vector2(4.0f, 4.0f);
 
         for (int i = 0; i < e_count; ++i)
         {
@@ -95,7 +95,7 @@ public class ConvexHull : Sample
 
             // Clamp onto a square to help create collinearities.
             // This will stress the convex hull algorithm.
-            B2Vec2 v = b2Clamp(new B2Vec2(x, y), lowerBound, upperBound);
+            Vector2 v = b2Clamp(new Vector2(x, y), lowerBound, upperBound);
             m_points[i] = b2RotateVector(r, v);
         }
 
@@ -222,7 +222,7 @@ public class ConvexHull : Sample
         for (int i = 0; i < m_count; ++i)
         {
             DrawPoint(m_draw, m_points[i], 5.0f, B2HexColor.b2_colorBlue);
-            DrawWorldString(m_draw, m_camera, b2Add(m_points[i], new B2Vec2(0.1f, 0.1f)), B2HexColor.b2_colorWhite, $"{i}");
+            DrawWorldString(m_draw, m_camera, b2Add(m_points[i], new Vector2(0.1f, 0.1f)), B2HexColor.b2_colorWhite, $"{i}");
         }
 
         for (int i = 0; i < m_hull.count; ++i)

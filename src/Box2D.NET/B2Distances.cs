@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using static Box2D.NET.B2Diagnostics;
 using static Box2D.NET.B2MathFunction;
@@ -44,13 +45,13 @@ namespace Box2D.NET
         }
 
         /// Compute the distance between two line segments, clamping at the end points if needed.
-        public static B2SegmentDistanceResult b2ComputeSegmentDistance(B2Vec2 p1, B2Vec2 q1, B2Vec2 p2, B2Vec2 q2)
+        public static B2SegmentDistanceResult b2ComputeSegmentDistance(Vector2 p1, Vector2 q1, Vector2 p2, Vector2 q2)
         {
             B2SegmentDistanceResult result = new B2SegmentDistanceResult();
 
-            B2Vec2 d1 = b2Sub(q1, p1);
-            B2Vec2 d2 = b2Sub(q2, p2);
-            B2Vec2 r = b2Sub(p1, p2);
+            Vector2 d1 = b2Sub(q1, p1);
+            Vector2 d2 = b2Sub(q2, p2);
+            Vector2 r = b2Sub(p1, p2);
             float dd1 = b2Dot(d1, d1);
             float dd2 = b2Dot(d2, d2);
             float rd1 = b2Dot(r, d1);
@@ -120,7 +121,7 @@ namespace Box2D.NET
         }
 
         /// Make a proxy for use in overlap, shape cast, and related functions. This is a deep copy of the points.
-        public static B2ShapeProxy b2MakeProxy(ReadOnlySpan<B2Vec2> points, int count, float radius)
+        public static B2ShapeProxy b2MakeProxy(ReadOnlySpan<Vector2> points, int count, float radius)
         {
             count = b2MinInt(count, B2_MAX_POLYGON_VERTICES);
             B2ShapeProxy proxy = new B2ShapeProxy();
@@ -135,7 +136,7 @@ namespace Box2D.NET
         }
 
         /// Make a proxy with a transform. This is a deep copy of the points.
-        public static B2ShapeProxy b2MakeOffsetProxy(ReadOnlySpan<B2Vec2> points, int count, float radius, B2Vec2 position, in B2Rot rotation)
+        public static B2ShapeProxy b2MakeOffsetProxy(ReadOnlySpan<Vector2> points, int count, float radius, Vector2 position, in B2Rot rotation)
         {
             count = b2MinInt(count, B2_MAX_POLYGON_VERTICES);
             B2Transform transform = new B2Transform(position, rotation);
@@ -154,20 +155,20 @@ namespace Box2D.NET
 
         // for single
         /// Make a proxy for use in overlap, shape cast, and related functions. This is a deep copy of the points.
-        public static B2ShapeProxy b2MakeProxy(B2Vec2 v1, int count, float radius)
+        public static B2ShapeProxy b2MakeProxy(Vector2 v1, int count, float radius)
         {
             B2_ASSERT(count == 1);
 
-            Span<B2Vec2> vertices = stackalloc B2Vec2[1];
+            Span<Vector2> vertices = stackalloc Vector2[1];
             vertices[0] = v1;
             return b2MakeProxy(vertices, count, radius);
         }
         /// Make a proxy for use in overlap, shape cast, and related functions. This is a deep copy of the points.
-        public static B2ShapeProxy b2MakeProxy(B2Vec2 v1, B2Vec2 v2, int count, float radius)
+        public static B2ShapeProxy b2MakeProxy(Vector2 v1, Vector2 v2, int count, float radius)
         {
             B2_ASSERT(count == 2);
 
-            Span<B2Vec2> vertices = stackalloc B2Vec2[2];
+            Span<Vector2> vertices = stackalloc Vector2[2];
             vertices[0] = v1;
             vertices[1] = v2;
             return b2MakeProxy(vertices, count, radius);
@@ -175,21 +176,21 @@ namespace Box2D.NET
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static B2Vec2 b2Weight2(float a1, B2Vec2 w1, float a2, B2Vec2 w2)
+        internal static Vector2 b2Weight2(float a1, Vector2 w1, float a2, Vector2 w2)
         {
-            return new B2Vec2(a1 * w1.X + a2 * w2.X, a1 * w1.Y + a2 * w2.Y);
+            return new Vector2(a1 * w1.X + a2 * w2.X, a1 * w1.Y + a2 * w2.Y);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static B2Vec2 b2Weight3(float a1, B2Vec2 w1, float a2, B2Vec2 w2, float a3, B2Vec2 w3)
+        internal static Vector2 b2Weight3(float a1, Vector2 w1, float a2, Vector2 w2, float a3, Vector2 w3)
         {
-            return new B2Vec2(a1 * w1.X + a2 * w2.X + a3 * w3.X, a1 * w1.Y + a2 * w2.Y + a3 * w3.Y);
+            return new Vector2(a1 * w1.X + a2 * w2.X + a3 * w3.X, a1 * w1.Y + a2 * w2.Y + a3 * w3.Y);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static int b2FindSupport(ref B2ShapeProxy proxy, B2Vec2 direction)
+        internal static int b2FindSupport(ref B2ShapeProxy proxy, Vector2 direction)
         {
-            Span<B2Vec2> points = proxy.points.AsSpan();
+            Span<Vector2> points = proxy.points.AsSpan();
             int count = proxy.count;
 
             int bestIndex = 0;
@@ -262,7 +263,7 @@ namespace Box2D.NET
             return cache;
         }
 
-        internal static void b2ComputeWitnessPoints(in B2Simplex s, ref B2Vec2 a, ref B2Vec2 b)
+        internal static void b2ComputeWitnessPoints(in B2Simplex s, ref Vector2 a, ref Vector2 b)
         {
             switch (s.count)
             {
@@ -284,8 +285,8 @@ namespace Box2D.NET
                     break;
 
                 default:
-                    a = b2Vec2_zero;
-                    b = b2Vec2_zero;
+                    a = Vector2Zero;
+                    b = Vector2Zero;
                     B2_ASSERT(false);
                     break;
             }
@@ -316,11 +317,11 @@ namespace Box2D.NET
         // a2 = d12_2 / d12
         //
         // returns a vector that points towards the origin
-        internal static B2Vec2 b2SolveSimplex2(ref B2Simplex s)
+        internal static Vector2 b2SolveSimplex2(ref B2Simplex s)
         {
-            B2Vec2 w1 = s.v1.w;
-            B2Vec2 w2 = s.v2.w;
-            B2Vec2 e12 = b2Sub(w2, w1);
+            Vector2 w1 = s.v1.w;
+            Vector2 w2 = s.v2.w;
+            Vector2 e12 = b2Sub(w2, w1);
 
             // w1 region
             float d12_2 = -b2Dot(w1, e12);
@@ -351,17 +352,17 @@ namespace Box2D.NET
             return b2CrossSV(b2Cross(b2Add(w1, w2), e12), e12);
         }
 
-        internal static B2Vec2 b2SolveSimplex3(ref B2Simplex s)
+        internal static Vector2 b2SolveSimplex3(ref B2Simplex s)
         {
-            B2Vec2 w1 = s.v1.w;
-            B2Vec2 w2 = s.v2.w;
-            B2Vec2 w3 = s.v3.w;
+            Vector2 w1 = s.v1.w;
+            Vector2 w2 = s.v2.w;
+            Vector2 w3 = s.v3.w;
 
             // Edge12
             // [1      1     ][a1] = [1]
             // [w1.e12 w2.e12][a2] = [0]
             // a3 = 0
-            B2Vec2 e12 = b2Sub(w2, w1);
+            Vector2 e12 = b2Sub(w2, w1);
             float w1e12 = b2Dot(w1, e12);
             float w2e12 = b2Dot(w2, e12);
             float d12_1 = w2e12;
@@ -371,7 +372,7 @@ namespace Box2D.NET
             // [1      1     ][a1] = [1]
             // [w1.e13 w3.e13][a3] = [0]
             // a2 = 0
-            B2Vec2 e13 = b2Sub(w3, w1);
+            Vector2 e13 = b2Sub(w3, w1);
             float w1e13 = b2Dot(w1, e13);
             float w3e13 = b2Dot(w3, e13);
             float d13_1 = w3e13;
@@ -381,7 +382,7 @@ namespace Box2D.NET
             // [1      1     ][a2] = [1]
             // [w2.e23 w3.e23][a3] = [0]
             // a1 = 0
-            B2Vec2 e23 = b2Sub(w3, w2);
+            Vector2 e23 = b2Sub(w3, w2);
             float w2e23 = b2Dot(w2, e23);
             float w3e23 = b2Dot(w3, e23);
             float d23_1 = w3e23;
@@ -460,7 +461,7 @@ namespace Box2D.NET
             s.count = 3;
 
             // No search direction
-            return b2Vec2_zero;
+            return Vector2Zero;
         }
 
         /// Compute the closest points between two shapes represented as point clouds.
@@ -502,7 +503,7 @@ namespace Box2D.NET
             // Get simplex vertices as an array.
             Span<B2SimplexVertex> vertices = simplex.AsSpan();
 
-            B2Vec2 nonUnitNormal = b2Vec2_zero;
+            Vector2 nonUnitNormal = Vector2Zero;
 
             // These store the vertices of the last simplex so that we can check for duplicates and prevent cycling.
             Span<int> saveA = stackalloc int[3];
@@ -521,7 +522,7 @@ namespace Box2D.NET
                     saveB[i] = vertices[i].indexB;
                 }
 
-                B2Vec2 d = new B2Vec2();
+                Vector2 d = new Vector2();
                 switch (simplex.count)
                 {
                     case 1:
@@ -546,7 +547,7 @@ namespace Box2D.NET
                 {
                     // Overlap
                     cache = b2MakeSimplexCache(simplex);
-                    B2Vec2 localPointA = new B2Vec2(), localPointB = new B2Vec2();
+                    Vector2 localPointA = new Vector2(), localPointB = new Vector2();
                     b2ComputeWitnessPoints(simplex, ref localPointA, ref localPointB);
                     output.distance = 0.0f;
                     output.pointA = localPointA;
@@ -575,7 +576,7 @@ namespace Box2D.NET
                     cache = b2MakeSimplexCache(simplex);
 
                     // Must return overlap due to invalid normal.
-                    B2Vec2 localPointA = new B2Vec2(), localPointB = new B2Vec2();
+                    Vector2 localPointA = new Vector2(), localPointB = new Vector2();
                     b2ComputeWitnessPoints(simplex, ref localPointA, ref localPointB);
                     output.distance = 0.0f;
                     output.pointA = localPointA;
@@ -628,12 +629,12 @@ namespace Box2D.NET
 #endif
 
             // Prepare output in frame A
-            B2Vec2 normal = b2Normalize(nonUnitNormal);
+            Vector2 normal = b2Normalize(nonUnitNormal);
             B2_ASSERT(b2IsNormalized(normal));
 
             {
-                B2Vec2 localPointA = new B2Vec2();
-                B2Vec2 localPointB = new B2Vec2();
+                Vector2 localPointA = new Vector2();
+                Vector2 localPointB = new Vector2();
                 b2ComputeWitnessPoints(simplex, ref localPointA, ref localPointB);
                 output.normal = normal;
                 output.distance = b2Distance(localPointA, localPointB);
@@ -687,7 +688,7 @@ namespace Box2D.NET
             // which keeps the math near the local origin and avoids re-relativizing world poses.
             distanceInput.transform = input.transform;
 
-            B2Vec2 delta2 = input.translationB;
+            Vector2 delta2 = input.translationB;
             B2CastOutput output = new B2CastOutput();
 
             int iteration = 0;
@@ -712,8 +713,8 @@ namespace Box2D.NET
                             output.hit = true;
 
                             // Compute a common point
-                            B2Vec2 c1 = b2MulAdd(distanceOutput.pointA, input.proxyA.radius, distanceOutput.normal);
-                            B2Vec2 c2 = b2MulAdd(distanceOutput.pointB, -input.proxyB.radius, distanceOutput.normal);
+                            Vector2 c1 = b2MulAdd(distanceOutput.pointA, input.proxyA.radius, distanceOutput.normal);
+                            Vector2 c2 = b2MulAdd(distanceOutput.pointB, -input.proxyB.radius, distanceOutput.normal);
                             output.point = b2Lerp(c1, c2, 0.5f);
                             return output;
                         }
@@ -992,12 +993,12 @@ namespace Box2D.NET
             if (count == 1)
             {
                 f.type = B2SeparationType.b2_pointsType;
-                B2Vec2 localPointA = proxyA.points[cache.indexA[0]];
-                B2Vec2 localPointB = proxyB.points[cache.indexB[0]];
-                B2Vec2 pointA = b2TransformPoint(xfA, localPointA);
-                B2Vec2 pointB = b2TransformPoint(xfB, localPointB);
+                Vector2 localPointA = proxyA.points[cache.indexA[0]];
+                Vector2 localPointB = proxyB.points[cache.indexB[0]];
+                Vector2 pointA = b2TransformPoint(xfA, localPointA);
+                Vector2 pointB = b2TransformPoint(xfB, localPointB);
                 f.axis = b2Normalize(b2Sub(pointB, pointA));
-                f.localPoint = b2Vec2_zero;
+                f.localPoint = Vector2Zero;
                 return f;
             }
 
@@ -1005,18 +1006,18 @@ namespace Box2D.NET
             {
                 // Two points on B and one on A.
                 f.type = B2SeparationType.b2_faceBType;
-                B2Vec2 localPointB1 = proxyB.points[cache.indexB[0]];
-                B2Vec2 localPointB2 = proxyB.points[cache.indexB[1]];
+                Vector2 localPointB1 = proxyB.points[cache.indexB[0]];
+                Vector2 localPointB2 = proxyB.points[cache.indexB[1]];
 
                 f.axis = b2CrossVS(b2Sub(localPointB2, localPointB1), 1.0f);
                 f.axis = b2Normalize(f.axis);
-                B2Vec2 normal = b2RotateVector(xfB.q, f.axis);
+                Vector2 normal = b2RotateVector(xfB.q, f.axis);
 
-                f.localPoint = new B2Vec2(0.5f * (localPointB1.X + localPointB2.X), 0.5f * (localPointB1.Y + localPointB2.Y));
-                B2Vec2 pointB = b2TransformPoint(xfB, f.localPoint);
+                f.localPoint = new Vector2(0.5f * (localPointB1.X + localPointB2.X), 0.5f * (localPointB1.Y + localPointB2.Y));
+                Vector2 pointB = b2TransformPoint(xfB, f.localPoint);
 
-                B2Vec2 localPointA = proxyA.points[cache.indexA[0]];
-                B2Vec2 pointA = b2TransformPoint(xfA, localPointA);
+                Vector2 localPointA = proxyA.points[cache.indexA[0]];
+                Vector2 pointA = b2TransformPoint(xfA, localPointA);
 
                 float s = b2Dot(b2Sub(pointA, pointB), normal);
                 if (s < 0.0f)
@@ -1030,18 +1031,18 @@ namespace Box2D.NET
             {
                 // Two points on A and one or two points on B.
                 f.type = B2SeparationType.b2_faceAType;
-                B2Vec2 localPointA1 = proxyA.points[cache.indexA[0]];
-                B2Vec2 localPointA2 = proxyA.points[cache.indexA[1]];
+                Vector2 localPointA1 = proxyA.points[cache.indexA[0]];
+                Vector2 localPointA2 = proxyA.points[cache.indexA[1]];
 
                 f.axis = b2CrossVS(b2Sub(localPointA2, localPointA1), 1.0f);
                 f.axis = b2Normalize(f.axis);
-                B2Vec2 normal = b2RotateVector(xfA.q, f.axis);
+                Vector2 normal = b2RotateVector(xfA.q, f.axis);
 
-                f.localPoint = new B2Vec2(0.5f * (localPointA1.X + localPointA2.X), 0.5f * (localPointA1.Y + localPointA2.Y));
-                B2Vec2 pointA = b2TransformPoint(xfA, f.localPoint);
+                f.localPoint = new Vector2(0.5f * (localPointA1.X + localPointA2.X), 0.5f * (localPointA1.Y + localPointA2.Y));
+                Vector2 pointA = b2TransformPoint(xfA, f.localPoint);
 
-                B2Vec2 localPointB = proxyB.points[cache.indexB[0]];
-                B2Vec2 pointB = b2TransformPoint(xfB, localPointB);
+                Vector2 localPointB = proxyB.points[cache.indexB[0]];
+                Vector2 pointB = b2TransformPoint(xfB, localPointB);
 
                 float s = b2Dot(b2Sub(pointB, pointA), normal);
                 if (s < 0.0f)
@@ -1062,17 +1063,17 @@ namespace Box2D.NET
             {
                 case B2SeparationType.b2_pointsType:
                 {
-                    B2Vec2 axisA = b2InvRotateVector(xfA.q, f.axis);
-                    B2Vec2 axisB = b2InvRotateVector(xfB.q, b2Neg(f.axis));
+                    Vector2 axisA = b2InvRotateVector(xfA.q, f.axis);
+                    Vector2 axisB = b2InvRotateVector(xfB.q, b2Neg(f.axis));
 
                     indexA = b2FindSupport(ref f.proxyA, axisA);
                     indexB = b2FindSupport(ref f.proxyB, axisB);
 
-                    B2Vec2 localPointA = f.proxyA.points[indexA];
-                    B2Vec2 localPointB = f.proxyB.points[indexB];
+                    Vector2 localPointA = f.proxyA.points[indexA];
+                    Vector2 localPointB = f.proxyB.points[indexB];
 
-                    B2Vec2 pointA = b2TransformPoint(xfA, localPointA);
-                    B2Vec2 pointB = b2TransformPoint(xfB, localPointB);
+                    Vector2 pointA = b2TransformPoint(xfA, localPointA);
+                    Vector2 pointB = b2TransformPoint(xfB, localPointB);
 
                     float separation = b2Dot(b2Sub(pointB, pointA), f.axis);
                     return separation;
@@ -1080,16 +1081,16 @@ namespace Box2D.NET
 
                 case B2SeparationType.b2_faceAType:
                 {
-                    B2Vec2 normal = b2RotateVector(xfA.q, f.axis);
-                    B2Vec2 pointA = b2TransformPoint(xfA, f.localPoint);
+                    Vector2 normal = b2RotateVector(xfA.q, f.axis);
+                    Vector2 pointA = b2TransformPoint(xfA, f.localPoint);
 
-                    B2Vec2 axisB = b2InvRotateVector(xfB.q, b2Neg(normal));
+                    Vector2 axisB = b2InvRotateVector(xfB.q, b2Neg(normal));
 
                     indexA = -1;
                     indexB = b2FindSupport(ref f.proxyB, axisB);
 
-                    B2Vec2 localPointB = f.proxyB.points[indexB];
-                    B2Vec2 pointB = b2TransformPoint(xfB, localPointB);
+                    Vector2 localPointB = f.proxyB.points[indexB];
+                    Vector2 pointB = b2TransformPoint(xfB, localPointB);
 
                     float separation = b2Dot(b2Sub(pointB, pointA), normal);
                     return separation;
@@ -1097,16 +1098,16 @@ namespace Box2D.NET
 
                 case B2SeparationType.b2_faceBType:
                 {
-                    B2Vec2 normal = b2RotateVector(xfB.q, f.axis);
-                    B2Vec2 pointB = b2TransformPoint(xfB, f.localPoint);
+                    Vector2 normal = b2RotateVector(xfB.q, f.axis);
+                    Vector2 pointB = b2TransformPoint(xfB, f.localPoint);
 
-                    B2Vec2 axisA = b2InvRotateVector(xfA.q, b2Neg(normal));
+                    Vector2 axisA = b2InvRotateVector(xfA.q, b2Neg(normal));
 
                     indexB = -1;
                     indexA = b2FindSupport(ref f.proxyA, axisA);
 
-                    B2Vec2 localPointA = f.proxyA.points[indexA];
-                    B2Vec2 pointA = b2TransformPoint(xfA, localPointA);
+                    Vector2 localPointA = f.proxyA.points[indexA];
+                    Vector2 pointA = b2TransformPoint(xfA, localPointA);
 
                     float separation = b2Dot(b2Sub(pointA, pointB), normal);
                     return separation;
@@ -1130,11 +1131,11 @@ namespace Box2D.NET
             {
                 case B2SeparationType.b2_pointsType:
                 {
-                    B2Vec2 localPointA = f.proxyA.points[indexA];
-                    B2Vec2 localPointB = f.proxyB.points[indexB];
+                    Vector2 localPointA = f.proxyA.points[indexA];
+                    Vector2 localPointB = f.proxyB.points[indexB];
 
-                    B2Vec2 pointA = b2TransformPoint(xfA, localPointA);
-                    B2Vec2 pointB = b2TransformPoint(xfB, localPointB);
+                    Vector2 pointA = b2TransformPoint(xfA, localPointA);
+                    Vector2 pointB = b2TransformPoint(xfB, localPointB);
 
                     float separation = b2Dot(b2Sub(pointB, pointA), f.axis);
                     return separation;
@@ -1142,11 +1143,11 @@ namespace Box2D.NET
 
                 case B2SeparationType.b2_faceAType:
                 {
-                    B2Vec2 normal = b2RotateVector(xfA.q, f.axis);
-                    B2Vec2 pointA = b2TransformPoint(xfA, f.localPoint);
+                    Vector2 normal = b2RotateVector(xfA.q, f.axis);
+                    Vector2 pointA = b2TransformPoint(xfA, f.localPoint);
 
-                    B2Vec2 localPointB = f.proxyB.points[indexB];
-                    B2Vec2 pointB = b2TransformPoint(xfB, localPointB);
+                    Vector2 localPointB = f.proxyB.points[indexB];
+                    Vector2 pointB = b2TransformPoint(xfB, localPointB);
 
                     float separation = b2Dot(b2Sub(pointB, pointA), normal);
                     return separation;
@@ -1154,11 +1155,11 @@ namespace Box2D.NET
 
                 case B2SeparationType.b2_faceBType:
                 {
-                    B2Vec2 normal = b2RotateVector(xfB.q, f.axis);
-                    B2Vec2 pointB = b2TransformPoint(xfB, f.localPoint);
+                    Vector2 normal = b2RotateVector(xfB.q, f.axis);
+                    Vector2 pointB = b2TransformPoint(xfB, f.localPoint);
 
-                    B2Vec2 localPointA = f.proxyA.points[indexA];
-                    B2Vec2 pointA = b2TransformPoint(xfA, localPointA);
+                    Vector2 localPointA = f.proxyA.points[indexA];
+                    Vector2 pointA = b2TransformPoint(xfA, localPointA);
 
                     float separation = b2Dot(b2Sub(pointA, pointB), normal);
                     return separation;
@@ -1227,9 +1228,9 @@ namespace Box2D.NET
                 B2DistanceOutput distanceOutput = b2ComputeShapeDistance(ref distanceInput, ref cache, null, 0);
 
                 // The distance query runs in frame A, project the witness data back to world
-                B2Vec2 worldNormal = b2RotateVector(xfA.q, distanceOutput.normal);
-                B2Vec2 worldPointA = b2TransformPoint(xfA, distanceOutput.pointA);
-                B2Vec2 worldPointB = b2TransformPoint(xfA, distanceOutput.pointB);
+                Vector2 worldNormal = b2RotateVector(xfA.q, distanceOutput.normal);
+                Vector2 worldPointA = b2TransformPoint(xfA, distanceOutput.pointA);
+                Vector2 worldPointB = b2TransformPoint(xfA, distanceOutput.pointB);
 
                 // Progressive time of impact. This handles slender geometry well but introduces
                 // significant time loss.
@@ -1271,8 +1272,8 @@ namespace Box2D.NET
                     b2_toiHitCount += 1;
 #endif
                     // Averaged hit point
-                    B2Vec2 pA = b2MulAdd(worldPointA, proxyA.radius, worldNormal);
-                    B2Vec2 pB = b2MulAdd(worldPointB, -proxyB.radius, worldNormal);
+                    Vector2 pA = b2MulAdd(worldPointA, proxyA.radius, worldNormal);
+                    Vector2 pB = b2MulAdd(worldPointB, -proxyB.radius, worldNormal);
                     output.point = b2Lerp(pA, pB, 0.5f);
                     output.normal = worldNormal;
                     output.fraction = t1;
@@ -1363,8 +1364,8 @@ namespace Box2D.NET
                         b2_toiHitCount += 1;
 #endif
                         // Averaged hit point
-                        B2Vec2 pA = b2MulAdd(worldPointA, proxyA.radius, worldNormal);
-                        B2Vec2 pB = b2MulAdd(worldPointB, -proxyB.radius, worldNormal);
+                        Vector2 pA = b2MulAdd(worldPointA, proxyA.radius, worldNormal);
+                        Vector2 pB = b2MulAdd(worldPointB, -proxyB.radius, worldNormal);
                         output.point = b2Lerp(pA, pB, 0.5f);
                         output.normal = worldNormal;
                         output.fraction = t1;
@@ -1449,8 +1450,8 @@ namespace Box2D.NET
                     b2_toiFailedCount += 1;
 #endif
                     // Averaged hit point
-                    B2Vec2 pA = b2MulAdd(worldPointA, proxyA.radius, worldNormal);
-                    B2Vec2 pB = b2MulAdd(worldPointB, -proxyB.radius, worldNormal);
+                    Vector2 pA = b2MulAdd(worldPointA, proxyA.radius, worldNormal);
+                    Vector2 pB = b2MulAdd(worldPointB, -proxyB.radius, worldNormal);
                     output.point = b2Lerp(pA, pB, 0.5f);
                     output.normal = worldNormal;
                     output.fraction = t1;

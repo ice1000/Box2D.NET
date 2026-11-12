@@ -22,7 +22,7 @@ public class ChainSlide : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 10.0f);
+            m_camera.center = new Vector2(0.0f, 10.0f);
             m_camera.zoom = 15.0f;
         }
 
@@ -33,32 +33,32 @@ public class ChainSlide : Sample
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             const int count = 80;
-            B2Vec2[] points = new B2Vec2[count];
+            Vector2[] points = new Vector2[count];
 
             float w = 2.0f;
             float h = 1.0f;
             float x = 20.0f, y = 0.0f;
             for (int i = 0; i < 20; ++i)
             {
-                points[i] = new B2Vec2(x, y);
+                points[i] = new Vector2(x, y);
                 x -= w;
             }
 
             for (int i = 20; i < 40; ++i)
             {
-                points[i] = new B2Vec2(x, y);
+                points[i] = new Vector2(x, y);
                 y += h;
             }
 
             for (int i = 40; i < 60; ++i)
             {
-                points[i] = new B2Vec2(x, y);
+                points[i] = new Vector2(x, y);
                 x += w;
             }
 
             for (int i = 60; i < 80; ++i)
             {
-                points[i] = new B2Vec2(x, y);
+                points[i] = new Vector2(x, y);
                 y -= h;
             }
 
@@ -73,13 +73,13 @@ public class ChainSlide : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.linearVelocity = new B2Vec2(100.0f, 0.0f);
-            bodyDef.position = b2ToPos(new B2Vec2(-19.5f, 0.0f + 0.5f));
+            bodyDef.linearVelocity = new Vector2(100.0f, 0.0f);
+            bodyDef.position = b2ToPos(new Vector2(-19.5f, 0.0f + 0.5f));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.material.friction = 0.0f;
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
             b2CreateCircleShape(bodyId, shapeDef, circle);
         }
     }

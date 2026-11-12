@@ -19,7 +19,7 @@ public class BenchmarkLargePyramid : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 50.0f);
+            m_camera.center = new Vector2(0.0f, 50.0f);
             m_camera.zoom = 25.0f * 2.2f;
             m_context.enableSleep = false;
         }

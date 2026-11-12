@@ -27,8 +27,8 @@ public class BenchmarkCast : Sample
 
     private QueryType m_queryType;
 
-    private List<B2Vec2> m_origins = new List<B2Vec2>();
-    private List<B2Vec2> m_translations = new List<B2Vec2>();
+    private List<Vector2> m_origins = new List<Vector2>();
+    private List<Vector2> m_translations = new List<Vector2>();
     private float m_minTime;
     private float m_buildTime;
 
@@ -56,7 +56,7 @@ public class BenchmarkCast : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(500.0f, 500.0f);
+            m_camera.center = new Vector2(500.0f, 500.0f);
             m_camera.zoom = 25.0f * 21.0f;
             // m_context.drawShapes = m_context.g_sampleDebug;
         }
@@ -82,8 +82,8 @@ public class BenchmarkCast : Sample
         // Pre-compute rays to avoid randomizer overhead
         for (int i = 0; i < sampleCount; ++i)
         {
-            B2Vec2 rayStart = RandomVec2(0.0f, extent);
-            B2Vec2 rayEnd = RandomVec2(0.0f, extent);
+            Vector2 rayStart = RandomVec2(0.0f, extent);
+            Vector2 rayEnd = RandomVec2(0.0f, extent);
 
             m_origins[i] = rayStart;
             m_translations[i] = rayEnd - rayStart;
@@ -115,7 +115,7 @@ public class BenchmarkCast : Sample
                 float fillTest = RandomFloatRange(0.0f, 1.0f);
                 if (fillTest <= m_fill)
                 {
-                    bodyDef.position = b2ToPos(new B2Vec2(x, y));
+                    bodyDef.position = b2ToPos(new Vector2(x, y));
                     B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
                     float ratio = RandomFloatRange(1.0f, m_ratio);
@@ -164,7 +164,7 @@ public class BenchmarkCast : Sample
         m_minTime = 1e6f;
     }
 
-    static float CastCallback(B2ShapeId shapeId, B2Pos point, B2Vec2 normal, float fraction, ref CastResult context)
+    static float CastCallback(B2ShapeId shapeId, B2Pos point, Vector2 normal, float fraction, ref CastResult context)
     {
         CastResult result = context;
         result.point = b2ToVec2(point);
@@ -208,8 +208,8 @@ public class BenchmarkCast : Sample
 
             for (int i = 0; i < sampleCount; ++i)
             {
-                B2Vec2 origin = m_origins[i];
-                B2Vec2 translation = m_translations[i];
+                Vector2 origin = m_origins[i];
+                Vector2 translation = m_translations[i];
 
                 B2RayResult result = b2World_CastRayClosest(m_worldId, b2ToPos(origin), translation, filter);
 
@@ -227,8 +227,8 @@ public class BenchmarkCast : Sample
 
             m_minTime = b2MinFloat(m_minTime, ms);
 
-            B2Vec2 p1 = m_origins[m_drawIndex];
-            B2Vec2 p2 = p1 + m_translations[m_drawIndex];
+            Vector2 p1 = m_origins[m_drawIndex];
+            Vector2 p2 = p1 + m_translations[m_drawIndex];
             DrawLine(m_draw, p1, p2, B2HexColor.b2_colorWhite);
             DrawPoint(m_draw, p1, 5.0f, B2HexColor.b2_colorGreen);
             DrawPoint(m_draw, p2, 5.0f, B2HexColor.b2_colorRed);
@@ -247,7 +247,7 @@ public class BenchmarkCast : Sample
             {
                 B2ShapeProxy proxy = b2MakeProxy(m_origins[i], 1, m_radius);
 
-                B2Vec2 translation = m_translations[i];
+                Vector2 translation = m_translations[i];
 
                 CastResult result = new CastResult();
                 B2TreeStats traversalResult = b2World_CastShape(m_worldId, b2Pos_zero, ref proxy, translation, filter, CastCallback, result);
@@ -266,14 +266,14 @@ public class BenchmarkCast : Sample
 
             m_minTime = b2MinFloat(m_minTime, ms);
 
-            B2Vec2 p1 = m_origins[m_drawIndex];
-            B2Vec2 p2 = p1 + m_translations[m_drawIndex];
+            Vector2 p1 = m_origins[m_drawIndex];
+            Vector2 p2 = p1 + m_translations[m_drawIndex];
             DrawLine(m_draw, p1, p2, B2HexColor.b2_colorWhite);
             DrawPoint(m_draw, p1, 5.0f, B2HexColor.b2_colorGreen);
             DrawPoint(m_draw, p2, 5.0f, B2HexColor.b2_colorRed);
             if (drawResult.hit)
             {
-                B2Vec2 t = b2Lerp(p1, p2, drawResult.fraction);
+                Vector2 t = b2Lerp(p1, p2, drawResult.fraction);
                 DrawCircle(m_draw, t, m_radius, B2HexColor.b2_colorWhite);
                 DrawPoint(m_draw, drawResult.point, 5.0f, B2HexColor.b2_colorWhite);
             }
@@ -283,12 +283,12 @@ public class BenchmarkCast : Sample
             ulong ticks = b2GetTicks();
 
             OverlapResult drawResult = new OverlapResult();
-            B2Vec2 extent = new B2Vec2(m_radius, m_radius);
+            Vector2 extent = new Vector2(m_radius, m_radius);
             OverlapResult result = new OverlapResult();
 
             for (int i = 0; i < sampleCount; ++i)
             {
-                B2Vec2 origin = m_origins[i];
+                Vector2 origin = m_origins[i];
                 B2AABB aabb = new B2AABB(origin - extent, origin + extent);
 
                 result.count = 0;
@@ -309,7 +309,7 @@ public class BenchmarkCast : Sample
             m_minTime = b2MinFloat(m_minTime, ms);
 
             {
-                B2Vec2 origin = m_origins[m_drawIndex];
+                Vector2 origin = m_origins[m_drawIndex];
                 B2AABB aabb = new B2AABB(origin - extent, origin + extent);
 
                 DrawBounds(m_draw, aabb, B2HexColor.b2_colorWhite);

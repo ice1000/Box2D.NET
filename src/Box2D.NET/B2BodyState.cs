@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     // Body State
@@ -57,7 +59,7 @@ namespace Box2D.NET
     // round shapes.
     public class B2BodyState
     {
-        public B2Vec2 linearVelocity; // 8
+        public Vector2 linearVelocity; // 8
         public float angularVelocity; // 4
         
         // b2BodyFlags
@@ -65,7 +67,7 @@ namespace Box2D.NET
         public uint flags; // 4
 
         // Using delta position reduces round-off error far from the origin
-        public B2Vec2 deltaPosition; // 8
+        public Vector2 deltaPosition; // 8
 
         // Using delta rotation because I cannot access the full rotation on static bodies in
         // the solver and must use zero delta rotation for static bodies (c,s) = (1,0)
@@ -80,11 +82,11 @@ namespace Box2D.NET
 
         public void Clear()
         {
-            linearVelocity = new B2Vec2();
+            linearVelocity = new Vector2();
             angularVelocity = 0.0f;
             flags = 0;
 
-            deltaPosition = new B2Vec2();
+            deltaPosition = new Vector2();
 
             deltaRotation = new B2Rot();
         }

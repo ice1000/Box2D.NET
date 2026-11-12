@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using NUnit.Framework;
 using static Box2D.NET.B2Types;
 using static Box2D.NET.B2Worlds;
@@ -21,37 +22,37 @@ namespace Box2D.NET.Test;
 // for a loop and pointCount - 1 otherwise, and material slot i is segment i.
 public class B2ChainTest
 {
-    private static readonly B2Vec2[] loopTriangle =
+    private static readonly Vector2[] loopTriangle =
     {
-        new B2Vec2(-2.0f, 0.0f),
-        new B2Vec2(2.0f, 0.0f),
-        new B2Vec2(0.0f, 3.0f),
+        new Vector2(-2.0f, 0.0f),
+        new Vector2(2.0f, 0.0f),
+        new Vector2(0.0f, 3.0f),
     };
 
-    private static readonly B2Vec2[] loopSquare =
+    private static readonly Vector2[] loopSquare =
     {
-        new B2Vec2(-2.0f, 0.0f),
-        new B2Vec2(2.0f, 0.0f),
-        new B2Vec2(2.0f, 4.0f),
-        new B2Vec2(-2.0f, 4.0f),
+        new Vector2(-2.0f, 0.0f),
+        new Vector2(2.0f, 0.0f),
+        new Vector2(2.0f, 4.0f),
+        new Vector2(-2.0f, 4.0f),
     };
 
-    private static readonly B2Vec2[] openLine =
+    private static readonly Vector2[] openLine =
     {
-        new B2Vec2(0.0f, 0.0f), new B2Vec2(2.0f, 1.0f), new B2Vec2(4.0f, 1.0f), new B2Vec2(6.0f, 0.0f), new B2Vec2(8.0f, 0.0f), new B2Vec2(10.0f, 1.0f),
+        new Vector2(0.0f, 0.0f), new Vector2(2.0f, 1.0f), new Vector2(4.0f, 1.0f), new Vector2(6.0f, 0.0f), new Vector2(8.0f, 0.0f), new Vector2(10.0f, 1.0f),
     };
 
-    private static readonly B2Vec2[] openPair =
+    private static readonly Vector2[] openPair =
     {
-        new B2Vec2(0.0f, 0.0f),
-        new B2Vec2(4.0f, 0.0f),
+        new Vector2(0.0f, 0.0f),
+        new Vector2(4.0f, 0.0f),
     };
 
-    private static readonly B2Vec2 ghostBegin = new B2Vec2(-2.0f, -1.0f);
-    private static readonly B2Vec2 ghostEnd = new B2Vec2(12.0f, 2.0f);
+    private static readonly Vector2 ghostBegin = new Vector2(-2.0f, -1.0f);
+    private static readonly Vector2 ghostEnd = new Vector2(12.0f, 2.0f);
 
     // Tag each material so a segment can be traced back to the slot it came from
-    private static B2ChainId CreateTaggedChain(B2BodyId bodyId, B2Vec2[] points, int pointCount, int materialCount, bool isLoop)
+    private static B2ChainId CreateTaggedChain(B2BodyId bodyId, Vector2[] points, int pointCount, int materialCount, bool isLoop)
     {
         B2SurfaceMaterial[] materials = new B2SurfaceMaterial[materialCount];
         for (int i = 0; i < materialCount; ++i)
@@ -84,7 +85,7 @@ public class B2ChainTest
 
     // Points are cloned into body local space with no transform applied, so an exact compare is
     // right here and a tolerance would only hide a wiring mistake
-    private static bool SamePoint(B2Vec2 a, B2Vec2 b)
+    private static bool SamePoint(Vector2 a, Vector2 b)
     {
         return a.X == b.X && a.Y == b.Y;
     }
@@ -349,20 +350,20 @@ public class B2ChainTest
     // vertex normal instead of being snapped up onto the segment normal as if the surface continued.
     private static void CollideEnds(B2ChainSegment segment, int[] circleCount, float[] boxNormalX)
     {
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
         B2Polygon box = b2MakeSquare(0.25f);
 
-        B2Transform xf1 = new B2Transform(new B2Vec2(4.3f, 0.2f), b2Rot_identity);
-        B2Transform xf2 = new B2Transform(new B2Vec2(-0.3f, 0.2f), b2Rot_identity);
+        B2Transform xf1 = new B2Transform(new Vector2(4.3f, 0.2f), b2Rot_identity);
+        B2Transform xf2 = new B2Transform(new Vector2(-0.3f, 0.2f), b2Rot_identity);
         circleCount[0] = b2CollideChainSegmentAndCircle(segment, circle, xf1).pointCount;
         circleCount[1] = b2CollideChainSegmentAndCircle(segment, circle, xf2).pointCount;
 
         B2SimplexCache cache = new B2SimplexCache();
-        xf1.p = new B2Vec2(4.26f, 0.26f);
+        xf1.p = new Vector2(4.26f, 0.26f);
         B2LocalManifold m1 = b2CollideChainSegmentAndPolygon(segment, box, xf1, ref cache);
 
         cache = new B2SimplexCache();
-        xf2.p = new B2Vec2(-0.26f, 0.26f);
+        xf2.p = new Vector2(-0.26f, 0.26f);
         B2LocalManifold m2 = b2CollideChainSegmentAndPolygon(segment, box, xf2, ref cache);
 
         boxNormalX[0] = m1.pointCount > 0 ? m1.normal.X : 0.0f;
@@ -379,8 +380,8 @@ public class B2ChainTest
         B2BodyId bodyId = b2CreateBody(worldId, bodyDef);
 
         // Right to left so the collision side faces up
-        B2Vec2 p1 = new B2Vec2(4.0f, 0.0f);
-        B2Vec2 p2 = new B2Vec2(0.0f, 0.0f);
+        Vector2 p1 = new Vector2(4.0f, 0.0f);
+        Vector2 p2 = new Vector2(0.0f, 0.0f);
         B2ChainSegment degenerate = new B2ChainSegment
         {
             ghost1 = p1,
@@ -392,7 +393,7 @@ public class B2ChainTest
         B2ShapeDef shapeDef = b2DefaultShapeDef();
         B2ShapeId createdId = b2CreateChainSegmentShape(bodyId, shapeDef, degenerate);
 
-        B2Segment plain = new B2Segment(new B2Vec2(0.0f, -1.0f), new B2Vec2(4.0f, -1.0f));
+        B2Segment plain = new B2Segment(new Vector2(0.0f, -1.0f), new Vector2(4.0f, -1.0f));
         B2ShapeId setId = b2CreateSegmentShape(bodyId, shapeDef, plain);
         b2Shape_SetChainSegment(setId, degenerate);
 
@@ -421,7 +422,7 @@ public class B2ChainTest
     private sealed class MoverPlanes
     {
         public int count;
-        public B2Vec2 normal;
+        public Vector2 normal;
     }
 
     private static bool GatherPlane(B2ShapeId shapeId, ref B2PlaneResult plane, object context)
@@ -434,7 +435,7 @@ public class B2ChainTest
 
     private static MoverPlanes CollideMoverAt(B2WorldId worldId, float y)
     {
-        B2Capsule mover = new B2Capsule(new B2Vec2(1.5f, y), new B2Vec2(2.5f, y), 0.3f);
+        B2Capsule mover = new B2Capsule(new Vector2(1.5f, y), new Vector2(2.5f, y), 0.3f);
         MoverPlanes planes = new MoverPlanes();
         b2World_CollideMover(worldId, b2Pos_zero, mover, b2DefaultQueryFilter(), GatherPlane, planes);
         return planes;
@@ -454,9 +455,9 @@ public class B2ChainTest
         // Right to left so the collision side faces up
         B2ChainSegment chainSegment = new B2ChainSegment
         {
-            ghost1 = new B2Vec2(5.0f, 0.0f),
-            segment = new B2Segment(new B2Vec2(4.0f, 0.0f), new B2Vec2(0.0f, 0.0f)),
-            ghost2 = new B2Vec2(-1.0f, 0.0f),
+            ghost1 = new Vector2(5.0f, 0.0f),
+            segment = new B2Segment(new Vector2(4.0f, 0.0f), new Vector2(0.0f, 0.0f)),
+            ghost2 = new Vector2(-1.0f, 0.0f),
             chainId = B2_NULL_INDEX,
         };
         B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -465,7 +466,7 @@ public class B2ChainTest
         MoverPlanes front = CollideMoverAt(worldId, 0.2f);
         MoverPlanes behind = CollideMoverAt(worldId, -0.2f);
 
-        B2Segment segment = new B2Segment(new B2Vec2(4.0f, 0.0f), new B2Vec2(0.0f, 0.0f));
+        B2Segment segment = new B2Segment(new Vector2(4.0f, 0.0f), new Vector2(0.0f, 0.0f));
         B2BodyDef plainDef = b2DefaultBodyDef();
         plainDef.position = new B2Pos(0.0f, 10.0f);
         B2BodyId plainId = b2CreateBody(worldId, plainDef);
@@ -487,8 +488,8 @@ public class B2ChainTest
         float area = 0.0f;
         for (int i = 0; i < chain.count; ++i)
         {
-            B2Vec2 p1 = chain.points[i];
-            B2Vec2 p2 = chain.points[i + 1 < chain.count ? i + 1 : 0];
+            Vector2 p1 = chain.points[i];
+            Vector2 p2 = chain.points[i + 1 < chain.count ? i + 1 : 0];
             area += 0.5f * b2Cross(p1, p2);
         }
 
@@ -536,7 +537,7 @@ public class B2ChainTest
             for (int i = 0; i < 3; ++i)
             {
                 float noise = 0.0001f * (float)(i - 1);
-                boxes[i] = b2MakeOffsetBox(0.5f, 0.5f, new B2Vec2(1.0f * i + noise, noise), b2Rot_identity);
+                boxes[i] = b2MakeOffsetBox(0.5f, 0.5f, new Vector2(1.0f * i + noise, noise), b2Rot_identity);
             }
 
             B2ChainResult result = b2ComputeChains(boxes, 3, B2_LINEAR_SLOP);
@@ -553,9 +554,9 @@ public class B2ChainTest
         {
             B2Polygon[] boxes =
             {
-                b2MakeOffsetBox(1.0f, 0.5f, new B2Vec2(1.0f, 0.5f), b2Rot_identity),
-                b2MakeOffsetBox(0.5f, 0.5f, new B2Vec2(0.5f, 1.5f), b2Rot_identity),
-                b2MakeOffsetBox(0.5f, 0.5f, new B2Vec2(1.5f, 1.5f), b2Rot_identity),
+                b2MakeOffsetBox(1.0f, 0.5f, new Vector2(1.0f, 0.5f), b2Rot_identity),
+                b2MakeOffsetBox(0.5f, 0.5f, new Vector2(0.5f, 1.5f), b2Rot_identity),
+                b2MakeOffsetBox(0.5f, 0.5f, new Vector2(1.5f, 1.5f), b2Rot_identity),
             };
 
             B2ChainResult result = b2ComputeChains(boxes, 3, B2_LINEAR_SLOP);
@@ -572,8 +573,8 @@ public class B2ChainTest
         {
             B2Polygon[] boxes =
             {
-                b2MakeOffsetBox(0.5f, 0.5f, new B2Vec2(0.5f, 0.5f), b2Rot_identity),
-                b2MakeOffsetBox(0.5f, 0.5f, new B2Vec2(1.5f, 1.5f), b2Rot_identity),
+                b2MakeOffsetBox(0.5f, 0.5f, new Vector2(0.5f, 0.5f), b2Rot_identity),
+                b2MakeOffsetBox(0.5f, 0.5f, new Vector2(1.5f, 1.5f), b2Rot_identity),
             };
 
             B2ChainResult result = b2ComputeChains(boxes, 2, B2_LINEAR_SLOP);
@@ -584,16 +585,16 @@ public class B2ChainTest
             Assert.That(chain.count, Is.EqualTo(8));
             EnsureSmall(LoopArea(chain) - 2.0f, 0.01f);
 
-            B2Vec2 shared = new B2Vec2(1.0f, 1.0f);
+            Vector2 shared = new Vector2(1.0f, 1.0f);
             int visits = 0;
             for (int i = 0; i < chain.count; ++i)
             {
                 if (b2DistanceSquared(chain.points[i], shared) < 1.0e-6f)
                 {
-                    B2Vec2 previous = chain.points[i > 0 ? i - 1 : chain.count - 1];
-                    B2Vec2 next = chain.points[i + 1 < chain.count ? i + 1 : 0];
-                    B2Vec2 edge1 = b2Sub(shared, previous);
-                    B2Vec2 edge2 = b2Sub(next, shared);
+                    Vector2 previous = chain.points[i > 0 ? i - 1 : chain.count - 1];
+                    Vector2 next = chain.points[i + 1 < chain.count ? i + 1 : 0];
+                    Vector2 edge1 = b2Sub(shared, previous);
+                    Vector2 edge2 = b2Sub(next, shared);
                     Assert.That(b2Cross(edge1, edge2), Is.LessThan(0.0f));
                     visits += 1;
                 }
@@ -617,7 +618,7 @@ public class B2ChainTest
                         continue;
                     }
 
-                    boxes[count++] = b2MakeOffsetBox(0.5f, 0.5f, new B2Vec2(1.0f * i, 1.0f * j), b2Rot_identity);
+                    boxes[count++] = b2MakeOffsetBox(0.5f, 0.5f, new Vector2(1.0f * i, 1.0f * j), b2Rot_identity);
                 }
             }
 
@@ -640,8 +641,8 @@ public class B2ChainTest
         {
             B2Polygon[] boxes =
             {
-                b2MakeOffsetBox(0.5f, 0.5f, new B2Vec2(0.0f, 0.0f), b2Rot_identity),
-                b2MakeOffsetBox(0.5f, 0.5f, new B2Vec2(1.05f, 0.0f), b2Rot_identity),
+                b2MakeOffsetBox(0.5f, 0.5f, new Vector2(0.0f, 0.0f), b2Rot_identity),
+                b2MakeOffsetBox(0.5f, 0.5f, new Vector2(1.05f, 0.0f), b2Rot_identity),
             };
 
             B2ChainResult result = b2ComputeChains(boxes, 2, B2_LINEAR_SLOP);

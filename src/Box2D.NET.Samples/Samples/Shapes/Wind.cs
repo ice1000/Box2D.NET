@@ -24,15 +24,15 @@ public class Wind : Sample
     private const int m_maxCount = 60;
 
     private ShapeType m_shapeType;
-    private B2Vec2 m_wind;
+    private Vector2 m_wind;
     private float m_drag;
     private float m_lift;
-    private B2Vec2 m_noise;
+    private Vector2 m_noise;
     private B2BodyId m_groundId;
     private B2BodyId[] m_bodyIds = new B2BodyId[m_maxCount];
     private int m_count;
 
-    private B2Vec2 m_current_wind;
+    private Vector2 m_current_wind;
 
     public enum ShapeType
     {
@@ -50,7 +50,7 @@ public class Wind : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(0.0f, 1.0f);
+            m_context.camera.center = new Vector2(0.0f, 1.0f);
             m_context.camera.zoom = 2.0f;
         }
 
@@ -60,11 +60,11 @@ public class Wind : Sample
         }
 
         m_shapeType = ShapeType.e_capsuleShape;
-        m_wind = new B2Vec2(6.0f, 0.0f);
+        m_wind = new Vector2(6.0f, 0.0f);
         m_drag = 1.0f;
         m_lift = 0.75f;
         m_count = 10;
-        m_noise = new B2Vec2(0.0f, 0.0f);
+        m_noise = new Vector2(0.0f, 0.0f);
 
         CreateScene();
     }
@@ -81,13 +81,13 @@ public class Wind : Sample
         }
 
         float radius = 0.1f;
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), radius);
-        B2Capsule capsule = new B2Capsule(new B2Vec2(0.0f, -radius), new B2Vec2(0.0f, radius), 0.25f * radius);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), radius);
+        B2Capsule capsule = new B2Capsule(new Vector2(0.0f, -radius), new Vector2(0.0f, radius), 0.25f * radius);
         B2Polygon box = b2MakeBox(0.25f * radius, 1.25f * radius);
 
         B2RevoluteJointDef jointDef = b2DefaultRevoluteJointDef();
         jointDef.@base.bodyIdA = m_groundId;
-        jointDef.@base.localFrameA.p = new B2Vec2(0.0f, 2.0f + radius);
+        jointDef.@base.localFrameA.p = new Vector2(0.0f, 2.0f + radius);
         jointDef.@base.drawScale = 0.1f;
         jointDef.hertz = 0.1f;
         jointDef.dampingRatio = 0.0f;
@@ -103,7 +103,7 @@ public class Wind : Sample
 
         for (int i = 0; i < m_count; ++i)
         {
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 2.0f - 2.0f * radius * i));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 2.0f - 2.0f * radius * i));
             m_bodyIds[i] = b2CreateBody(m_worldId, bodyDef);
 
             if (m_shapeType == ShapeType.e_circleShape)
@@ -120,11 +120,11 @@ public class Wind : Sample
             }
 
             jointDef.@base.bodyIdB = m_bodyIds[i];
-            jointDef.@base.localFrameB.p = new B2Vec2(0.0f, radius);
+            jointDef.@base.localFrameB.p = new Vector2(0.0f, radius);
             b2CreateRevoluteJoint(m_worldId, jointDef);
 
             jointDef.@base.bodyIdA = m_bodyIds[i];
-            jointDef.@base.localFrameA.p = new B2Vec2(0.0f, -radius);
+            jointDef.@base.localFrameA.p = new Vector2(0.0f, -radius);
         }
     }
 
@@ -141,9 +141,9 @@ public class Wind : Sample
             CreateScene();
         }
 
-        Vector2 tmpWind = new Vector2(m_wind.X, m_wind.Y);
+        System.Numerics.Vector2 tmpWind = new System.Numerics.Vector2(m_wind.X, m_wind.Y);
         ImGui.SliderFloat2("Wind", ref tmpWind, -20.0f, 20.0f, "%.1f");
-        m_wind = new B2Vec2(tmpWind.X, tmpWind.Y);
+        m_wind = new Vector2(tmpWind.X, tmpWind.Y);
         ImGui.SliderFloat("Drag", ref m_drag, 0.0f, 1.0f, "%.2f");
         ImGui.SliderFloat("Lift", ref m_lift, 0.0f, 4.0f, "%.2f");
         if (ImGui.SliderInt("Count", ref m_count, 1, m_maxCount, "%d"))
@@ -162,8 +162,8 @@ public class Wind : Sample
         if (m_context.pause == false || m_context.singleStep == true)
         {
             float speed = 0.0f;
-            B2Vec2 direction = b2GetLengthAndNormalize(ref speed, m_wind);
-            B2Vec2 wind = b2MulSV(speed, b2Add(direction, m_noise));
+            Vector2 direction = b2GetLengthAndNormalize(ref speed, m_wind);
+            Vector2 wind = b2MulSV(speed, b2Add(direction, m_noise));
 
             for (int i = 0; i < m_count; ++i)
             {
@@ -176,7 +176,7 @@ public class Wind : Sample
                 }
             }
 
-            B2Vec2 rand = RandomVec2(-0.3f, 0.3f);
+            Vector2 rand = RandomVec2(-0.3f, 0.3f);
             m_noise = b2Lerp(m_noise, rand, 0.05f);
 
             m_current_wind = wind;
@@ -189,6 +189,6 @@ public class Wind : Sample
     public override void Draw()
     {
         base.Draw();
-        DrawLine(m_draw, b2Vec2_zero, b2MulSV(0.2f, m_current_wind), B2HexColor.b2_colorFuchsia);
+        DrawLine(m_draw, Vector2Zero, b2MulSV(0.2f, m_current_wind), B2HexColor.b2_colorFuchsia);
     }
 }

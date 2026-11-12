@@ -44,18 +44,18 @@ public static class SolidCircles
 
         // Vertex buffer for single quad
         float a = 1.1f;
-        B2Vec2[] vertices =
+        Vector2[] vertices =
         {
-            new B2Vec2(-a, -a),
-            new B2Vec2(a, -a),
-            new B2Vec2(-a, a),
-            new B2Vec2(a, -a),
-            new B2Vec2(a, a),
-            new B2Vec2(-a, a),
+            new Vector2(-a, -a),
+            new Vector2(a, -a),
+            new Vector2(-a, a),
+            new Vector2(a, -a),
+            new Vector2(a, a),
+            new Vector2(-a, a),
         };
 
         gl.BindBuffer(GLEnum.ArrayBuffer, render.vboIds[0]);
-        gl.BufferData<B2Vec2>(GLEnum.ArrayBuffer, vertices, GLEnum.StaticDraw);
+        gl.BufferData<Vector2>(GLEnum.ArrayBuffer, vertices, GLEnum.StaticDraw);
         gl.VertexAttribPointer(vertexAttribute, 2, VertexAttribPointerType.Float, false, 0, IntPtr.Zero);
 
         // Circle buffer

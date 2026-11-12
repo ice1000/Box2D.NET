@@ -24,7 +24,7 @@ public class LargeWorld : Sample
     private static readonly int SampleLargeWorld = SampleFactory.Shared.RegisterSample("World", "Large World", Create);
 
     private Car m_car;
-    private B2Vec2 m_viewPosition;
+    private Vector2 m_viewPosition;
     private float m_period;
     private int m_cycleCount;
     private int m_cycleIndex;
@@ -32,7 +32,7 @@ public class LargeWorld : Sample
     private float m_gridSize;
     private float m_speed;
 
-    private B2Vec2 m_explosionPosition;
+    private Vector2 m_explosionPosition;
     private bool m_explode;
     private bool m_followCar;
 
@@ -52,7 +52,7 @@ public class LargeWorld : Sample
 
         float xStart = -0.5f * (m_cycleCount * m_period);
 
-        m_viewPosition = new B2Vec2(xStart, 15.0f);
+        m_viewPosition = new Vector2(xStart, 15.0f);
 
         if (m_context.restart == false)
         {
@@ -94,7 +94,7 @@ public class LargeWorld : Sample
 
                 for (int j = 0; j < ycount; ++j)
                 {
-                    B2Polygon square = b2MakeOffsetBox(0.4f * m_gridSize, 0.4f * m_gridSize, new B2Vec2(xShape, y), b2Rot_identity);
+                    B2Polygon square = b2MakeOffsetBox(0.4f * m_gridSize, 0.4f * m_gridSize, new Vector2(xShape, y), b2Rot_identity);
                     square.radius = 0.1f;
                     b2CreatePolygonShape(groundId, shapeDef, square);
 
@@ -116,7 +116,7 @@ public class LargeWorld : Sample
             {
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
-                bodyDef.position = b2ToPos(new B2Vec2(xbase - 3.0f, 10.0f));
+                bodyDef.position = b2ToPos(new Vector2(xbase - 3.0f, 10.0f));
 
                 B2ShapeDef shapeDef = b2DefaultShapeDef();
                 B2Polygon box = b2MakeBox(0.3f, 0.2f);
@@ -136,7 +136,7 @@ public class LargeWorld : Sample
             }
             else if (remainder == 1)
             {
-                B2Vec2 position = new B2Vec2(xbase - 2.0f, 10.0f);
+                Vector2 position = new Vector2(xbase - 2.0f, 10.0f);
                 for (int i = 0; i < 5; ++i)
                 {
                     Human human = new Human();
@@ -147,7 +147,7 @@ public class LargeWorld : Sample
             }
             else
             {
-                B2Vec2 position = new B2Vec2(xbase - 4.0f, 12.0f);
+                Vector2 position = new Vector2(xbase - 4.0f, 12.0f);
 
                 for (int i = 0; i < 5; ++i)
                 {
@@ -158,11 +158,11 @@ public class LargeWorld : Sample
             }
         }
 
-        m_car.Spawn(m_worldId, new B2Vec2(xStart + 20.0f, 40.0f), 10.0f, 2.0f, 0.7f, 2000.0f, B2UserData.Empty);
+        m_car.Spawn(m_worldId, new Vector2(xStart + 20.0f, 40.0f), 10.0f, 2.0f, 0.7f, 2000.0f, B2UserData.Empty);
 
         m_cycleIndex = 0;
         m_speed = 0.0f;
-        m_explosionPosition = new B2Vec2((0.5f + m_cycleIndex) * m_period + xStart, 7.0f);
+        m_explosionPosition = new Vector2((0.5f + m_cycleIndex) * m_period + xStart, 7.0f);
         m_explode = true;
         m_followCar = false;
     }

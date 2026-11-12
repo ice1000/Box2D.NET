@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using System.Threading;
 using static Box2D.NET.B2Tables;
 using static Box2D.NET.B2Arrays;
@@ -110,7 +111,7 @@ namespace Box2D.NET
 
             B2_VALIDATE(block.startIndex + block.count <= context.world.solverSets.data[(int)B2SolverSetType.b2_awakeSet].bodyStates.count);
 
-            B2Vec2 gravity = context.world.gravity;
+            Vector2 gravity = context.world.gravity;
             float h = context.h;
 
             for (int i = block.startIndex; i < block.startIndex + block.count; ++i)
@@ -118,7 +119,7 @@ namespace Box2D.NET
                 B2BodySim sim = sims[i];
                 B2BodyState state = states[i];
 
-                B2Vec2 v = state.linearVelocity;
+                Vector2 v = state.linearVelocity;
                 float w = state.angularVelocity;
 
                 // Apply forces, torque, gravity, and damping
@@ -136,7 +137,7 @@ namespace Box2D.NET
                 float gravityScale = sim.invMass > 0.0f ? sim.gravityScale : 0.0f;
 
                 // lvd = h * im * f + h * g
-                B2Vec2 linearVelocityDelta = b2Add(b2MulSV(h * sim.invMass, sim.force), b2MulSV(h * gravityScale, gravity));
+                Vector2 linearVelocityDelta = b2Add(b2MulSV(h * sim.invMass, sim.force), b2MulSV(h * gravityScale, gravity));
                 float angularVelocityDelta = h * sim.invInertia * sim.torque;
 
                 v = b2MulAdd(linearVelocityDelta, linearDamping, v);
@@ -166,7 +167,7 @@ namespace Box2D.NET
             {
                 B2BodyState state = states[i];
 
-                B2Vec2 v = state.linearVelocity;
+                Vector2 v = state.linearVelocity;
                 float w = state.angularVelocity;
 
                 // Motion locks - these can be viewed as a constraint that comes last
@@ -285,16 +286,16 @@ namespace Box2D.NET
             if (shape.type == B2ShapeType.b2_chainSegmentShape)
             {
                 B2Transform transform = b2ToRelativeTransform(bodySim.transform, continuousContext.@base);
-                B2Vec2 p1 = b2TransformPoint(transform, shape.us.chainSegment.segment.point1);
-                B2Vec2 p2 = b2TransformPoint(transform, shape.us.chainSegment.segment.point2);
-                B2Vec2 e = b2Sub(p2, p1);
+                Vector2 p1 = b2TransformPoint(transform, shape.us.chainSegment.segment.point1);
+                Vector2 p2 = b2TransformPoint(transform, shape.us.chainSegment.segment.point2);
+                Vector2 e = b2Sub(p2, p1);
                 float length = 0;
                 e = b2GetLengthAndNormalize(ref length, e);
                 if (length > B2_LINEAR_SLOP)
                 {
-                    B2Vec2 c1 = continuousContext.centroid1;
+                    Vector2 c1 = continuousContext.centroid1;
                     float separation1 = b2Cross(b2Sub(c1, p1), e);
-                    B2Vec2 c2 = continuousContext.centroid2;
+                    Vector2 c2 = continuousContext.centroid2;
                     float separation2 = b2Cross(b2Sub(c2, p1), e);
 
                     float coreDistance = B2_CORE_FRACTION * fastBodySim.minExtent;
@@ -373,7 +374,7 @@ namespace Box2D.NET
                 else if (0.0f == output.fraction)
                 {
                     // fallback to TOI of a small circle around the fast shape centroid
-                    B2Vec2 centroid = b2GetShapeCentroid(fastShape);
+                    Vector2 centroid = b2GetShapeCentroid(fastShape);
                     B2ShapeExtent extent = b2ComputeShapeExtent(fastShape, centroid);
                     float radius = B2_CORE_FRACTION * extent.minExtent;
                     input.proxyB = b2MakeProxy(centroid, 1, radius);
@@ -480,8 +481,8 @@ namespace Box2D.NET
             {
                 // Handle time of impact event
                 B2Rot q = b2NLerp(sweep.q1, sweep.q2, context.fraction);
-                B2Vec2 c = b2Lerp(sweep.c1, sweep.c2, context.fraction);
-                B2Vec2 origin = b2Sub(c, b2RotateVector(q, sweep.localCenter));
+                Vector2 c = b2Lerp(sweep.c1, sweep.c2, context.fraction);
+                Vector2 origin = b2Sub(c, b2RotateVector(q, sweep.localCenter));
 
                 // Advance body, lifting the base frame result back to world
                 fastBodySim.transform.q = q;
@@ -495,9 +496,9 @@ namespace Box2D.NET
 
                 // Timeloss means there is a lost gravity contribution. Other forces and torques are ignored for now.
                 B2BodyState fastBodyState = b2Array_Get(ref awakeSet.bodyStates, bodySimIndex);
-                B2Vec2 v = fastBodyState.linearVelocity;
+                Vector2 v = fastBodyState.linearVelocity;
                 float timeLoss = (1.0f - context.fraction) * dt;
-                B2Vec2 dv = b2MulSV(-timeLoss * fastBodySim.gravityScale, world.gravity);
+                Vector2 dv = b2MulSV(-timeLoss * fastBodySim.gravityScale, world.gravity);
                 dv.X = 0 != (fastBodyState.flags & (uint)B2BodyFlags.b2_lockLinearX) ? 0.0f : dv.X;
                 dv.Y = 0 != (fastBodyState.flags & (uint)B2BodyFlags.b2_lockLinearY) ? 0.0f : dv.Y;
                 fastBodyState.linearVelocity = b2Add(v, dv);
@@ -634,7 +635,7 @@ namespace Box2D.NET
                 B2BodyState state = states[simIndex];
                 B2BodySim sim = sims[simIndex];
 
-                B2Vec2 v = state.linearVelocity;
+                Vector2 v = state.linearVelocity;
                 float w = state.angularVelocity;
 
                 if (b2IsValidVec2(v) == false || b2IsValidFloat(w) == false)
@@ -660,7 +661,7 @@ namespace Box2D.NET
                 float sleepVelocity = b2MaxFloat(maxVelocity, positionSleepFactor * invTimeStep * maxDeltaPosition);
 
                 // reset state deltas
-                state.deltaPosition = b2Vec2_zero;
+                state.deltaPosition = Vector2Zero;
                 state.deltaRotation = b2Rot_identity;
 
                 sim.transform.p = b2OffsetPos(sim.center, b2Neg(b2RotateVector(sim.transform.q, sim.localCenter)));
@@ -674,7 +675,7 @@ namespace Box2D.NET
                 moveEvents[simIndex].fellAsleep = false;
 
                 // reset applied force and torque
-                sim.force = b2Vec2_zero;
+                sim.force = Vector2Zero;
                 sim.torque = 0.0f;
 
                 // If you hit this then it means you deferred mass computation but never called b2Body_UpdateMassFromShapes

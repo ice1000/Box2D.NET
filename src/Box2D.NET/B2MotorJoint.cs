@@ -2,11 +2,13 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     public struct B2MotorJoint
     {
-        public B2Vec2 linearVelocity;
+        public Vector2 linearVelocity;
         public float maxVelocityForce;
         public float angularVelocity;
         public float maxVelocityTorque;
@@ -17,9 +19,9 @@ namespace Box2D.NET
         public float angularDampingRatio;
         public float maxSpringTorque;
 
-        public B2Vec2 linearVelocityImpulse;
+        public Vector2 linearVelocityImpulse;
         public float angularVelocityImpulse;
-        public B2Vec2 linearSpringImpulse;
+        public Vector2 linearSpringImpulse;
         public float angularSpringImpulse;
 
         public B2Softness linearSpring;
@@ -29,7 +31,7 @@ namespace Box2D.NET
         public int indexB;
         public B2Transform frameA;
         public B2Transform frameB;
-        public B2Vec2 deltaCenter;
+        public Vector2 deltaCenter;
         public B2Mat22 linearMass;
         public float angularMass;
     }

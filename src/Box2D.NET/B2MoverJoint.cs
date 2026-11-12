@@ -2,14 +2,16 @@
 // SPDX-FileCopyrightText: 2026 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     public struct B2MoverJoint
     {
-        public B2Vec2 linearVelocity;
-        public B2Vec2 maxVelocityForce;
+        public Vector2 linearVelocity;
+        public Vector2 maxVelocityForce;
 
-        public B2Vec2 linearVelocityImpulse;
+        public Vector2 linearVelocityImpulse;
 
         public int indexA;
         public int indexB;

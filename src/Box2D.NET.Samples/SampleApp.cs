@@ -44,7 +44,7 @@ public class SampleApp
     private ImGuiController _imgui;
     private SampleContext _context;
     private bool s_rightMouseDown = false;
-    private B2Vec2 s_clickPointWS = b2Vec2_zero;
+    private Vector2 s_clickPointWS = Vector2Zero;
     private float s_framebufferScale = 1.0f;
     private float _frameTime = 0.0f;
     private double _frameStartTime = 0.0;
@@ -301,14 +301,14 @@ public class SampleApp
         if (null != _imgui)
         {
             var io = ImGui.GetIO();
-            io.DisplaySize = new Vector2(_context.camera.width, _context.camera.height);
+            io.DisplaySize = new System.Numerics.Vector2(_context.camera.width, _context.camera.height);
 
             // These can be zero if the window is minimized
             if (_context.camera.width > 0.0f && _context.camera.height > 0.0f)
             {
                 // Framebuffer/window ratio: 1 on Windows/Linux, 2 on a Retina display. Drives
                 // both UI magnification and font rasterizer density.
-                io.DisplayFramebufferScale = new Vector2(bufferWidth / (float)_context.camera.width,
+                io.DisplayFramebufferScale = new System.Numerics.Vector2(bufferWidth / (float)_context.camera.width,
                     bufferHeight / (float)_context.camera.height);
             }
 
@@ -424,11 +424,11 @@ public class SampleApp
 
         // Metrics: containers round at 4px, controls at 3px - one deliberate
         // system instead of the stock mix. Padding gives rows room to breathe.
-        style.WindowPadding = new Vector2(10.0f, 10.0f);
-        style.FramePadding = new Vector2(8.0f, 4.0f);
-        style.CellPadding = new Vector2(6.0f, 4.0f);
-        style.ItemSpacing = new Vector2(8.0f, 7.0f);
-        style.ItemInnerSpacing = new Vector2(7.0f, 4.0f);
+        style.WindowPadding = new System.Numerics.Vector2(10.0f, 10.0f);
+        style.FramePadding = new System.Numerics.Vector2(8.0f, 4.0f);
+        style.CellPadding = new System.Numerics.Vector2(6.0f, 4.0f);
+        style.ItemSpacing = new System.Numerics.Vector2(8.0f, 7.0f);
+        style.ItemInnerSpacing = new System.Numerics.Vector2(7.0f, 4.0f);
         style.IndentSpacing = 18.0f;
         style.ScrollbarSize = 12.0f;
         style.GrabMinSize = 10.0f;
@@ -447,7 +447,7 @@ public class SampleApp
         style.ScrollbarRounding = 3.0f;
         style.TabRounding = 3.0f;
 
-        style.WindowTitleAlign = new Vector2(0.0f, 0.5f);
+        style.WindowTitleAlign = new System.Numerics.Vector2(0.0f, 0.5f);
 
         // Palette: neutral charcoal surfaces, one steel-blue accent at three
         // brightnesses. Replaces stock ImGui's saturated cornflower blue.
@@ -720,12 +720,12 @@ public class SampleApp
 
         double xd, yd;
         _context.glfw.GetCursorPos(_context.window, out xd, out yd);
-        B2Vec2 ps = new B2Vec2((float)(xd), (float)(yd));
+        Vector2 ps = new Vector2((float)(xd), (float)(yd));
 
         // Use the mouse to move things around.
         if (button == (int)MouseButton.Left)
         {
-            B2Vec2 pw = ConvertScreenToWorld(_context.camera, ps);
+            Vector2 pw = ConvertScreenToWorld(_context.camera, ps);
             if (action == InputAction.Press)
             {
                 _context.sample.MouseDown(pw, button, modifiers);
@@ -770,16 +770,16 @@ public class SampleApp
             return;
         }
 
-        B2Vec2 ps = new B2Vec2((float)(xd), (float)(yd));
+        Vector2 ps = new Vector2((float)(xd), (float)(yd));
 
         //ImGui_ImplGlfw_CursorPosCallback(window, ps.x, ps.y);
 
-        B2Vec2 pw = ConvertScreenToWorld(_context.camera, ps);
+        Vector2 pw = ConvertScreenToWorld(_context.camera, ps);
         _context.sample.MouseMove(pw);
 
         if (s_rightMouseDown)
         {
-            B2Vec2 diff = b2Sub(pw, s_clickPointWS);
+            Vector2 diff = b2Sub(pw, s_clickPointWS);
             _context.camera.center.X -= diff.X;
             _context.camera.center.Y -= diff.Y;
             s_clickPointWS = ConvertScreenToWorld(_context.camera, ps);
@@ -801,8 +801,8 @@ public class SampleApp
         }
 
         _context.glfw.GetCursorPos(_context.window, out double xd, out double yd);
-        B2Vec2 ps = new B2Vec2((float)xd, (float)yd);
-        B2Vec2 pw1 = ConvertScreenToWorld(_context.camera, ps);
+        Vector2 ps = new Vector2((float)xd, (float)yd);
+        Vector2 pw1 = ConvertScreenToWorld(_context.camera, ps);
 
         if (dy > 0)
         {
@@ -813,7 +813,7 @@ public class SampleApp
             _context.camera.zoom *= 1.1f;
         }
 
-        B2Vec2 pw2 = ConvertScreenToWorld(_context.camera, ps);
+        Vector2 pw2 = ConvertScreenToWorld(_context.camera, ps);
         _context.camera.center -= pw2 - pw1;
     }
 

@@ -23,7 +23,7 @@ public class DoohickeyFarm : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 5.0f);
+            m_camera.center = new Vector2(0.0f, 5.0f);
             m_camera.zoom = 25.0f * 0.35f;
         }
 
@@ -32,10 +32,10 @@ public class DoohickeyFarm : Sample
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(-20.0f, 0.0f), new B2Vec2(20.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
 
-            B2Polygon box = b2MakeOffsetBox(1.0f, 1.0f, new B2Vec2(0.0f, 1.0f), b2Rot_identity);
+            B2Polygon box = b2MakeOffsetBox(1.0f, 1.0f, new Vector2(0.0f, 1.0f), b2Rot_identity);
             b2CreatePolygonShape(groundId, shapeDef, box);
         }
 
@@ -43,7 +43,7 @@ public class DoohickeyFarm : Sample
         for (int i = 0; i < 4; ++i)
         {
             Doohickey doohickey = new Doohickey();
-            doohickey.Spawn(m_worldId, new B2Vec2(0.0f, y), 0.5f);
+            doohickey.Spawn(m_worldId, new Vector2(0.0f, y), 0.5f);
             y += 2.0f;
         }
     }

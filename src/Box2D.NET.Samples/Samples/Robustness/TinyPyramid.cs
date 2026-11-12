@@ -28,7 +28,7 @@ public class TinyPyramid : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 0.8f);
+            m_camera.center = new Vector2(0.0f, 0.8f);
             m_camera.zoom = 1.0f;
         }
 
@@ -36,7 +36,7 @@ public class TinyPyramid : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Polygon box = b2MakeOffsetBox(5.0f, 1.0f, new B2Vec2(0.0f, -1.0f), b2Rot_identity);
+            B2Polygon box = b2MakeOffsetBox(5.0f, 1.0f, new Vector2(0.0f, -1.0f), b2Rot_identity);
             b2CreatePolygonShape(groundId, shapeDef, box);
         }
 
@@ -58,7 +58,7 @@ public class TinyPyramid : Sample
                 for (int j = i; j < baseCount; ++j)
                 {
                     float x = (i + 1.0f) * m_extent + 2.0f * (j - i) * m_extent - baseCount * m_extent;
-                    bodyDef.position = b2ToPos(new B2Vec2(x, y));
+                    bodyDef.position = b2ToPos(new Vector2(x, y));
 
                     B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
                     b2CreatePolygonShape(bodyId, shapeDef, box);

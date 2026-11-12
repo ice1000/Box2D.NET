@@ -43,7 +43,7 @@ public class Cantilever : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 0.0f);
+            m_camera.center = new Vector2(0.0f, 0.0f);
             m_camera.zoom = 25.0f * 0.35f;
         }
 
@@ -62,7 +62,7 @@ public class Cantilever : Sample
             m_collideConnected = false;
 
             float hx = 0.5f;
-            B2Capsule capsule = new B2Capsule(new B2Vec2(-hx, 0.0f), new B2Vec2(hx, 0.0f), 0.125f);
+            B2Capsule capsule = new B2Capsule(new Vector2(-hx, 0.0f), new Vector2(hx, 0.0f), 0.125f);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.density = 20.0f;
 
@@ -75,11 +75,11 @@ public class Cantilever : Sample
             B2BodyId prevBodyId = groundId;
             for (int i = 0; i < e_count; ++i)
             {
-                bodyDef.position = b2ToPos(new B2Vec2((1.0f + 2.0f * i) * hx, 0.0f));
+                bodyDef.position = b2ToPos(new Vector2((1.0f + 2.0f * i) * hx, 0.0f));
                 m_bodyIds[i] = b2CreateBody(m_worldId, bodyDef);
                 b2CreateCapsuleShape(m_bodyIds[i], shapeDef, capsule);
 
-                B2Vec2 pivot = new B2Vec2((2.0f * i) * hx, 0.0f);
+                Vector2 pivot = new Vector2((2.0f * i) * hx, 0.0f);
                 jointDef.@base.bodyIdA = prevBodyId;
                 jointDef.@base.bodyIdB = m_bodyIds[i];
                 jointDef.@base.localFrameA.p = b2Body_GetLocalPoint(jointDef.@base.bodyIdA, b2ToPos(pivot));
@@ -164,7 +164,7 @@ public class Cantilever : Sample
     {
         base.Draw();
 
-        B2Vec2 tipPosition = b2ToVec2(b2Body_GetPosition(m_tipId));
+        Vector2 tipPosition = b2ToVec2(b2Body_GetPosition(m_tipId));
         DrawScreenTextLine(System.FormattableString.Invariant($"tip-y = {tipPosition.Y:F2}"));
     }
 }

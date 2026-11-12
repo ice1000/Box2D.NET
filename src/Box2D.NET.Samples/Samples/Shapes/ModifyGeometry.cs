@@ -40,21 +40,21 @@ public class ModifyGeometry : Sample
         if (m_context.restart == false)
         {
             m_camera.zoom = 25.0f * 0.25f;
-            m_camera.center = new B2Vec2(0.0f, 5.0f);
+            m_camera.center = new Vector2(0.0f, 5.0f);
         }
 
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Polygon box = b2MakeOffsetBox(10.0f, 1.0f, new B2Vec2(0.0f, -1.0f), b2Rot_identity);
+            B2Polygon box = b2MakeOffsetBox(10.0f, 1.0f, new Vector2(0.0f, -1.0f), b2Rot_identity);
             b2CreatePolygonShape(groundId, shapeDef, box);
         }
 
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 4.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 4.0f));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             B2Polygon box = b2MakeBox(1.0f, 1.0f);
@@ -64,11 +64,11 @@ public class ModifyGeometry : Sample
         {
             m_shapeType = B2ShapeType.b2_circleShape;
             m_scale = 1.0f;
-            var circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+            var circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
             m_us.circle = circle; // todo : @ikpil, fix it!!
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_kinematicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 1.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 1.0f));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             m_shapeId = b2CreateCircleShape(bodyId, shapeDef, circle); // todo : @ikpil, fix it!!
@@ -80,17 +80,17 @@ public class ModifyGeometry : Sample
         switch (m_shapeType)
         {
             case B2ShapeType.b2_circleShape:
-                m_us.circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f * m_scale);
+                m_us.circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f * m_scale);
                 b2Shape_SetCircle(m_shapeId, m_us.circle);
                 break;
 
             case B2ShapeType.b2_capsuleShape:
-                m_us.capsule = new B2Capsule(new B2Vec2(-0.5f * m_scale, 0.0f), new B2Vec2(0.0f, 0.5f * m_scale), 0.5f * m_scale);
+                m_us.capsule = new B2Capsule(new Vector2(-0.5f * m_scale, 0.0f), new Vector2(0.0f, 0.5f * m_scale), 0.5f * m_scale);
                 b2Shape_SetCapsule(m_shapeId, m_us.capsule);
                 break;
 
             case B2ShapeType.b2_segmentShape:
-                m_us.segment = new B2Segment(new B2Vec2(-0.5f * m_scale, 0.0f), new B2Vec2(0.75f * m_scale, 0.0f));
+                m_us.segment = new B2Segment(new Vector2(-0.5f * m_scale, 0.0f), new Vector2(0.75f * m_scale, 0.0f));
                 b2Shape_SetSegment(m_shapeId, m_us.segment);
                 break;
 

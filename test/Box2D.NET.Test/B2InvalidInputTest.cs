@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using NUnit.Framework;
 using static Box2D.NET.B2Bodies;
 using static Box2D.NET.B2Diagnostics;
@@ -83,7 +84,7 @@ public class B2InvalidInputTest
         B2WorldDef worldDef = b2DefaultWorldDef();
         B2WorldId worldId = b2CreateWorld(worldDef);
 
-        B2Vec2 gravity = b2World_GetGravity(worldId);
+        Vector2 gravity = b2World_GetGravity(worldId);
         float restitutionThreshold = b2World_GetRestitutionThreshold(worldId);
         float hitEventThreshold = b2World_GetHitEventThreshold(worldId);
         float recycleDistance = b2World_GetContactRecycleDistance(worldId);
@@ -94,8 +95,8 @@ public class B2InvalidInputTest
 
         foreach (float bad in BadValues)
         {
-            Rejects(() => b2World_SetGravity(worldId, new B2Vec2(bad, 0.0f)), "b2World_SetGravity x");
-            Rejects(() => b2World_SetGravity(worldId, new B2Vec2(0.0f, bad)), "b2World_SetGravity y");
+            Rejects(() => b2World_SetGravity(worldId, new Vector2(bad, 0.0f)), "b2World_SetGravity x");
+            Rejects(() => b2World_SetGravity(worldId, new Vector2(0.0f, bad)), "b2World_SetGravity y");
             Rejects(() => b2World_SetRestitutionThreshold(worldId, bad), "b2World_SetRestitutionThreshold");
             Rejects(() => b2World_SetHitEventThreshold(worldId, bad), "b2World_SetHitEventThreshold");
             Rejects(() => b2World_SetContactRecycleDistance(worldId, bad), "b2World_SetContactRecycleDistance");
@@ -140,7 +141,7 @@ public class B2InvalidInputTest
 
         foreach (float bad in BadValues)
         {
-            B2Vec2 badVec = new B2Vec2(bad, 0.0f);
+            Vector2 badVec = new Vector2(bad, 0.0f);
             B2Pos badPos = new B2Pos(bad, 0.0f);
             B2Rot badRot = new B2Rot(bad, 0.0f);
             B2WorldTransform badTarget = new B2WorldTransform(badPos, b2Rot_identity);
@@ -152,16 +153,16 @@ public class B2InvalidInputTest
             Rejects(() => b2Body_SetTargetTransform(bodyId, badTarget, 1.0f / 60.0f, true), "b2Body_SetTargetTransform target");
             Rejects(() => b2Body_SetTargetTransform(bodyId, b2WorldTransform_identity, bad, true), "b2Body_SetTargetTransform timeStep");
             Rejects(() => b2Body_ApplyForce(bodyId, badVec, b2Pos_zero, true), "b2Body_ApplyForce force");
-            Rejects(() => b2Body_ApplyForce(bodyId, b2Vec2_zero, badPos, true), "b2Body_ApplyForce point");
+            Rejects(() => b2Body_ApplyForce(bodyId, Vector2Zero, badPos, true), "b2Body_ApplyForce point");
             Rejects(() => b2Body_ApplyForceToCenter(bodyId, badVec, true), "b2Body_ApplyForceToCenter");
             Rejects(() => b2Body_ApplyTorque(bodyId, bad, true), "b2Body_ApplyTorque");
             Rejects(() => b2Body_ApplyLinearImpulse(bodyId, badVec, b2Pos_zero, true), "b2Body_ApplyLinearImpulse impulse");
-            Rejects(() => b2Body_ApplyLinearImpulse(bodyId, b2Vec2_zero, badPos, true), "b2Body_ApplyLinearImpulse point");
+            Rejects(() => b2Body_ApplyLinearImpulse(bodyId, Vector2Zero, badPos, true), "b2Body_ApplyLinearImpulse point");
             Rejects(() => b2Body_ApplyLinearImpulseToCenter(bodyId, badVec, true), "b2Body_ApplyLinearImpulseToCenter");
             Rejects(() => b2Body_ApplyAngularImpulse(bodyId, bad, true), "b2Body_ApplyAngularImpulse");
-            Rejects(() => b2Body_SetMassData(bodyId, new B2MassData(bad, b2Vec2_zero, 1.0f)), "b2Body_SetMassData mass");
+            Rejects(() => b2Body_SetMassData(bodyId, new B2MassData(bad, Vector2Zero, 1.0f)), "b2Body_SetMassData mass");
             Rejects(() => b2Body_SetMassData(bodyId, new B2MassData(1.0f, badVec, 1.0f)), "b2Body_SetMassData center");
-            Rejects(() => b2Body_SetMassData(bodyId, new B2MassData(1.0f, b2Vec2_zero, bad)), "b2Body_SetMassData inertia");
+            Rejects(() => b2Body_SetMassData(bodyId, new B2MassData(1.0f, Vector2Zero, bad)), "b2Body_SetMassData inertia");
             Rejects(() => b2Body_SetLinearDamping(bodyId, bad), "b2Body_SetLinearDamping");
             Rejects(() => b2Body_SetAngularDamping(bodyId, bad), "b2Body_SetAngularDamping");
             Rejects(() => b2Body_SetGravityScale(bodyId, bad), "b2Body_SetGravityScale");
@@ -174,8 +175,8 @@ public class B2InvalidInputTest
         Rejects(() => b2Body_SetLinearDamping(bodyId, -1.0f), "b2Body_SetLinearDamping negative");
         Rejects(() => b2Body_SetAngularDamping(bodyId, -1.0f), "b2Body_SetAngularDamping negative");
 
-        Accepts(() => b2Body_SetLinearVelocity(bodyId, new B2Vec2(1.0f, 2.0f)), "b2Body_SetLinearVelocity");
-        Accepts(() => b2Body_ApplyForceToCenter(bodyId, new B2Vec2(0.0f, 10.0f), true), "b2Body_ApplyForceToCenter");
+        Accepts(() => b2Body_SetLinearVelocity(bodyId, new Vector2(1.0f, 2.0f)), "b2Body_SetLinearVelocity");
+        Accepts(() => b2Body_ApplyForceToCenter(bodyId, new Vector2(0.0f, 10.0f), true), "b2Body_ApplyForceToCenter");
 
         for (int i = 0; i < 30; ++i)
         {
@@ -210,16 +211,16 @@ public class B2InvalidInputTest
 
         foreach (float bad in BadValues)
         {
-            B2Vec2 badVec = new B2Vec2(bad, 0.0f);
+            Vector2 badVec = new Vector2(bad, 0.0f);
 
             B2Circle badCircle = new B2Circle(badVec, 1.0f);
-            B2Capsule badCapsule = new B2Capsule(new B2Vec2(-0.5f, 0.0f), new B2Vec2(0.5f, 0.0f), bad);
-            B2Segment badSegment = new B2Segment(badVec, new B2Vec2(1.0f, 0.0f));
+            B2Capsule badCapsule = new B2Capsule(new Vector2(-0.5f, 0.0f), new Vector2(0.5f, 0.0f), bad);
+            B2Segment badSegment = new B2Segment(badVec, new Vector2(1.0f, 0.0f));
             B2ChainSegment badChainSegment = new B2ChainSegment
             {
                 ghost1 = badVec,
-                segment = new B2Segment(new B2Vec2(0.0f, 0.0f), new B2Vec2(1.0f, 0.0f)),
-                ghost2 = new B2Vec2(2.0f, 0.0f),
+                segment = new B2Segment(new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f)),
+                ghost2 = new Vector2(2.0f, 0.0f),
                 chainId = -1,
             };
 
@@ -237,8 +238,8 @@ public class B2InvalidInputTest
             Rejects(() => b2Shape_SetRestitution(shapeId, bad), "b2Shape_SetRestitution");
             Rejects(() => b2Shape_SetSurfaceMaterial(shapeId, badMaterial), "b2Shape_SetSurfaceMaterial");
             Rejects(() => b2Shape_ApplyWind(shapeId, badVec, 1.0f, 1.0f, true), "b2Shape_ApplyWind wind");
-            Rejects(() => b2Shape_ApplyWind(shapeId, b2Vec2_zero, bad, 1.0f, true), "b2Shape_ApplyWind drag");
-            Rejects(() => b2Shape_ApplyWind(shapeId, b2Vec2_zero, 1.0f, bad, true), "b2Shape_ApplyWind lift");
+            Rejects(() => b2Shape_ApplyWind(shapeId, Vector2Zero, bad, 1.0f, true), "b2Shape_ApplyWind drag");
+            Rejects(() => b2Shape_ApplyWind(shapeId, Vector2Zero, 1.0f, bad, true), "b2Shape_ApplyWind lift");
             Rejects(() => b2Shape_SetCircle(shapeId, badCircle), "b2Shape_SetCircle");
             Rejects(() => b2Shape_SetCapsule(shapeId, badCapsule), "b2Shape_SetCapsule");
             Rejects(() => b2Shape_SetSegment(shapeId, badSegment), "b2Shape_SetSegment");
@@ -288,14 +289,14 @@ public class B2InvalidInputTest
         B2RevoluteJointDef jointDef = b2DefaultRevoluteJointDef();
         jointDef.@base.bodyIdA = groundId;
         jointDef.@base.bodyIdB = bodyId;
-        jointDef.@base.localFrameB.p = new B2Vec2(0.0f, 1.0f);
+        jointDef.@base.localFrameB.p = new Vector2(0.0f, 1.0f);
         B2JointId jointId = b2CreateRevoluteJoint(worldId, jointDef);
 
         BeginRejectCount();
 
         foreach (float bad in BadValues)
         {
-            B2Transform badFrame = new B2Transform(new B2Vec2(bad, 0.0f), b2Rot_identity);
+            B2Transform badFrame = new B2Transform(new Vector2(bad, 0.0f), b2Rot_identity);
 
             Rejects(() => b2Joint_SetLocalFrameA(jointId, badFrame), "b2Joint_SetLocalFrameA");
             Rejects(() => b2Joint_SetLocalFrameB(jointId, badFrame), "b2Joint_SetLocalFrameB");
@@ -346,7 +347,7 @@ public class B2InvalidInputTest
 
         foreach (float bad in BadValues)
         {
-            B2Vec2 badVec = new B2Vec2(bad, 0.0f);
+            Vector2 badVec = new Vector2(bad, 0.0f);
 
             B2WorldDef badWorldDef = b2DefaultWorldDef();
             badWorldDef.gravity = badVec;
@@ -364,17 +365,17 @@ public class B2InvalidInputTest
             B2Circle badCircle = new B2Circle(badVec, 1.0f);
             Assert.That(b2Shape_IsValid(b2CreateCircleShape(bodyId, shapeDef, badCircle)), Is.False);
 
-            B2Capsule badCapsule = new B2Capsule(new B2Vec2(-0.5f, 0.0f), new B2Vec2(0.5f, 0.0f), bad);
+            B2Capsule badCapsule = new B2Capsule(new Vector2(-0.5f, 0.0f), new Vector2(0.5f, 0.0f), bad);
             Assert.That(b2Shape_IsValid(b2CreateCapsuleShape(bodyId, shapeDef, badCapsule)), Is.False);
 
-            B2Segment badSegment = new B2Segment(badVec, new B2Vec2(1.0f, 0.0f));
+            B2Segment badSegment = new B2Segment(badVec, new Vector2(1.0f, 0.0f));
             Assert.That(b2Shape_IsValid(b2CreateSegmentShape(bodyId, shapeDef, badSegment)), Is.False);
 
             B2Polygon badPolygon = box;
             badPolygon.radius = bad;
             Assert.That(b2Shape_IsValid(b2CreatePolygonShape(bodyId, shapeDef, badPolygon)), Is.False);
 
-            B2Vec2[] chainPoints = { new B2Vec2(-4.0f, 0.0f), new B2Vec2(0.0f, 0.0f), new B2Vec2(4.0f, 0.0f), new B2Vec2(8.0f, 0.0f) };
+            Vector2[] chainPoints = { new Vector2(-4.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(4.0f, 0.0f), new Vector2(8.0f, 0.0f) };
             chainPoints[2] = badVec;
             B2SurfaceMaterial material = b2DefaultSurfaceMaterial();
             B2ChainDef badChainDef = b2DefaultChainDef();

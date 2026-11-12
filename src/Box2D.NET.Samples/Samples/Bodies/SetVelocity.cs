@@ -27,13 +27,13 @@ public class SetVelocity : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(0.0f, 2.5f);
+            m_context.camera.center = new Vector2(0.0f, 2.5f);
             m_context.camera.zoom = 3.5f;
         }
 
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, -0.25f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, -0.25f));
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -47,7 +47,7 @@ public class SetVelocity : Sample
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             B2Polygon box = b2MakeSquare(0.5f);
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 0.5f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 0.5f));
             m_bodyId = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(m_bodyId, shapeDef, box);
         }
@@ -56,13 +56,13 @@ public class SetVelocity : Sample
     public override void Step()
     {
         base.Step();
-        b2Body_SetLinearVelocity(m_bodyId, new B2Vec2(0.0f, -20.0f));
+        b2Body_SetLinearVelocity(m_bodyId, new Vector2(0.0f, -20.0f));
     }
 
     public override void Draw()
     {
         base.Draw();
-        B2Vec2 position = b2ToVec2(b2Body_GetPosition(m_bodyId));
+        Vector2 position = b2ToVec2(b2Body_GetPosition(m_bodyId));
         DrawScreenTextLine($"(x, y) = ({FormatFloat(position.X, 2)}, {FormatFloat(position.Y, 2)})");
     }
 }

@@ -24,7 +24,7 @@ public class ShapeDistance : Sample
 
     private B2Polygon m_box;
     private B2Polygon m_triangle;
-    private B2Vec2 m_point;
+    private Vector2 m_point;
     private B2Segment m_segment;
 
     private ShapeType m_typeA;
@@ -42,8 +42,8 @@ public class ShapeDistance : Sample
     private B2Transform m_transform;
     private float m_angle;
 
-    private B2Vec2 m_basePosition;
-    private B2Vec2 m_startPoint;
+    private Vector2 m_basePosition;
+    private Vector2 m_startPoint;
     private float m_baseAngle;
 
     private bool m_dragging;
@@ -53,9 +53,9 @@ public class ShapeDistance : Sample
     private bool m_drawSimplex;
 
     // 
-    private B2Vec2 _outputPointA;
-    private B2Vec2 _outputPointB;
-    private B2Vec2 _outputNormal;
+    private Vector2 _outputPointA;
+    private Vector2 _outputPointB;
+    private Vector2 _outputNormal;
 
     private float _outputDistance;
     private int _outputIterations;
@@ -78,15 +78,15 @@ public class ShapeDistance : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 0.0f);
+            m_camera.center = new Vector2(0.0f, 0.0f);
             m_camera.zoom = 3.0f;
         }
 
-        m_point = b2Vec2_zero;
-        m_segment = new B2Segment(new B2Vec2(-0.5f, 0.0f), new B2Vec2(0.5f, 0.0f));
+        m_point = Vector2Zero;
+        m_segment = new B2Segment(new Vector2(-0.5f, 0.0f), new Vector2(0.5f, 0.0f));
 
         {
-            B2Vec2[] points = new B2Vec2[3] { new B2Vec2(-0.5f, 0.0f), new B2Vec2(0.5f, 0.0f), new B2Vec2(0.0f, 1.0f) };
+            Vector2[] points = new Vector2[3] { new Vector2(-0.5f, 0.0f), new Vector2(0.5f, 0.0f), new Vector2(0.0f, 1.0f) };
             B2Hull hull = b2ComputeHull(points, 3);
             m_triangle = b2MakePolygon(hull, 0.0f);
 
@@ -96,14 +96,14 @@ public class ShapeDistance : Sample
         m_box = b2MakeSquare(0.5f);
 
         // m_transform = new B2Transform(new B2Vec2(1.5f, -1.5f), b2Rot_identity);
-        m_transform = new B2Transform(new B2Vec2(0.0f, 0.0f), b2Rot_identity);
+        m_transform = new B2Transform(new Vector2(0.0f, 0.0f), b2Rot_identity);
         m_angle = 0.0f;
 
         m_cache = b2_emptySimplexCache;
         m_simplexCount = 0;
         m_simplexIndex = 0;
-        m_startPoint = new B2Vec2(0.0f, 0.0f);
-        m_basePosition = new B2Vec2(0.0f, 0.0f);
+        m_startPoint = new Vector2(0.0f, 0.0f);
+        m_basePosition = new Vector2(0.0f, 0.0f);
         m_baseAngle = 0.0f;
 
         m_dragging = false;
@@ -129,7 +129,7 @@ public class ShapeDistance : Sample
         switch (type)
         {
             case ShapeType.e_point:
-                proxy.points[0] = b2Vec2_zero;
+                proxy.points[0] = Vector2Zero;
                 proxy.count = 1;
                 break;
 
@@ -170,7 +170,7 @@ public class ShapeDistance : Sample
         {
             case ShapeType.e_point:
             {
-                B2Vec2 p = b2TransformPoint(transform, m_point);
+                Vector2 p = b2TransformPoint(transform, m_point);
                 if (radius > 0.0f)
                 {
                     DrawSolidCircle(m_draw, new B2Transform(m_point, transform.q), radius, color);
@@ -184,8 +184,8 @@ public class ShapeDistance : Sample
 
             case ShapeType.e_segment:
             {
-                B2Vec2 p1 = b2TransformPoint(transform, m_segment.point1);
-                B2Vec2 p2 = b2TransformPoint(transform, m_segment.point2);
+                Vector2 p1 = b2TransformPoint(transform, m_segment.point1);
+                Vector2 p2 = b2TransformPoint(transform, m_segment.point2);
 
                 if (radius > 0.0f)
                 {
@@ -275,7 +275,7 @@ public class ShapeDistance : Sample
         return true;
     }
 
-    public override void MouseDown(B2Vec2 p, MouseButton button, KeyModifiers mods)
+    public override void MouseDown(Vector2 p, MouseButton button, KeyModifiers mods)
     {
         if (button == (int)MouseButton.Left)
         {
@@ -294,7 +294,7 @@ public class ShapeDistance : Sample
         }
     }
 
-    public override void MouseUp(B2Vec2 p, MouseButton button)
+    public override void MouseUp(Vector2 p, MouseButton button)
     {
         if (button == (int)MouseButton.Left)
         {
@@ -303,7 +303,7 @@ public class ShapeDistance : Sample
         }
     }
 
-    public override void MouseMove(B2Vec2 p)
+    public override void MouseMove(Vector2 p)
     {
         if (m_dragging)
         {
@@ -317,17 +317,17 @@ public class ShapeDistance : Sample
         }
     }
 
-    static B2Vec2 Weight2(float a1, B2Vec2 w1, float a2, B2Vec2 w2)
+    static Vector2 Weight2(float a1, Vector2 w1, float a2, Vector2 w2)
     {
-        return new B2Vec2(a1 * w1.X + a2 * w2.X, a1 * w1.Y + a2 * w2.Y);
+        return new Vector2(a1 * w1.X + a2 * w2.X, a1 * w1.Y + a2 * w2.Y);
     }
 
-    static B2Vec2 Weight3(float a1, B2Vec2 w1, float a2, B2Vec2 w2, float a3, B2Vec2 w3)
+    static Vector2 Weight3(float a1, Vector2 w1, float a2, Vector2 w2, float a3, Vector2 w3)
     {
-        return new B2Vec2(a1 * w1.X + a2 * w2.X + a3 * w3.X, a1 * w1.Y + a2 * w2.Y + a3 * w3.Y);
+        return new Vector2(a1 * w1.X + a2 * w2.X + a3 * w3.X, a1 * w1.Y + a2 * w2.Y + a3 * w3.Y);
     }
 
-    void ComputeSimplexWitnessPoints(ref B2Vec2 a, ref B2Vec2 b, ref B2Simplex s)
+    void ComputeSimplexWitnessPoints(ref Vector2 a, ref Vector2 b, ref B2Simplex s)
     {
         switch (s.count)
         {
@@ -395,8 +395,8 @@ public class ShapeDistance : Sample
             if (m_simplexIndex > 0)
             {
                 // The first recorded simplex does not have valid barycentric coordinates
-                B2Vec2 pointA = new B2Vec2();
-                B2Vec2 pointB = new B2Vec2();
+                Vector2 pointA = new Vector2();
+                Vector2 pointB = new Vector2();
                 ComputeSimplexWitnessPoints(ref pointA, ref pointB, ref simplex);
 
                 DrawLine(m_draw, pointA, pointB, B2HexColor.b2_colorWhite);
@@ -426,13 +426,13 @@ public class ShapeDistance : Sample
         {
             for (int i = 0; i < m_proxyA.count; ++i)
             {
-                B2Vec2 p = m_proxyA.points[i];
+                Vector2 p = m_proxyA.points[i];
                 DrawWorldString(m_draw, m_camera, p, B2HexColor.b2_colorWhite, $" {i}");
             }
 
             for (int i = 0; i < m_proxyB.count; ++i)
             {
-                B2Vec2 p = b2TransformPoint(m_transform, m_proxyB.points[i]);
+                Vector2 p = b2TransformPoint(m_transform, m_proxyB.points[i]);
                 DrawWorldString(m_draw, m_camera, p, B2HexColor.b2_colorWhite, $" {i}");
             }
         }

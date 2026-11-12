@@ -42,7 +42,7 @@ public class BounceHouse : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 0.0f);
+            m_camera.center = new Vector2(0.0f, 0.0f);
             m_camera.zoom = 25.0f * 0.45f;
         }
 
@@ -51,22 +51,22 @@ public class BounceHouse : Sample
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
         {
-            B2Segment segment = new B2Segment(new B2Vec2(-10.0f, -10.0f), new B2Vec2(10.0f, -10.0f));
+            B2Segment segment = new B2Segment(new Vector2(-10.0f, -10.0f), new Vector2(10.0f, -10.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
         {
-            B2Segment segment = new B2Segment(new B2Vec2(10.0f, -10.0f), new B2Vec2(10.0f, 10.0f));
+            B2Segment segment = new B2Segment(new Vector2(10.0f, -10.0f), new Vector2(10.0f, 10.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
         {
-            B2Segment segment = new B2Segment(new B2Vec2(10.0f, 10.0f), new B2Vec2(-10.0f, 10.0f));
+            B2Segment segment = new B2Segment(new Vector2(10.0f, 10.0f), new Vector2(-10.0f, 10.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
         {
-            B2Segment segment = new B2Segment(new B2Vec2(-10.0f, 10.0f), new B2Vec2(-10.0f, -10.0f));
+            B2Segment segment = new B2Segment(new Vector2(-10.0f, 10.0f), new Vector2(-10.0f, -10.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
@@ -92,8 +92,8 @@ public class BounceHouse : Sample
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.linearVelocity = new B2Vec2(10.0f, 20.0f);
-        bodyDef.position = b2ToPos(new B2Vec2(0.0f, 0.0f));
+        bodyDef.linearVelocity = new Vector2(10.0f, 20.0f);
+        bodyDef.position = b2ToPos(new Vector2(0.0f, 0.0f));
         bodyDef.gravityScale = 0.0f;
         bodyDef.isBullet = true;
 
@@ -110,12 +110,12 @@ public class BounceHouse : Sample
 
         if (m_shapeType == ShapeType.e_circleShape)
         {
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
             b2CreateCircleShape(m_bodyId, shapeDef, circle);
         }
         else if (m_shapeType == ShapeType.e_capsuleShape)
         {
-            B2Capsule capsule = new B2Capsule(new B2Vec2(-0.5f, 0.0f), new B2Vec2(0.5f, 0.0f), 0.25f);
+            B2Capsule capsule = new B2Capsule(new Vector2(-0.5f, 0.0f), new Vector2(0.5f, 0.0f), 0.25f);
             b2CreateCapsuleShape(m_bodyId, shapeDef, capsule);
         }
         else

@@ -39,7 +39,7 @@ public class JointSeparation : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(0.0f, 8.0f);
+            m_context.camera.center = new Vector2(0.0f, 8.0f);
             m_context.camera.zoom = 25.0f;
         }
 
@@ -47,10 +47,10 @@ public class JointSeparation : Sample
         B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
-        B2Segment segment = new B2Segment(new B2Vec2(-40.0f, 0.0f), new B2Vec2(40.0f, 0.0f));
+        B2Segment segment = new B2Segment(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
         b2CreateSegmentShape(groundId, shapeDef, segment);
 
-        B2Vec2 position = new B2Vec2(-20.0f, 10.0f);
+        Vector2 position = new Vector2(-20.0f, 10.0f);
         bodyDef.type = B2BodyType.b2_dynamicBody;
         bodyDef.enableSleep = false;
 
@@ -67,8 +67,8 @@ public class JointSeparation : Sample
             b2CreatePolygonShape(m_bodyIds[index], shapeDef, box);
 
             float length = 2.0f;
-            B2Vec2 pivot1 = new B2Vec2(position.X, position.Y + 1.0f + length);
-            B2Vec2 pivot2 = new B2Vec2(position.X, position.Y + 1.0f);
+            Vector2 pivot1 = new Vector2(position.X, position.Y + 1.0f + length);
+            Vector2 pivot2 = new Vector2(position.X, position.Y + 1.0f);
             B2DistanceJointDef jointDef = b2DefaultDistanceJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = m_bodyIds[index];
@@ -90,7 +90,7 @@ public class JointSeparation : Sample
             m_bodyIds[index] = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(m_bodyIds[index], shapeDef, box);
 
-            B2Vec2 pivot = new B2Vec2(position.X - 1.0f, position.Y);
+            Vector2 pivot = new Vector2(position.X - 1.0f, position.Y);
             B2PrismaticJointDef jointDef = b2DefaultPrismaticJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = m_bodyIds[index];
@@ -111,7 +111,7 @@ public class JointSeparation : Sample
             m_bodyIds[index] = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(m_bodyIds[index], shapeDef, box);
 
-            B2Vec2 pivot = new B2Vec2(position.X - 1.0f, position.Y);
+            Vector2 pivot = new Vector2(position.X - 1.0f, position.Y);
             B2RevoluteJointDef jointDef = b2DefaultRevoluteJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = m_bodyIds[index];
@@ -132,7 +132,7 @@ public class JointSeparation : Sample
             m_bodyIds[index] = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(m_bodyIds[index], shapeDef, box);
 
-            B2Vec2 pivot = new B2Vec2(position.X - 1.0f, position.Y);
+            Vector2 pivot = new Vector2(position.X - 1.0f, position.Y);
             B2WeldJointDef jointDef = b2DefaultWeldJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = m_bodyIds[index];
@@ -153,7 +153,7 @@ public class JointSeparation : Sample
             m_bodyIds[index] = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(m_bodyIds[index], shapeDef, box);
 
-            B2Vec2 pivot = new B2Vec2(position.X - 1.0f, position.Y);
+            Vector2 pivot = new Vector2(position.X - 1.0f, position.Y);
             B2WheelJointDef jointDef = b2DefaultWheelJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = m_bodyIds[index];
@@ -179,7 +179,7 @@ public class JointSeparation : Sample
     public override bool DrawControls()
     {
         ImGui.PushItemWidth(6.0f * ImGui.GetFontSize());
-        B2Vec2 gravity = b2World_GetGravity(m_worldId);
+        Vector2 gravity = b2World_GetGravity(m_worldId);
         if (ImGui.SliderFloat("gravity", ref gravity.Y, -500.0f, 500.0f, "%.0f"))
         {
             b2World_SetGravity(m_worldId, gravity);
@@ -209,8 +209,8 @@ public class JointSeparation : Sample
         {
             for (int i = 0; i < e_count; ++i)
             {
-                B2Vec2 p = b2ToVec2(b2Body_GetWorldPoint(m_bodyIds[i], new B2Vec2(1.0f, 1.0f)));
-                b2Body_ApplyLinearImpulse(m_bodyIds[i], new B2Vec2(m_impulse, -m_impulse), b2ToPos(p), true);
+                Vector2 p = b2ToVec2(b2Body_GetWorldPoint(m_bodyIds[i], new Vector2(1.0f, 1.0f)));
+                b2Body_ApplyLinearImpulse(m_bodyIds[i], new Vector2(m_impulse, -m_impulse), b2ToPos(p), true);
             }
         }
 

@@ -26,7 +26,7 @@ public class FilterJoint : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 7.0f);
+            m_camera.center = new Vector2(0.0f, 7.0f);
             m_camera.zoom = 25.0f * 0.4f;
         }
 
@@ -35,21 +35,21 @@ public class FilterJoint : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             groundId = b2CreateBody(m_worldId, bodyDef);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(-20.0f, 0.0f), new B2Vec2(20.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(-4.0f, 2.0f));
+            bodyDef.position = b2ToPos(new Vector2(-4.0f, 2.0f));
             B2BodyId bodyId1 = b2CreateBody(m_worldId, bodyDef);
 
             B2Polygon box = b2MakeSquare(2.0f);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             b2CreatePolygonShape(bodyId1, shapeDef, box);
 
-            bodyDef.position = b2ToPos(new B2Vec2(4.0f, 2.0f));
+            bodyDef.position = b2ToPos(new Vector2(4.0f, 2.0f));
             B2BodyId bodyId2 = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(bodyId2, shapeDef, box);
 

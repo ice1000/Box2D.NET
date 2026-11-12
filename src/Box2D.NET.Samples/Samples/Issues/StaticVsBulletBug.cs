@@ -24,7 +24,7 @@ public class StaticVsBulletBug : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(48.8525391f, 68.1518555f);
+            m_context.camera.center = new Vector2(48.8525391f, 68.1518555f);
             m_context.camera.zoom = 100.0f * 0.5f;
         }
 
@@ -33,10 +33,10 @@ public class StaticVsBulletBug : Sample
             bd.type = B2BodyType.b2_dynamicBody; // NOTE(bug): Changing this to b2_staticBody fixes the issue
             B2BodyId staticBodyId = b2CreateBody(m_worldId, bd);
 
-            B2Vec2[] verts = new B2Vec2[]
+            Vector2[] verts = new Vector2[]
             {
-                new B2Vec2(48.8525391f, 68.1518555f), new B2Vec2(49.1821289f, 68.1152344f), new B2Vec2(68.8476562f, 68.1152344f),
-                new B2Vec2(68.8476562f, 70.2392578f), new B2Vec2(48.8525391f, 70.2392578f),
+                new Vector2(48.8525391f, 68.1518555f), new Vector2(49.1821289f, 68.1152344f), new Vector2(68.8476562f, 68.1152344f),
+                new Vector2(68.8476562f, 70.2392578f), new Vector2(48.8525391f, 70.2392578f),
             };
 
             B2Hull hull = b2ComputeHull(verts, verts.Length);
@@ -53,14 +53,14 @@ public class StaticVsBulletBug : Sample
 
         {
             B2BodyDef bd = b2DefaultBodyDef();
-            bd.position = b2ToPos(new B2Vec2(58.9243050f, 77.5401459f));
+            bd.position = b2ToPos(new Vector2(58.9243050f, 77.5401459f));
             bd.type = B2BodyType.b2_dynamicBody;
             bd.motionLocks.angularZ = true;
-            bd.linearVelocity = new B2Vec2(104.868881f, -281.073883f);
+            bd.linearVelocity = new Vector2(104.868881f, -281.073883f);
             bd.isBullet = true;
 
             B2BodyId ballBodyId = b2CreateBody(m_worldId, bd);
-            B2Circle ball = new B2Circle(center: new B2Vec2(), radius: 0.3f);
+            B2Circle ball = new B2Circle(center: new Vector2(), radius: 0.3f);
 
             B2ShapeDef ballShape = b2DefaultShapeDef();
             ballShape.density = 3.0f;

@@ -12,7 +12,7 @@ public static class Cameras
     public static Camera GetDefaultCamera()
     {
         var camera = new Camera();
-        camera.center = new B2Vec2(0.0f, 20.0f);
+        camera.center = new Vector2(0.0f, 20.0f);
         camera.zoom = 1.0f;
         camera.width = 1920.0f;
         camera.height = 1080.0f;
@@ -21,11 +21,11 @@ public static class Cameras
 
     public static void ResetView(Camera camera)
     {
-        camera.center = new B2Vec2(0.0f, 20.0f);
+        camera.center = new Vector2(0.0f, 20.0f);
         camera.zoom = 1.0f;
     }
 
-    public static B2Vec2 ConvertScreenToWorld(Camera camera, B2Vec2 ps)
+    public static Vector2 ConvertScreenToWorld(Camera camera, Vector2 ps)
     {
         float w = camera.width;
         float h = camera.height;
@@ -33,30 +33,30 @@ public static class Cameras
         float v = (h - ps.Y) / h;
 
         float ratio = w / h;
-        B2Vec2 extents = new B2Vec2(camera.zoom * ratio, camera.zoom);
+        Vector2 extents = new Vector2(camera.zoom * ratio, camera.zoom);
 
-        B2Vec2 lower = b2Sub(camera.center, extents);
-        B2Vec2 upper = b2Add(camera.center, extents);
+        Vector2 lower = b2Sub(camera.center, extents);
+        Vector2 upper = b2Add(camera.center, extents);
 
-        B2Vec2 pw = new B2Vec2((1.0f - u) * lower.X + u * upper.X, (1.0f - v) * lower.Y + v * upper.Y);
+        Vector2 pw = new Vector2((1.0f - u) * lower.X + u * upper.X, (1.0f - v) * lower.Y + v * upper.Y);
         return pw;
     }
 
-    public static B2Vec2 ConvertWorldToScreen(Camera camera, B2Vec2 pw)
+    public static Vector2 ConvertWorldToScreen(Camera camera, Vector2 pw)
     {
         float w = camera.width;
         float h = camera.height;
         float ratio = w / h;
 
-        B2Vec2 extents = new B2Vec2(camera.zoom * ratio, camera.zoom);
+        Vector2 extents = new Vector2(camera.zoom * ratio, camera.zoom);
 
-        B2Vec2 lower = b2Sub(camera.center, extents);
-        B2Vec2 upper = b2Add(camera.center, extents);
+        Vector2 lower = b2Sub(camera.center, extents);
+        Vector2 upper = b2Add(camera.center, extents);
 
         float u = (pw.X - lower.X) / (upper.X - lower.X);
         float v = (pw.Y - lower.Y) / (upper.Y - lower.Y);
 
-        B2Vec2 ps = new B2Vec2(u * w, (1.0f - v) * h);
+        Vector2 ps = new Vector2(u * w, (1.0f - v) * h);
         return ps;
     }
 
@@ -66,10 +66,10 @@ public static class Cameras
     public static void BuildProjectionMatrix(Camera camera, Span<float> m, float zBias)
     {
         float ratio = (float)camera.width / (float)camera.height;
-        B2Vec2 extents = new B2Vec2(camera.zoom * ratio, camera.zoom);
+        Vector2 extents = new Vector2(camera.zoom * ratio, camera.zoom);
 
-        B2Vec2 lower = b2Sub(camera.center, extents);
-        B2Vec2 upper = b2Add(camera.center, extents);
+        Vector2 lower = b2Sub(camera.center, extents);
+        Vector2 upper = b2Add(camera.center, extents);
         float w = upper.X - lower.X;
         float h = upper.Y - lower.Y;
 
@@ -98,14 +98,14 @@ public static class Cameras
     {
         if (camera.height == 0.0f || camera.width == 0.0f)
         {
-            B2AABB bounds = new B2AABB(b2Vec2_zero, b2Vec2_zero);
+            B2AABB bounds = new B2AABB(Vector2Zero, Vector2Zero);
             return bounds;
         }
 
         {
             B2AABB bounds;
-            bounds.lowerBound = ConvertScreenToWorld(camera, new B2Vec2(0.0f, (float)camera.height));
-            bounds.upperBound = ConvertScreenToWorld(camera, new B2Vec2((float)camera.width, 0.0f));
+            bounds.lowerBound = ConvertScreenToWorld(camera, new Vector2(0.0f, (float)camera.height));
+            bounds.upperBound = ConvertScreenToWorld(camera, new Vector2((float)camera.width, 0.0f));
             return bounds;
         }
     }

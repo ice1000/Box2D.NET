@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using NUnit.Framework;
 using static Box2D.NET.B2Geometries;
 using static Box2D.NET.B2MathFunction;
@@ -12,10 +13,10 @@ namespace Box2D.NET.Test;
 
 public class B2ShapeTest
 {
-    private B2Capsule capsule = new B2Capsule(new B2Vec2(-1.0f, 0.0f), new B2Vec2(1.0f, 0.0f), 1.0f);
-    private B2Circle circle = new B2Circle(new B2Vec2(1.0f, 0.0f), 1.0f);
+    private B2Capsule capsule = new B2Capsule(new Vector2(-1.0f, 0.0f), new Vector2(1.0f, 0.0f), 1.0f);
+    private B2Circle circle = new B2Circle(new Vector2(1.0f, 0.0f), 1.0f);
     private B2Polygon box = b2MakeBox(1.0f, 1.0f);
-    private B2Segment segment = new B2Segment(new B2Vec2(0.0f, 1.0f), new B2Vec2(0.0f, -1.0f));
+    private B2Segment segment = new B2Segment(new Vector2(0.0f, 1.0f), new Vector2(0.0f, -1.0f));
 
     public const int N = 4;
 
@@ -42,7 +43,7 @@ public class B2ShapeTest
             B2MassData mdr = b2ComputePolygonMass(r, 1.0f);
 
             // Approximate capsule using convex hull
-            B2Vec2[] points = new B2Vec2[2 * N];
+            Vector2[] points = new Vector2[2 * N];
             float d = B2_PI / (N - 1.0f);
             float angle = -0.5f * B2_PI;
             for (int i = 0; i < N; ++i)
@@ -108,8 +109,8 @@ public class B2ShapeTest
     [Test]
     public void PointInShapeTest()
     {
-        B2Vec2 p1 = new B2Vec2(0.5f, 0.5f);
-        B2Vec2 p2 = new B2Vec2(4.0f, -4.0f);
+        Vector2 p1 = new Vector2(0.5f, 0.5f);
+        Vector2 p2 = new Vector2(4.0f, -4.0f);
 
         {
             bool hit;
@@ -131,7 +132,7 @@ public class B2ShapeTest
     [Test]
     public void RayCastShapeTest()
     {
-        B2RayCastInput input = new B2RayCastInput(new B2Vec2(-4.0f, 0.0f), new B2Vec2(8.0f, 0.0f), 1.0f);
+        B2RayCastInput input = new B2RayCastInput(new Vector2(-4.0f, 0.0f), new Vector2(8.0f, 0.0f), 1.0f);
 
         {
             B2CastOutput output = b2CastRayCircle(circle, input);

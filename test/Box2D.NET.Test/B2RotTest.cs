@@ -5,6 +5,7 @@
 using NUnit.Framework;
 using static Box2D.NET.B2MathFunction;
 using System;
+using System.Numerics;
 
 namespace Box2D.NET.Test;
 
@@ -36,7 +37,7 @@ public class B2RotTest
     public void Test_B2Rot_VectorRotation()
     {
         var rot = b2MakeRot(B2_PI / 2);
-        var vec = new B2Vec2(1.0f, 0.0f);
+        var vec = new Vector2(1.0f, 0.0f);
         var result = b2RotateVector(rot, vec);
         Assert.That(result.X, Is.EqualTo(0.0f).Within(FLT_EPSILON), "90-degree rotation should map (1,0) to (0,1)");
         Assert.That(result.Y, Is.EqualTo(1.0f).Within(FLT_EPSILON), "90-degree rotation should map (1,0) to (0,1)");
@@ -131,7 +132,7 @@ public class B2RotTest
     public void Test_B2Rot_InvRotateVector()
     {
         var rot = b2MakeRot(B2_PI / 2);
-        var vec = new B2Vec2(0.0f, 1.0f);
+        var vec = new Vector2(0.0f, 1.0f);
         var result = b2InvRotateVector(rot, vec);
         Assert.That(result.X, Is.EqualTo(1.0f).Within(FLT_EPSILON), "Inverse rotation should map (0,1) back to (1,0)");
         Assert.That(result.Y, Is.EqualTo(0.0f).Within(FLT_EPSILON), "Inverse rotation should map (0,1) back to (1,0)");

@@ -44,7 +44,7 @@ public class SensorFunnel : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 0.0f);
+            m_camera.center = new Vector2(0.0f, 0.0f);
             m_camera.zoom = 25.0f * 1.333f;
         }
 
@@ -61,21 +61,21 @@ public class SensorFunnel : Sample
             //{76.729, 193.146},	{42.333, 171.979},	{42.333, 121.708},	{76.729, 121.708},	{42.333, 100.542},
             //};
 
-            B2Vec2[] points = new B2Vec2[]
+            Vector2[] points = new Vector2[]
             {
-                new B2Vec2(-16.8672504f, 31.088623f), new B2Vec2(16.8672485f, 31.088623f),
-                new B2Vec2(16.8672485f, 17.1978741f),
-                new B2Vec2(8.26824951f, 11.906374f), new B2Vec2(16.8672485f, 11.906374f),
-                new B2Vec2(16.8672485f, -0.661376953f),
-                new B2Vec2(8.26824951f, -5.953125f), new B2Vec2(16.8672485f, -5.953125f),
-                new B2Vec2(16.8672485f, -13.229126f),
-                new B2Vec2(3.63799858f, -23.151123f), new B2Vec2(3.63799858f, -31.088623f),
-                new B2Vec2(-3.63800049f, -31.088623f),
-                new B2Vec2(-3.63800049f, -23.151123f), new B2Vec2(-16.8672504f, -13.229126f),
-                new B2Vec2(-16.8672504f, -5.953125f),
-                new B2Vec2(-8.26825142f, -5.953125f), new B2Vec2(-16.8672504f, -0.661376953f),
-                new B2Vec2(-16.8672504f, 11.906374f),
-                new B2Vec2(-8.26825142f, 11.906374f), new B2Vec2(-16.8672504f, 17.1978741f),
+                new Vector2(-16.8672504f, 31.088623f), new Vector2(16.8672485f, 31.088623f),
+                new Vector2(16.8672485f, 17.1978741f),
+                new Vector2(8.26824951f, 11.906374f), new Vector2(16.8672485f, 11.906374f),
+                new Vector2(16.8672485f, -0.661376953f),
+                new Vector2(8.26824951f, -5.953125f), new Vector2(16.8672485f, -5.953125f),
+                new Vector2(16.8672485f, -13.229126f),
+                new Vector2(3.63799858f, -23.151123f), new Vector2(3.63799858f, -31.088623f),
+                new Vector2(-3.63800049f, -31.088623f),
+                new Vector2(-3.63800049f, -23.151123f), new Vector2(-16.8672504f, -13.229126f),
+                new Vector2(-16.8672504f, -5.953125f),
+                new Vector2(-8.26825142f, -5.953125f), new Vector2(-16.8672504f, -0.661376953f),
+                new Vector2(-16.8672504f, 11.906374f),
+                new Vector2(-8.26825142f, 11.906374f), new Vector2(-16.8672504f, 17.1978741f),
             };
 
             int count = points.Length;
@@ -127,7 +127,7 @@ public class SensorFunnel : Sample
             float y = 14.0f;
             for (int i = 0; i < 3; ++i)
             {
-                bodyDef.position = b2ToPos(new B2Vec2(0.0f, y));
+                bodyDef.position = b2ToPos(new Vector2(0.0f, y));
                 bodyDef.type = B2BodyType.b2_dynamicBody;
 
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
@@ -144,7 +144,7 @@ public class SensorFunnel : Sample
                 revoluteDef.@base.bodyIdA = groundId;
                 revoluteDef.@base.bodyIdB = bodyId;
                 revoluteDef.@base.localFrameA.p = b2ToVec2(bodyDef.position);
-                revoluteDef.@base.localFrameB.p = b2Vec2_zero;
+                revoluteDef.@base.localFrameB.p = Vector2Zero;
                 revoluteDef.maxMotorTorque = 200.0f;
                 revoluteDef.motorSpeed = 2.0f * sign;
                 revoluteDef.enableMotor = true;
@@ -156,7 +156,7 @@ public class SensorFunnel : Sample
             }
 
             {
-                B2Polygon box = b2MakeOffsetBox(4.0f, 1.0f, new B2Vec2(0.0f, -30.5f), b2Rot_identity);
+                B2Polygon box = b2MakeOffsetBox(4.0f, 1.0f, new Vector2(0.0f, -30.5f), b2Rot_identity);
                 B2ShapeDef shapeDef = b2DefaultShapeDef();
                 shapeDef.isSensor = true;
                 shapeDef.enableSensorEvents = true;
@@ -200,7 +200,7 @@ public class SensorFunnel : Sample
             return;
         }
 
-        B2Vec2 center = new B2Vec2(m_side, 29.5f);
+        Vector2 center = new Vector2(m_side, 29.5f);
 
         if (m_type == (int)e_donut)
         {

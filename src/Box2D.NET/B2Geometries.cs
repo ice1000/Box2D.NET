@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using static Box2D.NET.B2MathFunction;
 using static Box2D.NET.B2Constants;
 using static Box2D.NET.B2Hulls;
@@ -23,22 +24,22 @@ namespace Box2D.NET
             return isValid;
         }
 
-        internal static B2Vec2 b2ComputePolygonCentroid(ReadOnlySpan<B2Vec2> vertices, int count)
+        internal static Vector2 b2ComputePolygonCentroid(ReadOnlySpan<Vector2> vertices, int count)
         {
-            B2Vec2 center = new B2Vec2(0.0f, 0.0f);
+            Vector2 center = new Vector2(0.0f, 0.0f);
             float area = 0.0f;
 
             // Get a reference point for forming triangles.
             // Use the first vertex to reduce round-off errors.
-            B2Vec2 origin = vertices[0];
+            Vector2 origin = vertices[0];
 
             const float inv3 = 1.0f / 3.0f;
 
             for (int i = 1; i < count - 1; ++i)
             {
                 // Triangle edges
-                B2Vec2 e1 = b2Sub(vertices[i], origin);
-                B2Vec2 e2 = b2Sub(vertices[i + 1], origin);
+                Vector2 e1 = b2Sub(vertices[i], origin);
+                Vector2 e2 = b2Sub(vertices[i + 1], origin);
                 float a = 0.5f * b2Cross(e1, e2);
 
                 // Area weighted centroid
@@ -84,7 +85,7 @@ namespace Box2D.NET
             {
                 int i1 = i;
                 int i2 = i + 1 < shape.count ? i + 1 : 0;
-                B2Vec2 edge = b2Sub(shape.vertices[i2], shape.vertices[i1]);
+                Vector2 edge = b2Sub(shape.vertices[i2], shape.vertices[i1]);
                 B2_ASSERT(b2Dot(edge, edge) > FLT_EPSILON * FLT_EPSILON);
                 shape.normals[i] = b2Normalize(b2CrossVS(edge, 1.0f));
             }
@@ -96,14 +97,14 @@ namespace Box2D.NET
 
         /// Make an offset convex polygon from a convex hull. This will assert if the hull is not valid.
         /// @warning Do not manually fill in the hull data, it must come directly from b2ComputeHull
-        public static B2Polygon b2MakeOffsetPolygon(in B2Hull hull, B2Vec2 position, B2Rot rotation)
+        public static B2Polygon b2MakeOffsetPolygon(in B2Hull hull, Vector2 position, B2Rot rotation)
         {
             return b2MakeOffsetRoundedPolygon(hull, position, rotation, 0.0f);
         }
 
         /// Make an offset convex polygon from a convex hull. This will assert if the hull is not valid.
         /// @warning Do not manually fill in the hull data, it must come directly from b2ComputeHull
-        public static B2Polygon b2MakeOffsetRoundedPolygon(in B2Hull hull, B2Vec2 position, B2Rot rotation, float radius)
+        public static B2Polygon b2MakeOffsetRoundedPolygon(in B2Hull hull, Vector2 position, B2Rot rotation, float radius)
         {
             B2_ASSERT(b2ValidateHull(hull));
 
@@ -130,7 +131,7 @@ namespace Box2D.NET
             {
                 int i1 = i;
                 int i2 = i + 1 < shape.count ? i + 1 : 0;
-                B2Vec2 edge = b2Sub(shape.vertices[i2], shape.vertices[i1]);
+                Vector2 edge = b2Sub(shape.vertices[i2], shape.vertices[i1]);
                 B2_ASSERT(b2Dot(edge, edge) > FLT_EPSILON * FLT_EPSILON);
                 shape.normals[i] = b2Normalize(b2CrossVS(edge, 1.0f));
             }
@@ -157,16 +158,16 @@ namespace Box2D.NET
 
             B2Polygon shape = new B2Polygon();
             shape.count = 4;
-            shape.vertices[0] = new B2Vec2(-halfWidth, -halfHeight);
-            shape.vertices[1] = new B2Vec2(halfWidth, -halfHeight);
-            shape.vertices[2] = new B2Vec2(halfWidth, halfHeight);
-            shape.vertices[3] = new B2Vec2(-halfWidth, halfHeight);
-            shape.normals[0] = new B2Vec2(0.0f, -1.0f);
-            shape.normals[1] = new B2Vec2(1.0f, 0.0f);
-            shape.normals[2] = new B2Vec2(0.0f, 1.0f);
-            shape.normals[3] = new B2Vec2(-1.0f, 0.0f);
+            shape.vertices[0] = new Vector2(-halfWidth, -halfHeight);
+            shape.vertices[1] = new Vector2(halfWidth, -halfHeight);
+            shape.vertices[2] = new Vector2(halfWidth, halfHeight);
+            shape.vertices[3] = new Vector2(-halfWidth, halfHeight);
+            shape.normals[0] = new Vector2(0.0f, -1.0f);
+            shape.normals[1] = new Vector2(1.0f, 0.0f);
+            shape.normals[2] = new Vector2(0.0f, 1.0f);
+            shape.normals[3] = new Vector2(-1.0f, 0.0f);
             shape.radius = 0.0f;
-            shape.centroid = b2Vec2_zero;
+            shape.centroid = Vector2Zero;
             return shape;
         }
 
@@ -187,20 +188,20 @@ namespace Box2D.NET
         /// @param halfHeight the half-height (y-axis)
         /// @param center the local center of the box
         /// @param rotation the local rotation of the box
-        public static B2Polygon b2MakeOffsetBox(float halfWidth, float halfHeight, B2Vec2 center, B2Rot rotation)
+        public static B2Polygon b2MakeOffsetBox(float halfWidth, float halfHeight, Vector2 center, B2Rot rotation)
         {
             B2Transform xf = new B2Transform(center, rotation);
 
             B2Polygon shape = new B2Polygon();
             shape.count = 4;
-            shape.vertices[0] = b2TransformPoint(xf, new B2Vec2(-halfWidth, -halfHeight));
-            shape.vertices[1] = b2TransformPoint(xf, new B2Vec2(halfWidth, -halfHeight));
-            shape.vertices[2] = b2TransformPoint(xf, new B2Vec2(halfWidth, halfHeight));
-            shape.vertices[3] = b2TransformPoint(xf, new B2Vec2(-halfWidth, halfHeight));
-            shape.normals[0] = b2RotateVector(xf.q, new B2Vec2(0.0f, -1.0f));
-            shape.normals[1] = b2RotateVector(xf.q, new B2Vec2(1.0f, 0.0f));
-            shape.normals[2] = b2RotateVector(xf.q, new B2Vec2(0.0f, 1.0f));
-            shape.normals[3] = b2RotateVector(xf.q, new B2Vec2(-1.0f, 0.0f));
+            shape.vertices[0] = b2TransformPoint(xf, new Vector2(-halfWidth, -halfHeight));
+            shape.vertices[1] = b2TransformPoint(xf, new Vector2(halfWidth, -halfHeight));
+            shape.vertices[2] = b2TransformPoint(xf, new Vector2(halfWidth, halfHeight));
+            shape.vertices[3] = b2TransformPoint(xf, new Vector2(-halfWidth, halfHeight));
+            shape.normals[0] = b2RotateVector(xf.q, new Vector2(0.0f, -1.0f));
+            shape.normals[1] = b2RotateVector(xf.q, new Vector2(1.0f, 0.0f));
+            shape.normals[2] = b2RotateVector(xf.q, new Vector2(0.0f, 1.0f));
+            shape.normals[3] = b2RotateVector(xf.q, new Vector2(-1.0f, 0.0f));
             shape.radius = 0.0f;
             shape.centroid = xf.p;
             return shape;
@@ -212,21 +213,21 @@ namespace Box2D.NET
         /// @param center the local center of the box
         /// @param rotation the local rotation of the box
         /// @param radius the radius of the rounded extension
-        public static B2Polygon b2MakeOffsetRoundedBox(float halfWidth, float halfHeight, B2Vec2 center, B2Rot rotation, float radius)
+        public static B2Polygon b2MakeOffsetRoundedBox(float halfWidth, float halfHeight, Vector2 center, B2Rot rotation, float radius)
         {
             B2_ASSERT(b2IsValidFloat(radius) && radius >= 0.0f);
             B2Transform xf = new B2Transform(center, rotation);
 
             B2Polygon shape = new B2Polygon();
             shape.count = 4;
-            shape.vertices[0] = b2TransformPoint(xf, new B2Vec2(-halfWidth, -halfHeight));
-            shape.vertices[1] = b2TransformPoint(xf, new B2Vec2(halfWidth, -halfHeight));
-            shape.vertices[2] = b2TransformPoint(xf, new B2Vec2(halfWidth, halfHeight));
-            shape.vertices[3] = b2TransformPoint(xf, new B2Vec2(-halfWidth, halfHeight));
-            shape.normals[0] = b2RotateVector(xf.q, new B2Vec2(0.0f, -1.0f));
-            shape.normals[1] = b2RotateVector(xf.q, new B2Vec2(1.0f, 0.0f));
-            shape.normals[2] = b2RotateVector(xf.q, new B2Vec2(0.0f, 1.0f));
-            shape.normals[3] = b2RotateVector(xf.q, new B2Vec2(-1.0f, 0.0f));
+            shape.vertices[0] = b2TransformPoint(xf, new Vector2(-halfWidth, -halfHeight));
+            shape.vertices[1] = b2TransformPoint(xf, new Vector2(halfWidth, -halfHeight));
+            shape.vertices[2] = b2TransformPoint(xf, new Vector2(halfWidth, halfHeight));
+            shape.vertices[3] = b2TransformPoint(xf, new Vector2(-halfWidth, halfHeight));
+            shape.normals[0] = b2RotateVector(xf.q, new Vector2(0.0f, -1.0f));
+            shape.normals[1] = b2RotateVector(xf.q, new Vector2(1.0f, 0.0f));
+            shape.normals[2] = b2RotateVector(xf.q, new Vector2(0.0f, 1.0f));
+            shape.normals[3] = b2RotateVector(xf.q, new Vector2(-1.0f, 0.0f));
             shape.radius = radius;
             shape.centroid = xf.p;
             return shape;
@@ -268,8 +269,8 @@ namespace Box2D.NET
         {
             float radius = shape.radius;
             float rr = radius * radius;
-            B2Vec2 p1 = shape.center1;
-            B2Vec2 p2 = shape.center2;
+            Vector2 p1 = shape.center1;
+            Vector2 p2 = shape.center2;
             float length = b2Length(b2Sub(p2, p1));
             float ll = length * length;
 
@@ -347,7 +348,7 @@ namespace Box2D.NET
                 return b2ComputeCapsuleMass(capsule, density);
             }
 
-            Span<B2Vec2> vertices = stackalloc B2Vec2[B2_MAX_POLYGON_VERTICES];
+            Span<Vector2> vertices = stackalloc Vector2[B2_MAX_POLYGON_VERTICES];
             int count = shape.count;
             float radius = shape.radius;
 
@@ -358,10 +359,10 @@ namespace Box2D.NET
                 for (int i = 0; i < count; ++i)
                 {
                     int j = i == 0 ? count - 1 : i - 1;
-                    B2Vec2 n1 = shape.normals[j];
-                    B2Vec2 n2 = shape.normals[i];
+                    Vector2 n1 = shape.normals[j];
+                    Vector2 n2 = shape.normals[i];
 
-                    B2Vec2 mid = b2Normalize(b2Add(n1, n2));
+                    Vector2 mid = b2Normalize(b2Add(n1, n2));
                     vertices[i] = b2MulAdd(shape.vertices[i], sqrt2 * radius, mid);
                 }
             }
@@ -373,21 +374,21 @@ namespace Box2D.NET
                 }
             }
 
-            B2Vec2 center = new B2Vec2(0.0f, 0.0f);
+            Vector2 center = new Vector2(0.0f, 0.0f);
             float area = 0.0f;
             float rotationalInertia = 0.0f;
 
             // Get a reference point for forming triangles.
             // Use the first vertex to reduce round-off errors.
-            B2Vec2 r = vertices[0];
+            Vector2 r = vertices[0];
 
             const float inv3 = 1.0f / 3.0f;
 
             for (int i = 1; i < count - 1; ++i)
             {
                 // Triangle edges
-                B2Vec2 e1 = b2Sub(vertices[i], r);
-                B2Vec2 e2 = b2Sub(vertices[i + 1], r);
+                Vector2 e1 = b2Sub(vertices[i], r);
+                Vector2 e2 = b2Sub(vertices[i + 1], r);
 
                 float D = b2Cross(e1, e2);
 
@@ -440,8 +441,8 @@ namespace Box2D.NET
             B2Pos c = b2TransformWorldPoint(xf, shape.center);
             double r = (double)shape.radius + (double)extra;
             B2AABB aabb = new B2AABB(
-                new B2Vec2(b2RoundDownFloat(c.X - r), b2RoundDownFloat(c.Y - r)),
-                new B2Vec2(b2RoundUpFloat(c.X + r), b2RoundUpFloat(c.Y + r))
+                new Vector2(b2RoundDownFloat(c.X - r), b2RoundDownFloat(c.Y - r)),
+                new Vector2(b2RoundUpFloat(c.X + r), b2RoundUpFloat(c.Y + r))
             );
             return aabb;
         }
@@ -452,8 +453,8 @@ namespace Box2D.NET
             B2Pos v2 = b2TransformWorldPoint(xf, shape.center2);
             double r = (double)shape.radius + (double)extra;
             B2AABB aabb = new B2AABB(
-                new B2Vec2(b2RoundDownFloat((v1.X < v2.X ? v1.X : v2.X) - r), b2RoundDownFloat((v1.Y < v2.Y ? v1.Y : v2.Y) - r)),
-                new B2Vec2(b2RoundUpFloat((v1.X > v2.X ? v1.X : v2.X) + r), b2RoundUpFloat((v1.Y > v2.Y ? v1.Y : v2.Y) + r))
+                new Vector2(b2RoundDownFloat((v1.X < v2.X ? v1.X : v2.X) - r), b2RoundDownFloat((v1.Y < v2.Y ? v1.Y : v2.Y) - r)),
+                new Vector2(b2RoundUpFloat((v1.X > v2.X ? v1.X : v2.X) + r), b2RoundUpFloat((v1.Y > v2.Y ? v1.Y : v2.Y) + r))
             );
             return aabb;
         }
@@ -475,8 +476,8 @@ namespace Box2D.NET
 
             double r = (double)shape.radius + (double)extra;
             B2AABB aabb = new B2AABB(
-                new B2Vec2(b2RoundDownFloat(lx - r), b2RoundDownFloat(ly - r)),
-                new B2Vec2(b2RoundUpFloat(ux + r), b2RoundUpFloat(uy + r))
+                new Vector2(b2RoundDownFloat(lx - r), b2RoundDownFloat(ly - r)),
+                new Vector2(b2RoundUpFloat(ux + r), b2RoundUpFloat(uy + r))
             );
             return aabb;
         }
@@ -487,8 +488,8 @@ namespace Box2D.NET
             B2Pos v2 = b2TransformWorldPoint(xf, shape.point2);
             double e = (double)extra;
             B2AABB aabb = new B2AABB(
-                new B2Vec2(b2RoundDownFloat((v1.X < v2.X ? v1.X : v2.X) - e), b2RoundDownFloat((v1.Y < v2.Y ? v1.Y : v2.Y) - e)),
-                new B2Vec2(b2RoundUpFloat((v1.X > v2.X ? v1.X : v2.X) + e), b2RoundUpFloat((v1.Y > v2.Y ? v1.Y : v2.Y) + e))
+                new Vector2(b2RoundDownFloat((v1.X < v2.X ? v1.X : v2.X) - e), b2RoundDownFloat((v1.Y < v2.Y ? v1.Y : v2.Y) - e)),
+                new Vector2(b2RoundUpFloat((v1.X > v2.X ? v1.X : v2.X) + e), b2RoundUpFloat((v1.Y > v2.Y ? v1.Y : v2.Y) + e))
             );
             return aabb;
         }
@@ -534,27 +535,27 @@ namespace Box2D.NET
                 default:
                 {
                     B2_ASSERT(false);
-                    B2AABB empty = new B2AABB(new B2Vec2(0.0f, 0.0f), new B2Vec2(0.0f, 0.0f));
+                    B2AABB empty = new B2AABB(new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f));
                     return empty;
                 }
             }
         }
 
         /// Test a point for overlap with a circle in local space
-        public static bool b2PointInCircle(in B2Circle shape, B2Vec2 point)
+        public static bool b2PointInCircle(in B2Circle shape, Vector2 point)
         {
-            B2Vec2 center = shape.center;
+            Vector2 center = shape.center;
             return b2DistanceSquared(point, center) <= shape.radius * shape.radius;
         }
 
         /// Test a point for overlap with a capsule in local space
-        public static bool b2PointInCapsule(in B2Capsule shape, B2Vec2 point)
+        public static bool b2PointInCapsule(in B2Capsule shape, Vector2 point)
         {
             float rr = shape.radius * shape.radius;
-            B2Vec2 p1 = shape.center1;
-            B2Vec2 p2 = shape.center2;
+            Vector2 p1 = shape.center1;
+            Vector2 p2 = shape.center2;
 
-            B2Vec2 d = b2Sub(p2, p1);
+            Vector2 d = b2Sub(p2, p1);
             float dd = b2Dot(d, d);
             if (dd == 0.0f)
             {
@@ -569,14 +570,14 @@ namespace Box2D.NET
             // t = dot(point - p1, d) / dot(d, d)
             float t = b2Dot(b2Sub(point, p1), d) / dd;
             t = b2ClampFloat(t, 0.0f, 1.0f);
-            B2Vec2 c = b2MulAdd(p1, t, d);
+            Vector2 c = b2MulAdd(p1, t, d);
 
             // Is query point within radius around closest point?
             return b2DistanceSquared(point, c) <= rr;
         }
 
         /// Test a point for overlap with a convex polygon in local space
-        public static bool b2PointInPolygon(ref B2Polygon shape, B2Vec2 point)
+        public static bool b2PointInPolygon(ref B2Polygon shape, Vector2 point)
         {
             B2DistanceInput input = new B2DistanceInput();
             input.proxyA = b2MakeProxy(shape.vertices.AsSpan(), shape.count, 0.0f);
@@ -595,18 +596,18 @@ namespace Box2D.NET
         {
             B2_ASSERT(b2IsValidRay(input));
 
-            B2Vec2 p = shape.center;
+            Vector2 p = shape.center;
 
             B2CastOutput output = new B2CastOutput();
 
             // Shift ray so circle center is the origin
-            B2Vec2 s = b2Sub(input.origin, p);
+            Vector2 s = b2Sub(input.origin, p);
 
             float r = shape.radius;
             float rr = r * r;
 
             float length = 0;
-            B2Vec2 d = b2GetLengthAndNormalize(ref length, input.translation);
+            Vector2 d = b2GetLengthAndNormalize(ref length, input.translation);
             if (length == 0.0f)
             {
                 // zero length ray
@@ -627,7 +628,7 @@ namespace Box2D.NET
             float t = -b2Dot(s, d);
 
             // c is the closest point on the line to the origin
-            B2Vec2 c = b2MulAdd(s, t, d);
+            Vector2 c = b2MulAdd(s, t, d);
 
             float cc = b2Dot(c, c);
 
@@ -657,7 +658,7 @@ namespace Box2D.NET
             }
 
             // hit point relative to center
-            B2Vec2 hitPoint = b2MulAdd(s, fraction, d);
+            Vector2 hitPoint = b2MulAdd(s, fraction, d);
 
             output.fraction = fraction / length;
             output.normal = b2Normalize(hitPoint);
@@ -674,13 +675,13 @@ namespace Box2D.NET
 
             B2CastOutput output = new B2CastOutput();
 
-            B2Vec2 v1 = shape.center1;
-            B2Vec2 v2 = shape.center2;
+            Vector2 v1 = shape.center1;
+            Vector2 v2 = shape.center2;
 
-            B2Vec2 e = b2Sub(v2, v1);
+            Vector2 e = b2Sub(v2, v1);
 
             float capsuleLength = 0;
-            B2Vec2 a = b2GetLengthAndNormalize(ref capsuleLength, e);
+            Vector2 a = b2GetLengthAndNormalize(ref capsuleLength, e);
 
             if (capsuleLength < FLT_EPSILON)
             {
@@ -689,15 +690,15 @@ namespace Box2D.NET
                 return b2CastRayCircle(circle, input);
             }
 
-            B2Vec2 p1 = input.origin;
-            B2Vec2 d = input.translation;
+            Vector2 p1 = input.origin;
+            Vector2 d = input.translation;
 
             // Ray from capsule start to ray start
-            B2Vec2 q = b2Sub(p1, v1);
+            Vector2 q = b2Sub(p1, v1);
             float qa = b2Dot(q, a);
 
             // Vector to ray start that is perpendicular to capsule axis
-            B2Vec2 qp = b2MulAdd(q, -qa, a);
+            Vector2 qp = b2MulAdd(q, -qa, a);
 
             float radius = shape.radius;
 
@@ -725,10 +726,10 @@ namespace Box2D.NET
             }
 
             // Perpendicular to capsule axis, pointing right
-            B2Vec2 n = new B2Vec2(a.Y, -a.X);
+            Vector2 n = new Vector2(a.Y, -a.X);
 
             float rayLength = 0;
-            B2Vec2 u = b2GetLengthAndNormalize(ref rayLength, d);
+            Vector2 u = b2GetLengthAndNormalize(ref rayLength, d);
 
             // Intersect ray with infinite length capsule
             // v1 + radius * n + s1 * a = p1 + s2 * u
@@ -747,8 +748,8 @@ namespace Box2D.NET
                 return output;
             }
 
-            B2Vec2 b1 = b2MulSub(q, radius, n);
-            B2Vec2 b2 = b2MulAdd(q, radius, n);
+            Vector2 b1 = b2MulSub(q, radius, n);
+            Vector2 b2 = b2MulAdd(q, radius, n);
 
             float invDen = 1.0f / den;
 
@@ -759,7 +760,7 @@ namespace Box2D.NET
             float s22 = (a.X * b2.Y - b2.X * a.Y) * invDen;
 
             float s2;
-            B2Vec2 b;
+            Vector2 b;
             if (s21 < s22)
             {
                 s2 = s21;
@@ -819,24 +820,24 @@ namespace Box2D.NET
             }
 
             // Put the ray into the edge's frame of reference.
-            B2Vec2 p1 = input.origin;
-            B2Vec2 d = input.translation;
+            Vector2 p1 = input.origin;
+            Vector2 d = input.translation;
 
-            B2Vec2 v1 = shape.point1;
-            B2Vec2 v2 = shape.point2;
-            B2Vec2 e = b2Sub(v2, v1);
+            Vector2 v1 = shape.point1;
+            Vector2 v2 = shape.point2;
+            Vector2 e = b2Sub(v2, v1);
 
             B2CastOutput output = new B2CastOutput();
 
             float length = 0;
-            B2Vec2 eUnit = b2GetLengthAndNormalize(ref length, e);
+            Vector2 eUnit = b2GetLengthAndNormalize(ref length, e);
             if (length == 0.0f)
             {
                 return output;
             }
 
             // Normal points to the right, looking from v1 towards v2
-            B2Vec2 normal = b2RightPerp(eUnit);
+            Vector2 normal = b2RightPerp(eUnit);
 
             // Intersect ray with infinite segment using normal
             // Similar to intersecting a ray with an infinite plane
@@ -860,7 +861,7 @@ namespace Box2D.NET
             }
 
             // Intersection point on infinite segment
-            B2Vec2 p = b2MulAdd(p1, t, d);
+            Vector2 p = b2MulAdd(p1, t, d);
 
             // Compute position of p along segment
             // p = v1 + s * e
@@ -895,10 +896,10 @@ namespace Box2D.NET
             {
                 // Shift all math to first vertex since the polygon may be far
                 // from the origin.
-                B2Vec2 @base = shape.vertices[0];
+                Vector2 @base = shape.vertices[0];
 
-                B2Vec2 p1 = b2Sub(input.origin, @base);
-                B2Vec2 d = input.translation;
+                Vector2 p1 = b2Sub(input.origin, @base);
+                Vector2 d = input.translation;
 
                 float lower = 0.0f, upper = input.maxFraction;
 
@@ -911,7 +912,7 @@ namespace Box2D.NET
                     // p = p1 + a * d
                     // dot(normal, p - v) = 0
                     // dot(normal, p1 - v) + a * dot(normal, d) = 0
-                    B2Vec2 vertex = b2Sub(shape.vertices[edgeIndex], @base);
+                    Vector2 vertex = b2Sub(shape.vertices[edgeIndex], @base);
                     float numerator = b2Dot(shape.normals[edgeIndex], b2Sub(vertex, p1));
                     float denominator = b2Dot(shape.normals[edgeIndex], d);
 

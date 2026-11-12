@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     /**@}*/
@@ -67,7 +69,7 @@ namespace Box2D.NET
         public B2AABB[] leafBoxes;
 
         /// Leaf bounding box centers for rebuild
-        public B2Vec2[] leafCenters;
+        public Vector2[] leafCenters;
 
         /// Bins for sorting during rebuild
         public int[] binIndices;

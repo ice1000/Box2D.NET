@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using System.Text;
 using Box2D.NET.Test.Helpers;
 using NUnit.Framework;
@@ -30,7 +31,7 @@ public class B2BodiesTest
         // Create a dynamic body
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(0.0f, 0.0f));
+        bodyDef.position = b2ToPos(new Vector2(0.0f, 0.0f));
         B2BodyId bodyId = b2CreateBody(worldId, bodyDef);
         Assert.That(b2Body_IsValid(bodyId));
 
@@ -46,7 +47,7 @@ public class B2BodiesTest
 
         // Test case 1: Velocity within limits - should remain unchanged
         {
-            state.linearVelocity = new B2Vec2(5.0f, 0.0f);
+            state.linearVelocity = new Vector2(5.0f, 0.0f);
             b2LimitVelocity(state, 10.0f);
             Assert.That(state.linearVelocity.X, Is.EqualTo(5.0f), "Linear velocity should remain unchanged when within limits");
             Assert.That(state.linearVelocity.Y, Is.EqualTo(0.0f), "Linear velocity Y component should remain unchanged");
@@ -54,7 +55,7 @@ public class B2BodiesTest
 
         // Test case 2: Linear velocity exceeds limit - should be capped
         {
-            state.linearVelocity = new B2Vec2(15.0f, 0.0f);
+            state.linearVelocity = new Vector2(15.0f, 0.0f);
             b2LimitVelocity(state, 10.0f);
             Assert.That(state.linearVelocity.X, Is.EqualTo(10.0f), "Linear velocity should be limited to maxLinearSpeed");
             Assert.That(state.linearVelocity.Y, Is.EqualTo(0.0f), "Linear velocity Y component should remain unchanged");
@@ -62,7 +63,7 @@ public class B2BodiesTest
 
         // Test case 3: Diagonal velocity exceeds limit - magnitude should be capped while preserving direction
         {
-            state.linearVelocity = new B2Vec2(8.0f, 8.0f);
+            state.linearVelocity = new Vector2(8.0f, 8.0f);
             b2LimitVelocity(state, 10.0f);
             float expectedMagnitude = 10.0f;
             float actualMagnitude = b2Length(state.linearVelocity);
@@ -82,7 +83,7 @@ public class B2BodiesTest
         // Create a dynamic body
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(0.0f, 0.0f));
+        bodyDef.position = b2ToPos(new Vector2(0.0f, 0.0f));
         B2BodyId bodyId = b2CreateBody(worldId, bodyDef);
         Assert.That(b2Body_IsValid(bodyId), "Body should be valid after creation");
 
@@ -122,7 +123,7 @@ public class B2BodiesTest
         // Create a dynamic body with initial position
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(1.0f, 2.0f));
+        bodyDef.position = b2ToPos(new Vector2(1.0f, 2.0f));
         B2BodyId bodyId = b2CreateBody(worldId, bodyDef);
         B2Body body = b2GetBodyFullId(world, bodyId);
 
@@ -195,8 +196,8 @@ public class B2BodiesTest
         // Create a dynamic body with initial position and velocity
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(1.0f, 2.0f));
-        bodyDef.linearVelocity = new B2Vec2(3.0f, 4.0f);
+        bodyDef.position = b2ToPos(new Vector2(1.0f, 2.0f));
+        bodyDef.linearVelocity = new Vector2(3.0f, 4.0f);
         bodyDef.angularVelocity = 5.0f;
         B2BodyId bodyId = b2CreateBody(worldId, bodyDef);
         Assert.That(b2Body_IsValid(bodyId), "Body should be valid after creation");
@@ -236,8 +237,8 @@ public class B2BodiesTest
         // Create a dynamic body with initial position and velocity
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(1.0f, 2.0f));
-        bodyDef.linearVelocity = new B2Vec2(3.0f, 4.0f);
+        bodyDef.position = b2ToPos(new Vector2(1.0f, 2.0f));
+        bodyDef.linearVelocity = new Vector2(3.0f, 4.0f);
         bodyDef.angularVelocity = 5.0f;
         B2BodyId bodyId = b2CreateBody(worldId, bodyDef);
         Assert.That(b2Body_IsValid(bodyId), "Body should be valid after creation");

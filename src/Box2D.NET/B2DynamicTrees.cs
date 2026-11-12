@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using static Box2D.NET.B2Constants;
 using static Box2D.NET.B2Diagnostics;
@@ -76,8 +77,8 @@ namespace Box2D.NET
             return new B2TreeNode
             {
                 aabb = new B2AABB(
-                    new B2Vec2(float.PositiveInfinity, float.PositiveInfinity),
-                    new B2Vec2(float.NegativeInfinity, float.NegativeInfinity)
+                    new Vector2(float.PositiveInfinity, float.PositiveInfinity),
+                    new Vector2(float.NegativeInfinity, float.NegativeInfinity)
                 ),
                 flagIndex = B2_EMPTY_NODE,
                 height = 0,
@@ -400,7 +401,7 @@ namespace Box2D.NET
         // case2: D becomes a descendant of B along with a new internal node of area(D).
         private static int b2FindBestSibling(B2DynamicTree tree, in B2AABB boxD)
         {
-            B2Vec2 centerD = b2AABB_Center(boxD);
+            Vector2 centerD = b2AABB_Center(boxD);
             float areaD = b2Perimeter(boxD);
 
             B2TreeNode[] nodes = tree.nodes;
@@ -513,8 +514,8 @@ namespace Box2D.NET
 
                     // No clear choice based on lower bound surface area. This can happen when both
                     // children fully contain D. Fall back to node distance.
-                    B2Vec2 d1 = b2Sub(b2AABB_Center(box1), centerD);
-                    B2Vec2 d2 = b2Sub(b2AABB_Center(box2), centerD);
+                    Vector2 d1 = b2Sub(b2AABB_Center(box1), centerD);
+                    Vector2 d2 = b2Sub(b2AABB_Center(box2), centerD);
                     lowerCost1 = b2LengthSquared(d1);
                     lowerCost2 = b2LengthSquared(d2);
                 }
@@ -882,7 +883,7 @@ namespace Box2D.NET
         {
             if (tree.proxyCount == 0)
             {
-                return new B2AABB(b2Vec2_zero, b2Vec2_zero);
+                return new B2AABB(Vector2Zero, Vector2Zero);
             }
 
             return tree.nodes[B2_ROOT_NODE].aabb;
@@ -1008,7 +1009,7 @@ namespace Box2D.NET
             // leafBoxes
             size += tree.rebuildCapacity * B2SizeOf<B2AABB>.Size;
             // leafCenters
-            size += tree.rebuildCapacity * B2SizeOf<B2Vec2>.Size;
+            size += tree.rebuildCapacity * B2SizeOf<Vector2>.Size;
             // binIndices
             size += tree.rebuildCapacity * B2SizeOf<int>.Size;
 
@@ -1181,20 +1182,20 @@ namespace Box2D.NET
                 return result;
             }
 
-            B2Vec2 p1 = input.origin;
-            B2Vec2 d = input.translation;
+            Vector2 p1 = input.origin;
+            Vector2 d = input.translation;
 
-            B2Vec2 r = b2Normalize(d);
+            Vector2 r = b2Normalize(d);
 
             // v is perpendicular to the segment.
-            B2Vec2 v = b2CrossSV(1.0f, r);
-            B2Vec2 abs_v = b2Abs(v);
+            Vector2 v = b2CrossSV(1.0f, r);
+            Vector2 abs_v = b2Abs(v);
 
             // Separating axis for segment (Gino, p80).
             // |dot(v, p1 - c)| > dot(|v|, h)
             float maxFraction = input.maxFraction;
 
-            B2Vec2 p2 = b2MulAdd(p1, maxFraction, d);
+            Vector2 p2 = b2MulAdd(p1, maxFraction, d);
 
             // Build a bounding box for the segment.
             B2AABB segmentAABB = new B2AABB(b2Min(p1, p2), b2Max(p1, p2));
@@ -1230,8 +1231,8 @@ namespace Box2D.NET
                     // Separating axis for segment (Gino, p80).
                     // |dot(v, p1 - c)| > dot(|v|, h)
                     B2AABB nodeAABB = node.aabb;
-                    B2Vec2 c = b2AABB_Center(nodeAABB);
-                    B2Vec2 h = b2AABB_Extents(nodeAABB);
+                    Vector2 c = b2AABB_Center(nodeAABB);
+                    Vector2 h = b2AABB_Extents(nodeAABB);
                     float term1 = b2AbsFloat(b2Dot(v, b2Sub(p1, c)));
                     float term2 = b2Dot(abs_v, h);
                     if (term2 < term1)
@@ -1246,8 +1247,8 @@ namespace Box2D.NET
 
                 if (hitCount == 2 && isLeaf[0] == false && isLeaf[1] == false)
                 {
-                    B2Vec2 center1 = b2AABB_Center(nodes[hit[0]].aabb);
-                    B2Vec2 center2 = b2AABB_Center(nodes[hit[1]].aabb);
+                    Vector2 center1 = b2AABB_Center(nodes[hit[0]].aabb);
+                    Vector2 center2 = b2AABB_Center(nodes[hit[1]].aabb);
                     float d1 = b2DistanceSquared(center1, p1);
                     float d2 = b2DistanceSquared(center2, p1);
 
@@ -1334,13 +1335,13 @@ namespace Box2D.NET
 
             B2AABB originAABB = input.box;
 
-            B2Vec2 p1 = b2AABB_Center(originAABB);
-            B2Vec2 extension = b2AABB_Extents(originAABB);
+            Vector2 p1 = b2AABB_Center(originAABB);
+            Vector2 extension = b2AABB_Extents(originAABB);
 
             // v is perpendicular to the segment.
-            B2Vec2 r = input.translation;
-            B2Vec2 v = b2CrossSV(1.0f, r);
-            B2Vec2 abs_v = b2Abs(v);
+            Vector2 r = input.translation;
+            Vector2 v = b2CrossSV(1.0f, r);
+            Vector2 abs_v = b2Abs(v);
 
             // Separating axis for segment (Gino, p80).
             // |dot(v, p1 - c)| > dot(|v|, h)
@@ -1348,7 +1349,7 @@ namespace Box2D.NET
             float maxFraction = input.maxFraction;
 
             // Build total box for the cast
-            B2Vec2 t = b2MulSV(maxFraction, input.translation);
+            Vector2 t = b2MulSV(maxFraction, input.translation);
             B2AABB totalAABB = new B2AABB(
                 b2Min(originAABB.lowerBound, b2Add(originAABB.lowerBound, t)),
                 b2Max(originAABB.upperBound, b2Add(originAABB.upperBound, t))
@@ -1386,8 +1387,8 @@ namespace Box2D.NET
                     // |dot(v, p1 - c)| > dot(|v|, h)
                     // radius extension is added to the node in this case
                     B2AABB nodeAABB = node.aabb;
-                    B2Vec2 c = b2AABB_Center(nodeAABB);
-                    B2Vec2 h = b2Add(b2AABB_Extents(nodeAABB), extension);
+                    Vector2 c = b2AABB_Center(nodeAABB);
+                    Vector2 h = b2Add(b2AABB_Extents(nodeAABB), extension);
                     float term1 = b2AbsFloat(b2Dot(v, b2Sub(p1, c)));
                     float term2 = b2Dot(abs_v, h);
                     if (term2 < term1)
@@ -1402,8 +1403,8 @@ namespace Box2D.NET
 
                 if (hitCount == 2 && isLeaf[0] == false && isLeaf[1] == false)
                 {
-                    B2Vec2 center1 = b2AABB_Center(nodes[hit[0]].aabb);
-                    B2Vec2 center2 = b2AABB_Center(nodes[hit[1]].aabb);
+                    Vector2 center1 = b2AABB_Center(nodes[hit[0]].aabb);
+                    Vector2 center2 = b2AABB_Center(nodes[hit[1]].aabb);
                     float d1 = b2DistanceSquared(center1, p1);
                     float d2 = b2DistanceSquared(center2, p1);
 
@@ -1472,7 +1473,7 @@ namespace Box2D.NET
         // #if B2_TREE_HEURISTIC == 0
 
         // Median split heuristic
-        internal static int b2PartitionMid(Span<int> indices, Span<B2Vec2> centers, int count)
+        internal static int b2PartitionMid(Span<int> indices, Span<Vector2> centers, int count)
         {
             // Handle trivial case
             if (count <= 2)
@@ -1480,8 +1481,8 @@ namespace Box2D.NET
                 return count / 2;
             }
 
-            B2Vec2 lowerBound = centers[0];
-            B2Vec2 upperBound = centers[0];
+            Vector2 lowerBound = centers[0];
+            Vector2 upperBound = centers[0];
 
             for (int i = 1; i < count; ++i)
             {
@@ -1489,8 +1490,8 @@ namespace Box2D.NET
                 upperBound = b2Max(upperBound, centers[i]);
             }
 
-            B2Vec2 d = b2Sub(upperBound, lowerBound);
-            B2Vec2 c = new B2Vec2(0.5f * (lowerBound.X + upperBound.X), 0.5f * (lowerBound.Y + upperBound.Y));
+            Vector2 d = b2Sub(upperBound, lowerBound);
+            Vector2 c = new Vector2(0.5f * (lowerBound.X + upperBound.X), 0.5f * (lowerBound.Y + upperBound.Y));
 
             // Partition longest axis using the Hoare partition scheme
             // https://en.wikipedia.org/wiki/Quicksort
@@ -1527,7 +1528,7 @@ namespace Box2D.NET
 
                         // Swap centers
                         {
-                            B2Vec2 temp = centers[i1];
+                            Vector2 temp = centers[i1];
                             centers[i1] = centers[i2 - 1];
                             centers[i2 - 1] = temp;
                         }
@@ -1568,7 +1569,7 @@ namespace Box2D.NET
 
                         // Swap centers
                         {
-                            B2Vec2 temp = centers[i1];
+                            Vector2 temp = centers[i1];
                             centers[i1] = centers[i2 - 1];
                             centers[i2 - 1] = temp;
                         }
@@ -1602,7 +1603,7 @@ namespace Box2D.NET
             Span<B2TreeBin> bins = stackalloc B2TreeBin[B2_BIN_COUNT];
             Span<B2TreePlane> planes = stackalloc B2TreePlane[B2_BIN_COUNT - 1];
 
-            B2Vec2 center = b2AABB_Center(boxes[0]);
+            Vector2 center = b2AABB_Center(boxes[0]);
             B2AABB centroidAABB;
             centroidAABB.lowerBound = center;
             centroidAABB.upperBound = center;
@@ -1614,7 +1615,7 @@ namespace Box2D.NET
                 centroidAABB.upperBound = b2Max(centroidAABB.upperBound, center);
             }
 
-            B2Vec2 d = b2Sub(centroidAABB.upperBound, centroidAABB.lowerBound);
+            Vector2 d = b2Sub(centroidAABB.upperBound, centroidAABB.lowerBound);
 
             // Find longest axis
             int axisIndex;
@@ -1635,8 +1636,8 @@ namespace Box2D.NET
             // Initialize bin bounds and count
             for (int i = 0; i < B2_BIN_COUNT; ++i)
             {
-                bins[i].aabb.lowerBound = new B2Vec2(float.MaxValue, float.MaxValue);
-                bins[i].aabb.upperBound = new B2Vec2(-float.MaxValue, -float.MaxValue);
+                bins[i].aabb.lowerBound = new Vector2(float.MaxValue, float.MaxValue);
+                bins[i].aabb.upperBound = new Vector2(-float.MaxValue, -float.MaxValue);
                 bins[i].count = 0;
             }
 
@@ -1648,7 +1649,7 @@ namespace Box2D.NET
             float minC = lowerBoundArray[axisIndex];
             for (int i = 0; i < count; ++i)
             {
-                B2Vec2 c = b2AABB_Center(boxes[i]);
+                Vector2 c = b2AABB_Center(boxes[i]);
                 B2FixedArray2<float> cArray = new B2FixedArray2<float>(c.X, c.Y);
                 int binIndex = (int)(binCount * (cArray[axisIndex] - minC) * invD);
                 binIndex = b2ClampInt(binIndex, 0, B2_BIN_COUNT - 1);
@@ -1857,7 +1858,7 @@ namespace Box2D.NET
             int[] leafIndices = tree.leafIndices;
 
             //#if B2_TREE_HEURISTIC == 0
-            B2Vec2[] leafCenters = tree.leafCenters;
+            Vector2[] leafCenters = tree.leafCenters;
             //#else
             //B2AABB[] leafBoxes = tree.leafBoxes;
             //int[] binIndices = tree.binIndices;
@@ -1983,7 +1984,7 @@ namespace Box2D.NET
             int[] leafIndices = tree.leafIndices;
             B2TreeNode[] leaves = tree.leafNodes;
             //#if B2_TREE_HEURISTIC == 0
-            B2Vec2[] leafCenters = tree.leafCenters;
+            Vector2[] leafCenters = tree.leafCenters;
             //#else
             //B2AABB[] leafBoxes = tree.leafBoxes;
             //#endif

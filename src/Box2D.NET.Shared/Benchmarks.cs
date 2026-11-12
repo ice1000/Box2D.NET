@@ -43,7 +43,7 @@ namespace Box2D.NET.Shared
             shapeDef.filter.categoryBits = 2;
             shapeDef.filter.maskBits = ~2u;
 
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.4f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.4f);
 
             B2RevoluteJointDef jointDef = b2DefaultRevoluteJointDef();
             jointDef.@base.drawScale = 0.4f;
@@ -76,8 +76,8 @@ namespace Box2D.NET.Shared
                     {
                         jointDef.@base.bodyIdA = bodies[index - 1];
                         jointDef.@base.bodyIdB = body;
-                        jointDef.@base.localFrameA.p = new B2Vec2(0.0f, -0.5f);
-                        jointDef.@base.localFrameB.p = new B2Vec2(0.0f, 0.5f);
+                        jointDef.@base.localFrameA.p = new Vector2(0.0f, -0.5f);
+                        jointDef.@base.localFrameB.p = new Vector2(0.0f, 0.5f);
                         b2CreateRevoluteJoint(worldId, jointDef);
                     }
 
@@ -85,8 +85,8 @@ namespace Box2D.NET.Shared
                     {
                         jointDef.@base.bodyIdA = bodies[index - N];
                         jointDef.@base.bodyIdB = body;
-                        jointDef.@base.localFrameA.p = new B2Vec2(0.5f, 0.0f);
-                        jointDef.@base.localFrameB.p = new B2Vec2(-0.5f, 0.0f);
+                        jointDef.@base.localFrameA.p = new Vector2(0.5f, 0.0f);
+                        jointDef.@base.localFrameB.p = new Vector2(-0.5f, 0.0f);
                         b2CreateRevoluteJoint(worldId, jointDef);
                     }
 
@@ -184,7 +184,7 @@ namespace Box2D.NET.Shared
 
             for (int i = 0; i < rowCount; ++i)
             {
-                B2Segment segment = new B2Segment(new B2Vec2(-0.5f * groundWidth, groundY), new B2Vec2(0.5f * groundWidth, groundY));
+                B2Segment segment = new B2Segment(new Vector2(-0.5f * groundWidth, groundY), new Vector2(0.5f * groundWidth, groundY));
                 b2CreateSegmentShape(groundId, shapeDef, segment);
                 groundY += groundDeltaY;
             }
@@ -242,7 +242,7 @@ namespace Box2D.NET.Shared
                     float x = -0.5f * rainData.gridCount * rainData.gridSize;
                     for (int j = 0; j <= rainData.gridCount; ++j)
                     {
-                        B2Polygon box = b2MakeOffsetBox(0.5f * width, 0.5f * height, new B2Vec2(x, y), b2Rot_identity);
+                        B2Polygon box = b2MakeOffsetBox(0.5f * width, 0.5f * height, new Vector2(x, y), b2Rot_identity);
                         b2CreatePolygonShape(groundId, groundShapeDef, box);
 
                         //b2Segment segment = { { x - 0.5f * width, y }, { x + 0.5f * width, y } };
@@ -339,13 +339,13 @@ namespace Box2D.NET.Shared
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 groundId = b2CreateBody(worldId, bodyDef);
 
-                B2Vec2[] points = new B2Vec2[SPINNER_POINT_COUNT];
+                Vector2[] points = new Vector2[SPINNER_POINT_COUNT];
 
                 B2Rot q = b2MakeRot(-2.0f * B2_PI / SPINNER_POINT_COUNT);
-                B2Vec2 p = new B2Vec2(40.0f, 0.0f);
+                Vector2 p = new Vector2(40.0f, 0.0f);
                 for (int i = 0; i < SPINNER_POINT_COUNT; ++i)
                 {
-                    points[i] = new B2Vec2(p.X, p.Y + 32.0f);
+                    points[i] = new Vector2(p.X, p.Y + 32.0f);
                     p = b2RotateVector(q, p);
                 }
 
@@ -390,8 +390,8 @@ namespace Box2D.NET.Shared
             }
 
             {
-                B2Capsule capsule = new B2Capsule(new B2Vec2(-0.25f, 0.0f), new B2Vec2(0.25f, 0.0f), 0.25f);
-                B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.35f);
+                B2Capsule capsule = new B2Capsule(new Vector2(-0.25f, 0.0f), new Vector2(0.25f, 0.0f), 0.25f);
+                B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.35f);
                 B2Polygon square = b2MakeSquare(0.35f);
 
                 B2BodyDef bodyDef = b2DefaultBodyDef();
@@ -446,7 +446,7 @@ namespace Box2D.NET.Shared
 
         public static void CreateSmash(B2WorldId worldId, int rows, int columns, List<B2BodyId> bodyIds)
         {
-            b2World_SetGravity(worldId, b2Vec2_zero);
+            b2World_SetGravity(worldId, Vector2Zero);
 
             {
                 B2Polygon box = b2MakeBox(4.0f, 4.0f);
@@ -454,7 +454,7 @@ namespace Box2D.NET.Shared
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
                 bodyDef.position = new B2Pos(-20.0f, 0.0f);
-                bodyDef.linearVelocity = new B2Vec2(40.0f, 0.0f);
+                bodyDef.linearVelocity = new Vector2(40.0f, 0.0f);
                 B2BodyId bodyId = b2CreateBody(worldId, bodyDef);
 
                 B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -505,13 +505,13 @@ namespace Box2D.NET.Shared
                 shapeDef.density = 50.0f;
 
                 B2Polygon polygon;
-                polygon = b2MakeOffsetBox(0.5f, 10.0f, new B2Vec2(10.0f, 0.0f), b2Rot_identity);
+                polygon = b2MakeOffsetBox(0.5f, 10.0f, new Vector2(10.0f, 0.0f), b2Rot_identity);
                 b2CreatePolygonShape(bodyId, shapeDef, polygon);
-                polygon = b2MakeOffsetBox(0.5f, 10.0f, new B2Vec2(-10.0f, 0.0f), b2Rot_identity);
+                polygon = b2MakeOffsetBox(0.5f, 10.0f, new Vector2(-10.0f, 0.0f), b2Rot_identity);
                 b2CreatePolygonShape(bodyId, shapeDef, polygon);
-                polygon = b2MakeOffsetBox(10.0f, 0.5f, new B2Vec2(0.0f, 10.0f), b2Rot_identity);
+                polygon = b2MakeOffsetBox(10.0f, 0.5f, new Vector2(0.0f, 10.0f), b2Rot_identity);
                 b2CreatePolygonShape(bodyId, shapeDef, polygon);
-                polygon = b2MakeOffsetBox(10.0f, 0.5f, new B2Vec2(0.0f, -10.0f), b2Rot_identity);
+                polygon = b2MakeOffsetBox(10.0f, 0.5f, new Vector2(0.0f, -10.0f), b2Rot_identity);
                 b2CreatePolygonShape(bodyId, shapeDef, polygon);
 
                 float motorSpeed = 25.0f;
@@ -519,8 +519,8 @@ namespace Box2D.NET.Shared
                 B2RevoluteJointDef jointDef = b2DefaultRevoluteJointDef();
                 jointDef.@base.bodyIdA = groundId;
                 jointDef.@base.bodyIdB = bodyId;
-                jointDef.@base.localFrameA.p = new B2Vec2(0.0f, 10.0f);
-                jointDef.@base.localFrameB.p = new B2Vec2(0.0f, 0.0f);
+                jointDef.@base.localFrameA.p = new Vector2(0.0f, 10.0f);
+                jointDef.@base.localFrameB.p = new Vector2(0.0f, 0.0f);
                 jointDef.motorSpeed = (B2_PI / 180.0f) * motorSpeed;
                 jointDef.maxMotorTorque = 1e8f;
                 jointDef.enableMotor = true;
@@ -575,7 +575,7 @@ namespace Box2D.NET.Shared
                 {
                     bodyDef.type = B2BodyType.b2_kinematicBody;
                     bodyDef.angularVelocity = (B2_PI / 180.0f) * motorSpeed;
-                    bodyDef.linearVelocity = new B2Vec2(0.001f, -0.002f);
+                    bodyDef.linearVelocity = new Vector2(0.001f, -0.002f);
                 }
                 else
                 {
@@ -593,13 +593,13 @@ namespace Box2D.NET.Shared
                 float angle = B2_PI / 18.0f;
                 B2Rot q = new B2Rot(MathF.Cos(angle), MathF.Sin(angle));
                 B2Rot qo = new B2Rot(MathF.Cos(0.1f * angle), MathF.Sin(0.1f * angle));
-                B2Vec2 u1 = new B2Vec2(1.0f, 0.0f);
+                Vector2 u1 = new Vector2(1.0f, 0.0f);
                 for (int i = 0; i < 36; ++i)
                 {
-                    B2Vec2 u2;
+                    Vector2 u2;
                     if (i == 35)
                     {
-                        u2 = new B2Vec2(1.0f, 0.0f);
+                        u2 = new Vector2(1.0f, 0.0f);
                     }
                     else
                     {
@@ -607,15 +607,15 @@ namespace Box2D.NET.Shared
                     }
 
                     {
-                        B2Vec2 a1 = b2InvRotateVector(qo, u1);
-                        B2Vec2 a2 = b2RotateVector(qo, u2);
+                        Vector2 a1 = b2InvRotateVector(qo, u1);
+                        Vector2 a2 = b2RotateVector(qo, u2);
 
-                        B2Vec2 p1 = b2MulSV(r1, a1);
-                        B2Vec2 p2 = b2MulSV(r2, a1);
-                        B2Vec2 p3 = b2MulSV(r1, a2);
-                        B2Vec2 p4 = b2MulSV(r2, a2);
+                        Vector2 p1 = b2MulSV(r1, a1);
+                        Vector2 p2 = b2MulSV(r2, a1);
+                        Vector2 p3 = b2MulSV(r1, a2);
+                        Vector2 p4 = b2MulSV(r2, a2);
 
-                        B2Vec2[] points = new B2Vec2[] { p1, p2, p3, p4 };
+                        Vector2[] points = new Vector2[] { p1, p2, p3, p4 };
                         B2Hull hull = b2ComputeHull(points, 4);
 
                         B2Polygon polygon = b2MakePolygon(hull, 0.0f);
@@ -624,12 +624,12 @@ namespace Box2D.NET.Shared
 
                     if (i % 9 == 0)
                     {
-                        B2Vec2 p1 = b2MulSV(r0, u1);
-                        B2Vec2 p2 = b2MulSV(r1, u1);
-                        B2Vec2 p3 = b2MulSV(r0, u2);
-                        B2Vec2 p4 = b2MulSV(r1, u2);
+                        Vector2 p1 = b2MulSV(r0, u1);
+                        Vector2 p2 = b2MulSV(r1, u1);
+                        Vector2 p3 = b2MulSV(r0, u2);
+                        Vector2 p4 = b2MulSV(r1, u2);
 
-                        B2Vec2[] points = new B2Vec2[] { p1, p2, p3, p4 };
+                        Vector2[] points = new Vector2[] { p1, p2, p3, p4 };
                         B2Hull hull = b2ComputeHull(points, 4);
 
                         B2Polygon polygon = b2MakePolygon(hull, 0.0f);
@@ -644,8 +644,8 @@ namespace Box2D.NET.Shared
                     B2RevoluteJointDef jointDef = b2DefaultRevoluteJointDef();
                     jointDef.@base.bodyIdA = groundId;
                     jointDef.@base.bodyIdB = bodyId;
-                    jointDef.@base.localFrameA.p = new B2Vec2(0.0f, 10.0f);
-                    jointDef.@base.localFrameB.p = new B2Vec2(0.0f, 0.0f);
+                    jointDef.@base.localFrameA.p = new Vector2(0.0f, 10.0f);
+                    jointDef.@base.localFrameB.p = new Vector2(0.0f, 0.0f);
                     jointDef.motorSpeed = (B2_PI / 180.0f) * motorSpeed;
                     jointDef.maxMotorTorque = 1e8f;
                     jointDef.enableMotor = true;
@@ -700,7 +700,7 @@ namespace Box2D.NET.Shared
                 float x = -80.0f * gridSize;
                 for (int i = 0; i < 161; ++i)
                 {
-                    B2Polygon box = b2MakeOffsetBox(0.55f * gridSize, 0.5f * gridSize, new B2Vec2(x, y), b2Rot_identity);
+                    B2Polygon box = b2MakeOffsetBox(0.55f * gridSize, 0.5f * gridSize, new Vector2(x, y), b2Rot_identity);
                     b2CreatePolygonShape(groundId, shapeDef, box);
                     x += gridSize;
                 }
@@ -709,7 +709,7 @@ namespace Box2D.NET.Shared
                 x = -80.0f * gridSize;
                 for (int i = 0; i < 50; ++i)
                 {
-                    B2Polygon box = b2MakeOffsetBox(0.5f * gridSize, 0.55f * gridSize, new B2Vec2(x, y), b2Rot_identity);
+                    B2Polygon box = b2MakeOffsetBox(0.5f * gridSize, 0.55f * gridSize, new Vector2(x, y), b2Rot_identity);
                     b2CreatePolygonShape(groundId, shapeDef, box);
                     y += gridSize;
                 }
@@ -718,7 +718,7 @@ namespace Box2D.NET.Shared
                 x = 80.0f * gridSize;
                 for (int i = 0; i < 50; ++i)
                 {
-                    B2Polygon box = b2MakeOffsetBox(0.5f * gridSize, 0.55f * gridSize, new B2Vec2(x, y), b2Rot_identity);
+                    B2Polygon box = b2MakeOffsetBox(0.5f * gridSize, 0.55f * gridSize, new Vector2(x, y), b2Rot_identity);
                     b2CreatePolygonShape(groundId, shapeDef, box);
                     y += gridSize;
                 }
@@ -732,7 +732,7 @@ namespace Box2D.NET.Shared
             {
                 // Fibonacci sphere algorithm
                 float phi = B2_PI * (MathF.Sqrt(5.0f) - 1.0f);
-                B2Vec2[] points = new B2Vec2[5];
+                Vector2[] points = new Vector2[5];
 
                 for (int i = 0; i < 5; ++i)
                 {
@@ -773,7 +773,7 @@ namespace Box2D.NET.Shared
                 bodyDef.type = B2BodyType.b2_kinematicBody;
                 bodyDef.position = b2Pos_zero;
                 junkyardData.pusherId = b2CreateBody(worldId, bodyDef);
-                B2Polygon pusherBox = b2MakeOffsetBox(2.0f, 4.0f, new B2Vec2(0.0f, 4.0f), b2Rot_identity);
+                B2Polygon pusherBox = b2MakeOffsetBox(2.0f, 4.0f, new Vector2(0.0f, 4.0f), b2Rot_identity);
                 b2CreatePolygonShape(junkyardData.pusherId, shapeDef, pusherBox);
             }
 
@@ -808,7 +808,7 @@ namespace Box2D.NET.Shared
                 float x = -40.0f * gridSize;
                 for (int i = 0; i < 81; ++i)
                 {
-                    B2Polygon box = b2MakeOffsetBox(0.55f * gridSize, 0.5f * gridSize, new B2Vec2(x, y), b2Rot_identity);
+                    B2Polygon box = b2MakeOffsetBox(0.55f * gridSize, 0.5f * gridSize, new Vector2(x, y), b2Rot_identity);
                     b2CreatePolygonShape(groundId, groundShapeDef, box);
                     x += gridSize;
                 }
@@ -817,7 +817,7 @@ namespace Box2D.NET.Shared
                 x = -40.0f * gridSize;
                 for (int i = 0; i < 100; ++i)
                 {
-                    B2Polygon box = b2MakeOffsetBox(0.5f * gridSize, 0.55f * gridSize, new B2Vec2(x, y), b2Rot_identity);
+                    B2Polygon box = b2MakeOffsetBox(0.5f * gridSize, 0.55f * gridSize, new Vector2(x, y), b2Rot_identity);
                     b2CreatePolygonShape(groundId, groundShapeDef, box);
                     y += gridSize;
                 }
@@ -826,23 +826,23 @@ namespace Box2D.NET.Shared
                 x = 40.0f * gridSize;
                 for (int i = 0; i < 100; ++i)
                 {
-                    B2Polygon box = b2MakeOffsetBox(0.5f * gridSize, 0.55f * gridSize, new B2Vec2(x, y), b2Rot_identity);
+                    B2Polygon box = b2MakeOffsetBox(0.5f * gridSize, 0.55f * gridSize, new Vector2(x, y), b2Rot_identity);
                     b2CreatePolygonShape(groundId, groundShapeDef, box);
                     y += gridSize;
                 }
 
-                B2Segment segment = new B2Segment(new B2Vec2(-800.0f, -80.0f), new B2Vec2(800.0f, -80.0f));
+                B2Segment segment = new B2Segment(new Vector2(-800.0f, -80.0f), new Vector2(800.0f, -80.0f));
                 b2CreateSegmentShape(groundId, groundShapeDef, segment);
             }
 
             int columnCount = BENCHMARK_DEBUG ? 10 : 20;
             int rowCount = BENCHMARK_DEBUG ? 40 : 150;
 
-            B2Vec2[] leftPoints = new B2Vec2[] { new B2Vec2(-1.0f, 0.0f), new B2Vec2(0.5f, 1.0f), new B2Vec2(0.0f, 2.0f) };
+            Vector2[] leftPoints = new Vector2[] { new Vector2(-1.0f, 0.0f), new Vector2(0.5f, 1.0f), new Vector2(0.0f, 2.0f) };
             B2Hull leftHull = b2ComputeHull(leftPoints, 3);
             B2Polygon left = b2MakePolygon(leftHull, 0.0f);
 
-            B2Vec2[] rightPoints = new B2Vec2[] { new B2Vec2(1.0f, 0.0f), new B2Vec2(-0.5f, 1.0f), new B2Vec2(0.0f, 2.0f) };
+            Vector2[] rightPoints = new Vector2[] { new Vector2(1.0f, 0.0f), new Vector2(-0.5f, 1.0f), new Vector2(0.0f, 2.0f) };
             B2Hull rightHull = b2ComputeHull(rightPoints, 3);
             B2Polygon right = b2MakePolygon(rightHull, 0.0f);
 

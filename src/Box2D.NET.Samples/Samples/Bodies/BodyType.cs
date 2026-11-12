@@ -37,7 +37,7 @@ public class BodyType : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.8f, 6.4f);
+            m_camera.center = new Vector2(0.8f, 6.4f);
             m_camera.zoom = 25.0f * 0.4f;
         }
 
@@ -50,7 +50,7 @@ public class BodyType : Sample
             bodyDef.name = "ground";
             groundId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Segment segment = new B2Segment(new B2Vec2(-20.0f, 0.0f), new B2Vec2(20.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
@@ -59,7 +59,7 @@ public class BodyType : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(-2.0f, 3.0f));
+            bodyDef.position = b2ToPos(new Vector2(-2.0f, 3.0f));
             bodyDef.name = "attach1";
             m_attachmentId = b2CreateBody(m_worldId, bodyDef);
 
@@ -74,7 +74,7 @@ public class BodyType : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = m_type;
             bodyDef.isEnabled = m_isEnabled;
-            bodyDef.position = b2ToPos(new B2Vec2(3.0f, 3.0f));
+            bodyDef.position = b2ToPos(new Vector2(3.0f, 3.0f));
             bodyDef.name = "attach2";
             m_secondAttachmentId = b2CreateBody(m_worldId, bodyDef);
 
@@ -89,18 +89,18 @@ public class BodyType : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = m_type;
             bodyDef.isEnabled = m_isEnabled;
-            bodyDef.position = b2ToPos(new B2Vec2(-4.0f, 5.0f));
+            bodyDef.position = b2ToPos(new Vector2(-4.0f, 5.0f));
             bodyDef.name = "platform";
             m_platformId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Polygon box = b2MakeOffsetBox(0.5f, 4.0f, new B2Vec2(4.0f, 0.0f), b2MakeRot(0.5f * B2_PI));
+            B2Polygon box = b2MakeOffsetBox(0.5f, 4.0f, new Vector2(4.0f, 0.0f), b2MakeRot(0.5f * B2_PI));
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.density = 2.0f;
             b2CreatePolygonShape(m_platformId, shapeDef, box);
 
             B2RevoluteJointDef revoluteDef = b2DefaultRevoluteJointDef();
-            B2Vec2 pivot = new B2Vec2(-2.0f, 5.0f);
+            Vector2 pivot = new Vector2(-2.0f, 5.0f);
             revoluteDef.@base.bodyIdA = m_attachmentId;
             revoluteDef.@base.bodyIdB = m_platformId;
             revoluteDef.@base.localFrameA.p = b2Body_GetLocalPoint(m_attachmentId, b2ToPos(pivot));
@@ -109,7 +109,7 @@ public class BodyType : Sample
             revoluteDef.enableMotor = true;
             b2CreateRevoluteJoint(m_worldId, revoluteDef);
 
-            pivot = new B2Vec2(3.0f, 5.0f);
+            pivot = new Vector2(3.0f, 5.0f);
             revoluteDef.@base.bodyIdA = m_secondAttachmentId;
             revoluteDef.@base.bodyIdB = m_platformId;
             revoluteDef.@base.localFrameA.p = b2Body_GetLocalPoint(m_secondAttachmentId, b2ToPos(pivot));
@@ -119,7 +119,7 @@ public class BodyType : Sample
             b2CreateRevoluteJoint(m_worldId, revoluteDef);
 
             B2PrismaticJointDef prismaticDef = b2DefaultPrismaticJointDef();
-            B2Vec2 anchor = new B2Vec2(0.0f, 5.0f);
+            Vector2 anchor = new Vector2(0.0f, 5.0f);
             prismaticDef.@base.bodyIdA = groundId;
             prismaticDef.@base.bodyIdB = m_platformId;
             prismaticDef.@base.localFrameA.p = b2Body_GetLocalPoint(groundId, b2ToPos(anchor));
@@ -140,7 +140,7 @@ public class BodyType : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(-3.0f, 8.0f));
+            bodyDef.position = b2ToPos(new Vector2(-3.0f, 8.0f));
             bodyDef.name = "crate1";
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
@@ -157,7 +157,7 @@ public class BodyType : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = m_type;
             bodyDef.isEnabled = m_isEnabled;
-            bodyDef.position = b2ToPos(new B2Vec2(2.0f, 8.0f));
+            bodyDef.position = b2ToPos(new Vector2(2.0f, 8.0f));
             bodyDef.name = "crate2";
             m_secondPayloadId = b2CreateBody(m_worldId, bodyDef);
 
@@ -174,11 +174,11 @@ public class BodyType : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = m_type;
             bodyDef.isEnabled = m_isEnabled;
-            bodyDef.position = b2ToPos(new B2Vec2(8.0f, 0.2f));
+            bodyDef.position = b2ToPos(new Vector2(8.0f, 0.2f));
             bodyDef.name = "debris";
             m_touchingBodyId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Capsule capsule = new B2Capsule(new B2Vec2(0.0f, 0.0f), new B2Vec2(1.0f, 0.0f), 0.25f);
+            B2Capsule capsule = new B2Capsule(new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), 0.25f);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.density = 2.0f;
@@ -191,11 +191,11 @@ public class BodyType : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_staticBody;
             bodyDef.isEnabled = m_isEnabled;
-            bodyDef.position = b2ToPos(new B2Vec2(8.5f, 0.2f));
+            bodyDef.position = b2ToPos(new Vector2(8.5f, 0.2f));
             bodyDef.name = "debris";
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Capsule capsule = new B2Capsule(new B2Vec2(0.0f, 0.0f), new B2Vec2(1.0f, 0.0f), 0.5f);
+            B2Capsule capsule = new B2Capsule(new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), 0.5f);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             b2CreateCapsuleShape(bodyId, shapeDef, capsule);
@@ -206,12 +206,12 @@ public class BodyType : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = m_type;
             bodyDef.isEnabled = m_isEnabled;
-            bodyDef.position = b2ToPos(new B2Vec2(-8.0f, 12.0f));
+            bodyDef.position = b2ToPos(new Vector2(-8.0f, 12.0f));
             bodyDef.gravityScale = 0.0f;
             bodyDef.name = "floater";
             m_floatingBodyId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.5f), 0.25f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 0.5f), 0.25f);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.density = 2.0f;
@@ -238,10 +238,10 @@ public class BodyType : Sample
         {
             m_type = B2BodyType.b2_kinematicBody;
             b2Body_SetType(m_platformId, B2BodyType.b2_kinematicBody);
-            b2Body_SetLinearVelocity(m_secondAttachmentId, b2Vec2_zero);
+            b2Body_SetLinearVelocity(m_secondAttachmentId, Vector2Zero);
             b2Body_SetAngularVelocity(m_secondAttachmentId, 0.0f);
 
-            b2Body_SetLinearVelocity(m_platformId, new B2Vec2(-m_speed, 0.0f));
+            b2Body_SetLinearVelocity(m_platformId, new Vector2(-m_speed, 0.0f));
             b2Body_SetAngularVelocity(m_platformId, 0.0f);
             b2Body_SetType(m_secondAttachmentId, B2BodyType.b2_kinematicBody);
             b2Body_SetType(m_secondPayloadId, B2BodyType.b2_kinematicBody);
@@ -285,8 +285,8 @@ public class BodyType : Sample
         // Drive the kinematic body.
         if (m_type == B2BodyType.b2_kinematicBody)
         {
-            B2Vec2 p = b2ToVec2(b2Body_GetPosition(m_platformId));
-            B2Vec2 v = b2Body_GetLinearVelocity(m_platformId);
+            Vector2 p = b2ToVec2(b2Body_GetPosition(m_platformId));
+            Vector2 v = b2Body_GetLinearVelocity(m_platformId);
 
             if ((p.X < -14.0f && v.X < 0.0f) || (p.X > 6.0f && v.X > 0.0f))
             {

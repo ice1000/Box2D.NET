@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     /// Result from b2World_RayCastClosest
@@ -11,7 +13,7 @@ namespace Box2D.NET
     {
         public B2ShapeId shapeId;
         public B2Pos point;
-        public B2Vec2 normal;
+        public Vector2 normal;
         public float fraction;
         public int nodeVisits;
         public int leafVisits;

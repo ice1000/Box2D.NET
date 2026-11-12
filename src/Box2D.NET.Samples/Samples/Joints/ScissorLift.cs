@@ -32,7 +32,7 @@ public class ScissorLift : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 9.0f);
+            m_camera.center = new Vector2(0.0f, 9.0f);
             m_camera.zoom = 25.0f * 0.4f;
         }
 
@@ -45,7 +45,7 @@ public class ScissorLift : Sample
             groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(-20.0f, 0.0f), new B2Vec2(20.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
@@ -56,12 +56,12 @@ public class ScissorLift : Sample
             bodyDef.sleepThreshold = 0.01f;
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Capsule capsule = new B2Capsule(new B2Vec2(-2.5f, 0.0f), new B2Vec2(2.5f, 0.0f), 0.15f);
+            B2Capsule capsule = new B2Capsule(new Vector2(-2.5f, 0.0f), new Vector2(2.5f, 0.0f), 0.15f);
 
             B2BodyId baseId1 = groundId;
             B2BodyId baseId2 = groundId;
-            B2Vec2 baseAnchor1 = new B2Vec2(-2.5f, 0.2f);
-            B2Vec2 baseAnchor2 = new B2Vec2(2.5f, 0.2f);
+            Vector2 baseAnchor1 = new Vector2(-2.5f, 0.2f);
+            Vector2 baseAnchor2 = new Vector2(2.5f, 0.2f);
             float y = 0.5f;
 
             B2BodyId linkId1 = new B2BodyId();
@@ -72,12 +72,12 @@ public class ScissorLift : Sample
 
             for (int i = 0; i < N; ++i)
             {
-                bodyDef.position = b2ToPos(new B2Vec2(0.0f, y));
+                bodyDef.position = b2ToPos(new Vector2(0.0f, y));
                 bodyDef.rotation = b2MakeRot(0.15f);
                 B2BodyId bodyId1 = b2CreateBody(m_worldId, bodyDef);
                 b2CreateCapsuleShape(bodyId1, shapeDef, capsule);
 
-                bodyDef.position = b2ToPos(new B2Vec2(0.0f, y));
+                bodyDef.position = b2ToPos(new Vector2(0.0f, y));
                 bodyDef.rotation = b2MakeRot(-0.15f);
 
                 B2BodyId bodyId2 = b2CreateBody(m_worldId, bodyDef);
@@ -94,7 +94,7 @@ public class ScissorLift : Sample
                 revoluteDef.@base.bodyIdA = baseId1;
                 revoluteDef.@base.bodyIdB = bodyId1;
                 revoluteDef.@base.localFrameA.p = baseAnchor1;
-                revoluteDef.@base.localFrameB.p = new B2Vec2(-2.5f, 0.0f);
+                revoluteDef.@base.localFrameB.p = new Vector2(-2.5f, 0.0f);
                 revoluteDef.@base.collideConnected = (i == 0) ? true : false;
                 revoluteDef.@base.constraintDampingRatio = constraintDampingRatio;
                 revoluteDef.@base.constraintHertz = constraintHertz;
@@ -108,7 +108,7 @@ public class ScissorLift : Sample
                     wheelDef.@base.bodyIdA = baseId2;
                     wheelDef.@base.bodyIdB = bodyId2;
                     wheelDef.@base.localFrameA.p = baseAnchor2;
-                    wheelDef.@base.localFrameB.p = new B2Vec2(2.5f, 0.0f);
+                    wheelDef.@base.localFrameB.p = new Vector2(2.5f, 0.0f);
                     wheelDef.enableSpring = false;
                     wheelDef.@base.collideConnected = true;
                     wheelDef.@base.constraintDampingRatio = constraintDampingRatio;
@@ -121,7 +121,7 @@ public class ScissorLift : Sample
                     revoluteDef.@base.bodyIdA = baseId2;
                     revoluteDef.@base.bodyIdB = bodyId2;
                     revoluteDef.@base.localFrameA.p = baseAnchor2;
-                    revoluteDef.@base.localFrameB.p = new B2Vec2(2.5f, 0.0f);
+                    revoluteDef.@base.localFrameB.p = new Vector2(2.5f, 0.0f);
                     revoluteDef.@base.collideConnected = false;
                     revoluteDef.@base.constraintDampingRatio = constraintDampingRatio;
                     revoluteDef.@base.constraintHertz = constraintHertz;
@@ -132,8 +132,8 @@ public class ScissorLift : Sample
                 // middle pin
                 revoluteDef.@base.bodyIdA = bodyId1;
                 revoluteDef.@base.bodyIdB = bodyId2;
-                revoluteDef.@base.localFrameA.p = new B2Vec2(0.0f, 0.0f);
-                revoluteDef.@base.localFrameB.p = new B2Vec2(0.0f, 0.0f);
+                revoluteDef.@base.localFrameA.p = new Vector2(0.0f, 0.0f);
+                revoluteDef.@base.localFrameB.p = new Vector2(0.0f, 0.0f);
                 revoluteDef.@base.collideConnected = false;
                 revoluteDef.@base.constraintDampingRatio = constraintDampingRatio;
                 revoluteDef.@base.constraintHertz = constraintHertz;
@@ -142,12 +142,12 @@ public class ScissorLift : Sample
 
                 baseId1 = bodyId2;
                 baseId2 = bodyId1;
-                baseAnchor1 = new B2Vec2(-2.5f, 0.0f);
-                baseAnchor2 = new B2Vec2(2.5f, 0.0f);
+                baseAnchor1 = new Vector2(-2.5f, 0.0f);
+                baseAnchor2 = new Vector2(2.5f, 0.0f);
                 y += 1.0f;
             }
 
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, y));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, y));
             bodyDef.rotation = b2Rot_identity;
             B2BodyId platformId = b2CreateBody(m_worldId, bodyDef);
 
@@ -159,7 +159,7 @@ public class ScissorLift : Sample
                 B2RevoluteJointDef revoluteDef = b2DefaultRevoluteJointDef();
                 revoluteDef.@base.bodyIdA = platformId;
                 revoluteDef.@base.bodyIdB = baseId1;
-                revoluteDef.@base.localFrameA.p = new B2Vec2(-2.5f, -0.4f);
+                revoluteDef.@base.localFrameA.p = new Vector2(-2.5f, -0.4f);
                 revoluteDef.@base.localFrameB.p = baseAnchor1;
                 revoluteDef.@base.collideConnected = true;
                 revoluteDef.@base.constraintDampingRatio = constraintDampingRatio;
@@ -172,7 +172,7 @@ public class ScissorLift : Sample
                 B2WheelJointDef wheelDef = b2DefaultWheelJointDef();
                 wheelDef.@base.bodyIdA = platformId;
                 wheelDef.@base.bodyIdB = baseId2;
-                wheelDef.@base.localFrameA.p = new B2Vec2(2.5f, -0.4f);
+                wheelDef.@base.localFrameA.p = new Vector2(2.5f, -0.4f);
                 wheelDef.@base.localFrameB.p = baseAnchor2;
                 wheelDef.enableSpring = false;
                 wheelDef.@base.collideConnected = true;
@@ -188,8 +188,8 @@ public class ScissorLift : Sample
             B2DistanceJointDef distanceDef = b2DefaultDistanceJointDef();
             distanceDef.@base.bodyIdA = groundId;
             distanceDef.@base.bodyIdB = linkId1;
-            distanceDef.@base.localFrameA.p = new B2Vec2(-2.5f, 0.2f);
-            distanceDef.@base.localFrameB.p = new B2Vec2(0.5f, 0.0f);
+            distanceDef.@base.localFrameA.p = new Vector2(-2.5f, 0.2f);
+            distanceDef.@base.localFrameB.p = new Vector2(0.5f, 0.0f);
             distanceDef.enableSpring = true;
             distanceDef.minLength = 0.2f;
             distanceDef.maxLength = 5.5f;
@@ -200,7 +200,7 @@ public class ScissorLift : Sample
             m_liftJointId = b2CreateDistanceJoint(m_worldId, distanceDef);
 
             Car car = new Car();
-            car.Spawn(m_worldId, new B2Vec2(0.0f, y + 2.0f), 1.0f, 3.0f, 0.7f, 0.0f, B2UserData.Empty);
+            car.Spawn(m_worldId, new Vector2(0.0f, y + 2.0f), 1.0f, 3.0f, 0.7f, 0.0f, B2UserData.Empty);
         }
     }
 

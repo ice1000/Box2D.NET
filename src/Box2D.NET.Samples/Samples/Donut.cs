@@ -27,7 +27,7 @@ public struct Donut
         B2_ASSERT(m_sides == B2FixedArray7<B2JointId>.Size);
     }
 
-    public void Create(B2WorldId worldId, B2Vec2 position, float scale, int groupIndex, bool enableSensorEvents, B2UserData userData)
+    public void Create(B2WorldId worldId, Vector2 position, float scale, int groupIndex, bool enableSensorEvents, B2UserData userData)
     {
         B2_ASSERT(m_isSpawned == false);
 
@@ -41,9 +41,9 @@ public struct Donut
         float deltaAngle = 2.0f * B2_PI / m_sides;
         float length = 2.0f * B2_PI * radius / m_sides;
 
-        B2Capsule capsule = new B2Capsule(new B2Vec2(0.0f, -0.5f * length), new B2Vec2(0.0f, 0.5f * length), 0.25f * scale);
+        B2Capsule capsule = new B2Capsule(new Vector2(0.0f, -0.5f * length), new Vector2(0.0f, 0.5f * length), 0.25f * scale);
 
-        B2Vec2 center = position;
+        Vector2 center = position;
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
@@ -58,7 +58,7 @@ public struct Donut
         float angle = 0.0f;
         for (int i = 0; i < m_sides; ++i)
         {
-            bodyDef.position = b2ToPos(new B2Vec2(radius * MathF.Cos(angle) + center.X, radius * MathF.Sin(angle) + center.Y));
+            bodyDef.position = b2ToPos(new Vector2(radius * MathF.Cos(angle) + center.X, radius * MathF.Sin(angle) + center.Y));
             bodyDef.rotation = b2MakeRot(angle);
 
             m_bodyIds[i] = b2CreateBody(worldId, bodyDef);
@@ -71,8 +71,8 @@ public struct Donut
         B2WeldJointDef weldDef = b2DefaultWeldJointDef();
         weldDef.angularHertz = 5.0f;
         weldDef.angularDampingRatio = 0.0f;
-        weldDef.@base.localFrameA.p = new B2Vec2(0.0f, 0.5f * length);
-        weldDef.@base.localFrameB.p = new B2Vec2(0.0f, -0.5f * length);
+        weldDef.@base.localFrameA.p = new Vector2(0.0f, 0.5f * length);
+        weldDef.@base.localFrameB.p = new Vector2(0.0f, -0.5f * length);
         weldDef.@base.drawScale = 0.5f * scale;
 
         B2BodyId prevBodyId = m_bodyIds[m_sides - 1];

@@ -29,7 +29,7 @@ public class UserConstraint : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(3.0f, -1.0f);
+            m_camera.center = new Vector2(3.0f, -1.0f);
             m_camera.zoom = 25.0f * 0.15f;
         }
 
@@ -79,25 +79,25 @@ public class UserConstraint : Sample
         float massCoefficient = s * impulseCoefficient;
         float biasCoefficient = omega / sigma;
 
-        B2Vec2[] localAnchors = new B2Vec2[2]
+        Vector2[] localAnchors = new Vector2[2]
         {
-            new B2Vec2(1.0f, -0.5f), new B2Vec2(1.0f, 0.5f)
+            new Vector2(1.0f, -0.5f), new Vector2(1.0f, 0.5f)
         };
         float mass = b2Body_GetMass(m_bodyId);
         float invMass = mass < 0.0001f ? 0.0f : 1.0f / mass;
         float inertiaTensor = b2Body_GetRotationalInertia(m_bodyId);
         float invI = inertiaTensor < 0.0001f ? 0.0f : 1.0f / inertiaTensor;
 
-        B2Vec2 vB = b2Body_GetLinearVelocity(m_bodyId);
+        Vector2 vB = b2Body_GetLinearVelocity(m_bodyId);
         float omegaB = b2Body_GetAngularVelocity(m_bodyId);
-        B2Vec2 pB = b2ToVec2(b2Body_GetWorldCenter(m_bodyId));
+        Vector2 pB = b2ToVec2(b2Body_GetWorldCenter(m_bodyId));
 
         for (int i = 0; i < 2; ++i)
         {
-            B2Vec2 anchorA = new B2Vec2(3.0f, 0.0f);
-            B2Vec2 anchorB = b2ToVec2(b2Body_GetWorldPoint(m_bodyId, localAnchors[i]));
+            Vector2 anchorA = new Vector2(3.0f, 0.0f);
+            Vector2 anchorB = b2ToVec2(b2Body_GetWorldPoint(m_bodyId, localAnchors[i]));
 
-            B2Vec2 deltaAnchor = b2Sub(anchorB, anchorA);
+            Vector2 deltaAnchor = b2Sub(anchorB, anchorA);
 
             float slackLength = 1.0f;
             float length = b2Length(deltaAnchor);
@@ -110,9 +110,9 @@ public class UserConstraint : Sample
             }
 
             DrawLine(m_draw, anchorA, anchorB, B2HexColor.b2_colorViolet);
-            B2Vec2 axis = b2Normalize(deltaAnchor);
+            Vector2 axis = b2Normalize(deltaAnchor);
 
-            B2Vec2 rB = b2Sub(anchorB, pB);
+            Vector2 rB = b2Sub(anchorB, pB);
             float Jb = b2Cross(rB, axis);
             float K = invMass + Jb * invI * Jb;
             float invK = K < 0.0001f ? 0.0f : 1.0f / K;

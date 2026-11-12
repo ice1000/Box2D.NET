@@ -4,6 +4,7 @@
 
 using NUnit.Framework;
 using System;
+using System.Numerics;
 using static Box2D.NET.B2DynamicTrees;
 using static Box2D.NET.B2MathFunction;
 using static Box2D.NET.B2Diagnostics;
@@ -21,8 +22,8 @@ public class B2DynamicTreeTest
     public void TreeCreateDestroy()
     {
         B2AABB a = new B2AABB(
-            lowerBound: new B2Vec2(-1.0f, -1.0f),
-            upperBound: new B2Vec2(2.0f, 2.0f)
+            lowerBound: new Vector2(-1.0f, -1.0f),
+            upperBound: new Vector2(2.0f, 2.0f)
         );
 
         B2DynamicTree tree = new B2DynamicTree();
@@ -52,7 +53,7 @@ public class B2DynamicTreeTest
     public void TreeRayCastTest()
     {
         // Test AABB centered at origin with bounds [-1, -1] to [1, 1]
-        B2AABB a = new B2AABB(lowerBound: new B2Vec2(-1.0f, -1.0f), upperBound: new B2Vec2(1.0f, 1.0f));
+        B2AABB a = new B2AABB(lowerBound: new Vector2(-1.0f, -1.0f), upperBound: new Vector2(1.0f, 1.0f));
         B2DynamicTree tree = b2CreateDynamicTree(16);
         int proxyId = b2CreateTreeProxyInternal(tree, a, 1, 0, false);
 
@@ -61,8 +62,8 @@ public class B2DynamicTreeTest
 
         // Test 1: Ray hits AABB from left side
         {
-            B2Vec2 p1 = new B2Vec2(-3.0f, 0.0f);
-            B2Vec2 p2 = new B2Vec2(3.0f, 0.0f);
+            Vector2 p1 = new Vector2(-3.0f, 0.0f);
+            Vector2 p2 = new Vector2(3.0f, 0.0f);
 
             input.origin = p1;
             input.translation = b2Sub(p2, p1);
@@ -75,8 +76,8 @@ public class B2DynamicTreeTest
 
         // Test 2: Ray hits AABB from right side
         {
-            B2Vec2 p1 = new B2Vec2(3.0f, 0.0f);
-            B2Vec2 p2 = new B2Vec2(-3.0f, 0.0f);
+            Vector2 p1 = new Vector2(3.0f, 0.0f);
+            Vector2 p2 = new Vector2(-3.0f, 0.0f);
             input.origin = p1;
             input.translation = b2Sub(p2, p1);
 
@@ -88,8 +89,8 @@ public class B2DynamicTreeTest
 
         // Test 3: Ray hits AABB from bottom
         {
-            B2Vec2 p1 = new B2Vec2(0.0f, -3.0f);
-            B2Vec2 p2 = new B2Vec2(0.0f, 3.0f);
+            Vector2 p1 = new Vector2(0.0f, -3.0f);
+            Vector2 p2 = new Vector2(0.0f, 3.0f);
             input.origin = p1;
             input.translation = b2Sub(p2, p1);
 
@@ -101,8 +102,8 @@ public class B2DynamicTreeTest
 
         // Test 4: Ray hits AABB from top
         {
-            B2Vec2 p1 = new B2Vec2(0.0f, 3.0f);
-            B2Vec2 p2 = new B2Vec2(0.0f, -3.0f);
+            Vector2 p1 = new Vector2(0.0f, 3.0f);
+            Vector2 p2 = new Vector2(0.0f, -3.0f);
             input.origin = p1;
             input.translation = b2Sub(p2, p1);
 
@@ -114,8 +115,8 @@ public class B2DynamicTreeTest
 
         // Test 5: Ray misses AABB completely (parallel to x-axis)
         {
-            B2Vec2 p1 = new B2Vec2(-3.0f, 2.0f);
-            B2Vec2 p2 = new B2Vec2(3.0f, 2.0f);
+            Vector2 p1 = new Vector2(-3.0f, 2.0f);
+            Vector2 p2 = new Vector2(3.0f, 2.0f);
             input.origin = p1;
             input.translation = b2Sub(p2, p1);
 
@@ -127,8 +128,8 @@ public class B2DynamicTreeTest
 
         // Test 6: Ray misses AABB completely (parallel to y-axis)
         {
-            B2Vec2 p1 = new B2Vec2(2.0f, -3.0f);
-            B2Vec2 p2 = new B2Vec2(2.0f, 3.0f);
+            Vector2 p1 = new Vector2(2.0f, -3.0f);
+            Vector2 p2 = new Vector2(2.0f, 3.0f);
             input.origin = p1;
             input.translation = b2Sub(p2, p1);
 
@@ -140,8 +141,8 @@ public class B2DynamicTreeTest
 
         // Test 7: Ray starts inside AABB
         {
-            B2Vec2 p1 = new B2Vec2(0.0f, 0.0f);
-            B2Vec2 p2 = new B2Vec2(2.0f, 0.0f);
+            Vector2 p1 = new Vector2(0.0f, 0.0f);
+            Vector2 p2 = new Vector2(2.0f, 0.0f);
             input.origin = p1;
             input.translation = b2Sub(p2, p1);
 
@@ -153,8 +154,8 @@ public class B2DynamicTreeTest
 
         // Test 8: Ray hits corner of AABB (diagonal ray)
         {
-            B2Vec2 p1 = new B2Vec2(-2.0f, -2.0f);
-            B2Vec2 p2 = new B2Vec2(2.0f, 2.0f);
+            Vector2 p1 = new Vector2(-2.0f, -2.0f);
+            Vector2 p2 = new Vector2(2.0f, 2.0f);
             input.origin = p1;
             input.translation = b2Sub(p2, p1);
 
@@ -166,8 +167,8 @@ public class B2DynamicTreeTest
 
         // Test 9: Ray parallel to AABB edge but outside
         {
-            B2Vec2 p1 = new B2Vec2(-2.0f, 1.5f);
-            B2Vec2 p2 = new B2Vec2(2.0f, 1.5f);
+            Vector2 p1 = new Vector2(-2.0f, 1.5f);
+            Vector2 p2 = new Vector2(2.0f, 1.5f);
             input.origin = p1;
             input.translation = b2Sub(p2, p1);
 
@@ -179,8 +180,8 @@ public class B2DynamicTreeTest
 
         // Test 10: Ray parallel to AABB edge and exactly on boundary
         {
-            B2Vec2 p1 = new B2Vec2(-2.0f, 1.0f);
-            B2Vec2 p2 = new B2Vec2(2.0f, 1.0f);
+            Vector2 p1 = new Vector2(-2.0f, 1.0f);
+            Vector2 p2 = new Vector2(2.0f, 1.0f);
             input.origin = p1;
             input.translation = b2Sub(p2, p1);
 
@@ -192,8 +193,8 @@ public class B2DynamicTreeTest
 
         // Test 11: Very short ray that doesn't reach AABB
         {
-            B2Vec2 p1 = new B2Vec2(-3.0f, 0.0f);
-            B2Vec2 p2 = new B2Vec2(-2.5f, 0.0f);
+            Vector2 p1 = new Vector2(-3.0f, 0.0f);
+            Vector2 p2 = new Vector2(-2.5f, 0.0f);
             input.origin = p1;
             input.translation = b2Sub(p2, p1);
 
@@ -205,8 +206,8 @@ public class B2DynamicTreeTest
 
         // Test 12: Zero-length ray (degenerate case)
         {
-            B2Vec2 p1 = new B2Vec2(0.0f, 0.0f);
-            B2Vec2 p2 = new B2Vec2(0.0f, 0.0f);
+            Vector2 p1 = new Vector2(0.0f, 0.0f);
+            Vector2 p2 = new Vector2(0.0f, 0.0f);
             input.origin = p1;
             input.translation = b2Sub(p2, p1);
 
@@ -218,8 +219,8 @@ public class B2DynamicTreeTest
 
         // Test 13: Ray hits AABB at exact boundary condition (t = 1.0)
         {
-            B2Vec2 p1 = new B2Vec2(-2.0f, 0.0f);
-            B2Vec2 p2 = new B2Vec2(-1.0f, 0.0f);
+            Vector2 p1 = new Vector2(-2.0f, 0.0f);
+            Vector2 p2 = new Vector2(-1.0f, 0.0f);
             input.origin = p1;
             input.translation = b2Sub(p2, p1);
 
@@ -231,13 +232,13 @@ public class B2DynamicTreeTest
 
         // An off center box catches an axis aligned ray tested against the wrong axis, which the origin
         // centered box above cannot. Two leaves also give the root a child pair.
-        B2AABB b = new B2AABB(lowerBound: new B2Vec2(10.0f, 4.0f), upperBound: new B2Vec2(11.0f, 6.0f));
+        B2AABB b = new B2AABB(lowerBound: new Vector2(10.0f, 4.0f), upperBound: new Vector2(11.0f, 6.0f));
         int proxyIdB = b2CreateTreeProxyInternal(tree, b, 1, 1, false);
 
         // Test 14: Horizontal ray through the off center box
         {
-            B2Vec2 p1 = new B2Vec2(0.0f, 5.0f);
-            B2Vec2 p2 = new B2Vec2(21.0f, 5.0f);
+            Vector2 p1 = new Vector2(0.0f, 5.0f);
+            Vector2 p2 = new Vector2(21.0f, 5.0f);
             input.origin = p1;
             input.translation = b2Sub(p2, p1);
 
@@ -249,8 +250,8 @@ public class B2DynamicTreeTest
 
         // Test 15: Vertical ray through the off center box
         {
-            B2Vec2 p1 = new B2Vec2(10.5f, 0.0f);
-            B2Vec2 p2 = new B2Vec2(10.5f, 21.0f);
+            Vector2 p1 = new Vector2(10.5f, 0.0f);
+            Vector2 p2 = new Vector2(10.5f, 21.0f);
             input.origin = p1;
             input.translation = b2Sub(p2, p1);
 
@@ -262,8 +263,8 @@ public class B2DynamicTreeTest
 
         // Test 16: Horizontal ray passing above the off center box
         {
-            B2Vec2 p1 = new B2Vec2(0.0f, 7.0f);
-            B2Vec2 p2 = new B2Vec2(21.0f, 7.0f);
+            Vector2 p1 = new Vector2(0.0f, 7.0f);
+            Vector2 p2 = new Vector2(21.0f, 7.0f);
             input.origin = p1;
             input.translation = b2Sub(p2, p1);
 
@@ -275,8 +276,8 @@ public class B2DynamicTreeTest
 
         // Test 17: Vertical ray passing beside the off center box
         {
-            B2Vec2 p1 = new B2Vec2(12.0f, 0.0f);
-            B2Vec2 p2 = new B2Vec2(12.0f, 21.0f);
+            Vector2 p1 = new Vector2(12.0f, 0.0f);
+            Vector2 p2 = new Vector2(12.0f, 21.0f);
             input.origin = p1;
             input.translation = b2Sub(p2, p1);
 
@@ -312,9 +313,9 @@ public class B2DynamicTreeTest
     {
         B2DynamicTree tree = b2CreateDynamicTree(16);
 
-        B2AABB a1 = new B2AABB(lowerBound: new B2Vec2(-5.0f, -1.0f), upperBound: new B2Vec2(-3.0f, 1.0f));
-        B2AABB a2 = new B2AABB(lowerBound: new B2Vec2(-1.0f, -1.0f), upperBound: new B2Vec2(1.0f, 1.0f));
-        B2AABB a3 = new B2AABB(lowerBound: new B2Vec2(3.0f, -1.0f), upperBound: new B2Vec2(5.0f, 1.0f));
+        B2AABB a1 = new B2AABB(lowerBound: new Vector2(-5.0f, -1.0f), upperBound: new Vector2(-3.0f, 1.0f));
+        B2AABB a2 = new B2AABB(lowerBound: new Vector2(-1.0f, -1.0f), upperBound: new Vector2(1.0f, 1.0f));
+        B2AABB a3 = new B2AABB(lowerBound: new Vector2(3.0f, -1.0f), upperBound: new Vector2(5.0f, 1.0f));
 
         int id1 = b2CreateTreeProxyInternal(tree, a1, 0x1ul, 42, false);
         int id2 = b2CreateTreeProxyInternal(tree, a2, 0x2ul, 43, false);
@@ -338,15 +339,15 @@ public class B2DynamicTreeTest
     {
         B2DynamicTree tree = b2CreateDynamicTree(16);
 
-        B2AABB a1 = new B2AABB(lowerBound: new B2Vec2(-5.0f, -1.0f), upperBound: new B2Vec2(-3.0f, 1.0f));
-        B2AABB a2 = new B2AABB(lowerBound: new B2Vec2(-1.0f, -1.0f), upperBound: new B2Vec2(1.0f, 1.0f));
-        B2AABB a3 = new B2AABB(lowerBound: new B2Vec2(3.0f, -1.0f), upperBound: new B2Vec2(5.0f, 1.0f));
+        B2AABB a1 = new B2AABB(lowerBound: new Vector2(-5.0f, -1.0f), upperBound: new Vector2(-3.0f, 1.0f));
+        B2AABB a2 = new B2AABB(lowerBound: new Vector2(-1.0f, -1.0f), upperBound: new Vector2(1.0f, 1.0f));
+        B2AABB a3 = new B2AABB(lowerBound: new Vector2(3.0f, -1.0f), upperBound: new Vector2(5.0f, 1.0f));
 
         int id1 = b2CreateTreeProxyInternal(tree, a1, 0xFFul, 0, false);
         int id2 = b2CreateTreeProxyInternal(tree, a2, 0xFFul, 0, false);
         int id3 = b2CreateTreeProxyInternal(tree, a3, 0xFFul, 0, false);
 
-        B2AABB queryA = new B2AABB(lowerBound: new B2Vec2(-2.0f, -2.0f), upperBound: new B2Vec2(2.0f, 2.0f));
+        B2AABB queryA = new B2AABB(lowerBound: new Vector2(-2.0f, -2.0f), upperBound: new Vector2(2.0f, 2.0f));
 
         B2FixedArray32<int> foundFlags = new B2FixedArray32<int>();
         B2TreeStats stats = b2DynamicTree_OverlapAABB(tree, queryA, 0xFFFFFFFFul, QueryCollectCallback, ref foundFlags);
@@ -370,11 +371,11 @@ public class B2DynamicTreeTest
     {
         B2DynamicTree tree = b2CreateDynamicTree(16);
 
-        B2AABB a = new B2AABB(lowerBound: new B2Vec2(0.0f, 0.0f), upperBound: new B2Vec2(1.0f, 1.0f));
+        B2AABB a = new B2AABB(lowerBound: new Vector2(0.0f, 0.0f), upperBound: new Vector2(1.0f, 1.0f));
         int id = b2CreateTreeProxyInternal(tree, a, 0x1ul, 100, false);
 
         // Move proxy to a new place
-        B2AABB moved = new B2AABB(lowerBound: new B2Vec2(10.0f, 10.0f), upperBound: new B2Vec2(11.0f, 11.0f));
+        B2AABB moved = new B2AABB(lowerBound: new Vector2(10.0f, 10.0f), upperBound: new Vector2(11.0f, 11.0f));
         b2DynamicTree_MoveProxyInternal(tree, id, moved, false);
 
         B2AABB got = b2DynamicTree_GetProxyBounds(tree, id);
@@ -384,7 +385,7 @@ public class B2DynamicTreeTest
         Assert.That(got.upperBound.Y == moved.upperBound.Y);
 
         // Now enlarge the proxy
-        B2AABB enlarge = new B2AABB(lowerBound: new B2Vec2(9.5f, 9.5f), upperBound: new B2Vec2(11.5f, 11.5f));
+        B2AABB enlarge = new B2AABB(lowerBound: new Vector2(9.5f, 9.5f), upperBound: new Vector2(11.5f, 11.5f));
         b2DynamicTree_EnlargeProxy(tree, id, enlarge);
 
         B2AABB got2 = b2DynamicTree_GetProxyBounds(tree, id);
@@ -403,7 +404,7 @@ public class B2DynamicTreeTest
         for (int i = 0; i < 12; ++i)
         {
             float x = (float)i * 2.0f;
-            B2AABB a = new B2AABB(lowerBound: new B2Vec2(x - 0.5f, -0.5f), upperBound: new B2Vec2(x + 0.5f, 0.5f));
+            B2AABB a = new B2AABB(lowerBound: new Vector2(x - 0.5f, -0.5f), upperBound: new Vector2(x + 0.5f, 0.5f));
             b2CreateTreeProxyInternal(tree, a, 0xFFul, (ulong)i, false);
         }
 
@@ -425,7 +426,7 @@ public class B2DynamicTreeTest
         for (int i = 0; i < columnCount; ++i)
         {
             float x = 1.0f * i;
-            B2AABB a = new B2AABB(lowerBound: new B2Vec2(x, 0.0f), upperBound: new B2Vec2(x + 1.0f, 1.0f));
+            B2AABB a = new B2AABB(lowerBound: new Vector2(x, 0.0f), upperBound: new Vector2(x + 1.0f, 1.0f));
             b2CreateTreeProxyInternal(tree, a, 1, (ulong)i, false);
         }
 
@@ -450,7 +451,7 @@ public class B2DynamicTreeTest
             for (int j = 0; j < rowCount; ++j)
             {
                 float y = 1.0f * j;
-                B2AABB a = new B2AABB(lowerBound: new B2Vec2(x, y), upperBound: new B2Vec2(x + 1.0f, y + 1.0f));
+                B2AABB a = new B2AABB(lowerBound: new Vector2(x, y), upperBound: new Vector2(x + 1.0f, y + 1.0f));
                 b2CreateTreeProxyInternal(tree, a, 1, (ulong)i, false);
             }
         }
@@ -476,7 +477,7 @@ public class B2DynamicTreeTest
             for (int j = 0; j < GRID_COUNT; ++j)
             {
                 float y = 1.0f * j;
-                B2AABB a = new B2AABB(lowerBound: new B2Vec2(x, y), upperBound: new B2Vec2(x + 1.0f, y + 1.0f));
+                B2AABB a = new B2AABB(lowerBound: new Vector2(x, y), upperBound: new Vector2(x + 1.0f, y + 1.0f));
                 proxyIds[index] = b2CreateTreeProxyInternal(tree, a, 1, (ulong)i, false);
                 index += 1;
             }
@@ -490,7 +491,7 @@ public class B2DynamicTreeTest
         int height1 = b2DynamicTree_GetHeight(tree);
         Assert.That(height1 < 2.0f * minHeight);
 
-        B2Vec2 offset = new B2Vec2(10.0f, 20.0f);
+        Vector2 offset = new Vector2(10.0f, 20.0f);
         index = 0;
         for (int i = 0; i < GRID_COUNT; ++i)
         {
@@ -535,7 +536,7 @@ public class B2DynamicTreeTest
         float y = RandomTreeFloat(-50.0f, 50.0f);
         float hx = RandomTreeFloat(0.25f, maxHalfExtent);
         float hy = RandomTreeFloat(0.25f, maxHalfExtent);
-        return new B2AABB(new B2Vec2(x - hx, y - hy), new B2Vec2(x + hx, y + hy));
+        return new B2AABB(new Vector2(x - hx, y - hy), new Vector2(x + hx, y + hy));
     }
 
     private static bool BoxEquals(B2AABB a, B2AABB b)
@@ -546,7 +547,7 @@ public class B2DynamicTreeTest
 
     private static B2AABB EnlargeTreeBox(B2AABB a, float margin)
     {
-        return new B2AABB(new B2Vec2(a.lowerBound.X - margin, a.lowerBound.Y - margin), new B2Vec2(a.upperBound.X + margin, a.upperBound.Y + margin));
+        return new B2AABB(new Vector2(a.lowerBound.X - margin, a.lowerBound.Y - margin), new Vector2(a.upperBound.X + margin, a.upperBound.Y + margin));
     }
 
     private class TreeHitSet
@@ -604,7 +605,7 @@ public class B2DynamicTreeTest
     }
 
     // Entry fraction along the full translation, negative for a miss
-    private static float RayBoxFraction(B2AABB box, B2Vec2 origin, B2Vec2 translation)
+    private static float RayBoxFraction(B2AABB box, Vector2 origin, Vector2 translation)
     {
         B2CastOutput output = b2AABB_RayCast(box, origin, b2Add(origin, translation));
         return output.hit ? output.fraction : -1.0f;
@@ -613,7 +614,7 @@ public class B2DynamicTreeTest
     // A box sweep against a box is a ray against the box grown by the swept extents
     private static float BoxCastFraction(B2AABB box, in B2BoxCastInput input)
     {
-        B2Vec2 extents = b2AABB_Extents(input.box);
+        Vector2 extents = b2AABB_Extents(input.box);
         B2AABB grown = new B2AABB(b2Sub(box.lowerBound, extents), b2Add(box.upperBound, extents));
         return RayBoxFraction(grown, b2AABB_Center(input.box), input.translation);
     }
@@ -655,7 +656,7 @@ public class B2DynamicTreeTest
     }
 
     // Closest ray hit from the tree against the closest over every live proxy
-    private static void CompareRayCast(B2DynamicTree tree, int[] proxyIds, int proxyCount, B2Vec2 origin, B2Vec2 translation)
+    private static void CompareRayCast(B2DynamicTree tree, int[] proxyIds, int proxyCount, Vector2 origin, Vector2 translation)
     {
         TreeCastHit hit = new TreeCastHit(tree, B2_NULL_INDEX, 1.0f);
         B2RayCastInput input = new B2RayCastInput(origin, translation, 1.0f);
@@ -692,7 +693,7 @@ public class B2DynamicTreeTest
         }
     }
 
-    private static void CompareBoxCast(B2DynamicTree tree, int[] proxyIds, int proxyCount, B2AABB box, B2Vec2 translation)
+    private static void CompareBoxCast(B2DynamicTree tree, int[] proxyIds, int proxyCount, B2AABB box, Vector2 translation)
     {
         TreeCastHit hit = new TreeCastHit(tree, B2_NULL_INDEX, 1.0f);
         B2BoxCastInput input = new B2BoxCastInput();
@@ -777,7 +778,7 @@ public class B2DynamicTreeTest
     public void TreeOneProxyTest()
     {
         B2DynamicTree tree = b2CreateDynamicTree(1);
-        B2AABB box = new B2AABB(new B2Vec2(0.0f, 0.0f), new B2Vec2(1.0f, 1.0f));
+        B2AABB box = new B2AABB(new Vector2(0.0f, 0.0f), new Vector2(1.0f, 1.0f));
         int proxyId = b2CreateTreeProxyInternal(tree, box, 1, 7, false);
         int[] proxyIds = { proxyId };
         b2DynamicTree_Validate(tree);
@@ -792,24 +793,24 @@ public class B2DynamicTreeTest
         Assert.That(BoxEquals(b2DynamicTree_GetProxyBounds(tree, proxyId), box));
         Assert.That(BoxEquals(b2DynamicTree_GetRootBounds(tree), box));
 
-        B2AABB inside = new B2AABB(new B2Vec2(0.4f, 0.4f), new B2Vec2(0.6f, 0.6f));
-        B2AABB outside = new B2AABB(new B2Vec2(5.0f, 5.0f), new B2Vec2(6.0f, 6.0f));
+        B2AABB inside = new B2AABB(new Vector2(0.4f, 0.4f), new Vector2(0.6f, 0.6f));
+        B2AABB outside = new B2AABB(new Vector2(5.0f, 5.0f), new Vector2(6.0f, 6.0f));
         CompareQuery(tree, proxyIds, 1, inside);
         CompareQuery(tree, proxyIds, 1, outside);
 
-        B2Vec2 origin = new B2Vec2(-1.0f, 0.5f);
-        B2Vec2 translation = new B2Vec2(3.0f, 0.0f);
+        Vector2 origin = new Vector2(-1.0f, 0.5f);
+        Vector2 translation = new Vector2(3.0f, 0.0f);
         TreeCastHit hit = new TreeCastHit(tree, B2_NULL_INDEX, 1.0f);
         B2RayCastInput input = new B2RayCastInput(origin, translation, 1.0f);
         b2DynamicTree_CastRay(tree, input, B2_DEFAULT_MASK_BITS, ClosestRayCallback, ref hit);
         Assert.That(hit.proxyId, Is.EqualTo(proxyId));
         CompareRayCast(tree, proxyIds, 1, origin, translation);
 
-        B2Vec2 missOrigin = new B2Vec2(-1.0f, 5.0f);
+        Vector2 missOrigin = new Vector2(-1.0f, 5.0f);
         CompareRayCast(tree, proxyIds, 1, missOrigin, translation);
 
-        B2AABB castBox = new B2AABB(new B2Vec2(-3.0f, 0.25f), new B2Vec2(-2.0f, 0.75f));
-        B2Vec2 castTranslation = new B2Vec2(10.0f, 0.0f);
+        B2AABB castBox = new B2AABB(new Vector2(-3.0f, 0.25f), new Vector2(-2.0f, 0.75f));
+        Vector2 castTranslation = new Vector2(10.0f, 0.0f);
         CompareBoxCast(tree, proxyIds, 1, castBox, castTranslation);
 
         // A full build keeps the leaf at the root
@@ -848,11 +849,11 @@ public class B2DynamicTreeTest
     public void TreeLeafRootTest()
     {
         B2DynamicTree tree = b2CreateDynamicTree(16);
-        B2AABB boxA = new B2AABB(new B2Vec2(0.0f, 0.0f), new B2Vec2(1.0f, 1.0f));
-        B2AABB boxB = new B2AABB(new B2Vec2(10.0f, 0.0f), new B2Vec2(11.0f, 1.0f));
-        B2AABB boxC = new B2AABB(new B2Vec2(20.0f, 0.0f), new B2Vec2(21.0f, 1.0f));
-        B2AABB boxD = new B2AABB(new B2Vec2(30.0f, 0.0f), new B2Vec2(31.0f, 1.0f));
-        B2AABB all = new B2AABB(new B2Vec2(-1.0f, -1.0f), new B2Vec2(40.0f, 2.0f));
+        B2AABB boxA = new B2AABB(new Vector2(0.0f, 0.0f), new Vector2(1.0f, 1.0f));
+        B2AABB boxB = new B2AABB(new Vector2(10.0f, 0.0f), new Vector2(11.0f, 1.0f));
+        B2AABB boxC = new B2AABB(new Vector2(20.0f, 0.0f), new Vector2(21.0f, 1.0f));
+        B2AABB boxD = new B2AABB(new Vector2(30.0f, 0.0f), new Vector2(31.0f, 1.0f));
+        B2AABB all = new B2AABB(new Vector2(-1.0f, -1.0f), new Vector2(40.0f, 2.0f));
 
         int idA = b2CreateTreeProxyInternal(tree, boxA, 1, 0, false);
         int idB = b2CreateTreeProxyInternal(tree, boxB, 1, 1, false);
@@ -970,13 +971,13 @@ public class B2DynamicTreeTest
 
         for (int i = 0; i < 64; ++i)
         {
-            B2Vec2 origin = new B2Vec2(RandomTreeFloat(-60.0f, 60.0f), RandomTreeFloat(-60.0f, 60.0f));
+            Vector2 origin = new Vector2(RandomTreeFloat(-60.0f, 60.0f), RandomTreeFloat(-60.0f, 60.0f));
             float angle = RandomTreeFloat(-B2_PI, B2_PI);
             float length = RandomTreeFloat(40.0f, 120.0f);
-            B2Vec2 translation = new B2Vec2(length * MathF.Cos(angle), length * MathF.Sin(angle));
+            Vector2 translation = new Vector2(length * MathF.Cos(angle), length * MathF.Sin(angle));
             CompareRayCast(tree, proxyIds, TREE_TEST_PROXY_COUNT, origin, translation);
 
-            B2Vec2 halfExtent = new B2Vec2(RandomTreeFloat(0.25f, 2.0f), RandomTreeFloat(0.25f, 2.0f));
+            Vector2 halfExtent = new Vector2(RandomTreeFloat(0.25f, 2.0f), RandomTreeFloat(0.25f, 2.0f));
             B2AABB box = new B2AABB(b2Sub(origin, halfExtent), b2Add(origin, halfExtent));
             CompareBoxCast(tree, proxyIds, TREE_TEST_PROXY_COUNT, box, translation);
         }
@@ -1129,7 +1130,7 @@ public class B2DynamicTreeTest
 
         // A box around everything makes the root the best sibling, so the root's subtree moves into
         // the new pair below its own children and the order is lost with nothing marked
-        B2AABB huge = new B2AABB(new B2Vec2(-100.0f, -100.0f), new B2Vec2(100.0f, 100.0f));
+        B2AABB huge = new B2AABB(new Vector2(-100.0f, -100.0f), new Vector2(100.0f, 100.0f));
         proxyIds[proxyCount] = b2CreateTreeProxyInternal(tree, huge, 1, (ulong)proxyCount, false);
         proxyCount += 1;
         Assert.That(tree.dfsOrdered, Is.False);
@@ -1167,28 +1168,28 @@ public class B2DynamicTreeTest
         int[] ids = new int[16];
         for (int i = 0; i < 16; ++i)
         {
-            B2AABB box = new B2AABB(new B2Vec2(2.0f * i, 0.0f), new B2Vec2(2.0f * i + 1.0f, 1.0f));
+            B2AABB box = new B2AABB(new Vector2(2.0f * i, 0.0f), new Vector2(2.0f * i + 1.0f, 1.0f));
             ids[i] = b2CreateTreeProxyInternal(tree, box, 1, (ulong)i, true);
         }
 
         Assert.That(b2DynamicTree_Rebuild(tree, false), Is.EqualTo(16));
 
         // Control: enlarge and refit on the ordered tree
-        B2AABB big = new B2AABB(new B2Vec2(0.0f, 0.0f), new B2Vec2(40.0f, 40.0f));
+        B2AABB big = new B2AABB(new Vector2(0.0f, 0.0f), new Vector2(40.0f, 40.0f));
         b2DynamicTree_MarkProxyMoved(tree, ids[0], big);
         b2DynamicTree_Refit(tree);
         Assert.That(b2AABB_Contains(b2DynamicTree_GetRootBounds(tree), big));
         Assert.That(b2DynamicTree_Rebuild(tree, false), Is.GreaterThan(0));
 
         // Insert and remove between steps leaves no marks
-        B2AABB extra = new B2AABB(new B2Vec2(100.0f, 100.0f), new B2Vec2(101.0f, 101.0f));
+        B2AABB extra = new B2AABB(new Vector2(100.0f, 100.0f), new Vector2(101.0f, 101.0f));
         int extraId = b2CreateTreeProxyInternal(tree, extra, 1, 99, true);
         b2DestroyTreeProxy(tree, extraId);
         Assert.That(b2HasTreeMoved(tree), Is.False);
 
         // The world's rebuild call, then a proxy enlarges during the step
         b2DynamicTree_Rebuild(tree, false);
-        B2AABB bigger = new B2AABB(new B2Vec2(-10.0f, -10.0f), new B2Vec2(60.0f, 60.0f));
+        B2AABB bigger = new B2AABB(new Vector2(-10.0f, -10.0f), new Vector2(60.0f, 60.0f));
         b2DynamicTree_MarkProxyMoved(tree, ids[0], bigger);
         b2DynamicTree_Refit(tree);
         Assert.That(b2AABB_Contains(b2DynamicTree_GetRootBounds(tree), bigger));

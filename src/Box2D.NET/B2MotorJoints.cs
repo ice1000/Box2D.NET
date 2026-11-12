@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
 using static Box2D.NET.B2Arrays;
 using static Box2D.NET.B2Diagnostics;
 using static Box2D.NET.B2Constants;
@@ -26,7 +27,7 @@ namespace Box2D.NET
          * @{
          */
         /// Set the desired relative linear velocity in meters per second
-        public static void b2MotorJoint_SetLinearVelocity(B2JointId jointId, B2Vec2 velocity)
+        public static void b2MotorJoint_SetLinearVelocity(B2JointId jointId, Vector2 velocity)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(velocity)) == false) return;
 
@@ -35,7 +36,7 @@ namespace Box2D.NET
         }
 
         /// Get the desired relative linear velocity in meters per second
-        public static B2Vec2 b2MotorJoint_GetLinearVelocity(B2JointId jointId)
+        public static Vector2 b2MotorJoint_GetLinearVelocity(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_motorJoint);
             return joint.uj.motorJoint.linearVelocity;
@@ -186,9 +187,9 @@ namespace Box2D.NET
             return joint.uj.motorJoint.maxSpringTorque;
         }
 
-        internal static B2Vec2 b2GetMotorJointForce(B2World world, B2JointSim @base)
+        internal static Vector2 b2GetMotorJointForce(B2World world, B2JointSim @base)
         {
-            B2Vec2 force = b2MulSV(world.inv_h, b2Add(@base.uj.motorJoint.linearVelocityImpulse, @base.uj.motorJoint.linearSpringImpulse));
+            Vector2 force = b2MulSV(world.inv_h, b2Add(@base.uj.motorJoint.linearVelocityImpulse, @base.uj.motorJoint.linearSpringImpulse));
             return force;
         }
 
@@ -257,8 +258,8 @@ namespace Box2D.NET
             // Compute the initial center delta. Incremental position updates are relative to this.
             joint.deltaCenter = b2SubPos(bodySimB.center, bodySimA.center);
 
-            B2Vec2 rA = joint.frameA.p;
-            B2Vec2 rB = joint.frameB.p;
+            Vector2 rA = joint.frameA.p;
+            Vector2 rB = joint.frameB.p;
 
             joint.linearSpring = b2MakeSoft(joint.linearHertz, joint.linearDampingRatio, context.h);
             joint.angularSpring = b2MakeSoft(joint.angularHertz, joint.angularDampingRatio, context.h);
@@ -275,9 +276,9 @@ namespace Box2D.NET
 
             if (context.enableWarmStarting == false)
             {
-                joint.linearVelocityImpulse = b2Vec2_zero;
+                joint.linearVelocityImpulse = Vector2Zero;
                 joint.angularVelocityImpulse = 0.0f;
-                joint.linearSpringImpulse = b2Vec2_zero;
+                joint.linearSpringImpulse = Vector2Zero;
                 joint.angularSpringImpulse = 0.0f;
             }
         }
@@ -299,10 +300,10 @@ namespace Box2D.NET
             B2BodyState stateA = joint.indexA == B2_NULL_INDEX ? dummyState : context.states[joint.indexA];
             B2BodyState stateB = joint.indexB == B2_NULL_INDEX ? dummyState : context.states[joint.indexB];
 
-            B2Vec2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
-            B2Vec2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
+            Vector2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
+            Vector2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
 
-            B2Vec2 linearImpulse = b2Add(joint.linearVelocityImpulse, joint.linearSpringImpulse);
+            Vector2 linearImpulse = b2Add(joint.linearVelocityImpulse, joint.linearSpringImpulse);
             float angularImpulse = joint.angularVelocityImpulse + joint.angularSpringImpulse;
 
             if (0 != (stateA.flags & (uint)B2BodyFlags.b2_dynamicFlag))
@@ -334,9 +335,9 @@ namespace Box2D.NET
             B2BodyState stateA = joint.indexA == B2_NULL_INDEX ? dummyState : context.states[joint.indexA];
             B2BodyState stateB = joint.indexB == B2_NULL_INDEX ? dummyState : context.states[joint.indexB];
 
-            B2Vec2 vA = stateA.linearVelocity;
+            Vector2 vA = stateA.linearVelocity;
             float wA = stateA.angularVelocity;
-            B2Vec2 vB = stateB.linearVelocity;
+            Vector2 vB = stateB.linearVelocity;
             float wB = stateB.angularVelocity;
 
             // angular spring
@@ -378,21 +379,21 @@ namespace Box2D.NET
                 wB += iB * impulse;
             }
 
-            B2Vec2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
-            B2Vec2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
+            Vector2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
+            Vector2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
 
             // linear spring
             if (joint.maxSpringForce > 0.0f && joint.linearHertz > 0.0f)
             {
-                B2Vec2 dcA = stateA.deltaPosition;
-                B2Vec2 dcB = stateB.deltaPosition;
-                B2Vec2 c = b2Add(b2Add(b2Sub(dcB, dcA), b2Sub(rB, rA)), joint.deltaCenter);
+                Vector2 dcA = stateA.deltaPosition;
+                Vector2 dcB = stateB.deltaPosition;
+                Vector2 c = b2Add(b2Add(b2Sub(dcB, dcA), b2Sub(rB, rA)), joint.deltaCenter);
 
-                B2Vec2 bias = b2MulSV(joint.linearSpring.biasRate, c);
+                Vector2 bias = b2MulSV(joint.linearSpring.biasRate, c);
                 float massScale = joint.linearSpring.massScale;
                 float impulseScale = joint.linearSpring.impulseScale;
 
-                B2Vec2 cdot = b2Sub(b2Add(vB, b2CrossSV(wB, rB)), b2Add(vA, b2CrossSV(wA, rA)));
+                Vector2 cdot = b2Sub(b2Add(vB, b2CrossSV(wB, rB)), b2Add(vA, b2CrossSV(wA, rA)));
                 cdot = b2Add(cdot, bias);
 
                 // Updating the effective mass here may be overkill
@@ -403,10 +404,10 @@ namespace Box2D.NET
                 kl.cy.Y = mA + mB + rA.X * rA.X * iA + rB.X * rB.X * iB;
                 joint.linearMass = b2GetInverse22(kl);
 
-                B2Vec2 b = b2MulMV(joint.linearMass, cdot);
+                Vector2 b = b2MulMV(joint.linearMass, cdot);
 
-                B2Vec2 oldImpulse = joint.linearSpringImpulse;
-                B2Vec2 impulse = new B2Vec2(
+                Vector2 oldImpulse = joint.linearSpringImpulse;
+                Vector2 impulse = new Vector2(
                     -massScale * b.X - impulseScale * oldImpulse.X,
                     -massScale * b.Y - impulseScale * oldImpulse.Y
                 );
@@ -432,12 +433,12 @@ namespace Box2D.NET
             // linear velocity
             if (joint.maxVelocityForce > 0.0f)
             {
-                B2Vec2 cdot = b2Sub(b2Add(vB, b2CrossSV(wB, rB)), b2Add(vA, b2CrossSV(wA, rA)));
+                Vector2 cdot = b2Sub(b2Add(vB, b2CrossSV(wB, rB)), b2Add(vA, b2CrossSV(wA, rA)));
                 cdot = b2Sub(cdot, joint.linearVelocity);
-                B2Vec2 b = b2MulMV(joint.linearMass, cdot);
-                B2Vec2 impulse = new B2Vec2(-b.X, -b.Y);
+                Vector2 b = b2MulMV(joint.linearMass, cdot);
+                Vector2 impulse = new Vector2(-b.X, -b.Y);
 
-                B2Vec2 oldImpulse = joint.linearVelocityImpulse;
+                Vector2 oldImpulse = joint.linearVelocityImpulse;
                 float maxImpulse = context.h * joint.maxVelocityForce;
                 joint.linearVelocityImpulse = b2Add(joint.linearVelocityImpulse, impulse);
 

@@ -30,7 +30,7 @@ public class ChainDrop : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 0.0f);
+            m_camera.center = new Vector2(0.0f, 0.0f);
             m_camera.zoom = 25.0f * 0.35f;
         }
 
@@ -38,10 +38,10 @@ public class ChainDrop : Sample
         //b2World_SetContactTuning( m_worldId, 30.0f, 1.0f, 100.0f );
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
-        bodyDef.position = b2ToPos(new B2Vec2(0.0f, -6.0f));
+        bodyDef.position = b2ToPos(new Vector2(0.0f, -6.0f));
         B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
-        B2Vec2[] points = new B2Vec2[4] { new B2Vec2(-10.0f, -2.0f), new B2Vec2(10.0f, -2.0f), new B2Vec2(10.0f, 1.0f), new B2Vec2(-10.0f, 1.0f) };
+        Vector2[] points = new Vector2[4] { new Vector2(-10.0f, -2.0f), new Vector2(10.0f, -2.0f), new Vector2(10.0f, 1.0f), new Vector2(-10.0f, 1.0f) };
 
         B2ChainDef chainDef = b2DefaultChainDef();
         chainDef.points = points;
@@ -66,15 +66,15 @@ public class ChainDrop : Sample
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.linearVelocity = new B2Vec2(0.0f, m_speed);
-        bodyDef.position = b2ToPos(new B2Vec2(0.0f, 10.0f + m_yOffset));
+        bodyDef.linearVelocity = new Vector2(0.0f, m_speed);
+        bodyDef.position = b2ToPos(new Vector2(0.0f, 10.0f + m_yOffset));
         bodyDef.rotation = b2MakeRot(0.5f * B2_PI);
         bodyDef.motionLocks.angularZ = true;
         m_bodyId = b2CreateBody(m_worldId, bodyDef);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
 
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
         m_shapeId = b2CreateCircleShape(m_bodyId, shapeDef, circle);
 
         //b2Capsule capsule = { { -0.5f, 0.0f }, { 0.5f, 0.0f }, 0.25f };

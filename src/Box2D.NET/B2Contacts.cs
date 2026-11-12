@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
 using static Box2D.NET.B2Tables;
 using static Box2D.NET.B2Arrays;
 using static Box2D.NET.B2Diagnostics;
@@ -483,8 +484,8 @@ namespace Box2D.NET
 
         // Update the contact manifold and touching status.
         // Note: do not assume the shape AABBs are overlapping or are valid.
-        internal static bool b2UpdateContact(B2World world, B2ContactSim contactSim, B2Shape shapeA, in B2WorldTransform transformA, B2Vec2 centerOffsetA,
-            B2Shape shapeB, in B2WorldTransform transformB, B2Vec2 centerOffsetB)
+        internal static bool b2UpdateContact(B2World world, B2ContactSim contactSim, B2Shape shapeA, in B2WorldTransform transformA, Vector2 centerOffsetA,
+            B2Shape shapeB, in B2WorldTransform transformB, Vector2 centerOffsetB)
         {
             // Save old manifold
             B2Manifold oldManifold = contactSim.manifold;
@@ -501,7 +502,7 @@ namespace Box2D.NET
             contactSim.manifold.normal = b2RotateVector(transformA.q, local.normal);
             contactSim.manifold.pointCount = local.pointCount;
 
-            B2Vec2 originDelta = b2SubPos(transformA.p, transformB.p);
+            Vector2 originDelta = b2SubPos(transformA.p, transformB.p);
             for (int i = 0; i < local.pointCount; ++i)
             {
                 ref B2ManifoldPoint mp = ref contactSim.manifold.points[i];

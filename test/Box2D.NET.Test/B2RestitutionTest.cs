@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using NUnit.Framework;
 using static Box2D.NET.B2Bodies;
 using static Box2D.NET.B2Geometries;
@@ -31,7 +32,7 @@ public class B2RestitutionTest
     private static B2WorldId MakeWorld(float gravityY)
     {
         B2WorldDef worldDef = b2DefaultWorldDef();
-        worldDef.gravity = new B2Vec2(0.0f, gravityY);
+        worldDef.gravity = new Vector2(0.0f, gravityY);
         worldDef.enableSleep = false;
         return b2CreateWorld(worldDef);
     }
@@ -39,7 +40,7 @@ public class B2RestitutionTest
     private static B2WorldId MakeWorldIterations(float gravityY, int restitutionIterations)
     {
         B2WorldDef worldDef = b2DefaultWorldDef();
-        worldDef.gravity = new B2Vec2(0.0f, gravityY);
+        worldDef.gravity = new Vector2(0.0f, gravityY);
         worldDef.enableSleep = false;
         worldDef.restitutionIterations = restitutionIterations;
         return b2CreateWorld(worldDef);
@@ -64,13 +65,13 @@ public class B2RestitutionTest
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
         bodyDef.position = new B2Pos(x, y);
-        bodyDef.linearVelocity = new B2Vec2(0.0f, velocityY);
+        bodyDef.linearVelocity = new Vector2(0.0f, velocityY);
         B2BodyId bodyId = b2CreateBody(worldId, bodyDef);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
         shapeDef.material.friction = 0.0f;
         shapeDef.material.restitution = restitution;
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
         b2CreateCircleShape(bodyId, shapeDef, circle);
         return bodyId;
     }
@@ -81,7 +82,7 @@ public class B2RestitutionTest
     {
         B2WorldId worldId = MakeWorld(0.0f);
 
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
         B2ShapeDef shapeDef = b2DefaultShapeDef();
         shapeDef.density = 1.0f;
         shapeDef.material.friction = 0.0f;
@@ -90,12 +91,12 @@ public class B2RestitutionTest
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
         bodyDef.position = new B2Pos(-1.0f, 0.0f);
-        bodyDef.linearVelocity = new B2Vec2(0.5f * IMPACT_SPEED, 0.0f);
+        bodyDef.linearVelocity = new Vector2(0.5f * IMPACT_SPEED, 0.0f);
         B2BodyId idA = b2CreateBody(worldId, bodyDef);
         b2CreateCircleShape(idA, shapeDef, circle);
 
         bodyDef.position = new B2Pos(1.0f, 0.0f);
-        bodyDef.linearVelocity = new B2Vec2(-0.5f * IMPACT_SPEED, 0.0f);
+        bodyDef.linearVelocity = new Vector2(-0.5f * IMPACT_SPEED, 0.0f);
         B2BodyId idB = b2CreateBody(worldId, bodyDef);
         shapeDef.density = densityB;
         b2CreateCircleShape(idB, shapeDef, circle);
@@ -144,7 +145,7 @@ public class B2RestitutionTest
     private static float MeasureSupportedBounce(float restitution, int supportCount, bool propagate)
     {
         B2WorldDef worldDef = b2DefaultWorldDef();
-        worldDef.gravity = new B2Vec2(0.0f, 0.0f);
+        worldDef.gravity = new Vector2(0.0f, 0.0f);
         worldDef.enableSleep = false;
         worldDef.enableRestitutionPropagation = propagate;
         worldDef.restitutionIterations = RESTITUTION_ITERATIONS;
@@ -178,7 +179,7 @@ public class B2RestitutionTest
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
         bodyDef.position = new B2Pos(0.0f, 0.25f + 0.5f * IMPACT_SPEED * TIME_STEP);
-        bodyDef.linearVelocity = new B2Vec2(0.0f, -IMPACT_SPEED);
+        bodyDef.linearVelocity = new Vector2(0.0f, -IMPACT_SPEED);
         B2BodyId boxId = b2CreateBody(worldId, bodyDef);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -207,7 +208,7 @@ public class B2RestitutionTest
         B2BodyDef groundDef = b2DefaultBodyDef();
         B2BodyId groundId = b2CreateBody(worldId, groundDef);
         B2ShapeDef groundShape = b2DefaultShapeDef();
-        B2Segment segment = new B2Segment(new B2Vec2(-60.0f, 0.0f), new B2Vec2(60.0f, 0.0f));
+        B2Segment segment = new B2Segment(new Vector2(-60.0f, 0.0f), new Vector2(60.0f, 0.0f));
         b2CreateSegmentShape(groundId, groundShape, segment);
 
         B2BodyId ballId = MakeBall(worldId, 0.0f, dropHeight, 0.0f, 1.0f);
@@ -411,7 +412,7 @@ public class B2RestitutionTest
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
             bodyDef.position = new B2Pos(0.0f, 0.25f + 0.5f * IMPACT_SPEED * TIME_STEP);
-            bodyDef.linearVelocity = new B2Vec2(0.0f, -IMPACT_SPEED);
+            bodyDef.linearVelocity = new Vector2(0.0f, -IMPACT_SPEED);
             bodyDef.angularVelocity = spins[j];
             B2BodyId boxId = b2CreateBody(worldId, bodyDef);
 
@@ -505,7 +506,7 @@ public class B2RestitutionTest
         B2BodyDef groundDef = b2DefaultBodyDef();
         B2BodyId groundId = b2CreateBody(worldId, groundDef);
         B2ShapeDef groundShape = b2DefaultShapeDef();
-        B2Segment segment = new B2Segment(new B2Vec2(-20.0f, 0.0f), new B2Vec2(20.0f, 0.0f));
+        B2Segment segment = new B2Segment(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
         b2CreateSegmentShape(groundId, groundShape, segment);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -696,7 +697,7 @@ public class B2RestitutionTest
         shapeDef.material.friction = 0.0f;
         shapeDef.material.restitution = 0.0f;
         shapeDef.enableHitEvents = enableHitEvents;
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
         b2CreateCircleShape(ballId, shapeDef, circle);
 
         float normalVelocity = float.MaxValue;
@@ -705,7 +706,7 @@ public class B2RestitutionTest
         B2ContactData[] contactData = new B2ContactData[1];
         for (int i = 0; i < 20; ++i)
         {
-            b2Body_SetLinearVelocity(ballId, new B2Vec2(0.0f, -IMPACT_SPEED));
+            b2Body_SetLinearVelocity(ballId, new Vector2(0.0f, -IMPACT_SPEED));
             b2World_Step(worldId, TIME_STEP, SUB_STEP_COUNT);
 
             if (b2Body_GetContactData(ballId, contactData, 1) == 1 && contactData[0].manifold.pointCount > 0)
@@ -740,9 +741,9 @@ public class B2RestitutionTest
     private static float MeasureEnergy(B2BodyId bodyId, B2WorldId worldId)
     {
         B2MassData massData = b2Body_GetMassData(bodyId);
-        B2Vec2 v = b2Body_GetLinearVelocity(bodyId);
+        Vector2 v = b2Body_GetLinearVelocity(bodyId);
         float w = b2Body_GetAngularVelocity(bodyId);
-        B2Vec2 gravity = b2MulSV(b2Body_GetGravityScale(bodyId), b2World_GetGravity(worldId));
+        Vector2 gravity = b2MulSV(b2Body_GetGravityScale(bodyId), b2World_GetGravity(worldId));
         float h = TIME_STEP / SUB_STEP_COUNT;
 
         float kinetic = 0.5f * massData.mass * b2Dot(v, v) + 0.5f * massData.rotationalInertia * w * w;
@@ -1119,7 +1120,7 @@ public class B2RestitutionTest
         B2BodyId groundId = b2CreateBody(worldId, groundDef);
         B2ShapeDef groundShape = b2DefaultShapeDef();
         groundShape.material.friction = scene.friction;
-        B2Segment segment = new B2Segment(new B2Vec2(-40.0f, 0.0f), new B2Vec2(40.0f, 0.0f));
+        B2Segment segment = new B2Segment(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
         b2CreateSegmentShape(groundId, groundShape, segment);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -1149,7 +1150,7 @@ public class B2RestitutionTest
             bodyDef.position = new B2Pos(0.0f, scene.height);
             bodyDef.rotation = b2MakeRot(scene.angle);
             bodyDef.angularVelocity = scene.spin;
-            bodyDef.linearVelocity = new B2Vec2(0.0f, scene.velocityY);
+            bodyDef.linearVelocity = new Vector2(0.0f, scene.velocityY);
             bodyDef.safetyFactor = scene.safetyFactor;
             bodyDef.isBullet = scene.bullet;
             bodyIds[bodyCount] = b2CreateBody(worldId, bodyDef);
@@ -1243,7 +1244,7 @@ public class B2RestitutionTest
     private static ulong RunWorkerScene(int workerCount)
     {
         B2WorldDef worldDef = b2DefaultWorldDef();
-        worldDef.gravity = new B2Vec2(0.0f, -10.0f);
+        worldDef.gravity = new Vector2(0.0f, -10.0f);
         worldDef.enableSleep = false;
         worldDef.workerCount = workerCount;
         B2WorldId worldId = b2CreateWorld(worldDef);

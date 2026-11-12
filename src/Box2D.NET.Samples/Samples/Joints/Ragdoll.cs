@@ -32,7 +32,7 @@ public class Ragdoll : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 12.0f);
+            m_camera.center = new Vector2(0.0f, 12.0f);
             m_camera.zoom = 16.0f;
 
             // m_context.g_camera.m_center = { 0.0f, 26.0f };
@@ -43,7 +43,7 @@ public class Ragdoll : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(-20.0f, 0.0f), new B2Vec2(20.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
@@ -58,7 +58,7 @@ public class Ragdoll : Sample
 
     void Spawn()
     {
-        CreateHuman(ref m_human, m_worldId, b2ToPos(new B2Vec2(0.0f, 25.0f)), 1.0f, m_jointFrictionTorque, m_jointHertz, m_jointDampingRatio, 1, B2UserData.Empty, false);
+        CreateHuman(ref m_human, m_worldId, b2ToPos(new Vector2(0.0f, 25.0f)), 1.0f, m_jointFrictionTorque, m_jointHertz, m_jointDampingRatio, 1, B2UserData.Empty, false);
         //Human_ApplyRandomAngularImpulse(ref m_human, 10.0f);
     }
 

@@ -44,7 +44,7 @@ public class DistanceJoint : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 12.0f);
+            m_camera.center = new Vector2(0.0f, 12.0f);
             m_camera.zoom = 25.0f * 0.35f;
         }
 
@@ -90,7 +90,7 @@ public class DistanceJoint : Sample
         m_count = newCount;
 
         float radius = 0.25f;
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), radius);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), radius);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
         shapeDef.density = 20.0f;
@@ -114,12 +114,12 @@ public class DistanceJoint : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
             bodyDef.angularDamping = 1.0f;
-            bodyDef.position = b2ToPos(new B2Vec2(m_length * (i + 1.0f), yOffset));
+            bodyDef.position = b2ToPos(new Vector2(m_length * (i + 1.0f), yOffset));
             m_bodyIds[i] = b2CreateBody(m_worldId, bodyDef);
             b2CreateCircleShape(m_bodyIds[i], shapeDef, circle);
 
-            B2Vec2 pivotA = new B2Vec2(m_length * i, yOffset);
-            B2Vec2 pivotB = new B2Vec2(m_length * (i + 1.0f), yOffset);
+            Vector2 pivotA = new Vector2(m_length * i, yOffset);
+            Vector2 pivotB = new Vector2(m_length * (i + 1.0f), yOffset);
             jointDef.@base.bodyIdA = prevBodyId;
             jointDef.@base.bodyIdB = m_bodyIds[i];
             jointDef.@base.localFrameA.p = b2Body_GetLocalPoint(jointDef.@base.bodyIdA, b2ToPos(pivotA));

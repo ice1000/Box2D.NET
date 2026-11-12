@@ -50,7 +50,7 @@ public class Sample : IDisposable
     //
     public B2WorldId m_worldId;
     private B2JointId m_mouseJointId;
-    private B2Vec2 m_mousePoint;
+    private Vector2 m_mousePoint;
     protected float m_mouseForceScale;
     public int m_stepCount;
 
@@ -98,7 +98,7 @@ public class Sample : IDisposable
         m_screenTextY = 0.0f;
 
         m_mouseBodyId = b2_nullBodyId;
-        m_mousePoint = new B2Vec2();
+        m_mousePoint = new Vector2();
         m_mouseForceScale = 100.0f;
 
         m_frameTimes = new float[m_profileCapacity];
@@ -141,10 +141,10 @@ public class Sample : IDisposable
 
     public void TestMathCpp()
     {
-        B2Vec2 a = new B2Vec2(1.0f, 2.0f);
-        B2Vec2 b = new B2Vec2(3.0f, 4.0f);
+        Vector2 a = new Vector2(1.0f, 2.0f);
+        Vector2 b = new Vector2(3.0f, 4.0f);
 
-        B2Vec2 c = a;
+        Vector2 c = a;
         c += b;
         c -= b;
         c *= 2.0f;
@@ -182,12 +182,12 @@ public class Sample : IDisposable
     }
 
     private static float AddSegment(ImDrawListPtr dl, float availWidth, float t, float stepNow, System.Numerics.Vector4 col, float x,
-        Vector2 cursor, float barHeight)
+        System.Numerics.Vector2 cursor, float barHeight)
     {
         float w = availWidth * (t / stepNow);
         if (w > 0.0f)
         {
-            dl.AddRectFilled(new Vector2(x, cursor.Y), new Vector2(x + w, cursor.Y + barHeight),
+            dl.AddRectFilled(new System.Numerics.Vector2(x, cursor.Y), new System.Numerics.Vector2(x + w, cursor.Y + barHeight),
                 ImGui.ColorConvertFloat4ToU32(col));
             x += w;
         }
@@ -207,8 +207,8 @@ public class Sample : IDisposable
         float drawerHeight = 16.0f * fontSize;
         float drawerWidth = m_camera.width - menuWidth - 1.5f * fontSize;
 
-        ImGui.SetNextWindowPos(new Vector2(0.5f * fontSize, m_camera.height - drawerHeight - 0.5f * fontSize));
-        ImGui.SetNextWindowSize(new Vector2(drawerWidth, drawerHeight));
+        ImGui.SetNextWindowPos(new System.Numerics.Vector2(0.5f * fontSize, m_camera.height - drawerHeight - 0.5f * fontSize));
+        ImGui.SetNextWindowSize(new System.Numerics.Vector2(drawerWidth, drawerHeight));
 
         ImGui.Begin("Metrics",
             ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse |
@@ -363,7 +363,7 @@ public class Sample : IDisposable
                     float availWidth = ImGui.GetContentRegionAvail().X;
                     float barHeight = 1.5f * fontSize;
                     ImDrawListPtr drawList = ImGui.GetWindowDrawList();
-                    Vector2 cursor = ImGui.GetCursorScreenPos();
+                    System.Numerics.Vector2 cursor = ImGui.GetCursorScreenPos();
                     float x = cursor.X;
 
                     x = AddSegment(drawList, availWidth, pairsT, stepNow, colorPairs, x, cursor, barHeight);
@@ -372,14 +372,14 @@ public class Sample : IDisposable
                     x = AddSegment(drawList, availWidth, sensorsT, stepNow, colorSensors, x, cursor, barHeight);
                     x = AddSegment(drawList, availWidth, otherT, stepNow, colorOther, x, cursor, barHeight);
 
-                    ImGui.Dummy(new Vector2(availWidth, barHeight));
+                    ImGui.Dummy(new System.Numerics.Vector2(availWidth, barHeight));
                 }
 
                 ImGuiTableFlags tableFlags = ImGuiTableFlags.BordersInnerV | ImGuiTableFlags.RowBg |
                                               ImGuiTableFlags.SizingFixedFit | ImGuiTableFlags.ScrollY;
 
                 int columnCount = s_showProfilePlots ? 6 : 5;
-                Vector2 tableSize = ImGui.GetContentRegionAvail();
+                System.Numerics.Vector2 tableSize = ImGui.GetContentRegionAvail();
                 if (ImGui.BeginTable("profile", columnCount, tableFlags, tableSize))
                 {
                     ImGui.TableSetupColumn("section", ImGuiTableColumnFlags.WidthFixed, 8.0f * fontSize);
@@ -459,7 +459,7 @@ public class Sample : IDisposable
                         ImGui.TableNextColumn();
                         float fraction = b2ClampFloat(now[r] / stepNow, 0.0f, 1.0f);
                         ImGui.PushStyleColor(ImGuiCol.PlotHistogram, row.color);
-                        ImGui.ProgressBar(fraction, new Vector2(-float.Epsilon, 0.0f), "");
+                        ImGui.ProgressBar(fraction, new System.Numerics.Vector2(-float.Epsilon, 0.0f), "");
                         ImGui.PopStyleColor();
 
                         if (s_showProfilePlots)
@@ -469,7 +469,7 @@ public class Sample : IDisposable
                             {
                                 ImGui.PushStyleColor(ImGuiCol.PlotLines, row.color);
                                 ImGui.PlotLines($"##h{r}", ref history[0], count, 0, null, 0.0f, rowMax[r] * 1.05f + 0.001f,
-                                    new Vector2(-float.Epsilon, rowHeight));
+                                    new System.Numerics.Vector2(-float.Epsilon, rowHeight));
                                 ImGui.PopStyleColor();
                             }
                         }
@@ -525,7 +525,7 @@ public class Sample : IDisposable
                             : 0.0f;
                         ImGui.TextUnformatted("recycled");
                         ImGui.SameLine();
-                        ImGui.ProgressBar(fraction, new Vector2(-float.Epsilon, 0.0f),
+                        ImGui.ProgressBar(fraction, new System.Numerics.Vector2(-float.Epsilon, 0.0f),
                             $"{counters.recycledContactCount} / {counters.awakeContactCount}");
                     }
 
@@ -549,8 +549,8 @@ public class Sample : IDisposable
                     float barHeight = 2.0f * fontSize;
                     ImDrawListPtr drawList = ImGui.GetWindowDrawList();
 
-                    Vector2 cursor = ImGui.GetCursorScreenPos();
-                    drawList.AddRectFilled(cursor, new Vector2(cursor.X + availableWidth, cursor.Y + barHeight),
+                    System.Numerics.Vector2 cursor = ImGui.GetCursorScreenPos();
+                    drawList.AddRectFilled(cursor, new System.Numerics.Vector2(cursor.X + availableWidth, cursor.Y + barHeight),
                         ImGui.ColorConvertFloat4ToU32(new System.Numerics.Vector4(40.0f / 255.0f, 40.0f / 255.0f, 40.0f / 255.0f, 1.0f)));
                     if (normalCount > 0)
                     {
@@ -565,16 +565,16 @@ public class Sample : IDisposable
                             }
                             float segmentWidth = availableWidth * itemCount * invTotal;
                             uint color = ImGui.ColorConvertFloat4ToU32(MakeColor(b2GetGraphColor(i)));
-                            drawList.AddRectFilled(new Vector2(x, cursor.Y), new Vector2(x + segmentWidth, cursor.Y + barHeight), color);
+                            drawList.AddRectFilled(new System.Numerics.Vector2(x, cursor.Y), new System.Numerics.Vector2(x + segmentWidth, cursor.Y + barHeight), color);
                             x += segmentWidth;
                         }
                     }
-                    ImGui.Dummy(new Vector2(availableWidth, barHeight));
+                    ImGui.Dummy(new System.Numerics.Vector2(availableWidth, barHeight));
 
                     ImGui.Spacing();
                     float overflowFraction = totalCount > 0 ? (float)overflowCount / totalCount : 0.0f;
                     ImGui.PushStyleColor(ImGuiCol.PlotHistogram, new System.Numerics.Vector4(220.0f / 255.0f, 60.0f / 255.0f, 60.0f / 255.0f, 1.0f));
-                    ImGui.ProgressBar(overflowFraction, new Vector2(-float.Epsilon, 0.0f), $"overflow {overflowCount}");
+                    ImGui.ProgressBar(overflowFraction, new System.Numerics.Vector2(-float.Epsilon, 0.0f), $"overflow {overflowCount}");
                     ImGui.PopStyleColor();
 
                     ImGui.EndTable();
@@ -589,10 +589,10 @@ public class Sample : IDisposable
         ImGui.End();
     }
 
-    private void DrawProfilePlot(string label, int count, float maxValue, float maxTime, Vector2 size)
+    private void DrawProfilePlot(string label, int count, float maxValue, float maxTime, System.Numerics.Vector2 size)
     {
-        Vector2 canvasPos = ImGui.GetCursorScreenPos();
-        Vector2 canvasSize = size;
+        System.Numerics.Vector2 canvasPos = ImGui.GetCursorScreenPos();
+        System.Numerics.Vector2 canvasSize = size;
         if (canvasSize.X < 0.0f)
         {
             canvasSize.X = ImGui.GetContentRegionAvail().X;
@@ -603,9 +603,9 @@ public class Sample : IDisposable
 
         ImGui.InvisibleButton(label, canvasSize);
 
-        Vector2 min = canvasPos + new Vector2(42.0f, 8.0f);
-        Vector2 max = canvasPos + canvasSize - new Vector2(12.0f, 28.0f);
-        Vector2 plotSize = max - min;
+        System.Numerics.Vector2 min = canvasPos + new System.Numerics.Vector2(42.0f, 8.0f);
+        System.Numerics.Vector2 max = canvasPos + canvasSize - new System.Numerics.Vector2(12.0f, 28.0f);
+        System.Numerics.Vector2 plotSize = max - min;
         ImDrawListPtr drawList = ImGui.GetWindowDrawList();
         uint borderColor = ImGui.ColorConvertFloat4ToU32(new System.Numerics.Vector4(0.35f, 0.35f, 0.35f, 1.0f));
         uint gridColor = ImGui.ColorConvertFloat4ToU32(new System.Numerics.Vector4(0.20f, 0.20f, 0.20f, 1.0f));
@@ -618,10 +618,10 @@ public class Sample : IDisposable
         for (int i = 1; i < 4; ++i)
         {
             float y = min.Y + plotSize.Y * i / 4.0f;
-            drawList.AddLine(new Vector2(min.X, y), new Vector2(max.X, y), gridColor);
+            drawList.AddLine(new System.Numerics.Vector2(min.X, y), new System.Numerics.Vector2(max.X, y), gridColor);
 
             float x = min.X + plotSize.X * i / 4.0f;
-            drawList.AddLine(new Vector2(x, min.Y), new Vector2(x, max.Y), gridColor);
+            drawList.AddLine(new System.Numerics.Vector2(x, min.Y), new System.Numerics.Vector2(x, max.Y), gridColor);
         }
 
         float plotMaxValue = maxValue > 0.0f ? maxValue : 1.0f;
@@ -629,30 +629,30 @@ public class Sample : IDisposable
         DrawProfileSeries(drawList, min, plotSize, count, plotMaxValue, maxTime, p => p.collide, collideColor);
         DrawProfileSeries(drawList, min, plotSize, count, plotMaxValue, maxTime, p => p.solve, solveColor);
 
-        drawList.AddText(new Vector2(canvasPos.X + 4.0f, min.Y), textColor, "ms");
-        drawList.AddText(new Vector2(canvasPos.X + 4.0f, min.Y + ImGui.GetFontSize()), textColor, FormatFloat(maxValue));
-        drawList.AddText(new Vector2(min.X, max.Y + 4.0f), textColor, "0");
-        drawList.AddText(new Vector2(max.X - 36.0f, max.Y + 4.0f), textColor, FormatFloat(maxTime));
-        drawList.AddText(new Vector2(max.X + 2.0f, max.Y + 4.0f), textColor, "t");
+        drawList.AddText(new System.Numerics.Vector2(canvasPos.X + 4.0f, min.Y), textColor, "ms");
+        drawList.AddText(new System.Numerics.Vector2(canvasPos.X + 4.0f, min.Y + ImGui.GetFontSize()), textColor, FormatFloat(maxValue));
+        drawList.AddText(new System.Numerics.Vector2(min.X, max.Y + 4.0f), textColor, "0");
+        drawList.AddText(new System.Numerics.Vector2(max.X - 36.0f, max.Y + 4.0f), textColor, FormatFloat(maxTime));
+        drawList.AddText(new System.Numerics.Vector2(max.X + 2.0f, max.Y + 4.0f), textColor, "t");
 
-        Vector2 legend = min + new Vector2(8.0f, 6.0f);
+        System.Numerics.Vector2 legend = min + new System.Numerics.Vector2(8.0f, 6.0f);
         legend = DrawProfileLegendItem(drawList, legend, "step", stepColor, textColor);
         legend = DrawProfileLegendItem(drawList, legend, "collide", collideColor, textColor);
         DrawProfileLegendItem(drawList, legend, "solve", solveColor, textColor);
     }
 
-    private static Vector2 DrawProfileLegendItem(ImDrawListPtr drawList, Vector2 position, string name, System.Numerics.Vector4 color, uint textColor)
+    private static System.Numerics.Vector2 DrawProfileLegendItem(ImDrawListPtr drawList, System.Numerics.Vector2 position, string name, System.Numerics.Vector4 color, uint textColor)
     {
         uint lineColor = ImGui.ColorConvertFloat4ToU32(color);
         float centerY = position.Y + 0.5f * ImGui.GetFontSize();
-        drawList.AddLine(new Vector2(position.X, centerY), new Vector2(position.X + 14.0f, centerY), lineColor, 2.0f);
+        drawList.AddLine(new System.Numerics.Vector2(position.X, centerY), new System.Numerics.Vector2(position.X + 14.0f, centerY), lineColor, 2.0f);
         position.X += 18.0f;
         drawList.AddText(position, textColor, name);
         position.X += ImGui.CalcTextSize(name).X + 12.0f;
         return position;
     }
 
-    private void DrawProfileSeries(ImDrawListPtr drawList, Vector2 origin, Vector2 size, int count, float maxValue, float maxTime,
+    private void DrawProfileSeries(ImDrawListPtr drawList, System.Numerics.Vector2 origin, System.Numerics.Vector2 size, int count, float maxValue, float maxTime,
         Func<B2Profile, float> selector, System.Numerics.Vector4 color)
     {
         if (count < 2)
@@ -661,7 +661,7 @@ public class Sample : IDisposable
         }
 
         uint lineColor = ImGui.ColorConvertFloat4ToU32(color);
-        Vector2 previous = default;
+        System.Numerics.Vector2 previous = default;
 
         for (int i = 0; i < count; ++i)
         {
@@ -669,7 +669,7 @@ public class Sample : IDisposable
             float value = selector(m_profiles[index]);
             float x = origin.X + size.X * m_frameTimes[i] / maxTime;
             float y = origin.Y + size.Y * (1.0f - b2ClampFloat(value / maxValue, 0.0f, 1.0f));
-            Vector2 current = new Vector2(x, y);
+            System.Numerics.Vector2 current = new System.Numerics.Vector2(x, y);
 
             if (i > 0)
             {
@@ -720,7 +720,7 @@ public class Sample : IDisposable
     {
     }
 
-    public virtual void MouseDown(B2Vec2 p, MouseButton button, KeyModifiers mod)
+    public virtual void MouseDown(Vector2 p, MouseButton button, KeyModifiers mod)
     {
         if (B2_IS_NON_NULL(m_mouseJointId))
         {
@@ -731,7 +731,7 @@ public class Sample : IDisposable
         {
             // Make a small box.
             B2AABB box;
-            B2Vec2 d = new B2Vec2(0.001f, 0.001f);
+            Vector2 d = new Vector2(0.001f, 0.001f);
             box.lowerBound = b2Sub(p, d);
             box.upperBound = b2Add(p, d);
 
@@ -773,7 +773,7 @@ public class Sample : IDisposable
         }
     }
 
-    public virtual void MouseUp(B2Vec2 p, MouseButton button)
+    public virtual void MouseUp(Vector2 p, MouseButton button)
     {
         if (B2_IS_NON_NULL(m_mouseJointId) && button == (int)MouseButton.Left)
         {
@@ -785,7 +785,7 @@ public class Sample : IDisposable
         }
     }
 
-    public virtual void MouseMove(B2Vec2 p)
+    public virtual void MouseMove(Vector2 p)
     {
         if (b2Joint_IsValid(m_mouseJointId) == false)
         {
@@ -981,10 +981,10 @@ public class Sample : IDisposable
         ImGui.PopStyleColor();
         if (ImGui.IsItemHovered())
         {
-            Vector2 min = ImGui.GetItemRectMin();
-            Vector2 max = ImGui.GetItemRectMax();
+            System.Numerics.Vector2 min = ImGui.GetItemRectMin();
+            System.Numerics.Vector2 max = ImGui.GetItemRectMax();
             uint underlineColor = ImGui.ColorConvertFloat4ToU32(color);
-            ImGui.GetWindowDrawList().AddLine(new Vector2(min.X, max.Y), max, underlineColor);
+            ImGui.GetWindowDrawList().AddLine(new System.Numerics.Vector2(min.X, max.Y), max, underlineColor);
             ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
         }
 
@@ -1145,16 +1145,16 @@ public class Sample : IDisposable
             {
                 float menuBarBottom = ImGui.GetFrameHeight();
                 uint borderColor = ImGui.GetColorU32(ImGuiCol.Border);
-                Vector2 displaySize = ImGui.GetIO().DisplaySize;
-                ImGui.GetForegroundDrawList().AddLine(new Vector2(0.0f, menuBarBottom),
-                    new Vector2(displaySize.X, menuBarBottom), borderColor, 1.0f);
+                System.Numerics.Vector2 displaySize = ImGui.GetIO().DisplaySize;
+                ImGui.GetForegroundDrawList().AddLine(new System.Numerics.Vector2(0.0f, menuBarBottom),
+                    new System.Numerics.Vector2(displaySize.X, menuBarBottom), borderColor, 1.0f);
             }
 
             if (s_showHelp)
             {
-                ImGui.SetNextWindowPos(new Vector2(context.camera.width * 0.5f, context.camera.height * 0.5f),
-                    ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
-                ImGui.SetNextWindowSize(new Vector2(24.0f * fontSize, 0.0f), ImGuiCond.Appearing);
+                ImGui.SetNextWindowPos(new System.Numerics.Vector2(context.camera.width * 0.5f, context.camera.height * 0.5f),
+                    ImGuiCond.Appearing, new System.Numerics.Vector2(0.5f, 0.5f));
+                ImGui.SetNextWindowSize(new System.Numerics.Vector2(24.0f * fontSize, 0.0f), ImGuiCond.Appearing);
 
                 if (ImGui.Begin("Controls", ref s_showHelp,
                         ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize))
@@ -1191,9 +1191,9 @@ public class Sample : IDisposable
 
             if (s_showAbout)
             {
-                ImGui.SetNextWindowPos(new Vector2(context.camera.width * 0.5f, context.camera.height * 0.5f),
-                    ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
-                ImGui.SetNextWindowSize(new Vector2(22.0f * fontSize, 0.0f), ImGuiCond.Appearing);
+                ImGui.SetNextWindowPos(new System.Numerics.Vector2(context.camera.width * 0.5f, context.camera.height * 0.5f),
+                    ImGuiCond.Appearing, new System.Numerics.Vector2(0.5f, 0.5f));
+                ImGui.SetNextWindowSize(new System.Numerics.Vector2(22.0f * fontSize, 0.0f), ImGuiCond.Appearing);
 
                 if (ImGui.Begin("About", ref s_showAbout,
                         ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize))
@@ -1281,9 +1281,9 @@ public class Sample : IDisposable
             s_forcePickerScroll = true;
         }
 
-        ImGui.SetNextWindowPos(new Vector2(context.camera.width * 0.5f, context.camera.height * 0.35f),
-            ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
-        ImGui.SetNextWindowSize(new Vector2(32.0f * fontSize, 0.0f), ImGuiCond.Appearing);
+        ImGui.SetNextWindowPos(new System.Numerics.Vector2(context.camera.width * 0.5f, context.camera.height * 0.35f),
+            ImGuiCond.Appearing, new System.Numerics.Vector2(0.5f, 0.5f));
+        ImGui.SetNextWindowSize(new System.Numerics.Vector2(32.0f * fontSize, 0.0f), ImGuiCond.Appearing);
 
         if (ImGui.BeginPopup("##sample_picker",
                 ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoSavedSettings))
@@ -1319,7 +1319,7 @@ public class Sample : IDisposable
             }
             bool commit = ImGui.IsKeyPressed(ImGuiKey.Enter, false) || ImGui.IsKeyPressed(ImGuiKey.KeypadEnter, false);
 
-            ImGui.BeginChild("##results", new Vector2(0.0f, 14.0f * fontSize), ImGuiChildFlags.Border);
+            ImGui.BeginChild("##results", new System.Numerics.Vector2(0.0f, 14.0f * fontSize), ImGuiChildFlags.Border);
             for (int row = 0; row < s_filteredCount; ++row)
             {
                 int i = s_filteredSamples[row];
@@ -1376,9 +1376,9 @@ public class Sample : IDisposable
 
         float menuBarHeight = ImGui.GetFrameHeight();
 
-        ImGui.SetNextWindowPos(new Vector2(context.camera.width - menuWidth - 0.5f * fontSize,
+        ImGui.SetNextWindowPos(new System.Numerics.Vector2(context.camera.width - menuWidth - 0.5f * fontSize,
             menuBarHeight + 0.5f * fontSize));
-        ImGui.SetNextWindowSize(new Vector2(menuWidth, context.camera.height - menuBarHeight - fontSize));
+        ImGui.SetNextWindowSize(new System.Numerics.Vector2(menuWidth, context.camera.height - menuBarHeight - fontSize));
 
         ImGui.Begin("Info",
             ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse |

@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2026 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     /// A mover joint is used to move a dynamic character mover through velocity commands.
@@ -13,10 +15,10 @@ namespace Box2D.NET
         public B2JointDef @base;
 
         /// The desired linear velocity
-        public B2Vec2 linearVelocity;
+        public Vector2 linearVelocity;
 
         /// The maximum motor force in newtons.
-        public B2Vec2 maxVelocityForce;
+        public Vector2 maxVelocityForce;
 
         /// Used internally to detect a valid definition. DO NOT SET.
         public int internalValue;

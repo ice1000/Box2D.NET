@@ -41,7 +41,7 @@ public class ChainShape : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 0.0f);
+            m_camera.center = new Vector2(0.0f, 0.0f);
             m_camera.zoom = 25.0f * 1.75f;
         }
 
@@ -81,13 +81,13 @@ public class ChainShape : Sample
         //				   {-4.70825005, 9.25},	  {-8.67700005, 9.25},		 {-11.323, 11.89575},
         //				   {-13.96875, 11.89575}, {-15.29175, 14.54175},	 {-19.2605, 14.54175}};
 
-        B2Vec2[] points = new B2Vec2[]
+        Vector2[] points = new Vector2[]
         {
-            new B2Vec2(-56.885498f, 12.8985004f), new B2Vec2(-56.885498f, 16.2057495f), new B2Vec2(56.885498f, 16.2057495f), new B2Vec2(56.885498f, -16.2057514f),
-            new B2Vec2(51.5935059f, -16.2057514f), new B2Vec2(43.6559982f, -10.9139996f), new B2Vec2(35.7184982f, -10.9139996f), new B2Vec2(27.7809982f, -10.9139996f),
-            new B2Vec2(21.1664963f, -14.2212505f), new B2Vec2(11.9059982f, -16.2057514f), new B2Vec2(0, -16.2057514f), new B2Vec2(-10.5835037f, -14.8827496f),
-            new B2Vec2(-17.1980019f, -13.5597477f), new B2Vec2(-21.1665001f, -12.2370014f), new B2Vec2(-25.1355019f, -9.5909977f), new B2Vec2(-31.75f, -3.63799858f),
-            new B2Vec2(-38.3644981f, 6.2840004f), new B2Vec2(-42.3334999f, 9.59125137f), new B2Vec2(-47.625f, 11.5755005f),
+            new Vector2(-56.885498f, 12.8985004f), new Vector2(-56.885498f, 16.2057495f), new Vector2(56.885498f, 16.2057495f), new Vector2(56.885498f, -16.2057514f),
+            new Vector2(51.5935059f, -16.2057514f), new Vector2(43.6559982f, -10.9139996f), new Vector2(35.7184982f, -10.9139996f), new Vector2(27.7809982f, -10.9139996f),
+            new Vector2(21.1664963f, -14.2212505f), new Vector2(11.9059982f, -16.2057514f), new Vector2(0, -16.2057514f), new Vector2(-10.5835037f, -14.8827496f),
+            new Vector2(-17.1980019f, -13.5597477f), new Vector2(-21.1665001f, -12.2370014f), new Vector2(-25.1355019f, -9.5909977f), new Vector2(-31.75f, -3.63799858f),
+            new Vector2(-38.3644981f, 6.2840004f), new Vector2(-42.3334999f, 9.59125137f), new Vector2(-47.625f, 11.5755005f),
         };
 
         int count = points.Length;
@@ -146,7 +146,7 @@ public class ChainShape : Sample
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(-55.0f, 13.5f));
+        bodyDef.position = b2ToPos(new Vector2(-55.0f, 13.5f));
         m_bodyId = b2CreateBody(m_worldId, bodyDef);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -154,12 +154,12 @@ public class ChainShape : Sample
 
         if (m_shapeType == ShapeType.e_circleShape)
         {
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
             m_shapeId = b2CreateCircleShape(m_bodyId, shapeDef, circle);
         }
         else if (m_shapeType == ShapeType.e_capsuleShape)
         {
-            B2Capsule capsule = new B2Capsule(new B2Vec2(-0.5f, 0.0f), new B2Vec2(0.5f, 0.0f), 0.25f);
+            B2Capsule capsule = new B2Capsule(new Vector2(-0.5f, 0.0f), new Vector2(0.5f, 0.0f), 0.25f);
             m_shapeId = b2CreateCapsuleShape(m_bodyId, shapeDef, capsule);
         }
         else
@@ -179,8 +179,8 @@ public class ChainShape : Sample
     {
         base.Draw();
 
-        DrawLine(m_draw, b2Vec2_zero, new B2Vec2(0.5f, 0.0f), B2HexColor.b2_colorRed);
-        DrawLine(m_draw, b2Vec2_zero, new B2Vec2(0.0f, 0.5f), B2HexColor.b2_colorGreen);
+        DrawLine(m_draw, Vector2Zero, new Vector2(0.5f, 0.0f), B2HexColor.b2_colorRed);
+        DrawLine(m_draw, Vector2Zero, new Vector2(0.0f, 0.5f), B2HexColor.b2_colorGreen);
 
         // DrawTextLine($"toi calls, hits = {b2_toiCalls}, {b2_toiHitCount}");
     }

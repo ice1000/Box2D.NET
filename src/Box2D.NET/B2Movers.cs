@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using static Box2D.NET.B2Constants;
 using static Box2D.NET.B2MathFunction;
 
@@ -14,14 +15,14 @@ namespace Box2D.NET
         /// @param targetDelta the desired movement from the position used to generate the collision planes
         /// @param planes the collision planes
         /// @param count the number of collision planes
-        public static B2PlaneSolverResult b2SolvePlanes(B2Vec2 targetDelta, Span<B2CollisionPlane> planes, int count)
+        public static B2PlaneSolverResult b2SolvePlanes(Vector2 targetDelta, Span<B2CollisionPlane> planes, int count)
         {
             for (int i = 0; i < count; ++i)
             {
                 planes[i].push = 0.0f;
             }
 
-            B2Vec2 delta = targetDelta;
+            Vector2 delta = targetDelta;
             float tolerance = B2_LINEAR_SLOP;
 
             int iteration;
@@ -62,9 +63,9 @@ namespace Box2D.NET
 
         /// Clips the velocity against the given collision planes. Planes with zero push or clipVelocity
         /// set to false are skipped.
-        public static B2Vec2 b2ClipVector(B2Vec2 vector, Span<B2CollisionPlane> planes, int count)
+        public static Vector2 b2ClipVector(Vector2 vector, Span<B2CollisionPlane> planes, int count)
         {
-            B2Vec2 v = vector;
+            Vector2 v = vector;
 
             for (int planeIndex = 0; planeIndex < count; ++planeIndex)
             {

@@ -25,7 +25,7 @@ public class BadBody : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(2.3f, 10.0f);
+            m_camera.center = new Vector2(2.3f, 10.0f);
             m_camera.zoom = 25.0f * 0.5f;
         }
 
@@ -34,7 +34,7 @@ public class BadBody : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             groundId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Segment segment = new B2Segment(new B2Vec2(-20.0f, 0.0f), new B2Vec2(20.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
@@ -43,13 +43,13 @@ public class BadBody : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 3.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 3.0f));
             bodyDef.angularVelocity = 0.5f;
             bodyDef.rotation = b2MakeRot(0.25f * B2_PI);
 
             m_badBodyId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Capsule capsule = new B2Capsule(new B2Vec2(0.0f, -1.0f), new B2Vec2(0.0f, 1.0f), 1.0f);
+            B2Capsule capsule = new B2Capsule(new Vector2(0.0f, -1.0f), new Vector2(0.0f, 1.0f), 1.0f);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
 
             // density set to zero intentionally to create a bad body
@@ -61,12 +61,12 @@ public class BadBody : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(2.0f, 3.0f));
+            bodyDef.position = b2ToPos(new Vector2(2.0f, 3.0f));
             bodyDef.rotation = b2MakeRot(0.25f * B2_PI);
 
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Capsule capsule = new B2Capsule(new B2Vec2(0.0f, -1.0f), new B2Vec2(0.0f, 1.0f), 1.0f);
+            B2Capsule capsule = new B2Capsule(new Vector2(0.0f, -1.0f), new Vector2(0.0f, 1.0f), 1.0f);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
 
             b2CreateCapsuleShape(bodyId, shapeDef, capsule);
@@ -79,7 +79,7 @@ public class BadBody : Sample
 
 
         // For science
-        b2Body_ApplyForceToCenter(m_badBodyId, new B2Vec2(0.0f, 10.0f), true);
+        b2Body_ApplyForceToCenter(m_badBodyId, new Vector2(0.0f, 10.0f), true);
     }
 
     public override void Draw()

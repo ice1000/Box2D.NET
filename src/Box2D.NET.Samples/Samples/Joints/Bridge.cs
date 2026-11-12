@@ -79,13 +79,13 @@ public class Bridge : Sample
             {
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
-                bodyDef.position = b2ToPos(new B2Vec2(xbase + 0.5f + 1.0f * i, 20.0f));
+                bodyDef.position = b2ToPos(new Vector2(xbase + 0.5f + 1.0f * i, 20.0f));
                 bodyDef.linearDamping = 0.1f;
                 bodyDef.angularDamping = 0.1f;
                 m_bodyIds[i] = b2CreateBody(m_worldId, bodyDef);
                 b2CreatePolygonShape(m_bodyIds[i], shapeDef, box);
 
-                B2Vec2 pivot = new B2Vec2(xbase + 1.0f * i, 20.0f);
+                Vector2 pivot = new Vector2(xbase + 1.0f * i, 20.0f);
                 jointDef.@base.bodyIdA = prevBodyId;
                 jointDef.@base.bodyIdB = m_bodyIds[i];
                 jointDef.@base.localFrameA.p = b2Body_GetLocalPoint(jointDef.@base.bodyIdA, b2ToPos(pivot));
@@ -96,7 +96,7 @@ public class Bridge : Sample
             }
 
             {
-                B2Vec2 pivot = new B2Vec2(xbase + 1.0f * m_count, 20.0f);
+                Vector2 pivot = new Vector2(xbase + 1.0f * m_count, 20.0f);
                 jointDef.@base.bodyIdA = prevBodyId;
                 jointDef.@base.bodyIdB = groundId;
                 jointDef.@base.localFrameA.p = b2Body_GetLocalPoint(jointDef.@base.bodyIdA, b2ToPos(pivot));
@@ -109,7 +109,7 @@ public class Bridge : Sample
 
         for (int i = 0; i < 2; ++i)
         {
-            B2Vec2[] vertices = new B2Vec2[3] { new B2Vec2(-0.5f, 0.0f), new B2Vec2(0.5f, 0.0f), new B2Vec2(0.0f, 1.5f) };
+            Vector2[] vertices = new Vector2[3] { new Vector2(-0.5f, 0.0f), new Vector2(0.5f, 0.0f), new Vector2(0.0f, 1.5f) };
 
             B2Hull hull = b2ComputeHull(vertices, 3);
             B2Polygon triangle = b2MakePolygon(hull, 0.0f);
@@ -119,21 +119,21 @@ public class Bridge : Sample
 
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(-8.0f + 8.0f * i, 22.0f));
+            bodyDef.position = b2ToPos(new Vector2(-8.0f + 8.0f * i, 22.0f));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(bodyId, shapeDef, triangle);
         }
 
         for (int i = 0; i < 3; ++i)
         {
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.density = 20.0f;
 
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(-6.0f + 6.0f * i, 25.0f));
+            bodyDef.position = b2ToPos(new Vector2(-6.0f + 6.0f * i, 25.0f));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
             b2CreateCircleShape(bodyId, shapeDef, circle);
         }

@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
 using NUnit.Framework;
 using static Box2D.NET.B2MathFunction;
 using static Box2D.NET.B2Distances;
@@ -14,10 +15,10 @@ public class B2DistanceTest
     [Test]
     public void SegmentDistanceTest()
     {
-        B2Vec2 p1 = new B2Vec2(-1.0f, -1.0f);
-        B2Vec2 q1 = new B2Vec2(-1.0f, 1.0f);
-        B2Vec2 p2 = new B2Vec2(2.0f, 0.0f);
-        B2Vec2 q2 = new B2Vec2(1.0f, 0.0f);
+        Vector2 p1 = new Vector2(-1.0f, -1.0f);
+        Vector2 q1 = new Vector2(-1.0f, 1.0f);
+        Vector2 p2 = new Vector2(2.0f, 0.0f);
+        Vector2 q2 = new Vector2(1.0f, 0.0f);
 
         B2SegmentDistanceResult result = b2ComputeSegmentDistance(p1, q1, p2, q2);
 
@@ -33,17 +34,17 @@ public class B2DistanceTest
     [Test]
     public void ShapeDistanceTest()
     {
-        B2Vec2[] vas =
+        Vector2[] vas =
         [
-            new B2Vec2(-1.0f, -1.0f),
-            new B2Vec2(1.0f, -1.0f),
-            new B2Vec2(1.0f, 1.0f),
-            new B2Vec2(-1.0f, 1.0f)
+            new Vector2(-1.0f, -1.0f),
+            new Vector2(1.0f, -1.0f),
+            new Vector2(1.0f, 1.0f),
+            new Vector2(-1.0f, 1.0f)
         ];
-        B2Vec2[] vbs =
+        Vector2[] vbs =
         [
-            new B2Vec2(2.0f, -1.0f),
-            new B2Vec2(2.0f, 1.0f)
+            new Vector2(2.0f, -1.0f),
+            new Vector2(2.0f, 1.0f)
         ];
 
         B2DistanceInput input = new B2DistanceInput();
@@ -61,25 +62,25 @@ public class B2DistanceTest
     [Test]
     public void ShapeCastTest()
     {
-        B2Vec2[] vas =
+        Vector2[] vas =
         [
-            new B2Vec2(-1.0f, -1.0f),
-            new B2Vec2(1.0f, -1.0f),
-            new B2Vec2(1.0f, 1.0f),
-            new B2Vec2(-1.0f, 1.0f)
+            new Vector2(-1.0f, -1.0f),
+            new Vector2(1.0f, -1.0f),
+            new Vector2(1.0f, 1.0f),
+            new Vector2(-1.0f, 1.0f)
         ];
 
-        B2Vec2[] vbs =
+        Vector2[] vbs =
         [
-            new B2Vec2(2.0f, -1.0f),
-            new B2Vec2(2.0f, 1.0f)
+            new Vector2(2.0f, -1.0f),
+            new Vector2(2.0f, 1.0f)
         ];
 
         B2ShapeCastPairInput input = new B2ShapeCastPairInput();
         input.proxyA = b2MakeProxy(vas, vas.Length, 0.0f);
         input.proxyB = b2MakeProxy(vbs, vbs.Length, 0.0f);
         input.transform = b2Transform_identity;
-        input.translationB = new B2Vec2(-2.0f, 0.0f);
+        input.translationB = new Vector2(-2.0f, 0.0f);
         input.maxFraction = 1.0f;
         input.canEncroach = false;
 
@@ -101,15 +102,15 @@ public class B2DistanceTest
     {
         float halfThickness = 0.0016f;
 
-        B2Vec2[] corners =
+        Vector2[] corners =
         [
-            new B2Vec2(-0.5f, -halfThickness),
-            new B2Vec2(0.5f, -halfThickness),
-            new B2Vec2(0.5f, halfThickness),
-            new B2Vec2(-0.5f, halfThickness),
+            new Vector2(-0.5f, -halfThickness),
+            new Vector2(0.5f, -halfThickness),
+            new Vector2(0.5f, halfThickness),
+            new Vector2(-0.5f, halfThickness),
         ];
 
-        B2Vec2[] point = [new B2Vec2(0.5f + B2_LINEAR_SLOP, 0.0f)];
+        Vector2[] point = [new Vector2(0.5f + B2_LINEAR_SLOP, 0.0f)];
 
         B2DistanceInput input = new B2DistanceInput();
         input.proxyA = b2MakeProxy(corners, corners.Length, 0.0f);
@@ -128,25 +129,25 @@ public class B2DistanceTest
     [Test]
     public void TimeOfImpactTest()
     {
-        B2Vec2[] vas =
+        Vector2[] vas =
         [
-            new B2Vec2(-1.0f, -1.0f),
-            new B2Vec2(1.0f, -1.0f),
-            new B2Vec2(1.0f, 1.0f),
-            new B2Vec2(-1.0f, 1.0f)
+            new Vector2(-1.0f, -1.0f),
+            new Vector2(1.0f, -1.0f),
+            new Vector2(1.0f, 1.0f),
+            new Vector2(-1.0f, 1.0f)
         ];
 
-        B2Vec2[] vbs =
+        Vector2[] vbs =
         [
-            new B2Vec2(2.0f, -1.0f),
-            new B2Vec2(2.0f, 1.0f)
+            new Vector2(2.0f, -1.0f),
+            new Vector2(2.0f, 1.0f)
         ];
 
         B2TOIInput input = new B2TOIInput();
         input.proxyA = b2MakeProxy(vas, vas.Length, 0.0f);
         input.proxyB = b2MakeProxy(vbs, vbs.Length, 0.0f);
-        input.sweepA = new B2Sweep(b2Vec2_zero, b2Vec2_zero, b2Vec2_zero, b2Rot_identity, b2Rot_identity);
-        input.sweepB = new B2Sweep(b2Vec2_zero, b2Vec2_zero, new B2Vec2(-2.0f, 0.0f), b2Rot_identity, b2Rot_identity);
+        input.sweepA = new B2Sweep(Vector2Zero, Vector2Zero, Vector2Zero, b2Rot_identity, b2Rot_identity);
+        input.sweepB = new B2Sweep(Vector2Zero, Vector2Zero, new Vector2(-2.0f, 0.0f), b2Rot_identity, b2Rot_identity);
         input.maxFraction = 1.0f;
 
         B2TOIOutput output = b2ComputeTimeOfImpact(input);

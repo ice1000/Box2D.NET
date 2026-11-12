@@ -73,7 +73,7 @@ public static class Points
     // todo instead of flushing, keep a growable array of data
     // this will prevent sorting problems.
 
-    public static void AddPoint(ref PointRender render, B2Vec2 v, float size, B2HexColor c)
+    public static void AddPoint(ref PointRender render, Vector2 v, float size, B2HexColor c)
     {
         RGBA8 rgba = RGBA8.MakeRGBA8(c, 1.0f);
         render.points.Add(new PointData(v, size, rgba));

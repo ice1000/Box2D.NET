@@ -92,9 +92,9 @@ namespace Box2D.NET
                 bool sampleVelocity = haveRestitution || hitEvents;
                 anyRestitution = anyRestitution || haveRestitution;
 
-                B2Vec2 vA = b2Vec2_zero;
+                Vector2 vA = Vector2Zero;
                 float wA = 0.0f;
-                B2Vec2 vB = b2Vec2_zero;
+                Vector2 vB = Vector2Zero;
                 float wB = 0.0f;
 
                 if (sampleVelocity)
@@ -137,8 +137,8 @@ namespace Box2D.NET
                     constraint.rollingMass = k > 0.0f ? 1.0f / k : 0.0f;
                 }
 
-                B2Vec2 normal = constraint.normal;
-                B2Vec2 tangent = b2RightPerp(constraint.normal);
+                Vector2 normal = constraint.normal;
+                Vector2 tangent = b2RightPerp(constraint.normal);
 
                 for (int j = 0; j < pointCount; ++j)
                 {
@@ -150,8 +150,8 @@ namespace Box2D.NET
                     cp.totalNormalImpulse = 0.0f;
                     cp.restitutionImpulse = 0.0f;
 
-                    B2Vec2 rA = mp.anchorA;
-                    B2Vec2 rB = mp.anchorB;
+                    Vector2 rA = mp.anchorA;
+                    Vector2 rB = mp.anchorB;
 
                     cp.anchorA = rA;
                     cp.anchorB = rB;
@@ -170,8 +170,8 @@ namespace Box2D.NET
                     // Only compute the normal velocity terms if needed.
                     if (sampleVelocity)
                     {
-                        B2Vec2 vrA = b2Add(vA, b2CrossSV(wA, rA));
-                        B2Vec2 vrB = b2Add(vB, b2CrossSV(wB, rB));
+                        Vector2 vrA = b2Add(vA, b2CrossSV(wA, rA));
+                        Vector2 vrB = b2Add(vB, b2CrossSV(wB, rB));
                         float vn = b2Dot(normal, b2Sub(vrB, vrA));
 
                         cp.relativeVelocity = vn;
@@ -219,9 +219,9 @@ namespace Box2D.NET
                 B2BodyState stateA = indexA == B2_NULL_INDEX ? dummyState : states[indexA];
                 B2BodyState stateB = indexB == B2_NULL_INDEX ? dummyState : states[indexB];
 
-                B2Vec2 vA = stateA.linearVelocity;
+                Vector2 vA = stateA.linearVelocity;
                 float wA = stateA.angularVelocity;
-                B2Vec2 vB = stateB.linearVelocity;
+                Vector2 vB = stateB.linearVelocity;
                 float wB = stateB.angularVelocity;
 
                 float mA = constraint.invMassA;
@@ -230,8 +230,8 @@ namespace Box2D.NET
                 float iB = constraint.invIB;
 
                 // Stiffer for static contacts to avoid bodies getting pushed through the ground
-                B2Vec2 normal = constraint.normal;
-                B2Vec2 tangent = b2RightPerp(constraint.normal);
+                Vector2 normal = constraint.normal;
+                Vector2 tangent = b2RightPerp(constraint.normal);
                 int pointCount = constraint.pointCount;
 
                 for (int j = 0; j < pointCount; ++j)
@@ -239,10 +239,10 @@ namespace Box2D.NET
                     ref B2ContactConstraintPoint cp = ref constraint.points[j];
 
                     // fixed anchors
-                    B2Vec2 rA = cp.anchorA;
-                    B2Vec2 rB = cp.anchorB;
+                    Vector2 rA = cp.anchorA;
+                    Vector2 rB = cp.anchorB;
 
-                    B2Vec2 P = b2Add(b2MulSV(cp.normalImpulse, normal), b2MulSV(cp.tangentImpulse, tangent));
+                    Vector2 P = b2Add(b2MulSV(cp.normalImpulse, normal), b2MulSV(cp.tangentImpulse, tangent));
 
                     cp.totalNormalImpulse += cp.normalImpulse;
 
@@ -304,18 +304,18 @@ namespace Box2D.NET
                 int indexB = constraint.indexB - 1;
 
                 B2BodyState stateA = indexA == B2_NULL_INDEX ? dummyState : states[indexA];
-                B2Vec2 vA = stateA.linearVelocity;
+                Vector2 vA = stateA.linearVelocity;
                 float wA = stateA.angularVelocity;
                 B2Rot dqA = stateA.deltaRotation;
 
                 B2BodyState stateB = indexB == B2_NULL_INDEX ? dummyState : states[indexB];
-                B2Vec2 vB = stateB.linearVelocity;
+                Vector2 vB = stateB.linearVelocity;
                 float wB = stateB.angularVelocity;
                 B2Rot dqB = stateB.deltaRotation;
 
-                B2Vec2 dp = b2Sub(stateB.deltaPosition, stateA.deltaPosition);
+                Vector2 dp = b2Sub(stateB.deltaPosition, stateA.deltaPosition);
 
-                B2Vec2 normal = constraint.normal;
+                Vector2 normal = constraint.normal;
                 B2Softness softness = constraint.softness;
                 int pointCount = constraint.pointCount;
 
@@ -332,12 +332,12 @@ namespace Box2D.NET
                     ref B2ContactConstraintPoint cp = ref constraint.points[j];
 
                     // fixed anchor points
-                    B2Vec2 rA = cp.anchorA;
-                    B2Vec2 rB = cp.anchorB;
+                    Vector2 rA = cp.anchorA;
+                    Vector2 rB = cp.anchorB;
 
                     // compute current separation
                     // this is subject to round-off error if the anchor is far from the body center of mass
-                    B2Vec2 ds = b2Add(dp, b2Sub(b2RotateVector(dqB, rB), b2RotateVector(dqA, rA)));
+                    Vector2 ds = b2Add(dp, b2Sub(b2RotateVector(dqB, rB), b2RotateVector(dqA, rA)));
                     float s = cp.baseSeparation + b2Dot(ds, normal);
 
                     float velocityBias;
@@ -382,7 +382,7 @@ namespace Box2D.NET
                     angularB += impulse * rnB[j];
                 }
 
-                B2Vec2 P = b2MulSV(normalImpulse, normal);
+                Vector2 P = b2MulSV(normalImpulse, normal);
                 vA = b2MulSub(vA, mA, P);
                 wA -= iA * angularA;
                 vB = b2MulAdd(vB, mB, P);
@@ -441,25 +441,25 @@ namespace Box2D.NET
                 int indexB = constraint.indexB - 1;
 
                 B2BodyState stateA = indexA == B2_NULL_INDEX ? dummyState : states[indexA];
-                B2Vec2 vA = stateA.linearVelocity;
+                Vector2 vA = stateA.linearVelocity;
                 float wA = stateA.angularVelocity;
                 B2Rot dqA = stateA.deltaRotation;
 
                 B2BodyState stateB = indexB == B2_NULL_INDEX ? dummyState : states[indexB];
-                B2Vec2 vB = stateB.linearVelocity;
+                Vector2 vB = stateB.linearVelocity;
                 float wB = stateB.angularVelocity;
                 B2Rot dqB = stateB.deltaRotation;
 
-                B2Vec2 dp = b2Sub(stateB.deltaPosition, stateA.deltaPosition);
+                Vector2 dp = b2Sub(stateB.deltaPosition, stateA.deltaPosition);
 
-                B2Vec2 normal = constraint.normal;
-                B2Vec2 tangent = b2RightPerp(normal);
+                Vector2 normal = constraint.normal;
+                Vector2 tangent = b2RightPerp(normal);
                 float friction = constraint.friction;
 
                 int pointCount = constraint.pointCount;
                 float totalNormalImpulse = 0.0f;
 
-                B2Vec2 dv = b2Sub(vB, vA);
+                Vector2 dv = b2Sub(vB, vA);
                 float vnc = b2Dot(dv, normal);
 
                 // vt = dot(vrB - sB * tangent - (vrA + sA * tangent), tangent)
@@ -486,12 +486,12 @@ namespace Box2D.NET
                     ref B2ContactConstraintPoint cp = ref constraint.points[j];
 
                     // Fixed anchor points.
-                    B2Vec2 rA = cp.anchorA;
-                    B2Vec2 rB = cp.anchorB;
+                    Vector2 rA = cp.anchorA;
+                    Vector2 rB = cp.anchorB;
 
                     // Compute current separation.
                     // This is subject to round-off error if the anchor is far from the body center of mass.
-                    B2Vec2 ds = b2Add(dp, b2Sub(b2RotateVector(dqB, rB), b2RotateVector(dqA, rA)));
+                    Vector2 ds = b2Add(dp, b2Sub(b2RotateVector(dqB, rB), b2RotateVector(dqA, rA)));
                     float s = cp.baseSeparation + b2Dot(ds, normal);
 
                     // Speculative bias, zero when overlapped.
@@ -566,7 +566,7 @@ namespace Box2D.NET
                         angularB += normalImpulses[j] * rnB[j] + tangentImpulses[j] * rtB[j];
                     }
 
-                    B2Vec2 P = b2Add(b2MulSV(normalImpulse, normal), b2MulSV(tangentImpulse, tangent));
+                    Vector2 P = b2Add(b2MulSV(normalImpulse, normal), b2MulSV(tangentImpulse, tangent));
                     vA = b2MulSub(vA, mA, P);
                     wA -= iA * angularA;
                     vB = b2MulAdd(vB, mB, P);
@@ -624,18 +624,18 @@ namespace Box2D.NET
                 int indexB = constraint.indexB - 1;
 
                 B2BodyState stateA = indexA == B2_NULL_INDEX ? dummyState : states[indexA];
-                B2Vec2 vA = stateA.linearVelocity;
+                Vector2 vA = stateA.linearVelocity;
                 float wA = stateA.angularVelocity;
                 B2Rot dqA = stateA.deltaRotation;
 
                 B2BodyState stateB = indexB == B2_NULL_INDEX ? dummyState : states[indexB];
-                B2Vec2 vB = stateB.linearVelocity;
+                Vector2 vB = stateB.linearVelocity;
                 float wB = stateB.angularVelocity;
                 B2Rot dqB = stateB.deltaRotation;
 
-                B2Vec2 dp = b2Sub(stateB.deltaPosition, stateA.deltaPosition);
+                Vector2 dp = b2Sub(stateB.deltaPosition, stateA.deltaPosition);
 
-                B2Vec2 normal = constraint.normal;
+                Vector2 normal = constraint.normal;
                 float restitution = constraint.restitution;
                 int pointCount = constraint.pointCount;
 
@@ -643,8 +643,8 @@ namespace Box2D.NET
                 {
                     ref B2ContactConstraintPoint cp = ref constraint.points[j];
 
-                    B2Vec2 rA = cp.anchorA;
-                    B2Vec2 rB = cp.anchorB;
+                    Vector2 rA = cp.anchorA;
+                    Vector2 rB = cp.anchorB;
 
                     // The total normal impulse is 0 for speculative points.
                     float compressionImpulse = cp.totalNormalImpulse - cp.restitutionImpulse;
@@ -657,14 +657,14 @@ namespace Box2D.NET
                     }
                     else
                     {
-                        B2Vec2 ds = b2Add(dp, b2Sub(b2RotateVector(dqB, rB), b2RotateVector(dqA, rA)));
+                        Vector2 ds = b2Add(dp, b2Sub(b2RotateVector(dqB, rB), b2RotateVector(dqA, rA)));
                         float s = cp.baseSeparation + b2Dot(ds, normal);
 
                         velocityBias = s > 0.0f ? s * inv_h : 0.0f;
                     }
 
-                    B2Vec2 vrA = b2Add(vA, b2CrossSV(wA, rA));
-                    B2Vec2 vrB = b2Add(vB, b2CrossSV(wB, rB));
+                    Vector2 vrA = b2Add(vA, b2CrossSV(wA, rA));
+                    Vector2 vrB = b2Add(vB, b2CrossSV(wB, rB));
                     float vn = b2Dot(b2Sub(vrB, vrA), normal);
 
                     float impulse = -cp.normalMass * (vn + velocityBias);
@@ -685,7 +685,7 @@ namespace Box2D.NET
                     cp.restitutionImpulse += impulse - approachImpulse;
                     cp.totalNormalImpulse += impulse;
 
-                    B2Vec2 P = b2MulSV(impulse, normal);
+                    Vector2 P = b2MulSV(impulse, normal);
                     vA = b2MulSub(vA, mA, P);
                     wA -= iA * b2Cross(rA, P);
 

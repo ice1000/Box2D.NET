@@ -38,7 +38,7 @@ public class CircleStack : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 5.0f);
+            m_camera.center = new Vector2(0.0f, 5.0f);
             m_camera.zoom = 6.0f;
         }
 
@@ -52,11 +52,11 @@ public class CircleStack : Sample
             shapeDef.userData = B2UserData.Signed(shapeIndex);
             shapeIndex += 1;
 
-            B2Segment segment = new B2Segment(new B2Vec2(-10.0f, 0.0f), new B2Vec2(10.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-10.0f, 0.0f), new Vector2(10.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
-        b2World_SetGravity(m_worldId, new B2Vec2(0.0f, -20.0f));
+        b2World_SetGravity(m_worldId, new Vector2(0.0f, -20.0f));
         b2World_SetContactTuning(m_worldId, 0.25f * 360.0f, 10.0f, 3.0f);
 
         {

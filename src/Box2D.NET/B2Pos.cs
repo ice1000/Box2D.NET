@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -25,23 +26,23 @@ namespace Box2D.NET
 
         /// Offset a world position by a vector
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Pos operator +(B2Pos a, B2Vec2 b)
+        public static B2Pos operator +(B2Pos a, Vector2 b)
         {
             return new B2Pos(a.X + b.X, a.Y + b.Y);
         }
 
         /// Offset a world position by a vector
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Pos operator -(B2Pos a, B2Vec2 b)
+        public static B2Pos operator -(B2Pos a, Vector2 b)
         {
             return new B2Pos(a.X - b.X, a.Y - b.Y);
         }
 
         /// Delta between two world positions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 operator -(B2Pos a, B2Pos b)
+        public static Vector2 operator -(B2Pos a, B2Pos b)
         {
-            return new B2Vec2(a.X - b.X, a.Y - b.Y);
+            return new Vector2(a.X - b.X, a.Y - b.Y);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -43,7 +43,7 @@ public class SensorTypes : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 3.0f);
+            m_camera.center = new Vector2(0.0f, 3.0f);
             m_camera.zoom = 4.5f;
         }
 
@@ -59,13 +59,13 @@ public class SensorTypes : Sample
             shapeDef.filter.maskBits = DEFAULT;
             shapeDef.enableSensorEvents = true;
 
-            B2Segment groundSegment = new B2Segment(new B2Vec2(-6.0f, 0.0f), new B2Vec2(6.0f, 0.0f));
+            B2Segment groundSegment = new B2Segment(new Vector2(-6.0f, 0.0f), new Vector2(6.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, groundSegment);
 
-            groundSegment = new B2Segment(new B2Vec2(-6.0f, 0.0f), new B2Vec2(-6.0f, 4.0f));
+            groundSegment = new B2Segment(new Vector2(-6.0f, 0.0f), new Vector2(-6.0f, 4.0f));
             b2CreateSegmentShape(groundId, shapeDef, groundSegment);
 
-            groundSegment = new B2Segment(new B2Vec2(6.0f, 0.0f), new B2Vec2(6.0f, 4.0f));
+            groundSegment = new B2Segment(new Vector2(6.0f, 0.0f), new Vector2(6.0f, 4.0f));
             b2CreateSegmentShape(groundId, shapeDef, groundSegment);
         }
 
@@ -73,7 +73,7 @@ public class SensorTypes : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.name = "static sensor";
             bodyDef.type = B2BodyType.b2_staticBody;
-            bodyDef.position = b2ToPos(new B2Vec2(-3.0f, 0.8f));
+            bodyDef.position = b2ToPos(new Vector2(-3.0f, 0.8f));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -88,8 +88,8 @@ public class SensorTypes : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.name = "kinematic sensor";
             bodyDef.type = B2BodyType.b2_kinematicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 0.0f));
-            bodyDef.linearVelocity = new B2Vec2(0.0f, 1.0f);
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 0.0f));
+            bodyDef.linearVelocity = new Vector2(0.0f, 1.0f);
             m_kinematicBodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -104,7 +104,7 @@ public class SensorTypes : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.name = "dynamic sensor";
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(3.0f, 1.0f));
+            bodyDef.position = b2ToPos(new Vector2(3.0f, 1.0f));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -125,7 +125,7 @@ public class SensorTypes : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.name = "ball_01";
-            bodyDef.position = b2ToPos(new B2Vec2(-5.0f, 1.0f));
+            bodyDef.position = b2ToPos(new Vector2(-5.0f, 1.0f));
             bodyDef.type = B2BodyType.b2_dynamicBody;
 
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
@@ -135,7 +135,7 @@ public class SensorTypes : Sample
             shapeDef.filter.maskBits = GROUND | DEFAULT | SENSOR;
             shapeDef.enableSensorEvents = true;
             
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
             b2CreateCircleShape(bodyId, shapeDef, circle);
         }
     }
@@ -204,15 +204,15 @@ public class SensorTypes : Sample
 
     public override void Step()
     {
-        B2Vec2 position = b2ToVec2(b2Body_GetPosition(m_kinematicBodyId));
+        Vector2 position = b2ToVec2(b2Body_GetPosition(m_kinematicBodyId));
         if (position.Y < 0.0f)
         {
-            b2Body_SetLinearVelocity(m_kinematicBodyId, new B2Vec2(0.0f, 1.0f));
+            b2Body_SetLinearVelocity(m_kinematicBodyId, new Vector2(0.0f, 1.0f));
             //b2Body_SetKinematicTarget( m_kinematicBodyId );
         }
         else if (position.Y > 3.0f)
         {
-            b2Body_SetLinearVelocity(m_kinematicBodyId, new B2Vec2(0.0f, -1.0f));
+            b2Body_SetLinearVelocity(m_kinematicBodyId, new Vector2(0.0f, -1.0f));
         }
 
         base.Step();
@@ -226,8 +226,8 @@ public class SensorTypes : Sample
         PrintOverlaps(m_kinematicSensorId, "kinematic");
         PrintOverlaps(m_dynamicSensorId, "dynamic");
 
-        B2Vec2 origin = new B2Vec2(5.0f, 1.0f);
-        B2Vec2 translation = new B2Vec2(-10.0f, 0.0f);
+        Vector2 origin = new Vector2(5.0f, 1.0f);
+        Vector2 translation = new Vector2(-10.0f, 0.0f);
         B2RayResult result = b2World_CastRayClosest(m_worldId, b2ToPos(origin), translation, b2DefaultQueryFilter());
         DrawLine(m_draw, origin, origin + translation, B2HexColor.b2_colorDimGray);
 

@@ -48,17 +48,17 @@ public static class SolidCapsules
 
         // Vertex buffer for single quad
         float a = 1.1f;
-        B2Vec2[] vertices = new B2Vec2[]
+        Vector2[] vertices = new Vector2[]
         {
-            new B2Vec2(-a, -a),
-            new B2Vec2(a, -a),
-            new B2Vec2(-a, a),
-            new B2Vec2(a, -a),
-            new B2Vec2(a, a),
-            new B2Vec2(-a, a),
+            new Vector2(-a, -a),
+            new Vector2(a, -a),
+            new Vector2(-a, a),
+            new Vector2(a, -a),
+            new Vector2(a, a),
+            new Vector2(-a, a),
         };
         gl.BindBuffer(GLEnum.ArrayBuffer, render.vboIds[0]);
-        gl.BufferData<B2Vec2>(GLEnum.ArrayBuffer, vertices, GLEnum.StaticDraw);
+        gl.BufferData<Vector2>(GLEnum.ArrayBuffer, vertices, GLEnum.StaticDraw);
         gl.VertexAttribPointer(vertexAttribute, 2, VertexAttribPointerType.Float, false, 0, IntPtr.Zero);
 
         // Capsule buffer
@@ -102,9 +102,9 @@ public static class SolidCapsules
         }
     }
 
-    public static void AddCapsule(ref SolidCapsuleRender render, B2Vec2 p1, B2Vec2 p2, float radius, B2HexColor c)
+    public static void AddCapsule(ref SolidCapsuleRender render, Vector2 p1, Vector2 p2, float radius, B2HexColor c)
     {
-        B2Vec2 d = p2 - p1;
+        Vector2 d = p2 - p1;
         float length = b2Length(d);
         if (length < 0.001f)
         {
@@ -112,7 +112,7 @@ public static class SolidCapsules
             return;
         }
 
-        B2Vec2 axis = new B2Vec2(d.X / length, d.Y / length);
+        Vector2 axis = new Vector2(d.X / length, d.Y / length);
         B2Transform transform;
         transform.p = 0.5f * (p1 + p2);
         transform.q.c = axis.X;

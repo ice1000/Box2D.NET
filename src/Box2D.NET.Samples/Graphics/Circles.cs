@@ -40,17 +40,17 @@ public static class Circles
 
         // Vertex buffer for single quad
         float a = 1.1f;
-        B2Vec2[] vertices = new B2Vec2[]
+        Vector2[] vertices = new Vector2[]
         {
-            new B2Vec2(-a, -a),
-            new B2Vec2(a, -a),
-            new B2Vec2(-a, a),
-            new B2Vec2(a, -a),
-            new B2Vec2(a, a),
-            new B2Vec2(-a, a),
+            new Vector2(-a, -a),
+            new Vector2(a, -a),
+            new Vector2(-a, a),
+            new Vector2(a, -a),
+            new Vector2(a, a),
+            new Vector2(-a, a),
         };
         gl.BindBuffer(GLEnum.ArrayBuffer, render.vboIds[0]);
-        gl.BufferData<B2Vec2>(GLEnum.ArrayBuffer, vertices, GLEnum.StaticDraw);
+        gl.BufferData<Vector2>(GLEnum.ArrayBuffer, vertices, GLEnum.StaticDraw);
         gl.VertexAttribPointer(vertexAttribute, 2, VertexAttribPointerType.Float, false, 0, IntPtr.Zero);
 
         // Circle buffer
@@ -92,7 +92,7 @@ public static class Circles
         }
     }
 
-    public static void AddCircle(ref CircleRender render, B2Vec2 center, float radius, B2HexColor color)
+    public static void AddCircle(ref CircleRender render, Vector2 center, float radius, B2HexColor color)
     {
         RGBA8 rgba = RGBA8.MakeRGBA8(color, 1.0f);
         render.circles.Add(new CircleData(center, radius, rgba));

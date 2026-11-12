@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using static Box2D.NET.B2Constants;
 using static Box2D.NET.B2Cores;
 
@@ -37,9 +38,9 @@ namespace Box2D.NET
             return float.MaxValue - ((ticks % 100000) / 100000f);
         }
 
-        private B2Vec2 TestVec2()
+        private Vector2 TestVec2()
         {
-            var random = new B2Vec2();
+            var random = new Vector2();
             random.X = TestFloat();
             random.Y = random.X + 1.0f;
             return random;
@@ -56,28 +57,28 @@ namespace Box2D.NET
         private void CheckSizeSeries()
         {
             ThrowIf(B2FixedArray8<int>.Size == B2_MAX_POLYGON_VERTICES, $"B2FixedArray8<int> and {nameof(B2_MAX_POLYGON_VERTICES)} have the same size, which is unexpected.");
-            ThrowIf(B2FixedArray8<B2Vec2>.Size == B2_MAX_POLYGON_VERTICES, $"B2FixedArray8<B2Vec2> and {nameof(B2_MAX_POLYGON_VERTICES)} have the same size, which is unexpected.");
+            ThrowIf(B2FixedArray8<Vector2>.Size == B2_MAX_POLYGON_VERTICES, $"B2FixedArray8<B2Vec2> and {nameof(B2_MAX_POLYGON_VERTICES)} have the same size, which is unexpected.");
             ThrowIf(B2FixedArray4<int>.Size == B2_SIMD_WIDTH, $"B2FixedArray4<int> and {nameof(B2_SIMD_WIDTH)}have the same size, which is unexpected.");
             ThrowIf(B2FixedArray8<float>.Size == B2_MAX_CONTINUOUS_SENSOR_HITS, $"B2FixedArray8<float> and {nameof(B2_MAX_CONTINUOUS_SENSOR_HITS)}have the same size, which is unexpected.");
         }
 
         private void CheckFixedArraySeries()
         {
-            var array1 = new B2FixedArray1<B2Vec2>();
-            var array2 = new B2FixedArray2<B2Vec2>();
-            var array3 = new B2FixedArray3<B2Vec2>();
-            var array4 = new B2FixedArray4<B2Vec2>();
+            var array1 = new B2FixedArray1<Vector2>();
+            var array2 = new B2FixedArray2<Vector2>();
+            var array3 = new B2FixedArray3<Vector2>();
+            var array4 = new B2FixedArray4<Vector2>();
 
             //
-            var array7 = new B2FixedArray7<B2Vec2>();
-            var array8 = new B2FixedArray8<B2Vec2>();
-            var array11 = new B2FixedArray11<B2Vec2>();
-            var array12 = new B2FixedArray12<B2Vec2>();
+            var array7 = new B2FixedArray7<Vector2>();
+            var array8 = new B2FixedArray8<Vector2>();
+            var array11 = new B2FixedArray11<Vector2>();
+            var array12 = new B2FixedArray12<Vector2>();
 
             //
-            var array16 = new B2FixedArray16<B2Vec2>();
-            var array64 = new B2FixedArray64<B2Vec2>();
-            var array1024 = new B2FixedArray1024<B2Vec2>();
+            var array16 = new B2FixedArray16<Vector2>();
+            var array64 = new B2FixedArray64<Vector2>();
+            var array1024 = new B2FixedArray1024<Vector2>();
 
             ThrowIfInvalidFixedArray(array1.AsSpan(), TestVec2, "Fixed array does not maintain expected structure after assignment.");
             ThrowIfInvalidFixedArray(array2.AsSpan(), TestVec2, "Fixed array does not maintain expected structure after assignment.");

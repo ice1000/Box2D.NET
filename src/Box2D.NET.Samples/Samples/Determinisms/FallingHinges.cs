@@ -35,7 +35,7 @@ public class FallingHinges : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 7.5f);
+            m_camera.center = new Vector2(0.0f, 7.5f);
             m_camera.zoom = 10.0f;
         }
 

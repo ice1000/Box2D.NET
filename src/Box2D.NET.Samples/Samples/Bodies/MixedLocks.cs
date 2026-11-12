@@ -24,7 +24,7 @@ public class MixedLocks : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(0.0f, 2.5f);
+            m_context.camera.center = new Vector2(0.0f, 2.5f);
             m_context.camera.zoom = 3.5f;
         }
 
@@ -33,7 +33,7 @@ public class MixedLocks : Sample
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(-40.0f, 0.0f), new B2Vec2(40.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
@@ -43,7 +43,7 @@ public class MixedLocks : Sample
 
             {
                 B2BodyDef bodyDef = b2DefaultBodyDef();
-                bodyDef.position = b2ToPos(new B2Vec2(2.0f, 1.0f));
+                bodyDef.position = b2ToPos(new Vector2(2.0f, 1.0f));
                 bodyDef.name = "static";
 
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
@@ -53,7 +53,7 @@ public class MixedLocks : Sample
             {
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
-                bodyDef.position = b2ToPos(new B2Vec2(1.0f, 1.0f));
+                bodyDef.position = b2ToPos(new Vector2(1.0f, 1.0f));
                 bodyDef.name = "free";
 
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
@@ -63,7 +63,7 @@ public class MixedLocks : Sample
             {
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
-                bodyDef.position = b2ToPos(new B2Vec2(1.0f, 3.0f));
+                bodyDef.position = b2ToPos(new Vector2(1.0f, 3.0f));
                 bodyDef.name = "free";
 
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
@@ -73,7 +73,7 @@ public class MixedLocks : Sample
             {
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
-                bodyDef.position = b2ToPos(new B2Vec2(-1.0f, 1.0f));
+                bodyDef.position = b2ToPos(new Vector2(-1.0f, 1.0f));
                 bodyDef.motionLocks.angularZ = true;
                 bodyDef.name = "angular z";
 
@@ -84,7 +84,7 @@ public class MixedLocks : Sample
             {
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
-                bodyDef.position = b2ToPos(new B2Vec2(-2.0f, 2.0f));
+                bodyDef.position = b2ToPos(new Vector2(-2.0f, 2.0f));
                 bodyDef.motionLocks.linearX = true;
                 bodyDef.name = "linear x";
 
@@ -95,7 +95,7 @@ public class MixedLocks : Sample
             {
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
-                bodyDef.position = b2ToPos(new B2Vec2(-1.0f, 2.5f));
+                bodyDef.position = b2ToPos(new Vector2(-1.0f, 2.5f));
                 bodyDef.motionLocks.linearY = true;
                 bodyDef.motionLocks.angularZ = true;
                 bodyDef.name = "lin y ang z";
@@ -107,7 +107,7 @@ public class MixedLocks : Sample
             {
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
-                bodyDef.position = b2ToPos(new B2Vec2(0.0f, 1.0f));
+                bodyDef.position = b2ToPos(new Vector2(0.0f, 1.0f));
                 bodyDef.motionLocks.linearX = true;
                 bodyDef.motionLocks.linearY = true;
                 bodyDef.motionLocks.angularZ = true;

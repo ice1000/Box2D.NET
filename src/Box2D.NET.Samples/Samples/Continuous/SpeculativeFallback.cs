@@ -26,7 +26,7 @@ public class SpeculativeFallback : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(1.0f, 5.0f);
+            m_camera.center = new Vector2(1.0f, 5.0f);
             m_camera.zoom = 25.0f * 0.25f;
         }
 
@@ -35,16 +35,16 @@ public class SpeculativeFallback : Sample
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(-10.0f, 0.0f), new B2Vec2(10.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-10.0f, 0.0f), new Vector2(10.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
 
-            B2Vec2[] points = new B2Vec2[5]
+            Vector2[] points = new Vector2[5]
             {
-                new B2Vec2(-2.0f, 4.0f),
-                new B2Vec2(2.0f, 4.0f),
-                new B2Vec2(2.0f, 4.1f),
-                new B2Vec2(-0.5f, 4.2f),
-                new B2Vec2(-2.0f, 4.2f),
+                new Vector2(-2.0f, 4.0f),
+                new Vector2(2.0f, 4.0f),
+                new Vector2(2.0f, 4.1f),
+                new Vector2(-0.5f, 4.2f),
+                new Vector2(-2.0f, 4.2f),
             };
             B2Hull hull = b2ComputeHull(points, 5);
             B2Polygon poly = b2MakePolygon(hull, 0.0f);
@@ -56,12 +56,12 @@ public class SpeculativeFallback : Sample
             float offset = 8.0f;
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(offset, 12.0f));
-            bodyDef.linearVelocity = new B2Vec2(0.0f, -100.0f);
+            bodyDef.position = b2ToPos(new Vector2(offset, 12.0f));
+            bodyDef.linearVelocity = new Vector2(0.0f, -100.0f);
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Polygon box = b2MakeOffsetBox(2.0f, 0.05f, new B2Vec2(-offset, 0.0f), b2MakeRot(B2_PI));
+            B2Polygon box = b2MakeOffsetBox(2.0f, 0.05f, new Vector2(-offset, 0.0f), b2MakeRot(B2_PI));
             b2CreatePolygonShape(bodyId, shapeDef, box);
         }
     }

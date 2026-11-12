@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2026 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
 using static Box2D.NET.B2Arrays;
 using static Box2D.NET.B2Diagnostics;
 using static Box2D.NET.B2Constants;
@@ -15,7 +16,7 @@ namespace Box2D.NET
 {
     public static class B2PogoJoints
     {
-        private static readonly B2Vec2 b2_pogoAxis = new B2Vec2(0.0f, 1.0f);
+        private static readonly Vector2 b2_pogoAxis = new Vector2(0.0f, 1.0f);
 
         /**
          * @defgroup pogo_joint Pogo Joint
@@ -83,11 +84,11 @@ namespace Box2D.NET
             B2Transform transformA = b2ToRelativeTransform(wxfA, wxfA.p);
             B2Transform transformB = b2ToRelativeTransform(b2GetBodyTransform(world, jointSim.bodyIdB), wxfA.p);
 
-            B2Vec2 axis = b2RotateVector(jointSim.localFrameB.q, b2_pogoAxis);
+            Vector2 axis = b2RotateVector(jointSim.localFrameB.q, b2_pogoAxis);
             axis = b2RotateVector(transformB.q, axis);
-            B2Vec2 pA = b2TransformPoint(transformA, jointSim.localFrameA.p);
-            B2Vec2 pB = b2TransformPoint(transformB, jointSim.localFrameB.p);
-            B2Vec2 d = b2Sub(pB, pA);
+            Vector2 pA = b2TransformPoint(transformA, jointSim.localFrameA.p);
+            Vector2 pB = b2TransformPoint(transformB, jointSim.localFrameB.p);
+            Vector2 d = b2Sub(pB, pA);
             float length = b2Dot(d, axis);
             return length;
         }
@@ -108,9 +109,9 @@ namespace Box2D.NET
 
         /** @} */
 
-        internal static B2Vec2 b2GetPogoJointForce(B2World world, B2JointSim @base)
+        internal static Vector2 b2GetPogoJointForce(B2World world, B2JointSim @base)
         {
-            B2Vec2 force = b2MulSV(world.inv_h * @base.uj.pogoJoint.impulse, @base.uj.pogoJoint.normal);
+            Vector2 force = b2MulSV(world.inv_h * @base.uj.pogoJoint.impulse, @base.uj.pogoJoint.normal);
             return force;
         }
 
@@ -161,8 +162,8 @@ namespace Box2D.NET
             // Compute the initial center delta. Incremental position updates are relative to this.
             joint.deltaCenter = b2SubPos(bodySimB.center, bodySimA.center);
 
-            B2Vec2 rA = joint.frameA.p;
-            B2Vec2 rB = joint.frameB.p;
+            Vector2 rA = joint.frameA.p;
+            Vector2 rB = joint.frameB.p;
 
             // compute effective mass
             float crA = b2Cross(rA, joint.normal);
@@ -198,10 +199,10 @@ namespace Box2D.NET
 
             B2BodyState stateA = joint.indexA == B2_NULL_INDEX ? dummyState : context.states[joint.indexA];
             B2BodyState stateB = joint.indexB == B2_NULL_INDEX ? dummyState : context.states[joint.indexB];
-            B2Vec2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
-            B2Vec2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
+            Vector2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
+            Vector2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
 
-            B2Vec2 linearImpulse = b2MulSV(joint.impulse, joint.normal);
+            Vector2 linearImpulse = b2MulSV(joint.impulse, joint.normal);
 
             if (0 != (stateA.flags & (uint)B2BodyFlags.b2_dynamicFlag))
             {
@@ -238,13 +239,13 @@ namespace Box2D.NET
             B2BodyState stateA = joint.indexA == B2_NULL_INDEX ? dummyState : context.states[joint.indexA];
             B2BodyState stateB = joint.indexB == B2_NULL_INDEX ? dummyState : context.states[joint.indexB];
 
-            B2Vec2 vA = stateA.linearVelocity;
+            Vector2 vA = stateA.linearVelocity;
             float wA = stateA.angularVelocity;
-            B2Vec2 vB = stateB.linearVelocity;
+            Vector2 vB = stateB.linearVelocity;
             float wB = stateB.angularVelocity;
 
-            B2Vec2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
-            B2Vec2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
+            Vector2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
+            Vector2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
 
             float bias = 0.0f;
             if (useBias)
@@ -253,12 +254,12 @@ namespace Box2D.NET
                 // the mover body. Otherwise the mover can make huge jumps going up stairs. This still
                 // works with continuous collision.
                 // However, this position delta is not observer contact forces and can lead to tunnelling.
-                B2Vec2 dcA = stateA.deltaPosition;
-                B2Vec2 dcB = stateB.deltaPosition;
-                B2Vec2 d = b2Add(b2Add(b2Sub(dcB, dcA), b2Sub(rB, rA)), joint.deltaCenter);
+                Vector2 dcA = stateA.deltaPosition;
+                Vector2 dcB = stateB.deltaPosition;
+                Vector2 d = b2Add(b2Add(b2Sub(dcB, dcA), b2Sub(rB, rA)), joint.deltaCenter);
 
                 // The pogo axis is usually fixed as the world y-axis. Different than the ground normal.
-                B2Vec2 pogoAxis = b2RotateVector(joint.frameB.q, b2_pogoAxis);
+                Vector2 pogoAxis = b2RotateVector(joint.frameB.q, b2_pogoAxis);
                 float c = b2Dot(pogoAxis, d) - joint.restLength;
 
                 // This could be divided by dot(joint->normal, pogoAxis) to account for the constraint
@@ -267,7 +268,7 @@ namespace Box2D.NET
                 bias = -joint.velocity;
             }
 
-            B2Vec2 vr = b2Sub(b2Add(vB, b2CrossSV(wB, rB)), b2Add(vA, b2CrossSV(wA, rA)));
+            Vector2 vr = b2Sub(b2Add(vB, b2CrossSV(wB, rB)), b2Add(vA, b2CrossSV(wA, rA)));
             float cdot = b2Dot(joint.normal, vr);
 
             float maxTensionImpulse = context.h * joint.maxTensionForce;
@@ -277,7 +278,7 @@ namespace Box2D.NET
             joint.impulse = b2ClampFloat(joint.impulse + impulse, -maxTensionImpulse, maxCompressionImpulse);
             impulse = joint.impulse - oldImpulse;
 
-            B2Vec2 P = b2MulSV(impulse, joint.normal);
+            Vector2 P = b2MulSV(impulse, joint.normal);
             vA = b2MulSub(vA, mA, P);
             wA -= iA * b2Cross(rA, P);
             vB = b2MulAdd(vB, mB, P);

@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using static Box2D.NET.B2Arrays;
 using static Box2D.NET.B2Buffers;
 using static Box2D.NET.B2Constants;
@@ -27,9 +28,9 @@ namespace Box2D.NET
             return (ulong)(uint)vertex1 << 32 | (ulong)(uint)vertex2;
         }
 
-        private static float b2DistanceSquaredToSegment(B2Vec2 p, B2Vec2 a, B2Vec2 b)
+        private static float b2DistanceSquaredToSegment(Vector2 p, Vector2 a, Vector2 b)
         {
-            B2Vec2 d = b2Sub(b, a);
+            Vector2 d = b2Sub(b, a);
             float lengthSquared = b2Dot(d, d);
             if (lengthSquared == 0.0f)
             {
@@ -47,9 +48,9 @@ namespace Box2D.NET
                 return;
             }
 
-            B2Vec2 p = context.vertices[vertex];
-            B2Vec2 a = context.point1;
-            B2Vec2 d = b2Sub(context.point2, a);
+            Vector2 p = context.vertices[vertex];
+            Vector2 a = context.point1;
+            Vector2 d = b2Sub(context.point2, a);
             float dd = b2Dot(d, d);
             float fraction = b2Dot(b2Sub(p, a), d);
             if (fraction <= 0.0f || dd <= fraction)
@@ -80,7 +81,7 @@ namespace Box2D.NET
 
         // Use a spatial hash to weld vertices. This is very similar to the mesh welder in Box3D.
         private static int b2WeldVertices(ReadOnlySpan<B2Polygon> polygons, int polygonCount, float tolerance,
-            B2Vec2[] vertices, int[] remap, int[] cellNext)
+            Vector2[] vertices, int[] remap, int[] cellNext)
         {
             Dictionary<ulong, int> cellMap = new Dictionary<ulong, int>();
 
@@ -94,7 +95,7 @@ namespace Box2D.NET
                 ref readonly B2Polygon polygon = ref polygons[i];
                 for (int j = 0; j < polygon.count; ++j)
                 {
-                    B2Vec2 p = polygon.vertices[j];
+                    Vector2 p = polygon.vertices[j];
                     int cellX = (int)MathF.Floor(p.X / cellSize);
                     int cellY = (int)MathF.Floor(p.Y / cellSize);
 
@@ -140,7 +141,7 @@ namespace Box2D.NET
 
         // Split t-junctions. This creates collinear edges, but they will get cancelled out in a later
         // stage.
-        private static void b2SplitEdges(ReadOnlySpan<B2Polygon> polygons, int polygonCount, B2Vec2[] vertices,
+        private static void b2SplitEdges(ReadOnlySpan<B2Polygon> polygons, int polygonCount, Vector2[] vertices,
             int vertexCount, int[] remap, float tolerance, ref B2Array<B2BuilderEdge> edges)
         {
             float lengthSum = 0.0f;
@@ -208,8 +209,8 @@ namespace Box2D.NET
                         continue;
                     }
 
-                    B2Vec2 p1 = vertices[vertex1];
-                    B2Vec2 p2 = vertices[vertex2];
+                    Vector2 p1 = vertices[vertex1];
+                    Vector2 p2 = vertices[vertex2];
 
                     context.point1 = p1;
                     context.point2 = p2;
@@ -346,15 +347,15 @@ namespace Box2D.NET
             return hasDuplicate;
         }
 
-        private static int b2RemoveCollinearPoints(B2Vec2[] points, int count, float tolerance, B2Vec2[] output)
+        private static int b2RemoveCollinearPoints(Vector2[] points, int count, float tolerance, Vector2[] output)
         {
             float toleranceSquared = tolerance * tolerance;
 
             int start = B2_NULL_INDEX;
             for (int i = 0; i < count; ++i)
             {
-                B2Vec2 previous = points[i > 0 ? i - 1 : count - 1];
-                B2Vec2 next = points[i + 1 < count ? i + 1 : 0];
+                Vector2 previous = points[i > 0 ? i - 1 : count - 1];
+                Vector2 next = points[i + 1 < count ? i + 1 : 0];
                 if (b2DistanceSquaredToSegment(points[i], previous, next) > toleranceSquared)
                 {
                     start = i;
@@ -370,31 +371,31 @@ namespace Box2D.NET
             int outputCount = 0;
             output[outputCount++] = points[start];
 
-            B2Vec2 anchor = points[start];
+            Vector2 anchor = points[start];
             bool hasCone = false;
-            B2Vec2 left = b2Vec2_zero;
-            B2Vec2 right = b2Vec2_zero;
+            Vector2 left = Vector2Zero;
+            Vector2 right = Vector2Zero;
             float reachSquared = 0.0f;
 
             for (int k = 1; k < count; ++k)
             {
-                B2Vec2 point = points[(start + k) % count];
-                B2Vec2 next = points[(start + k + 1) % count];
+                Vector2 point = points[(start + k) % count];
+                Vector2 next = points[(start + k + 1) % count];
 
-                B2Vec2 offset = b2Sub(point, anchor);
+                Vector2 offset = b2Sub(point, anchor);
                 float distanceSquared = b2Dot(offset, offset);
 
                 bool coneValid = hasCone;
-                B2Vec2 coneLeft = left;
-                B2Vec2 coneRight = right;
+                Vector2 coneLeft = left;
+                Vector2 coneRight = right;
                 if (distanceSquared > toleranceSquared)
                 {
                     float distance = MathF.Sqrt(distanceSquared);
-                    B2Vec2 u = b2MulSV(1.0f / distance, offset);
+                    Vector2 u = b2MulSV(1.0f / distance, offset);
                     float s = tolerance / distance;
                     float c = MathF.Sqrt(1.0f - s * s);
-                    B2Vec2 pointLeft = new B2Vec2(c * u.X - s * u.Y, s * u.X + c * u.Y);
-                    B2Vec2 pointRight = new B2Vec2(c * u.X + s * u.Y, c * u.Y - s * u.X);
+                    Vector2 pointLeft = new Vector2(c * u.X - s * u.Y, s * u.X + c * u.Y);
+                    Vector2 pointRight = new Vector2(c * u.X + s * u.Y, c * u.Y - s * u.X);
 
                     if (coneValid == false)
                     {
@@ -416,7 +417,7 @@ namespace Box2D.NET
                     }
                 }
 
-                B2Vec2 reach = b2Sub(next, anchor);
+                Vector2 reach = b2Sub(next, anchor);
                 float newReachSquared = b2MaxFloat(reachSquared, distanceSquared);
                 bool collinear = b2Dot(reach, reach) >= newReachSquared;
                 if (collinear && coneValid)
@@ -484,7 +485,7 @@ namespace Box2D.NET
             float tolerance = b2MaxFloat(weldTolerance, B2_LINEAR_SLOP);
 
             // Weld vertices that overlap within tolerance.
-            B2Vec2[] vertices = b2Alloc<B2Vec2>(inputCount);
+            Vector2[] vertices = b2Alloc<Vector2>(inputCount);
             int[] vertexMap = b2Alloc<int>(inputCount);
             int[] cellNext = b2Alloc<int>(inputCount);
 
@@ -586,8 +587,8 @@ namespace Box2D.NET
             // right-most turn.
             bool[] used = new bool[edgeCount];
 
-            B2Array<B2Vec2> loop = b2Array_Create<B2Vec2>();
-            B2Array<B2Vec2> reduced = b2Array_Create<B2Vec2>();
+            B2Array<Vector2> loop = b2Array_Create<Vector2>();
+            B2Array<Vector2> reduced = b2Array_Create<Vector2>();
             B2Array<B2ChainData> chains = b2Array_Create<B2ChainData>();
 
             for (int firstEdge = 0; firstEdge < edgeCount; ++firstEdge)
@@ -610,9 +611,9 @@ namespace Box2D.NET
                     b2Array_Push(ref loop, vertices[edge.vertex1]);
 
                     // Edge direction.
-                    B2Vec2 p1 = vertices[edge.vertex1];
-                    B2Vec2 p2 = vertices[edge.vertex2];
-                    B2Vec2 direction = b2Sub(p2, p1);
+                    Vector2 p1 = vertices[edge.vertex1];
+                    Vector2 p2 = vertices[edge.vertex2];
+                    Vector2 direction = b2Sub(p2, p1);
 
                     // Take the sharpest right turn. The minimum signed angle from the incoming direction.
                     int nextEdge = B2_NULL_INDEX;
@@ -627,8 +628,8 @@ namespace Box2D.NET
                             continue;
                         }
 
-                        B2Vec2 p3 = vertices[edges[candidate].vertex2];
-                        B2Vec2 candidateDirection = b2Sub(p3, p2);
+                        Vector2 p3 = vertices[edges[candidate].vertex2];
+                        Vector2 candidateDirection = b2Sub(p3, p2);
 
                         // Signed angle
                         float angle = b2Atan2(b2Cross(direction, candidateDirection),
@@ -675,7 +676,7 @@ namespace Box2D.NET
 
                 // Publish the loop.
                 B2ChainData chain = new B2ChainData();
-                chain.points = b2Alloc<B2Vec2>(pointCount);
+                chain.points = b2Alloc<Vector2>(pointCount);
                 chain.count = pointCount;
                 Array.Copy(reduced.data, chain.points, pointCount);
                 b2Array_Push(ref chains, chain);

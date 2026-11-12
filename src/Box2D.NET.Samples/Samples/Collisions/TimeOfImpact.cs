@@ -14,8 +14,8 @@ public class TimeOfImpact : Sample
 {
     private static readonly int SampleTimeOfImpact = SampleFactory.Shared.RegisterSample("Collision", "Time of Impact", Create);
 
-    private B2Vec2[] m_verticesA = new B2Vec2[4] { new B2Vec2(-16.25f, 44.75f), new B2Vec2(-15.75f, 44.75f), new B2Vec2(-15.75f, 45.25f), new B2Vec2(-16.25f, 45.25f) };
-    private B2Vec2[] m_verticesB = new B2Vec2[2] { new B2Vec2(0.0f, -0.125000000f), new B2Vec2(0.0f, 0.125000000f) };
+    private Vector2[] m_verticesA = new Vector2[4] { new Vector2(-16.25f, 44.75f), new Vector2(-15.75f, 44.75f), new Vector2(-15.75f, 45.25f), new Vector2(-16.25f, 45.25f) };
+    private Vector2[] m_verticesB = new Vector2[2] { new Vector2(0.0f, -0.125000000f), new Vector2(0.0f, 0.125000000f) };
 
     private int m_countA;
     private int m_countB;
@@ -37,8 +37,8 @@ public class TimeOfImpact : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.6f, 2.0f);
-            m_camera.center = new B2Vec2(-16, 45);
+            m_camera.center = new Vector2(0.6f, 2.0f);
+            m_camera.center = new Vector2(-16, 45);
             m_camera.zoom = 5.0f;
         }
 
@@ -51,11 +51,11 @@ public class TimeOfImpact : Sample
     {
         base.Step();
 
-        _sweepA = new B2Sweep(b2Vec2_zero, new B2Vec2(0.0f, 0.0f), new B2Vec2(0.0f, 0.0f), b2Rot_identity, b2Rot_identity);
+        _sweepA = new B2Sweep(Vector2Zero, new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f), b2Rot_identity, b2Rot_identity);
         _sweepB = new B2Sweep(
-            b2Vec2_zero,
-            new B2Vec2(-15.8332710f, 45.3520279f),
-            new B2Vec2(-15.8324337f, 45.3413048f),
+            Vector2Zero,
+            new Vector2(-15.8332710f, 45.3520279f),
+            new Vector2(-15.8324337f, 45.3413048f),
             new B2Rot(-0.540891349f, 0.841092527f),
             new B2Rot(-0.457797021f, 0.889056742f)
         );
@@ -77,7 +77,7 @@ public class TimeOfImpact : Sample
         DrawScreenTextLine($"toi = {FormatFloat(_output.fraction)}");
         
 
-        B2Vec2[] vertices = new B2Vec2[B2_MAX_POLYGON_VERTICES];
+        Vector2[] vertices = new Vector2[B2_MAX_POLYGON_VERTICES];
 
         // Draw A
         B2Transform transformA = b2GetSweepTransform(_sweepA, 0.0f);

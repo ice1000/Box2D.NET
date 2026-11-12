@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     /// A line segment with one-sided collision. Only collides on the right side.
@@ -10,13 +12,13 @@ namespace Box2D.NET
     public struct B2ChainSegment
     {
         /// The tail ghost vertex
-        public B2Vec2 ghost1;
+        public Vector2 ghost1;
 
         /// The line segment
         public B2Segment segment;
 
         /// The head ghost vertex
-        public B2Vec2 ghost2;
+        public Vector2 ghost2;
 
         /// The owning chain shape index (internal usage only)
         public int chainId;

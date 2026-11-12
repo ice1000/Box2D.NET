@@ -40,14 +40,14 @@ public class RevoluteJoint : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 15.5f);
+            m_camera.center = new Vector2(0.0f, 15.5f);
             m_camera.zoom = 25.0f * 0.7f;
         }
 
         B2BodyId groundId = b2_nullBodyId;
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, -1.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, -1.0f));
             groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2Polygon box = b2MakeBox(40.0f, 1.0f);
@@ -68,16 +68,16 @@ public class RevoluteJoint : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(-10.0f, 20.0f));
+            bodyDef.position = b2ToPos(new Vector2(-10.0f, 20.0f));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.density = 1.0f;
 
-            B2Capsule capsule = new B2Capsule(new B2Vec2(0.0f, -1.0f), new B2Vec2(0.0f, 6.0f), 0.5f);
+            B2Capsule capsule = new B2Capsule(new Vector2(0.0f, -1.0f), new Vector2(0.0f, 6.0f), 0.5f);
             b2CreateCapsuleShape(bodyId, shapeDef, capsule);
 
-            B2Vec2 pivot = new B2Vec2(-10.0f, 20.5f);
+            Vector2 pivot = new Vector2(-10.0f, 20.5f);
             B2RevoluteJointDef jointDef = b2DefaultRevoluteJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = bodyId;
@@ -101,12 +101,12 @@ public class RevoluteJoint : Sample
         }
 
         {
-            B2Circle circle = new B2Circle(new B2Vec2(), 0.0f);
+            B2Circle circle = new B2Circle(new Vector2(), 0.0f);
             circle.radius = 2.0f;
 
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(5.0f, 30.0f));
+            bodyDef.position = b2ToPos(new Vector2(5.0f, 30.0f));
             m_ball = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -117,16 +117,16 @@ public class RevoluteJoint : Sample
 
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(20.0f, 10.0f));
+            bodyDef.position = b2ToPos(new Vector2(20.0f, 10.0f));
             bodyDef.type = B2BodyType.b2_dynamicBody;
             B2BodyId body = b2CreateBody(m_worldId, bodyDef);
 
-            B2Polygon box = b2MakeOffsetBox(10.0f, 0.5f, new B2Vec2(-10.0f, 0.0f), b2Rot_identity);
+            B2Polygon box = b2MakeOffsetBox(10.0f, 0.5f, new Vector2(-10.0f, 0.0f), b2Rot_identity);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.density = 1.0f;
             b2CreatePolygonShape(body, shapeDef, box);
 
-            B2Vec2 pivot = new B2Vec2(19.0f, 10.0f);
+            Vector2 pivot = new Vector2(19.0f, 10.0f);
             B2RevoluteJointDef jointDef = b2DefaultRevoluteJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = body;

@@ -31,7 +31,7 @@ public class ChainSegmentShape : Sample
     public B2BodyId m_bodyId;
     public ShapeType m_shapeType;
     public B2ShapeId[] m_segmentShapes = new B2ShapeId[m_segmentCount];
-    public B2Vec2[] m_points = new B2Vec2[m_pointCount];
+    public Vector2[] m_points = new Vector2[m_pointCount];
     public int m_mutateIndex;
 
 
@@ -45,7 +45,7 @@ public class ChainSegmentShape : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(0.0f, 0.0f);
+            m_context.camera.center = new Vector2(0.0f, 0.0f);
             m_context.camera.zoom = 25.0f * 1.0f;
         }
 
@@ -62,7 +62,7 @@ public class ChainSegmentShape : Sample
             {
                 float x = 25.0f - 50.0f * i / (m_pointCount - 1);
                 float y = 1.5f * MathF.Sin(0.18f * x);
-                m_points[i] = new B2Vec2(x, y);
+                m_points[i] = new Vector2(x, y);
             }
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -90,18 +90,18 @@ public class ChainSegmentShape : Sample
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(-18.0f, 5.0f));
+        bodyDef.position = b2ToPos(new Vector2(-18.0f, 5.0f));
         m_bodyId = b2CreateBody(m_worldId, bodyDef);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
         if (m_shapeType == ShapeType.e_circleShape)
         {
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.25f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.25f);
             b2CreateCircleShape(m_bodyId, shapeDef, circle);
         }
         else if (m_shapeType == ShapeType.e_capsuleShape)
         {
-            B2Capsule capsule = new B2Capsule(new B2Vec2(-0.5f, 0.0f), new B2Vec2(0.5f, 0.0f), 0.25f);
+            B2Capsule capsule = new B2Capsule(new Vector2(-0.5f, 0.0f), new Vector2(0.5f, 0.0f), 0.25f);
             b2CreateCapsuleShape(m_bodyId, shapeDef, capsule);
         }
         else

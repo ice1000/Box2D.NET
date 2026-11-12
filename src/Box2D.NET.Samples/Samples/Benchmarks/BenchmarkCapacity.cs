@@ -31,7 +31,7 @@ public class BenchmarkCapacity : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(0.0f, 150.0f);
+            m_context.camera.center = new Vector2(0.0f, 150.0f);
             m_context.camera.zoom = 200.0f;
         }
 

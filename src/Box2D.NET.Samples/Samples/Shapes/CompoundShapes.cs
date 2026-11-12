@@ -36,7 +36,7 @@ public class CompoundShapes : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 6.0f);
+            m_camera.center = new Vector2(0.0f, 6.0f);
             m_camera.zoom = 25.0f * 0.5f;
         }
 
@@ -44,7 +44,7 @@ public class CompoundShapes : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(50.0f, 0.0f), new B2Vec2(-50.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(50.0f, 0.0f), new Vector2(-50.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
@@ -52,13 +52,13 @@ public class CompoundShapes : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(-15.0f, 1.0f));
+            bodyDef.position = b2ToPos(new Vector2(-15.0f, 1.0f));
             m_table1Id = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Polygon top = b2MakeOffsetBox(3.0f, 0.5f, new B2Vec2(0.0f, 3.5f), b2Rot_identity);
-            B2Polygon leftLeg = b2MakeOffsetBox(0.5f, 1.5f, new B2Vec2(-2.5f, 1.5f), b2Rot_identity);
-            B2Polygon rightLeg = b2MakeOffsetBox(0.5f, 1.5f, new B2Vec2(2.5f, 1.5f), b2Rot_identity);
+            B2Polygon top = b2MakeOffsetBox(3.0f, 0.5f, new Vector2(0.0f, 3.5f), b2Rot_identity);
+            B2Polygon leftLeg = b2MakeOffsetBox(0.5f, 1.5f, new Vector2(-2.5f, 1.5f), b2Rot_identity);
+            B2Polygon rightLeg = b2MakeOffsetBox(0.5f, 1.5f, new Vector2(2.5f, 1.5f), b2Rot_identity);
 
             b2CreatePolygonShape(m_table1Id, shapeDef, top);
             b2CreatePolygonShape(m_table1Id, shapeDef, leftLeg);
@@ -69,13 +69,13 @@ public class CompoundShapes : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(-5.0f, 1.0f));
+            bodyDef.position = b2ToPos(new Vector2(-5.0f, 1.0f));
             m_table2Id = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Polygon top = b2MakeOffsetBox(3.0f, 0.5f, new B2Vec2(0.0f, 3.5f), b2Rot_identity);
-            B2Polygon leftLeg = b2MakeOffsetBox(0.5f, 2.0f, new B2Vec2(-2.5f, 2.0f), b2Rot_identity);
-            B2Polygon rightLeg = b2MakeOffsetBox(0.5f, 2.0f, new B2Vec2(2.5f, 2.0f), b2Rot_identity);
+            B2Polygon top = b2MakeOffsetBox(3.0f, 0.5f, new Vector2(0.0f, 3.5f), b2Rot_identity);
+            B2Polygon leftLeg = b2MakeOffsetBox(0.5f, 2.0f, new Vector2(-2.5f, 2.0f), b2Rot_identity);
+            B2Polygon rightLeg = b2MakeOffsetBox(0.5f, 2.0f, new Vector2(2.5f, 2.0f), b2Rot_identity);
 
             b2CreatePolygonShape(m_table2Id, shapeDef, top);
             b2CreatePolygonShape(m_table2Id, shapeDef, leftLeg);
@@ -86,21 +86,21 @@ public class CompoundShapes : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(5.0f, 1.0f));
+            bodyDef.position = b2ToPos(new Vector2(5.0f, 1.0f));
             m_ship1Id = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Vec2[] vertices = new B2Vec2[3];
+            Vector2[] vertices = new Vector2[3];
 
-            vertices[0] = new B2Vec2(-2.0f, 0.0f);
-            vertices[1] = new B2Vec2(0.0f, 4.0f / 3.0f);
-            vertices[2] = new B2Vec2(0.0f, 4.0f);
+            vertices[0] = new Vector2(-2.0f, 0.0f);
+            vertices[1] = new Vector2(0.0f, 4.0f / 3.0f);
+            vertices[2] = new Vector2(0.0f, 4.0f);
             B2Hull hull = b2ComputeHull(vertices, 3);
             B2Polygon left = b2MakePolygon(hull, 0.0f);
 
-            vertices[0] = new B2Vec2(2.0f, 0.0f);
-            vertices[1] = new B2Vec2(0.0f, 4.0f / 3.0f);
-            vertices[2] = new B2Vec2(0.0f, 4.0f);
+            vertices[0] = new Vector2(2.0f, 0.0f);
+            vertices[1] = new Vector2(0.0f, 4.0f / 3.0f);
+            vertices[2] = new Vector2(0.0f, 4.0f);
             hull = b2ComputeHull(vertices, 3);
             B2Polygon right = b2MakePolygon(hull, 0.0f);
 
@@ -112,21 +112,21 @@ public class CompoundShapes : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(15.0f, 1.0f));
+            bodyDef.position = b2ToPos(new Vector2(15.0f, 1.0f));
             m_ship2Id = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Vec2[] vertices = new B2Vec2[3];
+            Vector2[] vertices = new Vector2[3];
 
-            vertices[0] = new B2Vec2(-2.0f, 0.0f);
-            vertices[1] = new B2Vec2(1.0f, 2.0f);
-            vertices[2] = new B2Vec2(0.0f, 4.0f);
+            vertices[0] = new Vector2(-2.0f, 0.0f);
+            vertices[1] = new Vector2(1.0f, 2.0f);
+            vertices[2] = new Vector2(0.0f, 4.0f);
             B2Hull hull = b2ComputeHull(vertices, 3);
             B2Polygon left = b2MakePolygon(hull, 0.0f);
 
-            vertices[0] = new B2Vec2(2.0f, 0.0f);
-            vertices[1] = new B2Vec2(-1.0f, 2.0f);
-            vertices[2] = new B2Vec2(0.0f, 4.0f);
+            vertices[0] = new Vector2(2.0f, 0.0f);
+            vertices[1] = new Vector2(-1.0f, 2.0f);
+            vertices[2] = new Vector2(0.0f, 4.0f);
             hull = b2ComputeHull(vertices, 3);
             B2Polygon right = b2MakePolygon(hull, 0.0f);
 
@@ -148,7 +148,7 @@ public class CompoundShapes : Sample
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Polygon box = b2MakeOffsetBox(4.0f, 0.1f, new B2Vec2(0.0f, 3.0f), b2Rot_identity);
+            B2Polygon box = b2MakeOffsetBox(4.0f, 0.1f, new Vector2(0.0f, 3.0f), b2Rot_identity);
             b2CreatePolygonShape(bodyId, shapeDef, box);
         }
 
@@ -161,7 +161,7 @@ public class CompoundShapes : Sample
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Polygon box = b2MakeOffsetBox(4.0f, 0.1f, new B2Vec2(0.0f, 3.0f), b2Rot_identity);
+            B2Polygon box = b2MakeOffsetBox(4.0f, 0.1f, new Vector2(0.0f, 3.0f), b2Rot_identity);
             b2CreatePolygonShape(bodyId, shapeDef, box);
         }
 
@@ -175,7 +175,7 @@ public class CompoundShapes : Sample
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 2.0f), 0.5f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 2.0f), 0.5f);
             b2CreateCircleShape(bodyId, shapeDef, circle);
         }
 
@@ -189,7 +189,7 @@ public class CompoundShapes : Sample
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 2.0f), 0.5f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 2.0f), 0.5f);
             b2CreateCircleShape(bodyId, shapeDef, circle);
         }
     }

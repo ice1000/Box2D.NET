@@ -2,13 +2,15 @@
 // SPDX-FileCopyrightText: 2026 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     // The pogo joint is a hybrid between a contact and a joint
     public struct B2PogoJoint
     {
         // Settings
-        public B2Vec2 normal;
+        public Vector2 normal;
         public float restLength;
         public float hertz;
         public float dampingRatio;
@@ -21,7 +23,7 @@ namespace Box2D.NET
         public int indexB;
         public B2Transform frameA;
         public B2Transform frameB;
-        public B2Vec2 deltaCenter;
+        public Vector2 deltaCenter;
         public float linearMass;
         public float velocity;
     }

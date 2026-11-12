@@ -46,15 +46,15 @@ public class Mover : Sample
 
     public class CastResult
     {
-        public B2Vec2 point;
-        public B2Vec2 normal;
+        public Vector2 point;
+        public Vector2 normal;
         public B2BodyId bodyId;
         public float fraction;
         public bool hit;
     }
 
     private const int m_planeCapacity = 8;
-    private readonly B2Vec2 m_elevatorBase = new B2Vec2(112.0f, 10.0f);
+    private readonly Vector2 m_elevatorBase = new Vector2(112.0f, 10.0f);
     private const float m_elevatorAmplitude = 4.0f;
 
     private float m_jumpSpeed = 10.0f;
@@ -70,7 +70,7 @@ public class Mover : Sample
 
     private int m_pogoShape = (int)PogoShape.PogoSegment;
     private B2Transform m_transform;
-    private B2Vec2 m_velocity;
+    private Vector2 m_velocity;
     private B2Capsule m_capsule;
     private B2BodyId m_elevatorId;
     private B2ShapeId m_ballId;
@@ -93,7 +93,7 @@ public class Mover : Sample
         return new Mover(context);
     }
 
-    private static float CastCallback(B2ShapeId shapeId, B2Pos point, B2Vec2 normal, float fraction, ref CastResult context)
+    private static float CastCallback(B2ShapeId shapeId, B2Pos point, Vector2 normal, float fraction, ref CastResult context)
     {
         CastResult result = context;
         result.point = b2ToVec2(point);
@@ -108,19 +108,19 @@ public class Mover : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(20.0f, 9.0f);
+            m_camera.center = new Vector2(20.0f, 9.0f);
             m_camera.zoom = 10.0f;
         }
 
         m_context.debugDraw.drawJoints = false;
-        m_transform = new B2Transform(new B2Vec2(2.0f, 8.0f), b2Rot_identity);
-        m_velocity = new B2Vec2(0.0f, 0.0f);
-        m_capsule = new B2Capsule(new B2Vec2(0.0f, -0.5f), new B2Vec2(0.0f, 0.5f), 0.3f);
+        m_transform = new B2Transform(new Vector2(2.0f, 8.0f), b2Rot_identity);
+        m_velocity = new Vector2(0.0f, 0.0f);
+        m_capsule = new B2Capsule(new Vector2(0.0f, -0.5f), new Vector2(0.0f, 0.5f), 0.3f);
 
         B2BodyId groundId1;
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 0.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 0.0f));
             groundId1 = b2CreateBody(m_worldId, bodyDef);
 
             const string path =
@@ -130,9 +130,9 @@ public class Mover : Sample
                 + "-2.64584 h -5.291667 v -2.64583 H 68.791668 V 174.625 h -5.291666 v -2.64584 H 52.916669 L 39.6875,177.27083 H "
                 + "34.395833 L 23.8125,185.20833 H 15.875 L 5.2916669,187.85416 V 153.45833 H 2.6458333 v 47.625";
 
-            B2Vec2[] points = new B2Vec2[64];
+            Vector2[] points = new Vector2[64];
 
-            B2Vec2 offset = new B2Vec2(-50.0f, -200.0f);
+            Vector2 offset = new Vector2(-50.0f, -200.0f);
             float scale = 0.2f;
 
             int count = SvgParser.ParsePath(path, offset, points, 64, scale, false);
@@ -148,7 +148,7 @@ public class Mover : Sample
         B2BodyId groundId2;
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(98.0f, 0.0f));
+            bodyDef.position = b2ToPos(new Vector2(98.0f, 0.0f));
             groundId2 = b2CreateBody(m_worldId, bodyDef);
 
             const string path =
@@ -160,9 +160,9 @@ public class Mover : Sample
                 + "-7.9375,-2.64584 -7.9375,-2.64583 -5.291667,-5.29167 H 21.166667 L 13.229167,158.75 5.2916668,153.45833 H "
                 + "2.6458334 l -10e-8,47.625";
 
-            B2Vec2[] points = new B2Vec2[64];
+            Vector2[] points = new Vector2[64];
 
-            B2Vec2 offset = new B2Vec2(0.0f, -200.0f);
+            Vector2 offset = new Vector2(0.0f, -200.0f);
             float scale = 0.2f;
 
             int count = SvgParser.ParsePath(path, offset, points, 64, scale, false);
@@ -195,12 +195,12 @@ public class Mover : Sample
             {
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
-                bodyDef.position = b2ToPos(new B2Vec2(xBase + 0.5f + 1.0f * i, yBase));
+                bodyDef.position = b2ToPos(new Vector2(xBase + 0.5f + 1.0f * i, yBase));
                 bodyDef.angularDamping = 0.2f;
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
                 b2CreatePolygonShape(bodyId, shapeDef, box);
 
-                B2Vec2 pivot = new B2Vec2(xBase + 1.0f * i, yBase);
+                Vector2 pivot = new Vector2(xBase + 1.0f * i, yBase);
                 jointDef.@base.bodyIdA = prevBodyId;
                 jointDef.@base.bodyIdB = bodyId;
                 jointDef.@base.localFrameA.p = b2Body_GetLocalPoint(jointDef.@base.bodyIdA, b2ToPos(pivot));
@@ -211,7 +211,7 @@ public class Mover : Sample
             }
 
             {
-                B2Vec2 pivot = new B2Vec2(xBase + 1.0f * count, yBase);
+                Vector2 pivot = new Vector2(xBase + 1.0f * count, yBase);
                 jointDef.@base.bodyIdA = prevBodyId;
                 jointDef.@base.bodyIdB = groundId2;
                 jointDef.@base.localFrameA.p = b2Body_GetLocalPoint(jointDef.@base.bodyIdA, b2ToPos(pivot));
@@ -222,7 +222,7 @@ public class Mover : Sample
 
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(32.0f, 4.5f));
+            bodyDef.position = b2ToPos(new Vector2(32.0f, 4.5f));
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             m_friendlyShape.maxPush = 0.025f;
@@ -237,7 +237,7 @@ public class Mover : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(7.0f, 7.0f));
+            bodyDef.position = b2ToPos(new Vector2(7.0f, 7.0f));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -245,14 +245,14 @@ public class Mover : Sample
             shapeDef.material.restitution = 0.7f;
             shapeDef.material.rollingResistance = 0.2f;
 
-            B2Circle circle = new B2Circle(b2Vec2_zero, 0.3f);
+            B2Circle circle = new B2Circle(Vector2Zero, 0.3f);
             m_ballId = b2CreateCircleShape(bodyId, shapeDef, circle);
         }
 
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_kinematicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(m_elevatorBase.X, m_elevatorBase.Y - m_elevatorAmplitude));
+            bodyDef.position = b2ToPos(new Vector2(m_elevatorBase.X, m_elevatorBase.Y - m_elevatorAmplitude));
             m_elevatorId = b2CreateBody(m_worldId, bodyDef);
 
             m_elevatorShape = new ShapeUserData
@@ -298,9 +298,9 @@ public class Mover : Sample
             m_velocity *= newSpeed / speed;
         }
 
-        B2Vec2 desiredVelocity = new B2Vec2(m_maxSpeed * throttle, 0.0f);
+        Vector2 desiredVelocity = new Vector2(m_maxSpeed * throttle, 0.0f);
         float desiredSpeed = 0;
-        B2Vec2 desiredDirection = b2GetLengthAndNormalize(ref desiredSpeed, desiredVelocity);
+        Vector2 desiredDirection = b2GetLengthAndNormalize(ref desiredSpeed, desiredVelocity);
 
         if (desiredSpeed > m_maxSpeed)
         {
@@ -333,33 +333,33 @@ public class Mover : Sample
 
         float pogoRestLength = 3.0f * m_capsule.radius;
         float rayLength = pogoRestLength + m_capsule.radius;
-        B2Vec2 origin = b2TransformPoint(m_transform, m_capsule.center1);
+        Vector2 origin = b2TransformPoint(m_transform, m_capsule.center1);
         B2Circle circle = new B2Circle(origin, 0.5f * m_capsule.radius);
-        B2Vec2 segmentOffset = new B2Vec2(0.75f * m_capsule.radius, 0.0f);
+        Vector2 segmentOffset = new Vector2(0.75f * m_capsule.radius, 0.0f);
         B2Segment segment = new B2Segment(
             origin - segmentOffset,
             origin + segmentOffset
         );
 
         B2ShapeProxy proxy = new B2ShapeProxy();
-        B2Vec2 translation;
+        Vector2 translation;
         B2QueryFilter pogoFilter = new B2QueryFilter(MoverBit, StaticBit | DynamicBit);
         CastResult castResult = new CastResult();
 
         if (m_pogoShape == (int)PogoShape.PogoPoint)
         {
             proxy = b2MakeProxy(origin, 1, 0.0f);
-            translation = new B2Vec2(0.0f, -rayLength);
+            translation = new Vector2(0.0f, -rayLength);
         }
         else if (m_pogoShape == (int)PogoShape.PogoCircle)
         {
             proxy = b2MakeProxy(origin, 1, circle.radius);
-            translation = new B2Vec2(0.0f, -rayLength + circle.radius);
+            translation = new Vector2(0.0f, -rayLength + circle.radius);
         }
         else
         {
             proxy = b2MakeProxy(segment.point1, segment.point2, 2, 0.0f);
-            translation = new B2Vec2(0.0f, -rayLength);
+            translation = new Vector2(0.0f, -rayLength);
         }
 
         b2World_CastShape(m_worldId, b2Pos_zero, ref proxy, translation, pogoFilter, CastCallback, castResult);
@@ -378,7 +378,7 @@ public class Mover : Sample
         {
             m_pogoVelocity = 0.0f;
 
-            B2Vec2 delta = translation;
+            Vector2 delta = translation;
             DrawLine(m_draw, origin, origin + delta, B2HexColor.b2_colorGray);
 
             if (m_pogoShape == (int)PogoShape.PogoPoint)
@@ -401,7 +401,7 @@ public class Mover : Sample
             float offset = pogoCurrentLength - pogoRestLength;
             m_pogoVelocity = b2SpringDamper(m_pogoHertz, m_pogoDampingRatio, offset, m_pogoVelocity, timeStep);
 
-            B2Vec2 delta = castResult.fraction * translation;
+            Vector2 delta = castResult.fraction * translation;
             DrawLine(m_draw, origin, origin + delta, B2HexColor.b2_colorGray);
 
             if (m_pogoShape == (int)PogoShape.PogoPoint)
@@ -417,10 +417,10 @@ public class Mover : Sample
                 DrawLine(m_draw, segment.point1 + delta, segment.point2 + delta, B2HexColor.b2_colorPlum);
             }
 
-            b2Body_ApplyForce(castResult.bodyId, new B2Vec2(0.0f, -50.0f), b2ToPos(castResult.point), true);
+            b2Body_ApplyForce(castResult.bodyId, new Vector2(0.0f, -50.0f), b2ToPos(castResult.point), true);
         }
 
-        B2Vec2 target = m_transform.p + timeStep * m_velocity + timeStep * m_pogoVelocity * new B2Vec2(0.0f, 1.0f);
+        Vector2 target = m_transform.p + timeStep * m_velocity + timeStep * m_pogoVelocity * new Vector2(0.0f, 1.0f);
 
         // Mover overlap filter
         B2QueryFilter collideFilter = new B2QueryFilter(MoverBit, StaticBit | DynamicBit | MoverBit);
@@ -447,7 +447,7 @@ public class Mover : Sample
 
             float fraction = b2World_CastMover(m_worldId, b2Pos_zero, mover, result.delta, castFilter);
 
-            B2Vec2 delta = fraction * result.delta;
+            Vector2 delta = fraction * result.delta;
             m_transform.p += delta;
 
             if (b2LengthSquared(delta) < tolerance * tolerance)
@@ -528,9 +528,9 @@ public class Mover : Sample
             return true;
         }
 
-        B2Vec2 center = b2ToVec2(b2Body_GetWorldCenter(bodyId));
-        B2Vec2 direction = b2Normalize(center - self.m_transform.p);
-        B2Vec2 impulse = new B2Vec2(2.0f * direction.X, 2.0f);
+        Vector2 center = b2ToVec2(b2Body_GetWorldCenter(bodyId));
+        Vector2 direction = b2Normalize(center - self.m_transform.p);
+        Vector2 impulse = new Vector2(2.0f * direction.X, 2.0f);
         b2Body_ApplyLinearImpulseToCenter(bodyId, impulse, true);
 
         return true;
@@ -540,7 +540,7 @@ public class Mover : Sample
     {
         if (key == Keys.K)
         {
-            B2Vec2 point = b2TransformPoint(m_transform, new B2Vec2(0.0f, m_capsule.center1.Y - 3.0f * m_capsule.radius));
+            Vector2 point = b2TransformPoint(m_transform, new Vector2(0.0f, m_capsule.center1.Y - 3.0f * m_capsule.radius));
             B2Circle circle = new B2Circle(point, 0.5f);
             B2ShapeProxy proxy = b2MakeProxy(circle.center, 1, circle.radius);
             B2QueryFilter filter = new B2QueryFilter(MoverBit, DebrisBit);
@@ -569,7 +569,7 @@ public class Mover : Sample
 
         if (timeStep > 0.0f)
         {
-            B2Vec2 point;
+            Vector2 point;
             point.X = m_elevatorBase.X;
             point.Y = m_elevatorAmplitude * MathF.Cos(1.0f * m_time + B2_PI) + m_elevatorBase.Y;
 
@@ -619,22 +619,22 @@ public class Mover : Sample
         for (int i = 0; i < count; ++i)
         {
             B2Plane plane = m_planes[i].plane;
-            B2Vec2 p1 = m_transform.p + (plane.offset - m_capsule.radius) * plane.normal;
-            B2Vec2 p2 = p1 + 0.1f * plane.normal;
+            Vector2 p1 = m_transform.p + (plane.offset - m_capsule.radius) * plane.normal;
+            Vector2 p2 = p1 + 0.1f * plane.normal;
             DrawPoint(m_draw, p1, 5.0f, B2HexColor.b2_colorYellow);
             DrawLine(m_draw, p1, p2, B2HexColor.b2_colorYellow);
         }
 
         {
-            B2Vec2 p1 = b2TransformPoint(m_transform, m_capsule.center1);
-            B2Vec2 p2 = b2TransformPoint(m_transform, m_capsule.center2);
+            Vector2 p1 = b2TransformPoint(m_transform, m_capsule.center1);
+            Vector2 p2 = b2TransformPoint(m_transform, m_capsule.center2);
 
             B2HexColor color = m_onGround ? B2HexColor.b2_colorOrange : B2HexColor.b2_colorAquamarine;
             DrawSolidCapsule(m_draw, p1, p2, m_capsule.radius, color);
             DrawLine(m_draw, m_transform.p, m_transform.p + m_velocity, B2HexColor.b2_colorPurple);
         }
 
-        B2Vec2 p = m_transform.p;
+        Vector2 p = m_transform.p;
         DrawScreenTextLine(FormattableString.Invariant($"position {p.X:F2} {p.Y:F2}"));
         DrawScreenTextLine(FormattableString.Invariant($"velocity {m_velocity.X:F2} {m_velocity.Y:F2}"));
         DrawScreenTextLine($"iterations {m_totalIterations}");

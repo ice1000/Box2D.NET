@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using static Box2D.NET.B2Arrays;
 using static Box2D.NET.B2Cores;
 using static Box2D.NET.B2Diagnostics;
@@ -749,7 +750,7 @@ namespace Box2D.NET
             joint.uj.weldJoint.linearDampingRatio = def.linearDampingRatio;
             joint.uj.weldJoint.angularHertz = def.angularHertz;
             joint.uj.weldJoint.angularDampingRatio = def.angularDampingRatio;
-            joint.uj.weldJoint.linearImpulse = b2Vec2_zero;
+            joint.uj.weldJoint.linearImpulse = Vector2Zero;
             joint.uj.weldJoint.angularImpulse = 0.0f;
 
             B2JointId jointId = new B2JointId(joint.jointId + 1, world.worldId, pair.joint.generation);
@@ -1164,7 +1165,7 @@ namespace Box2D.NET
             torque = angularImpulse * invTimeStep;
         }
 
-        internal static B2Vec2 b2GetJointConstraintForce(B2World world, B2Joint joint)
+        internal static Vector2 b2GetJointConstraintForce(B2World world, B2Joint joint)
         {
             B2JointSim @base = b2GetJointSim(world, joint);
 
@@ -1180,7 +1181,7 @@ namespace Box2D.NET
                     return b2GetMoverJointForce(world, @base);
 
                 case B2JointType.b2_filterJoint:
-                    return b2Vec2_zero;
+                    return Vector2Zero;
 
                 case B2JointType.b2_pogoJoint:
                     return b2GetPogoJointForce(world, @base);
@@ -1199,7 +1200,7 @@ namespace Box2D.NET
 
                 default:
                     B2_ASSERT(false);
-                    return b2Vec2_zero;
+                    return Vector2Zero;
             }
         }
 
@@ -1237,7 +1238,7 @@ namespace Box2D.NET
             }
         }
         /// Get the current constraint force for this joint. Usually in Newtons.
-        public static B2Vec2 b2Joint_GetConstraintForce(B2JointId jointId)
+        public static Vector2 b2Joint_GetConstraintForce(B2JointId jointId)
         {
             B2World world = b2GetWorld(jointId.world0);
             B2Joint joint = b2GetJointFullId(world, jointId);
@@ -1263,9 +1264,9 @@ namespace Box2D.NET
             B2Transform xfA = b2ToRelativeTransform(wxfA, wxfA.p);
             B2Transform xfB = b2ToRelativeTransform(b2GetBodyTransform(world, joint.edges[1].bodyId), wxfA.p);
 
-            B2Vec2 pA = b2TransformPoint(xfA, @base.localFrameA.p);
-            B2Vec2 pB = b2TransformPoint(xfB, @base.localFrameB.p);
-            B2Vec2 dp = b2Sub(pB, pA);
+            Vector2 pA = b2TransformPoint(xfA, @base.localFrameA.p);
+            Vector2 pB = b2TransformPoint(xfB, @base.localFrameB.p);
+            Vector2 dp = b2Sub(pB, pA);
 
             switch (joint.type)
             {
@@ -1305,8 +1306,8 @@ namespace Box2D.NET
                 case B2JointType.b2_prismaticJoint:
                 {
                     ref B2PrismaticJoint prismaticJoint = ref @base.uj.prismaticJoint;
-                    B2Vec2 axisA = b2RotateVector(xfA.q, new B2Vec2(1.0f, 0.0f));
-                    B2Vec2 perpA = b2LeftPerp(axisA);
+                    Vector2 axisA = b2RotateVector(xfA.q, new Vector2(1.0f, 0.0f));
+                    Vector2 perpA = b2LeftPerp(axisA);
                     float perpendicularSeparation = b2AbsFloat(b2Dot(perpA, dp));
                     float limitSeparation = 0.0f;
 
@@ -1344,8 +1345,8 @@ namespace Box2D.NET
                 case B2JointType.b2_wheelJoint:
                 {
                     ref B2WheelJoint wheelJoint = ref @base.uj.wheelJoint;
-                    B2Vec2 axisA = b2RotateVector(xfA.q, new B2Vec2(1.0f, 0.0f));
-                    B2Vec2 perpA = b2LeftPerp(axisA);
+                    Vector2 axisA = b2RotateVector(xfA.q, new Vector2(1.0f, 0.0f));
+                    Vector2 perpA = b2LeftPerp(axisA);
                     float perpendicularSeparation = b2AbsFloat(b2Dot(perpA, dp));
                     float limitSeparation = 0.0f;
 
@@ -1868,7 +1869,7 @@ namespace Box2D.NET
 
             if (draw.drawJointExtras)
             {
-                B2Vec2 force = b2GetJointConstraintForce(world, joint);
+                Vector2 force = b2GetJointConstraintForce(world, joint);
                 float torque = b2GetJointConstraintTorque(world, joint);
                 B2Pos p = b2LerpPos(pA, pB, 0.5f);
 

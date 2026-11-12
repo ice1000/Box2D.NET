@@ -27,14 +27,14 @@ public class RecreateStatic : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 2.5f);
+            m_camera.center = new Vector2(0.0f, 2.5f);
             m_camera.zoom = 3.5f;
         }
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
         B2ShapeDef shapeDef = b2DefaultShapeDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(0.0f, 1.0f));
+        bodyDef.position = b2ToPos(new Vector2(0.0f, 1.0f));
         B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
         B2Polygon box = b2MakeBox(1.0f, 1.0f);
@@ -60,7 +60,7 @@ public class RecreateStatic : Sample
         // on a static body.
         shapeDef.invokeContactCreation = true;
 
-        B2Segment segment = new B2Segment(new B2Vec2(-10.0f, 0.0f), new B2Vec2(10.0f, 0.0f));
+        B2Segment segment = new B2Segment(new Vector2(-10.0f, 0.0f), new Vector2(10.0f, 0.0f));
         b2CreateSegmentShape(m_groundId, shapeDef, segment);
 
         base.Step();

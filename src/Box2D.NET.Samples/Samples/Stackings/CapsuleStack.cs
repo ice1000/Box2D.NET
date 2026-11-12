@@ -28,13 +28,13 @@ public class CapsuleStack : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 5.0f);
+            m_camera.center = new Vector2(0.0f, 5.0f);
             m_camera.zoom = 6.0f;
         }
 
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, -1.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, -1.0f));
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -47,7 +47,7 @@ public class CapsuleStack : Sample
             bodyDef.type = B2BodyType.b2_dynamicBody;
 
             float a = 0.25f;
-            B2Capsule capsule = new B2Capsule(new B2Vec2(-4.0f * a, 0.0f), new B2Vec2(4.0f * a, 0.0f), a);
+            B2Capsule capsule = new B2Capsule(new Vector2(-4.0f * a, 0.0f), new Vector2(4.0f * a, 0.0f), a);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
 

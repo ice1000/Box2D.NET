@@ -168,9 +168,9 @@ internal sealed class FilePicker
         }
 
         float fontSize = ImGui.GetFontSize();
-        ImGui.SetNextWindowSize(new Vector2(52.0f * fontSize, 32.0f * fontSize), ImGuiCond.Appearing);
-        ImGui.SetNextWindowSizeConstraints(new Vector2(40.0f * fontSize, 22.0f * fontSize),
-            new Vector2(float.MaxValue, float.MaxValue));
+        ImGui.SetNextWindowSize(new System.Numerics.Vector2(52.0f * fontSize, 32.0f * fontSize), ImGuiCond.Appearing);
+        ImGui.SetNextWindowSizeConstraints(new System.Numerics.Vector2(40.0f * fontSize, 22.0f * fontSize),
+            new System.Numerics.Vector2(float.MaxValue, float.MaxValue));
 
         bool accepted = false;
         ImGuiWindowFlags windowFlags = ImGuiWindowFlags.NoSavedSettings | ImGuiWindowFlags.NoScrollbar |
@@ -199,7 +199,7 @@ internal sealed class FilePicker
             float browserHeight = Math.Max(10.0f * fontSize, ImGui.GetContentRegionAvail().Y - footerHeight);
             float placesWidth = 10.0f * fontSize;
             ImGuiWindowFlags paneFlags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
-            if (ImGui.BeginChild("##places", new Vector2(placesWidth, browserHeight),
+            if (ImGui.BeginChild("##places", new System.Numerics.Vector2(placesWidth, browserHeight),
                     ImGuiChildFlags.Border, paneFlags))
             {
                 DrawPlaces();
@@ -207,7 +207,7 @@ internal sealed class FilePicker
             ImGui.EndChild();
 
             ImGui.SameLine();
-            if (ImGui.BeginChild("##files", new Vector2(0.0f, browserHeight),
+            if (ImGui.BeginChild("##files", new System.Numerics.Vector2(0.0f, browserHeight),
                     ImGuiChildFlags.Border, paneFlags))
             {
                 accepted = DrawEntries(fontSize, out selectedPath);
@@ -236,19 +236,19 @@ internal sealed class FilePicker
             }
             else
             {
-                ImGui.Dummy(new Vector2(0.0f, ImGui.GetTextLineHeight()));
+                ImGui.Dummy(new System.Numerics.Vector2(0.0f, ImGui.GetTextLineHeight()));
             }
 
             float buttonsWidth = 13.0f * fontSize;
             ImGui.SetCursorPosX(Math.Max(ImGui.GetCursorPosX(), ImGui.GetWindowWidth() - buttonsWidth));
             string acceptLabel = m_mode == PickerMode.Save ? "Save" : "Open";
-            if ((ImGui.Button(acceptLabel, new Vector2(5.5f * fontSize, 0.0f)) || enter) &&
+            if ((ImGui.Button(acceptLabel, new System.Numerics.Vector2(5.5f * fontSize, 0.0f)) || enter) &&
                 TryAccept(out selectedPath))
             {
                 accepted = true;
             }
             ImGui.SameLine();
-            if (ImGui.Button("Cancel", new Vector2(5.5f * fontSize, 0.0f)))
+            if (ImGui.Button("Cancel", new System.Numerics.Vector2(5.5f * fontSize, 0.0f)))
             {
                 ImGui.CloseCurrentPopup();
             }
@@ -258,20 +258,20 @@ internal sealed class FilePicker
                 ImGui.OpenPopup(m_overwritePopupName);
                 m_overwriteRequested = false;
             }
-            ImGui.SetNextWindowSize(new Vector2(24.0f * fontSize, 0.0f), ImGuiCond.Appearing);
+            ImGui.SetNextWindowSize(new System.Numerics.Vector2(24.0f * fontSize, 0.0f), ImGuiCond.Appearing);
             if (ImGui.BeginPopupModal(m_overwritePopupName, ImGuiWindowFlags.AlwaysAutoResize |
                     ImGuiWindowFlags.NoSavedSettings))
             {
                 ImGui.TextWrapped($"'{Path.GetFileName(m_pendingOverwritePath)}' already exists. Replace it?");
                 ImGui.Separator();
-                if (ImGui.Button("Replace", new Vector2(7.0f * fontSize, 0.0f)))
+                if (ImGui.Button("Replace", new System.Numerics.Vector2(7.0f * fontSize, 0.0f)))
                 {
                     selectedPath = m_pendingOverwritePath;
                     accepted = true;
                     ImGui.CloseCurrentPopup();
                 }
                 ImGui.SameLine();
-                if (ImGui.Button("Cancel", new Vector2(7.0f * fontSize, 0.0f)))
+                if (ImGui.Button("Cancel", new System.Numerics.Vector2(7.0f * fontSize, 0.0f)))
                 {
                     ImGui.CloseCurrentPopup();
                 }
@@ -296,7 +296,7 @@ internal sealed class FilePicker
     {
         float buttonWidth = ImGui.GetFrameHeight();
         float inputWidth = Math.Max(4.0f * fontSize, width - buttonWidth);
-        Vector2 popupPosition = ImGui.GetCursorScreenPos();
+        System.Numerics.Vector2 popupPosition = ImGui.GetCursorScreenPos();
 
         if (m_focusFileName)
         {
@@ -314,9 +314,9 @@ internal sealed class FilePicker
             ImGui.OpenPopup(m_fileNamePopupName);
         }
 
-        ImGui.SetNextWindowPos(new Vector2(popupPosition.X, popupPosition.Y + ImGui.GetFrameHeight()));
-        ImGui.SetNextWindowSizeConstraints(new Vector2(width, 0.0f),
-            new Vector2(width, 12.0f * fontSize));
+        ImGui.SetNextWindowPos(new System.Numerics.Vector2(popupPosition.X, popupPosition.Y + ImGui.GetFrameHeight()));
+        ImGui.SetNextWindowSizeConstraints(new System.Numerics.Vector2(width, 0.0f),
+            new System.Numerics.Vector2(width, 12.0f * fontSize));
         if (ImGui.BeginPopup(m_fileNamePopupName, ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoSavedSettings))
         {
             bool hasFiles = false;

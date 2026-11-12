@@ -18,9 +18,9 @@ namespace Box2D.NET.Samples.Samples.Issues;
 public struct PhysicsHitQueryResult2D
 {
     public B2ShapeId shapeId = b2_nullShapeId;
-    public B2Vec2 point = b2Vec2_zero;
-    public B2Vec2 normal = b2Vec2_zero;
-    public B2Vec2 endPos = b2Vec2_zero;
+    public Vector2 point = Vector2Zero;
+    public Vector2 normal = Vector2Zero;
+    public Vector2 endPos = Vector2Zero;
     public float fraction = 0.0f;
     public bool startPenetrating = false;
     public bool blockingHit = false;
@@ -32,8 +32,8 @@ public struct PhysicsHitQueryResult2D
 
 public class CastContext_Single
 {
-    public B2Vec2 startPos;
-    public B2Vec2 translation;
+    public Vector2 startPos;
+    public Vector2 translation;
     public PhysicsHitQueryResult2D result;
     public bool hit;
 };
@@ -45,9 +45,9 @@ public class ShapeCastChain : Sample
 
     private B2BodyId characterBodyId_ = b2_nullBodyId;
     private B2Polygon characterBox_;
-    private B2Vec2 characterVelocity_ = b2Vec2_zero;
-    private B2Vec2 hitPos = b2Vec2_zero;
-    private B2Vec2 hitNormal = b2Vec2_zero;
+    private Vector2 characterVelocity_ = Vector2Zero;
+    private Vector2 hitPos = Vector2Zero;
+    private Vector2 hitNormal = Vector2Zero;
 
     private static Sample Create(SampleContext context)
     {
@@ -60,12 +60,12 @@ public class ShapeCastChain : Sample
         B2BodyDef worldBodyDef = b2DefaultBodyDef();
         B2BodyId groundId = b2CreateBody(m_worldId, worldBodyDef);
 
-        B2Vec2[] points = new B2Vec2[]
+        Vector2[] points = new Vector2[]
         {
-            new B2Vec2(1.0f, 0.0f),
-            new B2Vec2(-1.0f, 0.0f),
-            new B2Vec2(-1.0f, -1.0f),
-            new B2Vec2(1.0f, -1.0f),
+            new Vector2(1.0f, 0.0f),
+            new Vector2(-1.0f, 0.0f),
+            new Vector2(-1.0f, -1.0f),
+            new Vector2(1.0f, -1.0f),
         };
 
         B2ChainDef worldChainDef = b2DefaultChainDef();
@@ -81,7 +81,7 @@ public class ShapeCastChain : Sample
 
         // "Character" Body & Shape
         B2BodyDef characterBodyDef = b2DefaultBodyDef();
-        characterBodyDef.position = b2ToPos(new B2Vec2(0.0f, 0.103f));
+        characterBodyDef.position = b2ToPos(new Vector2(0.0f, 0.103f));
         characterBodyDef.rotation = b2MakeRot(0.0f);
         characterBodyDef.linearDamping = 0.0f;
         characterBodyDef.angularDamping = 0.0f;
@@ -112,7 +112,7 @@ public class ShapeCastChain : Sample
         characterBox_ = b2MakeBox(0.1f, 0.1f);
         b2CreatePolygonShape(characterBodyId_, characterShapeDef, characterBox_);
 
-        context.camera.center = b2Vec2_zero;
+        context.camera.center = Vector2Zero;
     }
 
     public override void Step()
@@ -185,8 +185,8 @@ public class ShapeCastChain : Sample
             }
         }
 
-        B2Vec2 characterPos = b2ToVec2(b2Body_GetPosition(characterBodyId_));
-        B2Vec2 newCharacterPos = characterPos;
+        Vector2 characterPos = b2ToVec2(b2Body_GetPosition(characterBodyId_));
+        Vector2 newCharacterPos = characterPos;
         newCharacterPos.X += characterVelocity_.X * timeStep;
         newCharacterPos.Y += characterVelocity_.Y * timeStep;
         b2Body_SetTransform(characterBodyId_, b2ToPos(newCharacterPos), b2Rot_identity);
@@ -207,10 +207,10 @@ public class ShapeCastChain : Sample
     {
         base.Draw();
 
-        DrawLine(m_draw, hitPos, new B2Vec2(hitPos.X + hitNormal.X, hitPos.Y + hitNormal.Y), B2HexColor.b2_colorRed);
+        DrawLine(m_draw, hitPos, new Vector2(hitPos.X + hitNormal.X, hitPos.Y + hitNormal.Y), B2HexColor.b2_colorRed);
     }
 
-    private bool ShapeCastSingle(ref PhysicsHitQueryResult2D outResult, B2Vec2 start, B2Vec2 end, float rotation, ref B2ShapeProxy shape)
+    private bool ShapeCastSingle(ref PhysicsHitQueryResult2D outResult, Vector2 start, Vector2 end, float rotation, ref B2ShapeProxy shape)
     {
         B2Transform transform = new B2Transform(
             start,
@@ -218,11 +218,11 @@ public class ShapeCastChain : Sample
         );
         B2ShapeProxy transformedShape = TransformShapeProxy(transform, ref shape);
 
-        B2Vec2 translation = new B2Vec2(end.X - start.X, end.Y - start.Y);
+        Vector2 translation = new Vector2(end.X - start.X, end.Y - start.Y);
         B2QueryFilter filter = new B2QueryFilter(0x1, 0x1);
         CastContext_Single context = new CastContext_Single();
         context.startPos = start;
-        context.translation = new B2Vec2(translation.X, translation.Y);
+        context.translation = new Vector2(translation.X, translation.Y);
         b2World_CastShape(m_worldId, b2Pos_zero, ref transformedShape, translation, filter, b2CastResult_Closest, context);
 
         if (context.hit)
@@ -234,7 +234,7 @@ public class ShapeCastChain : Sample
         return false;
     }
 
-    private static float b2CastResult_Closest(B2ShapeId shapeId, B2Pos point, B2Vec2 normal, float fraction, ref CastContext_Single c)
+    private static float b2CastResult_Closest(B2ShapeId shapeId, B2Pos point, Vector2 normal, float fraction, ref CastContext_Single c)
     {
         CastContext_Single context = c;
 

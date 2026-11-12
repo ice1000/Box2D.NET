@@ -22,7 +22,7 @@ public class BenchmarkJunkyard : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(8.0f, 25.0f);
+            m_context.camera.center = new Vector2(8.0f, 25.0f);
             m_context.camera.zoom = 60.0f;
         }
 

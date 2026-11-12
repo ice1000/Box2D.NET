@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     public struct B2ContactConstraint
@@ -10,7 +12,7 @@ namespace Box2D.NET
         public int indexA;
         public int indexB;
         public B2FixedArray2<B2ContactConstraintPoint> points;
-        public B2Vec2 normal;
+        public Vector2 normal;
         public float invMassA, invMassB;
         public float invIA, invIB;
         public float friction;

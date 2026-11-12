@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     /// A contact manifold describes the contact points between colliding shapes.
@@ -9,7 +11,7 @@ namespace Box2D.NET
     public struct B2Manifold
     {
         /// The unit normal vector in world space, points from shape A to bodyB
-        public B2Vec2 normal;
+        public Vector2 normal;
 
         /// Angular impulse applied for rolling resistance. N * m * s = kg * m^2 / s
         public float rollingImpulse;

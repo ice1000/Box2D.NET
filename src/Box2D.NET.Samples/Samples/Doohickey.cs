@@ -28,7 +28,7 @@ public class Doohickey
     {
     }
 
-    public void Spawn(B2WorldId worldId, B2Vec2 position, float scale)
+    public void Spawn(B2WorldId worldId, Vector2 position, float scale)
     {
         B2_ASSERT(m_isSpawned == false);
 
@@ -38,22 +38,22 @@ public class Doohickey
         B2ShapeDef shapeDef = b2DefaultShapeDef();
         shapeDef.material.rollingResistance = 0.1f;
 
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 1.0f * scale);
-        B2Capsule capsule = new B2Capsule(new B2Vec2(-3.5f * scale, 0.0f), new B2Vec2(3.5f * scale, 0.0f), 0.15f * scale);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 1.0f * scale);
+        B2Capsule capsule = new B2Capsule(new Vector2(-3.5f * scale, 0.0f), new Vector2(3.5f * scale, 0.0f), 0.15f * scale);
 
-        bodyDef.position = b2ToPos(b2MulAdd(position, scale, new B2Vec2(-5.0f, 3.0f)));
+        bodyDef.position = b2ToPos(b2MulAdd(position, scale, new Vector2(-5.0f, 3.0f)));
         m_wheelId1 = b2CreateBody(worldId, bodyDef);
         b2CreateCircleShape(m_wheelId1, shapeDef, circle);
 
-        bodyDef.position = b2ToPos(b2MulAdd(position, scale, new B2Vec2(5.0f, 3.0f)));
+        bodyDef.position = b2ToPos(b2MulAdd(position, scale, new Vector2(5.0f, 3.0f)));
         m_wheelId2 = b2CreateBody(worldId, bodyDef);
         b2CreateCircleShape(m_wheelId2, shapeDef, circle);
 
-        bodyDef.position = b2ToPos(b2MulAdd(position, scale, new B2Vec2(-1.5f, 3.0f)));
+        bodyDef.position = b2ToPos(b2MulAdd(position, scale, new Vector2(-1.5f, 3.0f)));
         m_barId1 = b2CreateBody(worldId, bodyDef);
         b2CreateCapsuleShape(m_barId1, shapeDef, capsule);
 
-        bodyDef.position = b2ToPos(b2MulAdd(position, scale, new B2Vec2(1.5f, 3.0f)));
+        bodyDef.position = b2ToPos(b2MulAdd(position, scale, new Vector2(1.5f, 3.0f)));
         m_barId2 = b2CreateBody(worldId, bodyDef);
         b2CreateCapsuleShape(m_barId2, shapeDef, capsule);
 
@@ -61,16 +61,16 @@ public class Doohickey
 
         revoluteDef.@base.bodyIdA = m_wheelId1;
         revoluteDef.@base.bodyIdB = m_barId1;
-        revoluteDef.@base.localFrameA.p = new B2Vec2(0.0f, 0.0f);
-        revoluteDef.@base.localFrameB.p = new B2Vec2(-3.5f * scale, 0.0f);
+        revoluteDef.@base.localFrameA.p = new Vector2(0.0f, 0.0f);
+        revoluteDef.@base.localFrameB.p = new Vector2(-3.5f * scale, 0.0f);
         revoluteDef.enableMotor = true;
         revoluteDef.maxMotorTorque = 2.0f * scale;
         b2CreateRevoluteJoint(worldId, revoluteDef);
 
         revoluteDef.@base.bodyIdA = m_wheelId2;
         revoluteDef.@base.bodyIdB = m_barId2;
-        revoluteDef.@base.localFrameA.p = new B2Vec2(0.0f, 0.0f);
-        revoluteDef.@base.localFrameB.p = new B2Vec2(3.5f * scale, 0.0f);
+        revoluteDef.@base.localFrameA.p = new Vector2(0.0f, 0.0f);
+        revoluteDef.@base.localFrameB.p = new Vector2(3.5f * scale, 0.0f);
         revoluteDef.enableMotor = true;
         revoluteDef.maxMotorTorque = 2.0f * scale;
         b2CreateRevoluteJoint(worldId, revoluteDef);
@@ -78,8 +78,8 @@ public class Doohickey
         B2PrismaticJointDef prismaticDef = b2DefaultPrismaticJointDef();
         prismaticDef.@base.bodyIdA = m_barId1;
         prismaticDef.@base.bodyIdB = m_barId2;
-        prismaticDef.@base.localFrameA.p = new B2Vec2(2.0f * scale, 0.0f);
-        prismaticDef.@base.localFrameB.p = new B2Vec2(-2.0f * scale, 0.0f);
+        prismaticDef.@base.localFrameA.p = new Vector2(2.0f * scale, 0.0f);
+        prismaticDef.@base.localFrameB.p = new Vector2(-2.0f * scale, 0.0f);
         prismaticDef.lowerTranslation = -2.0f * scale;
         prismaticDef.upperTranslation = 2.0f * scale;
         prismaticDef.enableLimit = true;

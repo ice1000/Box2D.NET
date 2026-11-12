@@ -35,7 +35,7 @@ public class WheelJoint : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 10.0f);
+            m_camera.center = new Vector2(0.0f, 10.0f);
             m_camera.zoom = 25.0f * 0.15f;
         }
 
@@ -56,16 +56,16 @@ public class WheelJoint : Sample
 
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 10.25f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 10.25f));
             bodyDef.type = B2BodyType.b2_dynamicBody;
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Capsule capsule = new B2Capsule(new B2Vec2(0.0f, -0.5f), new B2Vec2(0.0f, 0.5f), 0.5f);
+            B2Capsule capsule = new B2Capsule(new Vector2(0.0f, -0.5f), new Vector2(0.0f, 0.5f), 0.5f);
             b2CreateCapsuleShape(bodyId, shapeDef, capsule);
 
-            B2Vec2 pivot = new B2Vec2(0.0f, 10.0f);
-            B2Vec2 axis = b2Normalize(new B2Vec2(1.0f, 1.0f));
+            Vector2 pivot = new Vector2(0.0f, 10.0f);
+            Vector2 axis = b2Normalize(new Vector2(1.0f, 1.0f));
             B2WheelJointDef jointDef = b2DefaultWheelJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = bodyId;

@@ -31,8 +31,8 @@ public class SmoothManifold : Sample
     private float m_angle;
     private float m_round;
 
-    private B2Vec2 m_basePosition;
-    private B2Vec2 m_startPoint;
+    private Vector2 m_basePosition;
+    private Vector2 m_startPoint;
     private float m_baseAngle;
 
     private bool m_dragging;
@@ -50,17 +50,17 @@ public class SmoothManifold : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(2.0f, 20.0f);
+            m_camera.center = new Vector2(2.0f, 20.0f);
             m_camera.zoom = 21.0f;
         }
 
         m_shapeType = ShapeType.e_boxShape;
-        m_transform = new B2Transform(new B2Vec2(0.0f, 20.0f), b2Rot_identity);
+        m_transform = new B2Transform(new Vector2(0.0f, 20.0f), b2Rot_identity);
         m_angle = 0.0f;
         m_round = 0.0f;
 
-        m_startPoint = new B2Vec2(0.0f, 00.0f);
-        m_basePosition = new B2Vec2(0.0f, 0.0f);
+        m_startPoint = new Vector2(0.0f, 00.0f);
+        m_basePosition = new Vector2(0.0f, 0.0f);
         m_baseAngle = 0.0f;
 
         m_dragging = false;
@@ -72,43 +72,43 @@ public class SmoothManifold : Sample
         // https://betravis.github.io/shape-tools/path-to-polygon/
         m_count = 36;
 
-        B2Vec2[] points = new B2Vec2[36];
-        points[0] = new B2Vec2(-20.58325f, 14.54175f);
-        points[1] = new B2Vec2(-21.90625f, 15.8645f);
-        points[2] = new B2Vec2(-24.552f, 17.1875f);
-        points[3] = new B2Vec2(-27.198f, 11.89575f);
-        points[4] = new B2Vec2(-29.84375f, 15.8645f);
-        points[5] = new B2Vec2(-29.84375f, 21.15625f);
-        points[6] = new B2Vec2(-25.875f, 23.802f);
-        points[7] = new B2Vec2(-20.58325f, 25.125f);
-        points[8] = new B2Vec2(-25.875f, 29.09375f);
-        points[9] = new B2Vec2(-20.58325f, 31.7395f);
-        points[10] = new B2Vec2(-11.0089998f, 23.2290001f);
-        points[11] = new B2Vec2(-8.67700005f, 21.15625f);
-        points[12] = new B2Vec2(-6.03125f, 21.15625f);
-        points[13] = new B2Vec2(-7.35424995f, 29.09375f);
-        points[14] = new B2Vec2(-3.38549995f, 29.09375f);
-        points[15] = new B2Vec2(1.90625f, 30.41675f);
-        points[16] = new B2Vec2(5.875f, 17.1875f);
-        points[17] = new B2Vec2(11.16675f, 25.125f);
-        points[18] = new B2Vec2(9.84375f, 29.09375f);
-        points[19] = new B2Vec2(13.8125f, 31.7395f);
-        points[20] = new B2Vec2(21.75f, 30.41675f);
-        points[21] = new B2Vec2(28.3644981f, 26.448f);
-        points[22] = new B2Vec2(25.71875f, 18.5105f);
-        points[23] = new B2Vec2(24.3957481f, 13.21875f);
-        points[24] = new B2Vec2(17.78125f, 11.89575f);
-        points[25] = new B2Vec2(15.1355f, 7.92700005f);
-        points[26] = new B2Vec2(5.875f, 9.25f);
-        points[27] = new B2Vec2(1.90625f, 11.89575f);
-        points[28] = new B2Vec2(-3.25f, 11.89575f);
-        points[29] = new B2Vec2(-3.25f, 9.9375f);
-        points[30] = new B2Vec2(-4.70825005f, 9.25f);
-        points[31] = new B2Vec2(-8.67700005f, 9.25f);
-        points[32] = new B2Vec2(-11.323f, 11.89575f);
-        points[33] = new B2Vec2(-13.96875f, 11.89575f);
-        points[34] = new B2Vec2(-15.29175f, 14.54175f);
-        points[35] = new B2Vec2(-19.2605f, 14.54175f);
+        Vector2[] points = new Vector2[36];
+        points[0] = new Vector2(-20.58325f, 14.54175f);
+        points[1] = new Vector2(-21.90625f, 15.8645f);
+        points[2] = new Vector2(-24.552f, 17.1875f);
+        points[3] = new Vector2(-27.198f, 11.89575f);
+        points[4] = new Vector2(-29.84375f, 15.8645f);
+        points[5] = new Vector2(-29.84375f, 21.15625f);
+        points[6] = new Vector2(-25.875f, 23.802f);
+        points[7] = new Vector2(-20.58325f, 25.125f);
+        points[8] = new Vector2(-25.875f, 29.09375f);
+        points[9] = new Vector2(-20.58325f, 31.7395f);
+        points[10] = new Vector2(-11.0089998f, 23.2290001f);
+        points[11] = new Vector2(-8.67700005f, 21.15625f);
+        points[12] = new Vector2(-6.03125f, 21.15625f);
+        points[13] = new Vector2(-7.35424995f, 29.09375f);
+        points[14] = new Vector2(-3.38549995f, 29.09375f);
+        points[15] = new Vector2(1.90625f, 30.41675f);
+        points[16] = new Vector2(5.875f, 17.1875f);
+        points[17] = new Vector2(11.16675f, 25.125f);
+        points[18] = new Vector2(9.84375f, 29.09375f);
+        points[19] = new Vector2(13.8125f, 31.7395f);
+        points[20] = new Vector2(21.75f, 30.41675f);
+        points[21] = new Vector2(28.3644981f, 26.448f);
+        points[22] = new Vector2(25.71875f, 18.5105f);
+        points[23] = new Vector2(24.3957481f, 13.21875f);
+        points[24] = new Vector2(17.78125f, 11.89575f);
+        points[25] = new Vector2(15.1355f, 7.92700005f);
+        points[26] = new Vector2(5.875f, 9.25f);
+        points[27] = new Vector2(1.90625f, 11.89575f);
+        points[28] = new Vector2(-3.25f, 11.89575f);
+        points[29] = new Vector2(-3.25f, 9.9375f);
+        points[30] = new Vector2(-4.70825005f, 9.25f);
+        points[31] = new Vector2(-8.67700005f, 9.25f);
+        points[32] = new Vector2(-11.323f, 11.89575f);
+        points[33] = new Vector2(-13.96875f, 11.89575f);
+        points[34] = new Vector2(-15.29175f, 14.54175f);
+        points[35] = new Vector2(-19.2605f, 14.54175f);
 
         m_segments = new B2ChainSegment[m_count];
 
@@ -119,10 +119,10 @@ public class SmoothManifold : Sample
             int i2 = i1 < m_count - 1 ? i1 + 1 : 0;
             int i3 = i2 < m_count - 1 ? i2 + 1 : 0;
 
-            B2Vec2 g1 = points[i0];
-            B2Vec2 p1 = points[i1];
-            B2Vec2 p2 = points[i2];
-            B2Vec2 g2 = points[i3];
+            Vector2 g1 = points[i0];
+            Vector2 p1 = points[i1];
+            Vector2 p2 = points[i2];
+            Vector2 g2 = points[i3];
 
             // { g1, { p1, p2 }, g2, -1 };
             m_segments[i].ghost1 = g1;
@@ -176,7 +176,7 @@ public class SmoothManifold : Sample
         return true;
     }
 
-    public override void MouseDown(B2Vec2 p, MouseButton button, KeyModifiers mods)
+    public override void MouseDown(Vector2 p, MouseButton button, KeyModifiers mods)
     {
         if (button == (int)MouseButton.Left)
         {
@@ -195,7 +195,7 @@ public class SmoothManifold : Sample
         }
     }
 
-    public override void MouseUp(B2Vec2 p, MouseButton button)
+    public override void MouseUp(Vector2 p, MouseButton button)
     {
         if (button == (int)MouseButton.Left)
         {
@@ -204,7 +204,7 @@ public class SmoothManifold : Sample
         }
     }
 
-    public override void MouseMove(B2Vec2 p)
+    public override void MouseMove(Vector2 p)
     {
         if (m_dragging)
         {
@@ -221,14 +221,14 @@ public class SmoothManifold : Sample
 
     void DrawManifold(in B2LocalManifold manifold, in B2Transform transformA)
     {
-        B2Vec2 normal = b2RotateVector(transformA.q, manifold.normal);
+        Vector2 normal = b2RotateVector(transformA.q, manifold.normal);
 
         for (int i = 0; i < manifold.pointCount; ++i)
         {
             ref readonly B2LocalManifoldPoint mp = ref manifold.points[i];
 
-            B2Vec2 p1 = b2TransformPoint(transformA, mp.point);
-            B2Vec2 p2 = b2MulAdd(p1, 0.5f, normal);
+            Vector2 p1 = b2TransformPoint(transformA, mp.point);
+            Vector2 p2 = b2MulAdd(p1, 0.5f, normal);
             DrawLine(m_draw, p1, p2, B2HexColor.b2_colorWhite);
 
             if (m_showAnchors)
@@ -244,13 +244,13 @@ public class SmoothManifold : Sample
             {
                 // uint indexA = mp.id >> 8;
                 // uint indexB = 0xFF & mp.id;
-                B2Vec2 p = new B2Vec2(p1.X + 0.05f, p1.Y - 0.02f);
+                Vector2 p = new Vector2(p1.X + 0.05f, p1.Y - 0.02f);
                 DrawWorldString(m_draw, m_camera, p, B2HexColor.b2_colorWhite, $"0x{mp.id:X4}");
             }
 
             if (m_showSeparation)
             {
-                B2Vec2 p = new B2Vec2(p1.X + 0.05f, p1.Y + 0.03f);
+                Vector2 p = new Vector2(p1.X + 0.05f, p1.Y + 0.03f);
                 DrawWorldString(m_draw, m_camera, p, B2HexColor.b2_colorWhite, $"{mp.separation:F3}");
             }
         }
@@ -269,8 +269,8 @@ public class SmoothManifold : Sample
         for (int i = 0; i < m_count; ++i)
         {
             ref readonly B2ChainSegment segment = ref m_segments[i];
-            B2Vec2 p1 = b2TransformPoint(transform1, segment.segment.point1);
-            B2Vec2 p2 = b2TransformPoint(transform1, segment.segment.point2);
+            Vector2 p1 = b2TransformPoint(transform1, segment.segment.point1);
+            Vector2 p2 = b2TransformPoint(transform1, segment.segment.point2);
             DrawLine(m_draw, p1, p2, color1);
             DrawPoint(m_draw, p1, 4.0f, color1);
         }
@@ -278,7 +278,7 @@ public class SmoothManifold : Sample
         // chain-segment vs circle
         if (m_shapeType == ShapeType.e_circleShape)
         {
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
             DrawSolidCircle(m_draw, new B2Transform(circle.center, transform2.q), circle.radius, color2);
 
             for (int i = 0; i < m_count; ++i)

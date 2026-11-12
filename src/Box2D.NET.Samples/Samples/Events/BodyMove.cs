@@ -29,7 +29,7 @@ public class BodyMove : Sample
     private bool[] m_sleeping = new bool[e_count];
     private int m_count;
     private int m_sleepCount;
-    private B2Vec2 m_explosionPosition;
+    private Vector2 m_explosionPosition;
     private float m_explosionRadius;
     private float m_explosionMagnitude;
 
@@ -43,7 +43,7 @@ public class BodyMove : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(2.0f, 8.0f);
+            m_camera.center = new Vector2(2.0f, 8.0f);
             m_camera.zoom = 25.0f * 0.55f;
         }
 
@@ -54,36 +54,36 @@ public class BodyMove : Sample
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.material.friction = 0.1f;
 
-            B2Polygon box = b2MakeOffsetBox(12.0f, 0.1f, new B2Vec2(-10.0f, -0.1f), b2MakeRot(-0.15f * B2_PI));
+            B2Polygon box = b2MakeOffsetBox(12.0f, 0.1f, new Vector2(-10.0f, -0.1f), b2MakeRot(-0.15f * B2_PI));
             b2CreatePolygonShape(groundId, shapeDef, box);
 
-            box = b2MakeOffsetBox(12.0f, 0.1f, new B2Vec2(10.0f, -0.1f), b2MakeRot(0.15f * B2_PI));
+            box = b2MakeOffsetBox(12.0f, 0.1f, new Vector2(10.0f, -0.1f), b2MakeRot(0.15f * B2_PI));
             b2CreatePolygonShape(groundId, shapeDef, box);
 
             shapeDef.material.restitution = 0.8f;
 
-            box = b2MakeOffsetBox(0.1f, 10.0f, new B2Vec2(19.9f, 10.0f), b2Rot_identity);
+            box = b2MakeOffsetBox(0.1f, 10.0f, new Vector2(19.9f, 10.0f), b2Rot_identity);
             b2CreatePolygonShape(groundId, shapeDef, box);
 
-            box = b2MakeOffsetBox(0.1f, 10.0f, new B2Vec2(-19.9f, 10.0f), b2Rot_identity);
+            box = b2MakeOffsetBox(0.1f, 10.0f, new Vector2(-19.9f, 10.0f), b2Rot_identity);
             b2CreatePolygonShape(groundId, shapeDef, box);
 
-            box = b2MakeOffsetBox(20.0f, 0.1f, new B2Vec2(0.0f, 20.1f), b2Rot_identity);
+            box = b2MakeOffsetBox(20.0f, 0.1f, new Vector2(0.0f, 20.1f), b2Rot_identity);
             b2CreatePolygonShape(groundId, shapeDef, box);
         }
 
         m_sleepCount = 0;
         m_count = 0;
 
-        m_explosionPosition = new B2Vec2(0.0f, -5.0f);
+        m_explosionPosition = new Vector2(0.0f, -5.0f);
         m_explosionRadius = 10.0f;
         m_explosionMagnitude = 10.0f;
     }
 
     void CreateBodies()
     {
-        B2Capsule capsule = new B2Capsule(new B2Vec2(-0.25f, 0.0f), new B2Vec2(0.25f, 0.0f), 0.25f);
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.35f);
+        B2Capsule capsule = new B2Capsule(new Vector2(-0.25f, 0.0f), new Vector2(0.25f, 0.0f), 0.25f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.35f);
         B2Polygon square = b2MakeSquare(0.35f);
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
@@ -93,7 +93,7 @@ public class BodyMove : Sample
         float x = -5.0f, y = 10.0f;
         for (int i = 0; i < 10 && m_count < e_count; ++i)
         {
-            bodyDef.position = b2ToPos(new B2Vec2(x, y));
+            bodyDef.position = b2ToPos(new Vector2(x, y));
             bodyDef.isBullet = (m_count % 12 == 0);
             bodyDef.userData = B2UserData.Signed(m_count);
             m_bodyIds[m_count] = b2CreateBody(m_worldId, bodyDef);

@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
         /**@}*/
@@ -21,13 +23,13 @@ namespace Box2D.NET
         /// This can be converted to a world point using:
         /// b2Pos worldPointA = b2OffsetPos(b2Body_GetWorldCenter(myBodyIdA), anchorA);
         /// @note When used internally to the Box2D solver, this is relative to the body center of mass.
-        public B2Vec2 anchorA;
+        public Vector2 anchorA;
 
         /// Location of the contact point relative to bodyB's center of mass in world space.
         /// This can be converted to a world point using:
         /// b2Pos worldPointB = b2OffsetPos(b2Body_GetWorldCenter(myBodyIdB), anchorB);
         /// @note When used internally to the Box2D solver, this is relative to the body center of mass.
-        public B2Vec2 anchorB;
+        public Vector2 anchorB;
 
         /// The separation of the contact point, negative if penetrating
         public float separation;

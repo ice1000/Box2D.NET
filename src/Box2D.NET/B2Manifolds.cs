@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using static Box2D.NET.B2MathFunction;
 using static Box2D.NET.B2Constants;
 using static Box2D.NET.B2Distances;
@@ -17,17 +18,17 @@ namespace Box2D.NET
             return (ushort)((byte)(A) << 8 | (byte)(B));
         }
 
-        public static B2Polygon b2MakeCapsule(B2Vec2 p1, B2Vec2 p2, float radius)
+        public static B2Polygon b2MakeCapsule(Vector2 p1, Vector2 p2, float radius)
         {
             B2Polygon shape = new B2Polygon();
             shape.vertices[0] = p1;
             shape.vertices[1] = p2;
             shape.centroid = b2Lerp(p1, p2, 0.5f);
 
-            B2Vec2 d = b2Sub(p2, p1);
+            Vector2 d = b2Sub(p2, p1);
             B2_ASSERT(b2LengthSquared(d) > FLT_EPSILON);
-            B2Vec2 axis = b2Normalize(d);
-            B2Vec2 normal = b2RightPerp(axis);
+            Vector2 axis = b2Normalize(d);
+            Vector2 normal = b2RightPerp(axis);
 
             shape.normals[0] = normal;
             shape.normals[1] = b2Neg(normal);
@@ -42,11 +43,11 @@ namespace Box2D.NET
         {
             B2LocalManifold manifold = new B2LocalManifold();
 
-            B2Vec2 pointA = circleA.center;
-            B2Vec2 pointB = b2TransformPoint(xf, circleB.center);
+            Vector2 pointA = circleA.center;
+            Vector2 pointB = b2TransformPoint(xf, circleB.center);
 
             float distance = 0;
-            B2Vec2 normal = b2GetLengthAndNormalize(ref distance, b2Sub(pointB, pointA));
+            Vector2 normal = b2GetLengthAndNormalize(ref distance, b2Sub(pointB, pointA));
 
             float radiusA = circleA.radius;
             float radiusB = circleB.radius;
@@ -57,9 +58,9 @@ namespace Box2D.NET
                 return manifold;
             }
 
-            B2Vec2 cA = b2MulAdd(pointA, radiusA, normal);
-            B2Vec2 cB = b2MulAdd(pointB, -radiusB, normal);
-            B2Vec2 contactPointA = b2Lerp(cA, cB, 0.5f);
+            Vector2 cA = b2MulAdd(pointA, radiusA, normal);
+            Vector2 cB = b2MulAdd(pointB, -radiusB, normal);
+            Vector2 contactPointA = b2Lerp(cA, cB, 0.5f);
 
             manifold.normal = normal;
             ref B2LocalManifoldPoint mp = ref manifold.points[0];
@@ -76,18 +77,18 @@ namespace Box2D.NET
             B2LocalManifold manifold = new B2LocalManifold();
 
             // Compute circle position in the frame of the capsule.
-            B2Vec2 pB = b2TransformPoint(xf, circleB.center);
+            Vector2 pB = b2TransformPoint(xf, circleB.center);
 
             // Compute closest point
-            B2Vec2 p1 = capsuleA.center1;
-            B2Vec2 p2 = capsuleA.center2;
+            Vector2 p1 = capsuleA.center1;
+            Vector2 p2 = capsuleA.center2;
 
-            B2Vec2 e = b2Sub(p2, p1);
+            Vector2 e = b2Sub(p2, p1);
 
             // dot(p - pA, e) = 0
             // dot(p - (p1 + s1 * e), e) = 0
             // s1 = dot(p - p1, e)
-            B2Vec2 pA;
+            Vector2 pA;
             float s1 = b2Dot(b2Sub(pB, p1), e);
             float s2 = b2Dot(b2Sub(p2, pB), e);
             if (s1 < 0.0f)
@@ -108,7 +109,7 @@ namespace Box2D.NET
             }
 
             float distance = 0;
-            B2Vec2 normal = b2GetLengthAndNormalize(ref distance, b2Sub(pB, pA));
+            Vector2 normal = b2GetLengthAndNormalize(ref distance, b2Sub(pB, pA));
 
             float radiusA = capsuleA.radius;
             float radiusB = circleB.radius;
@@ -118,9 +119,9 @@ namespace Box2D.NET
                 return manifold;
             }
 
-            B2Vec2 cA = b2MulAdd(pA, radiusA, normal);
-            B2Vec2 cB = b2MulAdd(pB, -radiusB, normal);
-            B2Vec2 contactPointA = b2Lerp(cA, cB, 0.5f);
+            Vector2 cA = b2MulAdd(pA, radiusA, normal);
+            Vector2 cB = b2MulAdd(pB, -radiusB, normal);
+            Vector2 contactPointA = b2Lerp(cA, cB, 0.5f);
 
             manifold.normal = normal;
             ref B2LocalManifoldPoint mp = ref manifold.points[0];
@@ -138,7 +139,7 @@ namespace Box2D.NET
             float speculativeDistance = B2_SPECULATIVE_DISTANCE;
 
             // Compute circle position in the frame of the polygon.
-            B2Vec2 center = b2TransformPoint(xf, circleB.center);
+            Vector2 center = b2TransformPoint(xf, circleB.center);
             float radiusA = polygonA.radius;
             float radiusB = circleB.radius;
             float radius = radiusA + radiusB;
@@ -147,8 +148,8 @@ namespace Box2D.NET
             int normalIndex = 0;
             float separation = -float.MaxValue;
             int vertexCount = polygonA.count;
-            ReadOnlySpan<B2Vec2> vertices = polygonA.vertices.AsReadOnlySpan();
-            ReadOnlySpan<B2Vec2> normals = polygonA.normals.AsReadOnlySpan();
+            ReadOnlySpan<Vector2> vertices = polygonA.vertices.AsReadOnlySpan();
+            ReadOnlySpan<Vector2> normals = polygonA.normals.AsReadOnlySpan();
 
             for (int i = 0; i < vertexCount; ++i)
             {
@@ -168,8 +169,8 @@ namespace Box2D.NET
             // Vertices of the reference edge.
             int vertIndex1 = normalIndex;
             int vertIndex2 = vertIndex1 + 1 < vertexCount ? vertIndex1 + 1 : 0;
-            B2Vec2 v1 = vertices[vertIndex1];
-            B2Vec2 v2 = vertices[vertIndex2];
+            Vector2 v1 = vertices[vertIndex1];
+            Vector2 v2 = vertices[vertIndex2];
 
             // Compute barycentric coordinates
             float u1 = b2Dot(b2Sub(center, v1), b2Sub(v2, v1));
@@ -178,16 +179,16 @@ namespace Box2D.NET
             if (u1 < 0.0f && separation > FLT_EPSILON)
             {
                 // Circle center is closest to v1 and safely outside the polygon
-                B2Vec2 normal = b2Normalize(b2Sub(center, v1));
+                Vector2 normal = b2Normalize(b2Sub(center, v1));
                 separation = b2Dot(b2Sub(center, v1), normal);
                 if (separation > radius + speculativeDistance)
                 {
                     return manifold;
                 }
 
-                B2Vec2 cA = b2MulAdd(v1, radiusA, normal);
-                B2Vec2 cB = b2MulSub(center, radiusB, normal);
-                B2Vec2 contactPointA = b2Lerp(cA, cB, 0.5f);
+                Vector2 cA = b2MulAdd(v1, radiusA, normal);
+                Vector2 cB = b2MulSub(center, radiusB, normal);
+                Vector2 contactPointA = b2Lerp(cA, cB, 0.5f);
 
                 manifold.normal = normal;
                 ref B2LocalManifoldPoint mp = ref manifold.points[0];
@@ -199,16 +200,16 @@ namespace Box2D.NET
             else if (u2 < 0.0f && separation > FLT_EPSILON)
             {
                 // Circle center is closest to v2 and safely outside the polygon
-                B2Vec2 normal = b2Normalize(b2Sub(center, v2));
+                Vector2 normal = b2Normalize(b2Sub(center, v2));
                 separation = b2Dot(b2Sub(center, v2), normal);
                 if (separation > radius + speculativeDistance)
                 {
                     return manifold;
                 }
 
-                B2Vec2 cA = b2MulAdd(v2, radiusA, normal);
-                B2Vec2 cB = b2MulSub(center, radiusB, normal);
-                B2Vec2 contactPointA = b2Lerp(cA, cB, 0.5f);
+                Vector2 cA = b2MulAdd(v2, radiusA, normal);
+                Vector2 cB = b2MulSub(center, radiusB, normal);
+                Vector2 contactPointA = b2Lerp(cA, cB, 0.5f);
 
                 manifold.normal = normal;
                 ref B2LocalManifoldPoint mp = ref manifold.points[0];
@@ -220,16 +221,16 @@ namespace Box2D.NET
             else
             {
                 // Circle center is between v1 and v2. Center may be inside polygon
-                B2Vec2 normal = normals[normalIndex];
+                Vector2 normal = normals[normalIndex];
                 manifold.normal = normal;
 
                 // cA is the projection of the circle center onto to the reference edge
-                B2Vec2 cA = b2MulAdd(center, radiusA - b2Dot(b2Sub(center, v1), normal), normal);
+                Vector2 cA = b2MulAdd(center, radiusA - b2Dot(b2Sub(center, v1), normal), normal);
 
                 // cB is the deepest point on the circle with respect to the reference edge
-                B2Vec2 cB = b2MulSub(center, radiusB, normal);
+                Vector2 cB = b2MulSub(center, radiusB, normal);
 
-                B2Vec2 contactPointA = b2Lerp(cA, cB, 0.5f);
+                Vector2 contactPointA = b2Lerp(cA, cB, 0.5f);
 
                 // The contact point is the midpoint
                 ref B2LocalManifoldPoint mp = ref manifold.points[0];
@@ -245,19 +246,19 @@ namespace Box2D.NET
         /// Compute the contact manifold between a capsule and circle
         public static B2LocalManifold b2CollideCapsules(in B2Capsule capsuleA, in B2Capsule capsuleB, in B2Transform xf)
         {
-            B2Vec2 origin = capsuleA.center1;
+            Vector2 origin = capsuleA.center1;
 
             // Shift to the origin in frame A for round-off, a pure translation in A's frame
             B2Transform xfs = new B2Transform(b2Sub(xf.p, origin), xf.q);
 
-            B2Vec2 p1 = b2Vec2_zero;
-            B2Vec2 q1 = b2Sub(capsuleA.center2, origin);
+            Vector2 p1 = Vector2Zero;
+            Vector2 q1 = b2Sub(capsuleA.center2, origin);
 
-            B2Vec2 p2 = b2TransformPoint(xfs, capsuleB.center1);
-            B2Vec2 q2 = b2TransformPoint(xfs, capsuleB.center2);
+            Vector2 p2 = b2TransformPoint(xfs, capsuleB.center1);
+            Vector2 q2 = b2TransformPoint(xfs, capsuleB.center2);
 
-            B2Vec2 d1 = b2Sub(q1, p1);
-            B2Vec2 d2 = b2Sub(q2, p2);
+            Vector2 d1 = b2Sub(q1, p1);
+            Vector2 d2 = b2Sub(q2, p2);
 
             float dd1 = b2Dot(d1, d1);
             float dd2 = b2Dot(d2, d2);
@@ -265,7 +266,7 @@ namespace Box2D.NET
             const float epsSqr = FLT_EPSILON * FLT_EPSILON;
             B2_ASSERT(dd1 > epsSqr && dd2 > epsSqr);
 
-            B2Vec2 r = b2Sub(p1, p2);
+            Vector2 r = b2Sub(p1, p2);
             float rd1 = b2Dot(r, d1);
             float rd2 = b2Dot(r, d2);
 
@@ -296,8 +297,8 @@ namespace Box2D.NET
                 f1 = b2ClampFloat((d12 - rd1) / dd1, 0.0f, 1.0f);
             }
 
-            B2Vec2 closest1 = b2MulAdd(p1, f1, d1);
-            B2Vec2 closest2 = b2MulAdd(p2, f2, d2);
+            Vector2 closest1 = b2MulAdd(p1, f1, d1);
+            Vector2 closest2 = b2MulAdd(p2, f2, d2);
             float distanceSquared = b2DistanceSquared(closest1, closest2);
 
             B2LocalManifold manifold = new B2LocalManifold();
@@ -314,8 +315,8 @@ namespace Box2D.NET
             float distance = MathF.Sqrt(distanceSquared);
 
             float length1 = 0, length2 = 0;
-            B2Vec2 u1 = b2GetLengthAndNormalize(ref length1, d1);
-            B2Vec2 u2 = b2GetLengthAndNormalize(ref length2, d2);
+            Vector2 u1 = b2GetLengthAndNormalize(ref length1, d1);
+            Vector2 u2 = b2GetLengthAndNormalize(ref length2, d2);
 
             // Does segment B project outside segment A?
             float fp2 = b2Dot(b2Sub(p2, p1), u1);
@@ -334,7 +335,7 @@ namespace Box2D.NET
                 // in that case the algorithm falls back to single point collision
 
                 // find reference edge using SAT
-                B2Vec2 normalA;
+                Vector2 normalA;
                 float separationA;
 
                 {
@@ -355,7 +356,7 @@ namespace Box2D.NET
                     }
                 }
 
-                B2Vec2 normalB;
+                Vector2 normalB;
                 float separationB;
                 {
                     normalB = b2LeftPerp(u2);
@@ -381,8 +382,8 @@ namespace Box2D.NET
                 {
                     manifold.normal = normalA;
 
-                    B2Vec2 cp = p2;
-                    B2Vec2 cq = q2;
+                    Vector2 cp = p2;
+                    Vector2 cq = q2;
 
                     // clip to p1
                     if (fp2 < 0.0f && fq2 > 0.0f)
@@ -426,8 +427,8 @@ namespace Box2D.NET
                     // normal always points from A to B
                     manifold.normal = b2Neg(normalB);
 
-                    B2Vec2 cp = p1;
-                    B2Vec2 cq = q1;
+                    Vector2 cp = p1;
+                    Vector2 cq = q1;
 
                     // clip to p2
                     if (fp1 < 0.0f && fq1 > 0.0f)
@@ -471,7 +472,7 @@ namespace Box2D.NET
             if (manifold.pointCount == 0)
             {
                 // single point collision
-                B2Vec2 normal = b2Sub(closest2, closest1);
+                Vector2 normal = b2Sub(closest2, closest1);
                 if (b2Dot(normal, normal) > epsSqr)
                 {
                     normal = b2Normalize(normal);
@@ -481,8 +482,8 @@ namespace Box2D.NET
                     normal = b2LeftPerp(u1);
                 }
 
-                B2Vec2 c1 = b2MulAdd(closest1, radiusA, normal);
-                B2Vec2 c2 = b2MulAdd(closest2, -radiusB, normal);
+                Vector2 c1 = b2MulAdd(closest1, radiusA, normal);
+                Vector2 c2 = b2MulAdd(closest2, -radiusB, normal);
 
                 int i1 = f1 == 0.0f ? 0 : 1;
                 int i2 = f2 == 0.0f ? 0 : 1;
@@ -549,17 +550,17 @@ namespace Box2D.NET
                 i22 = edgeB + 1 < polyB.count ? edgeB + 1 : 0;
             }
 
-            B2Vec2 normal = poly1.normals[i11];
+            Vector2 normal = poly1.normals[i11];
 
             // Reference edge vertices
-            B2Vec2 v11 = poly1.vertices[i11];
-            B2Vec2 v12 = poly1.vertices[i12];
+            Vector2 v11 = poly1.vertices[i11];
+            Vector2 v12 = poly1.vertices[i12];
 
             // Incident edge vertices
-            B2Vec2 v21 = poly2.vertices[i21];
-            B2Vec2 v22 = poly2.vertices[i22];
+            Vector2 v21 = poly2.vertices[i21];
+            Vector2 v22 = poly2.vertices[i22];
 
-            B2Vec2 tangent = b2CrossSV(1.0f, normal);
+            Vector2 tangent = b2CrossSV(1.0f, normal);
 
             float lower1 = 0.0f;
             float upper1 = b2Dot(b2Sub(v12, v11), tangent);
@@ -574,7 +575,7 @@ namespace Box2D.NET
                 return manifold;
             }
 
-            B2Vec2 vLower;
+            Vector2 vLower;
             if (lower2 < lower1 && upper2 - lower2 > FLT_EPSILON)
             {
                 vLower = b2Lerp(v22, v21, (lower1 - lower2) / (upper2 - lower2));
@@ -584,7 +585,7 @@ namespace Box2D.NET
                 vLower = v22;
             }
 
-            B2Vec2 vUpper;
+            Vector2 vUpper;
             if (upper2 > upper1 && upper2 - lower2 > FLT_EPSILON)
             {
                 vUpper = b2Lerp(v22, v21, (upper1 - lower2) / (upper2 - lower2));
@@ -657,17 +658,17 @@ namespace Box2D.NET
         {
             int count1 = poly1.count;
             int count2 = poly2.count;
-            ReadOnlySpan<B2Vec2> n1s = poly1.normals.AsSpan();
-            ReadOnlySpan<B2Vec2> v1s = poly1.vertices.AsSpan();
-            ReadOnlySpan<B2Vec2> v2s = poly2.vertices.AsSpan();
+            ReadOnlySpan<Vector2> n1s = poly1.normals.AsSpan();
+            ReadOnlySpan<Vector2> v1s = poly1.vertices.AsSpan();
+            ReadOnlySpan<Vector2> v2s = poly2.vertices.AsSpan();
 
             int bestIndex = 0;
             float maxSeparation = -float.MaxValue;
             for (int i = 0; i < count1; ++i)
             {
                 // Get poly1 normal in frame2.
-                B2Vec2 n = n1s[i];
-                B2Vec2 v1 = v1s[i];
+                Vector2 n = n1s[i];
+                Vector2 v1 = v1s[i];
 
                 // Find the deepest point for normal i.
                 float si = float.MaxValue;
@@ -711,7 +712,7 @@ namespace Box2D.NET
         // end
         public static B2LocalManifold b2CollidePolygons(in B2Polygon polygonA, in B2Polygon polygonB, in B2Transform xf)
         {
-            B2Vec2 origin = polygonA.vertices[0];
+            Vector2 origin = polygonA.vertices[0];
             float linearSlop = B2_LINEAR_SLOP;
             float speculativeDistance = B2_SPECULATIVE_DISTANCE;
 
@@ -721,7 +722,7 @@ namespace Box2D.NET
             B2Polygon localPolyA = new B2Polygon();
             localPolyA.count = polygonA.count;
             localPolyA.radius = polygonA.radius;
-            localPolyA.vertices[0] = b2Vec2_zero;
+            localPolyA.vertices[0] = Vector2Zero;
             localPolyA.normals[0] = polygonA.normals[0];
             for (int i = 1; i < localPolyA.count; ++i)
             {
@@ -761,11 +762,11 @@ namespace Box2D.NET
             {
                 flip = false;
 
-                B2Vec2 searchDirection = localPolyA.normals[edgeA];
+                Vector2 searchDirection = localPolyA.normals[edgeA];
 
                 // Find the incident edge on polyB
                 int count = localPolyB.count;
-                ReadOnlySpan<B2Vec2> normals = localPolyB.normals.AsSpan();
+                ReadOnlySpan<Vector2> normals = localPolyB.normals.AsSpan();
                 edgeB = 0;
                 float minDot = float.MaxValue;
                 for (int i = 0; i < count; ++i)
@@ -782,11 +783,11 @@ namespace Box2D.NET
             {
                 flip = true;
 
-                B2Vec2 searchDirection = localPolyB.normals[edgeB];
+                Vector2 searchDirection = localPolyB.normals[edgeB];
 
                 // Find the incident edge on polyA
                 int count = localPolyA.count;
-                ReadOnlySpan<B2Vec2> normals = localPolyA.normals.AsSpan();
+                ReadOnlySpan<Vector2> normals = localPolyA.normals.AsSpan();
                 edgeA = 0;
                 float minDot = float.MaxValue;
                 for (int i = 0; i < count; ++i)
@@ -814,10 +815,10 @@ namespace Box2D.NET
                 int i21 = edgeB;
                 int i22 = edgeB + 1 < localPolyB.count ? edgeB + 1 : 0;
 
-                B2Vec2 v11 = localPolyA.vertices[i11];
-                B2Vec2 v12 = localPolyA.vertices[i12];
-                B2Vec2 v21 = localPolyB.vertices[i21];
-                B2Vec2 v22 = localPolyB.vertices[i22];
+                Vector2 v11 = localPolyA.vertices[i11];
+                Vector2 v12 = localPolyA.vertices[i12];
+                Vector2 v21 = localPolyB.vertices[i21];
+                Vector2 v22 = localPolyB.vertices[i22];
 
                 B2SegmentDistanceResult result = b2ComputeSegmentDistance(v11, v12, v21, v22);
                 B2_ASSERT(result.distanceSquared > 0.0f);
@@ -845,13 +846,13 @@ namespace Box2D.NET
                     if (result.fraction1 == 0.0f && result.fraction2 == 0.0f)
                     {
                         // v11 - v21
-                        B2Vec2 normal = b2Sub(v21, v11);
+                        Vector2 normal = b2Sub(v21, v11);
                         float invDistance = 1.0f / distance;
                         normal.X *= invDistance;
                         normal.Y *= invDistance;
 
-                        B2Vec2 c1 = b2MulAdd(v11, localPolyA.radius, normal);
-                        B2Vec2 c2 = b2MulAdd(v21, -localPolyB.radius, normal);
+                        Vector2 c1 = b2MulAdd(v11, localPolyA.radius, normal);
+                        Vector2 c2 = b2MulAdd(v21, -localPolyB.radius, normal);
 
                         manifold.normal = normal;
                         manifold.points[0].point = b2Lerp(c1, c2, 0.5f);
@@ -862,13 +863,13 @@ namespace Box2D.NET
                     else if (result.fraction1 == 0.0f && result.fraction2 == 1.0f)
                     {
                         // v11 - v22
-                        B2Vec2 normal = b2Sub(v22, v11);
+                        Vector2 normal = b2Sub(v22, v11);
                         float invDistance = 1.0f / distance;
                         normal.X *= invDistance;
                         normal.Y *= invDistance;
 
-                        B2Vec2 c1 = b2MulAdd(v11, localPolyA.radius, normal);
-                        B2Vec2 c2 = b2MulAdd(v22, -localPolyB.radius, normal);
+                        Vector2 c1 = b2MulAdd(v11, localPolyA.radius, normal);
+                        Vector2 c2 = b2MulAdd(v22, -localPolyB.radius, normal);
 
                         manifold.normal = normal;
                         manifold.points[0].point = b2Lerp(c1, c2, 0.5f);
@@ -879,13 +880,13 @@ namespace Box2D.NET
                     else if (result.fraction1 == 1.0f && result.fraction2 == 0.0f)
                     {
                         // v12 - v21
-                        B2Vec2 normal = b2Sub(v21, v12);
+                        Vector2 normal = b2Sub(v21, v12);
                         float invDistance = 1.0f / distance;
                         normal.X *= invDistance;
                         normal.Y *= invDistance;
 
-                        B2Vec2 c1 = b2MulAdd(v12, localPolyA.radius, normal);
-                        B2Vec2 c2 = b2MulAdd(v21, -localPolyB.radius, normal);
+                        Vector2 c1 = b2MulAdd(v12, localPolyA.radius, normal);
+                        Vector2 c2 = b2MulAdd(v21, -localPolyB.radius, normal);
 
                         manifold.normal = normal;
                         manifold.points[0].point = b2Lerp(c1, c2, 0.5f);
@@ -896,13 +897,13 @@ namespace Box2D.NET
                     else if (result.fraction1 == 1.0f && result.fraction2 == 1.0f)
                     {
                         // v12 - v22
-                        B2Vec2 normal = b2Sub(v22, v12);
+                        Vector2 normal = b2Sub(v22, v12);
                         float invDistance = 1.0f / distance;
                         normal.X *= invDistance;
                         normal.Y *= invDistance;
 
-                        B2Vec2 c1 = b2MulAdd(v12, localPolyA.radius, normal);
-                        B2Vec2 c2 = b2MulAdd(v22, -localPolyB.radius, normal);
+                        Vector2 c1 = b2MulAdd(v12, localPolyA.radius, normal);
+                        Vector2 c2 = b2MulAdd(v22, -localPolyB.radius, normal);
 
                         manifold.normal = normal;
                         manifold.points[0].point = b2Lerp(c1, c2, 0.5f);
@@ -1064,11 +1065,11 @@ namespace Box2D.NET
             B2LocalManifold manifold = new B2LocalManifold();
 
             // Compute circle in frame of segment
-            B2Vec2 pB = b2TransformPoint(xf, circleB.center);
+            Vector2 pB = b2TransformPoint(xf, circleB.center);
 
-            B2Vec2 p1 = segmentA.segment.point1;
-            B2Vec2 p2 = segmentA.segment.point2;
-            B2Vec2 e = b2Sub(p2, p1);
+            Vector2 p1 = segmentA.segment.point1;
+            Vector2 p2 = segmentA.segment.point2;
+            Vector2 e = b2Sub(p2, p1);
 
             // Normal points to the right
             float offset = b2Dot(b2RightPerp(e), b2Sub(pB, p1));
@@ -1082,13 +1083,13 @@ namespace Box2D.NET
             float u = b2Dot(e, b2Sub(p2, pB));
             float v = b2Dot(e, b2Sub(pB, p1));
 
-            B2Vec2 pA;
+            Vector2 pA;
 
             if (v <= 0.0f)
             {
                 // Behind point1?
                 // Is pB in the Voronoi region of the previous edge?
-                B2Vec2 prevEdge = b2Sub(p1, segmentA.ghost1);
+                Vector2 prevEdge = b2Sub(p1, segmentA.ghost1);
                 float uPrev = b2Dot(prevEdge, b2Sub(pB, p1));
                 if (uPrev <= 0.0f)
                 {
@@ -1100,7 +1101,7 @@ namespace Box2D.NET
             else if (u <= 0.0f)
             {
                 // Ahead of point2?
-                B2Vec2 nextEdge = b2Sub(segmentA.ghost2, p2);
+                Vector2 nextEdge = b2Sub(segmentA.ghost2, p2);
                 float vNext = b2Dot(nextEdge, b2Sub(pB, p2));
 
                 // Is pB in the Voronoi region of the next edge?
@@ -1114,12 +1115,12 @@ namespace Box2D.NET
             else
             {
                 float ee = b2Dot(e, e);
-                pA = new B2Vec2(u * p1.X + v * p2.X, u * p1.Y + v * p2.Y);
+                pA = new Vector2(u * p1.X + v * p2.X, u * p1.Y + v * p2.Y);
                 pA = ee > 0.0f ? b2MulSV(1.0f / ee, pA) : p1;
             }
 
             float distance = 0;
-            B2Vec2 normal = b2GetLengthAndNormalize(ref distance, b2Sub(pB, pA));
+            Vector2 normal = b2GetLengthAndNormalize(ref distance, b2Sub(pB, pA));
 
             float radius = circleB.radius;
             float separation = distance - radius;
@@ -1128,9 +1129,9 @@ namespace Box2D.NET
                 return manifold;
             }
 
-            B2Vec2 cA = pA;
-            B2Vec2 cB = b2MulAdd(pB, -radius, normal);
-            B2Vec2 contactPointA = b2Lerp(cA, cB, 0.5f);
+            Vector2 cA = pA;
+            Vector2 cB = b2MulAdd(pB, -radius, normal);
+            Vector2 contactPointA = b2Lerp(cA, cB, 0.5f);
 
             manifold.normal = normal;
 
@@ -1149,11 +1150,11 @@ namespace Box2D.NET
             return b2CollideChainSegmentAndPolygon(segmentA, polyB, xf, ref cache);
         }
 
-        internal static B2LocalManifold b2ClipSegments(B2Vec2 a1, B2Vec2 a2, B2Vec2 b1, B2Vec2 b2, B2Vec2 normal, float ra, float rb, ushort id1, ushort id2)
+        internal static B2LocalManifold b2ClipSegments(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, Vector2 normal, float ra, float rb, ushort id1, ushort id2)
         {
             B2LocalManifold manifold = new B2LocalManifold();
 
-            B2Vec2 tangent = b2LeftPerp(normal);
+            Vector2 tangent = b2LeftPerp(normal);
 
             // Barycentric coordinates of each point relative to a1 along tangent
             float lower1 = 0.0f;
@@ -1169,7 +1170,7 @@ namespace Box2D.NET
                 return manifold;
             }
 
-            B2Vec2 vLower;
+            Vector2 vLower;
             if (lower2 < lower1 && upper2 - lower2 > FLT_EPSILON)
             {
                 vLower = b2Lerp(b2, b1, (lower1 - lower2) / (upper2 - lower2));
@@ -1179,7 +1180,7 @@ namespace Box2D.NET
                 vLower = b2;
             }
 
-            B2Vec2 vUpper;
+            Vector2 vUpper;
             if (upper2 > upper1 && upper2 - lower2 > FLT_EPSILON)
             {
                 vUpper = b2Lerp(b2, b1, (upper1 - lower2) / (upper2 - lower2));
@@ -1223,7 +1224,7 @@ namespace Box2D.NET
 
         // Evaluate Gauss map
         // See https://box2d.org/posts/2020/06/ghost-collisions/
-        internal static B2NormalType b2ClassifyNormal(B2ChainSegmentParams param, B2Vec2 normal)
+        internal static B2NormalType b2ClassifyNormal(B2ChainSegmentParams param, Vector2 normal)
         {
             const float sinTol = 0.01f;
 
@@ -1268,28 +1269,28 @@ namespace Box2D.NET
         {
             B2LocalManifold manifold = new B2LocalManifold();
 
-            B2Vec2 centroidB = b2TransformPoint(xf, polygonB.centroid);
+            Vector2 centroidB = b2TransformPoint(xf, polygonB.centroid);
             float radiusB = polygonB.radius;
 
-            B2Vec2 p1 = segmentA.segment.point1;
-            B2Vec2 p2 = segmentA.segment.point2;
+            Vector2 p1 = segmentA.segment.point1;
+            Vector2 p2 = segmentA.segment.point2;
 
-            B2Vec2 edge1 = b2Normalize(b2Sub(p2, p1));
+            Vector2 edge1 = b2Normalize(b2Sub(p2, p1));
 
             B2ChainSegmentParams smoothParams = new B2ChainSegmentParams();
             smoothParams.edge1 = edge1;
 
             const float convexTol = 0.01f;
-            B2Vec2 edge0 = b2Normalize(b2Sub(p1, segmentA.ghost1));
+            Vector2 edge0 = b2Normalize(b2Sub(p1, segmentA.ghost1));
             smoothParams.normal0 = b2RightPerp(edge0);
             smoothParams.convex1 = b2Cross(edge0, edge1) >= convexTol;
 
-            B2Vec2 edge2 = b2Normalize(b2Sub(segmentA.ghost2, p2));
+            Vector2 edge2 = b2Normalize(b2Sub(segmentA.ghost2, p2));
             smoothParams.normal2 = b2RightPerp(edge2);
             smoothParams.convex2 = b2Cross(edge1, edge2) >= convexTol;
 
             // Normal points to the right
-            B2Vec2 normal1 = b2RightPerp(edge1);
+            Vector2 normal1 = b2RightPerp(edge1);
             bool behind1 = b2Dot(normal1, b2Sub(centroidB, p1)) < 0.0f;
             bool behind0 = true;
             bool behind2 = true;
@@ -1311,8 +1312,8 @@ namespace Box2D.NET
 
             // Get polygonB in frameA
             int count = polygonB.count;
-            Span<B2Vec2> vertices = stackalloc B2Vec2[B2_MAX_POLYGON_VERTICES];
-            Span<B2Vec2> normals = stackalloc B2Vec2[B2_MAX_POLYGON_VERTICES];
+            Span<Vector2> vertices = stackalloc Vector2[B2_MAX_POLYGON_VERTICES];
+            Span<Vector2> normals = stackalloc Vector2[B2_MAX_POLYGON_VERTICES];
             for (int i = 0; i < count; ++i)
             {
                 vertices[i] = b2TransformPoint(xf, polygonB.vertices[i]);
@@ -1334,8 +1335,8 @@ namespace Box2D.NET
             }
 
             // Snap concave normals for partial polygon
-            B2Vec2 n0 = smoothParams.convex1 ? smoothParams.normal0 : normal1;
-            B2Vec2 n2 = smoothParams.convex2 ? smoothParams.normal2 : normal1;
+            Vector2 n0 = smoothParams.convex1 ? smoothParams.normal0 : normal1;
+            Vector2 n2 = smoothParams.convex2 ? smoothParams.normal2 : normal1;
 
             // Index of incident vertex on polygon
             int incidentIndex = -1;
@@ -1349,10 +1350,10 @@ namespace Box2D.NET
                 if (cache.count == 1)
                 {
                     // vertex-vertex collision
-                    B2Vec2 pA = output.pointA;
-                    B2Vec2 pB = output.pointB;
+                    Vector2 pA = output.pointA;
+                    Vector2 pB = output.pointB;
 
-                    B2Vec2 normal = b2Normalize(b2Sub(pB, pA));
+                    Vector2 normal = b2Normalize(b2Sub(pB, pA));
 
                     B2NormalType type = b2ClassifyNormal(smoothParams, normal);
                     if (type == B2NormalType.b2_normalSkip)
@@ -1391,7 +1392,7 @@ namespace Box2D.NET
 
                         // Find polygon normal most aligned with vector between closest points.
                         // This effectively sorts ib1 and ib2
-                        B2Vec2 normalB = b2Sub(output.pointA, output.pointB);
+                        Vector2 normalB = b2Sub(output.pointA, output.pointB);
                         float dot1 = b2Dot(normalB, normals[idxB1]);
                         float dot2 = b2Dot(normalB, normals[idxB2]);
                         int ib = dot1 > dot2 ? idxB1 : idxB2;
@@ -1411,8 +1412,8 @@ namespace Box2D.NET
                             idxB1 = ib;
                             idxB2 = ib < count - 1 ? ib + 1 : 0;
 
-                            B2Vec2 vb1 = vertices[idxB1];
-                            B2Vec2 vb2 = vertices[idxB2];
+                            Vector2 vb1 = vertices[idxB1];
+                            Vector2 vb2 = vertices[idxB2];
 
                             // Find incident segment vertex
                             dot1 = b2Dot(normalB, b2Sub(p1, vb1));
@@ -1526,7 +1527,7 @@ namespace Box2D.NET
 
                 for (int i = 0; i < count; ++i)
                 {
-                    B2Vec2 n = normals[i];
+                    Vector2 n = normals[i];
 
                     B2NormalType type = b2ClassifyNormal(smoothParams, b2Neg(n));
                     if (type != B2NormalType.b2_normalAdmit)
@@ -1540,7 +1541,7 @@ namespace Box2D.NET
                     //	continue;
                     //}
 
-                    B2Vec2 p = vertices[i];
+                    Vector2 p = vertices[i];
                     float s = b2MinFloat(b2Dot(n, b2Sub(p2, p)), b2Dot(n, b2Sub(p1, p)));
 
                     if (s > polygonSeparation)
@@ -1554,10 +1555,10 @@ namespace Box2D.NET
                 {
                     int ia1 = referenceIndex;
                     int ia2 = ia1 < count - 1 ? ia1 + 1 : 0;
-                    B2Vec2 a1 = vertices[ia1];
-                    B2Vec2 a2 = vertices[ia2];
+                    Vector2 a1 = vertices[ia1];
+                    Vector2 a2 = vertices[ia2];
 
-                    B2Vec2 n = normals[ia1];
+                    Vector2 n = normals[ia1];
 
                     float dot1 = b2Dot(n, b2Sub(p1, a1));
                     float dot2 = b2Dot(n, b2Sub(p2, a1));
@@ -1603,7 +1604,7 @@ namespace Box2D.NET
             // Segment normal
 
             // Find incident polygon normal: normal adjacent to deepest vertex that is most anti-parallel to segment normal
-            B2Vec2 b1, b2;
+            Vector2 b1, b2;
             int ib1, ib2;
 
             if (incidentNormal != -1)

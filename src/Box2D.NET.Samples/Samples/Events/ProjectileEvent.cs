@@ -23,8 +23,8 @@ class ProjectileEvent : Sample
 
     private B2BodyId m_projectileId;
     private B2ShapeId m_projectileShapeId;
-    private B2Vec2 m_point1;
-    private B2Vec2 m_point2;
+    private Vector2 m_point1;
+    private Vector2 m_point2;
     private bool m_dragging;
 
     private static Sample Create(SampleContext context)
@@ -36,30 +36,30 @@ class ProjectileEvent : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(-7.0f, 9.0f);
+            m_context.camera.center = new Vector2(-7.0f, 9.0f);
             m_context.camera.zoom = 14.0f;
         }
 
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 0.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 0.0f));
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.enableSensorEvents = true;
 
-            B2Segment segment = new B2Segment(new B2Vec2(10.0f, 0.0f), new B2Vec2(10.0f, 20.0f));
+            B2Segment segment = new B2Segment(new Vector2(10.0f, 0.0f), new Vector2(10.0f, 20.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
 
-            segment = new B2Segment(new B2Vec2(-30.0f, 0.0f), new B2Vec2(30.0f, 0.0f));
+            segment = new B2Segment(new Vector2(-30.0f, 0.0f), new Vector2(30.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
         m_projectileId = new B2BodyId();
         m_projectileShapeId = new B2ShapeId();
         m_dragging = false;
-        m_point1 = b2Vec2_zero;
-        m_point2 = b2Vec2_zero;
+        m_point1 = Vector2Zero;
+        m_point2 = Vector2Zero;
 
         {
             B2Polygon box = b2MakeRoundedBox(0.45f, 0.45f, 0.05f);
@@ -76,7 +76,7 @@ class ProjectileEvent : Sample
             for (int i = 0; i < 8; ++i)
             {
                 float shift = (i % 2 == 0 ? -offset : offset);
-                bodyDef.position = b2ToPos(new B2Vec2(x + shift, 0.5f + 1.0f * i));
+                bodyDef.position = b2ToPos(new Vector2(x + shift, 0.5f + 1.0f * i));
 
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
@@ -100,13 +100,13 @@ class ProjectileEvent : Sample
 
         m_projectileId = b2CreateBody(m_worldId, bodyDef);
 
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.25f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.25f);
         B2ShapeDef shapeDef = b2DefaultShapeDef();
         shapeDef.enableContactEvents = true;
         m_projectileShapeId = b2CreateCircleShape(m_projectileId, shapeDef, circle);
     }
 
-    public override void MouseDown(B2Vec2 p, MouseButton button, KeyModifiers mod)
+    public override void MouseDown(Vector2 p, MouseButton button, KeyModifiers mod)
     {
         if (button == MouseButton.Left)
         {
@@ -118,7 +118,7 @@ class ProjectileEvent : Sample
         }
     }
 
-    public override void MouseUp(B2Vec2 p, MouseButton button)
+    public override void MouseUp(Vector2 p, MouseButton button)
     {
         if (button == MouseButton.Left)
         {
@@ -130,7 +130,7 @@ class ProjectileEvent : Sample
         }
     }
 
-    public override void MouseMove(B2Vec2 p)
+    public override void MouseMove(Vector2 p)
     {
         if (m_dragging)
         {

@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     /**@}*/
@@ -18,10 +20,10 @@ namespace Box2D.NET
     public struct B2SegmentDistanceResult
     {
         /// The closest point on the first segment
-        public B2Vec2 closest1;
+        public Vector2 closest1;
 
         /// The closest point on the second segment
-        public B2Vec2 closest2;
+        public Vector2 closest2;
 
         /// The barycentric coordinate on the first segment
         public float fraction1;

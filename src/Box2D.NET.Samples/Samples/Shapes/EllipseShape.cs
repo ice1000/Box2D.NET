@@ -25,7 +25,7 @@ public class EllipseShape : Sample
         if (m_context.restart == false)
         {
             m_camera.zoom = 25.0f * 0.55f;
-            m_camera.center = new B2Vec2(2.0f, 8.0f);
+            m_camera.center = new Vector2(2.0f, 8.0f);
         }
 
         {
@@ -33,20 +33,20 @@ public class EllipseShape : Sample
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Polygon box = b2MakeOffsetBox(20.0f, 1.0f, new B2Vec2(0.0f, -1.0f), b2Rot_identity);
+            B2Polygon box = b2MakeOffsetBox(20.0f, 1.0f, new Vector2(0.0f, -1.0f), b2Rot_identity);
             b2CreatePolygonShape(groundId, shapeDef, box);
 
-            box = b2MakeOffsetBox(1.0f, 5.0f, new B2Vec2(19.0f, 5.0f), b2Rot_identity);
+            box = b2MakeOffsetBox(1.0f, 5.0f, new Vector2(19.0f, 5.0f), b2Rot_identity);
             b2CreatePolygonShape(groundId, shapeDef, box);
 
-            box = b2MakeOffsetBox(1.0f, 5.0f, new B2Vec2(-19.0f, 5.0f), b2Rot_identity);
+            box = b2MakeOffsetBox(1.0f, 5.0f, new Vector2(-19.0f, 5.0f), b2Rot_identity);
             b2CreatePolygonShape(groundId, shapeDef, box);
         }
 
-        B2Vec2[] points =
+        Vector2[] points =
         [
-            new B2Vec2(0.0f, -0.25f), new B2Vec2(0.0f, 0.25f), new B2Vec2(0.05f, 0.075f),
-            new B2Vec2(-0.05f, 0.075f), new B2Vec2(0.05f, -0.075f), new B2Vec2(-0.05f, -0.075f),
+            new Vector2(0.0f, -0.25f), new Vector2(0.0f, 0.25f), new Vector2(0.05f, 0.075f),
+            new Vector2(-0.05f, 0.075f), new Vector2(0.05f, -0.075f), new Vector2(-0.05f, -0.075f),
         ];
 
         B2Hull diamondHull = b2ComputeHull(points, 6);
@@ -66,7 +66,7 @@ public class EllipseShape : Sample
                 float x = -5.0f;
                 for (int j = 0; j < xCount; ++j)
                 {
-                    bodyDef.position = b2ToPos(new B2Vec2(x, y));
+                    bodyDef.position = b2ToPos(new Vector2(x, y));
                     B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
                     b2CreatePolygonShape(bodyId, shapeDef, poly);
 

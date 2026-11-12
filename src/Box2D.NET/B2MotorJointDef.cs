@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     /// A motor joint is used to control the relative velocity and or transform between two bodies.
@@ -13,7 +15,7 @@ namespace Box2D.NET
         public B2JointDef @base;
 
         /// The desired linear velocity
-        public B2Vec2 linearVelocity;
+        public Vector2 linearVelocity;
 
         /// The maximum motor force in newtons
         public float maxVelocityForce;

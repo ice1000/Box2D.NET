@@ -25,7 +25,7 @@ public class BenchmarkManyTumblers : Sample
     private int m_columnCount;
 
     private B2BodyId[] m_tumblerIds;
-    private B2Vec2[] m_positions;
+    private Vector2[] m_positions;
     private int m_tumblerCount;
 
     private B2BodyId[] m_bodyIds;
@@ -43,7 +43,7 @@ public class BenchmarkManyTumblers : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(1.0f, -5.5f);
+            m_camera.center = new Vector2(1.0f, -5.5f);
             m_camera.zoom = 25.0f * 3.4f;
             m_context.debugDraw.drawJoints = false;
         }
@@ -67,11 +67,11 @@ public class BenchmarkManyTumblers : Sample
         CreateScene();
     }
 
-    void CreateTumbler(B2Vec2 position, int index)
+    void CreateTumbler(Vector2 position, int index)
     {
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_kinematicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(position.X, position.Y));
+        bodyDef.position = b2ToPos(new Vector2(position.X, position.Y));
         bodyDef.angularVelocity = (B2_PI / 180.0f) * m_angularSpeed;
         B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
         m_tumblerIds[index] = bodyId;
@@ -80,13 +80,13 @@ public class BenchmarkManyTumblers : Sample
         shapeDef.density = 50.0f;
 
         B2Polygon polygon;
-        polygon = b2MakeOffsetBox(0.25f, 2.0f, new B2Vec2(2.0f, 0.0f), b2Rot_identity);
+        polygon = b2MakeOffsetBox(0.25f, 2.0f, new Vector2(2.0f, 0.0f), b2Rot_identity);
         b2CreatePolygonShape(bodyId, shapeDef, polygon);
-        polygon = b2MakeOffsetBox(0.25f, 2.0f, new B2Vec2(-2.0f, 0.0f), b2Rot_identity);
+        polygon = b2MakeOffsetBox(0.25f, 2.0f, new Vector2(-2.0f, 0.0f), b2Rot_identity);
         b2CreatePolygonShape(bodyId, shapeDef, polygon);
-        polygon = b2MakeOffsetBox(2.0f, 0.25f, new B2Vec2(0.0f, 2.0f), b2Rot_identity);
+        polygon = b2MakeOffsetBox(2.0f, 0.25f, new Vector2(0.0f, 2.0f), b2Rot_identity);
         b2CreatePolygonShape(bodyId, shapeDef, polygon);
-        polygon = b2MakeOffsetBox(2.0f, 0.25f, new B2Vec2(0.0f, -2.0f), b2Rot_identity);
+        polygon = b2MakeOffsetBox(2.0f, 0.25f, new Vector2(0.0f, -2.0f), b2Rot_identity);
         b2CreatePolygonShape(bodyId, shapeDef, polygon);
     }
 
@@ -110,7 +110,7 @@ public class BenchmarkManyTumblers : Sample
 
         m_tumblerCount = m_rowCount * m_columnCount;
         m_tumblerIds = new B2BodyId[m_tumblerCount];
-        m_positions = new B2Vec2[m_tumblerCount];
+        m_positions = new Vector2[m_tumblerCount];
 
         int index = 0;
         float x = -4.0f * m_rowCount;
@@ -119,7 +119,7 @@ public class BenchmarkManyTumblers : Sample
             float y = -4.0f * m_columnCount;
             for (int j = 0; j < m_columnCount; ++j)
             {
-                m_positions[index] = new B2Vec2(x, y);
+                m_positions[index] = new Vector2(x, y);
                 CreateTumbler(m_positions[index], index);
                 ++index;
                 y += 8.0f;
@@ -175,7 +175,7 @@ public class BenchmarkManyTumblers : Sample
         {
             B2ShapeDef shapeDef = b2DefaultShapeDef();
 
-            B2Capsule capsule = new B2Capsule(new B2Vec2(-0.1f, 0.0f), new B2Vec2(0.1f, 0.0f), 0.075f);
+            B2Capsule capsule = new B2Capsule(new Vector2(-0.1f, 0.0f), new Vector2(0.1f, 0.0f), 0.075f);
 
             for (int i = 0; i < m_tumblerCount; ++i)
             {

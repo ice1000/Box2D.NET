@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
 using static Box2D.NET.B2Arrays;
 using static Box2D.NET.B2Constants;
 using static Box2D.NET.B2MathFunction;
@@ -180,11 +181,11 @@ namespace Box2D.NET
             B2Transform transformA = b2ToRelativeTransform(wxfA, wxfA.p);
             B2Transform transformB = b2ToRelativeTransform(b2GetBodyTransform(world, jointSim.bodyIdB), wxfA.p);
 
-            B2Vec2 localAxisA = b2RotateVector(jointSim.localFrameA.q, new B2Vec2(1.0f, 0.0f));
-            B2Vec2 axisA = b2RotateVector(transformA.q, localAxisA);
-            B2Vec2 pA = b2TransformPoint(transformA, jointSim.localFrameA.p);
-            B2Vec2 pB = b2TransformPoint(transformB, jointSim.localFrameB.p);
-            B2Vec2 d = b2Sub(pB, pA);
+            Vector2 localAxisA = b2RotateVector(jointSim.localFrameA.q, new Vector2(1.0f, 0.0f));
+            Vector2 axisA = b2RotateVector(transformA.q, localAxisA);
+            Vector2 pA = b2TransformPoint(transformA, jointSim.localFrameA.p);
+            Vector2 pB = b2TransformPoint(transformB, jointSim.localFrameB.p);
+            Vector2 d = b2Sub(pB, pA);
             float translation = b2Dot(d, axisA);
             return translation;
         }
@@ -207,40 +208,40 @@ namespace Box2D.NET
             B2Rot qA = bodySimA.transform.q;
             B2Rot qB = bodySimB.transform.q;
 
-            B2Vec2 localAxisA = b2RotateVector(@base.localFrameA.q, new B2Vec2(1.0f, 0.0f));
-            B2Vec2 axisA = b2RotateVector(qA, localAxisA);
-            B2Vec2 rA = b2RotateVector(qA, b2Sub(@base.localFrameA.p, bodySimA.localCenter));
-            B2Vec2 rB = b2RotateVector(qB, b2Sub(@base.localFrameB.p, bodySimB.localCenter));
+            Vector2 localAxisA = b2RotateVector(@base.localFrameA.q, new Vector2(1.0f, 0.0f));
+            Vector2 axisA = b2RotateVector(qA, localAxisA);
+            Vector2 rA = b2RotateVector(qA, b2Sub(@base.localFrameA.p, bodySimA.localCenter));
+            Vector2 rB = b2RotateVector(qB, b2Sub(@base.localFrameB.p, bodySimB.localCenter));
 
             // Difference the centers in double so the speed stays exact far from the origin
-            B2Vec2 dc = b2SubPos(bodySimB.center, bodySimA.center);
-            B2Vec2 d = b2Add(dc, b2Sub(rB, rA));
+            Vector2 dc = b2SubPos(bodySimB.center, bodySimA.center);
+            Vector2 d = b2Add(dc, b2Sub(rB, rA));
 
-            B2Vec2 vA = null != bodyStateA ? bodyStateA.linearVelocity : b2Vec2_zero;
-            B2Vec2 vB = null != bodyStateB ? bodyStateB.linearVelocity : b2Vec2_zero;
+            Vector2 vA = null != bodyStateA ? bodyStateA.linearVelocity : Vector2Zero;
+            Vector2 vB = null != bodyStateB ? bodyStateB.linearVelocity : Vector2Zero;
             float wA = null != bodyStateA ? bodyStateA.angularVelocity : 0.0f;
             float wB = null != bodyStateB ? bodyStateB.angularVelocity : 0.0f;
 
-            B2Vec2 vRel = b2Sub(b2Add(vB, b2CrossSV(wB, rB)), b2Add(vA, b2CrossSV(wA, rA)));
+            Vector2 vRel = b2Sub(b2Add(vB, b2CrossSV(wB, rB)), b2Add(vA, b2CrossSV(wA, rA)));
             float speed = b2Dot(d, b2CrossSV(wA, axisA)) + b2Dot(axisA, vRel);
             return speed;
         }
 
-        internal static B2Vec2 b2GetPrismaticJointForce(B2World world, B2JointSim @base)
+        internal static Vector2 b2GetPrismaticJointForce(B2World world, B2JointSim @base)
         {
             B2Rot qA = b2GetBodyTransform(world, @base.bodyIdA).q;
 
             ref readonly B2PrismaticJoint joint = ref @base.uj.prismaticJoint;
 
-            B2Vec2 localAxisA = b2RotateVector(@base.localFrameA.q, new B2Vec2(1.0f, 0.0f));
-            B2Vec2 axisA = b2RotateVector(qA, localAxisA);
-            B2Vec2 perpA = b2LeftPerp(axisA);
+            Vector2 localAxisA = b2RotateVector(@base.localFrameA.q, new Vector2(1.0f, 0.0f));
+            Vector2 axisA = b2RotateVector(qA, localAxisA);
+            Vector2 perpA = b2LeftPerp(axisA);
 
             float inv_h = world.inv_h;
             float perpForce = inv_h * joint.impulse.X;
             float axialForce = inv_h * (joint.motorImpulse + joint.lowerImpulse - joint.upperImpulse);
 
-            B2Vec2 force = b2Add(b2MulSV(perpForce, perpA), b2MulSV(axialForce, axisA));
+            Vector2 force = b2Add(b2MulSV(perpForce, perpA), b2MulSV(axialForce, axisA));
             return force;
         }
 
@@ -343,7 +344,7 @@ namespace Box2D.NET
 
             if (context.enableWarmStarting == false)
             {
-                joint.impulse = b2Vec2_zero;
+                joint.impulse = Vector2Zero;
                 joint.springImpulse = 0.0f;
                 joint.motorImpulse = 0.0f;
                 joint.lowerImpulse = 0.0f;
@@ -368,12 +369,12 @@ namespace Box2D.NET
             B2BodyState stateA = joint.indexA == B2_NULL_INDEX ? dummyState : context.states[joint.indexA];
             B2BodyState stateB = joint.indexB == B2_NULL_INDEX ? dummyState : context.states[joint.indexB];
 
-            B2Vec2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
-            B2Vec2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
+            Vector2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
+            Vector2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
 
-            B2Vec2 d = b2Add(b2Add(b2Sub(stateB.deltaPosition, stateA.deltaPosition), joint.deltaCenter), b2Sub(rB, rA));
+            Vector2 d = b2Add(b2Add(b2Sub(stateB.deltaPosition, stateA.deltaPosition), joint.deltaCenter), b2Sub(rB, rA));
 
-            B2Vec2 axisA = b2RotateVector(joint.frameA.q, new B2Vec2(1.0f, 0.0f));
+            Vector2 axisA = b2RotateVector(joint.frameA.q, new Vector2(1.0f, 0.0f));
             axisA = b2RotateVector(stateA.deltaRotation, axisA);
 
             // impulse is applied at anchor point on body B
@@ -382,13 +383,13 @@ namespace Box2D.NET
             float axialImpulse = joint.springImpulse + joint.motorImpulse + joint.lowerImpulse - joint.upperImpulse;
 
             // perpendicular constraint
-            B2Vec2 perpA = b2LeftPerp(axisA);
+            Vector2 perpA = b2LeftPerp(axisA);
             float s1 = b2Cross(b2Add(rA, d), perpA);
             float s2 = b2Cross(rB, perpA);
             float perpImpulse = joint.impulse.X;
             float angleImpulse = joint.impulse.Y;
 
-            B2Vec2 P = b2Add(b2MulSV(axialImpulse, axisA), b2MulSV(perpImpulse, perpA));
+            Vector2 P = b2Add(b2MulSV(axialImpulse, axisA), b2MulSV(perpImpulse, perpA));
             float LA = axialImpulse * a1 + perpImpulse * s1 + angleImpulse;
             float LB = axialImpulse * a2 + perpImpulse * s2 + angleImpulse;
 
@@ -422,9 +423,9 @@ namespace Box2D.NET
             B2BodyState stateA = joint.indexA == B2_NULL_INDEX ? dummyState : context.states[joint.indexA];
             B2BodyState stateB = joint.indexB == B2_NULL_INDEX ? dummyState : context.states[joint.indexB];
 
-            B2Vec2 vA = stateA.linearVelocity;
+            Vector2 vA = stateA.linearVelocity;
             float wA = stateA.angularVelocity;
-            B2Vec2 vB = stateB.linearVelocity;
+            Vector2 vB = stateB.linearVelocity;
             float wB = stateB.angularVelocity;
 
             B2Rot qA = b2MulRot(stateA.deltaRotation, joint.frameA.q);
@@ -432,12 +433,12 @@ namespace Box2D.NET
             B2Rot relQ = b2InvMulRot(qA, qB);
 
             // current anchors
-            B2Vec2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
-            B2Vec2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
+            Vector2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
+            Vector2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
 
-            B2Vec2 d = b2Add(b2Add(b2Sub(stateB.deltaPosition, stateA.deltaPosition), joint.deltaCenter), b2Sub(rB, rA));
+            Vector2 d = b2Add(b2Add(b2Sub(stateB.deltaPosition, stateA.deltaPosition), joint.deltaCenter), b2Sub(rB, rA));
 
-            B2Vec2 axisA = b2RotateVector(joint.frameA.q, new B2Vec2(1.0f, 0.0f));
+            Vector2 axisA = b2RotateVector(joint.frameA.q, new Vector2(1.0f, 0.0f));
             axisA = b2RotateVector(stateA.deltaRotation, axisA);
             float translation = b2Dot(axisA, d);
 
@@ -463,7 +464,7 @@ namespace Box2D.NET
                 float deltaImpulse = -massScale * axialMass * (Cdot + bias) - impulseScale * joint.springImpulse;
                 joint.springImpulse += deltaImpulse;
 
-                B2Vec2 P = b2MulSV(deltaImpulse, axisA);
+                Vector2 P = b2MulSV(deltaImpulse, axisA);
                 float LA = deltaImpulse * a1;
                 float LB = deltaImpulse * a2;
 
@@ -483,7 +484,7 @@ namespace Box2D.NET
                 joint.motorImpulse = b2ClampFloat(joint.motorImpulse + impulse, -maxImpulse, maxImpulse);
                 impulse = joint.motorImpulse - oldImpulse;
 
-                B2Vec2 P = b2MulSV(impulse, axisA);
+                Vector2 P = b2MulSV(impulse, axisA);
                 float LA = impulse * a1;
                 float LB = impulse * a2;
 
@@ -527,7 +528,7 @@ namespace Box2D.NET
                         joint.lowerImpulse = b2MaxFloat(oldImpulse + deltaImpulse, 0.0f);
                         deltaImpulse = joint.lowerImpulse - oldImpulse;
 
-                        B2Vec2 P = b2MulSV(deltaImpulse, axisA);
+                        Vector2 P = b2MulSV(deltaImpulse, axisA);
                         float LA = deltaImpulse * a1;
                         float LB = deltaImpulse * a2;
 
@@ -576,7 +577,7 @@ namespace Box2D.NET
                         joint.upperImpulse = b2MaxFloat(oldImpulse + deltaImpulse, 0.0f);
                         deltaImpulse = joint.upperImpulse - oldImpulse;
 
-                        B2Vec2 P = b2MulSV(deltaImpulse, axisA);
+                        Vector2 P = b2MulSV(deltaImpulse, axisA);
                         float LA = deltaImpulse * a1;
                         float LB = deltaImpulse * a2;
 
@@ -595,22 +596,22 @@ namespace Box2D.NET
 
             // Solve the prismatic constraint in block form
             {
-                B2Vec2 perpA = b2LeftPerp(axisA);
+                Vector2 perpA = b2LeftPerp(axisA);
 
                 // These scalars are for torques generated by the perpendicular constraint force
                 float s1 = b2Cross(b2Add(d, rA), perpA);
                 float s2 = b2Cross(rB, perpA);
 
-                B2Vec2 Cdot;
+                Vector2 Cdot;
                 Cdot.X = b2Dot(perpA, b2Sub(vB, vA)) + s2 * wB - s1 * wA;
                 Cdot.Y = wB - wA;
 
-                B2Vec2 bias = b2Vec2_zero;
+                Vector2 bias = Vector2Zero;
                 float massScale = 1.0f;
                 float impulseScale = 0.0f;
                 if (useBias)
                 {
-                    B2Vec2 C;
+                    Vector2 C;
                     C.X = b2Dot(perpA, d);
                     C.Y = b2Rot_GetAngle(relQ);
 
@@ -628,17 +629,17 @@ namespace Box2D.NET
                     k22 = 1.0f;
                 }
 
-                B2Mat22 K = new B2Mat22(new B2Vec2(k11, k12), new B2Vec2(k12, k22));
+                B2Mat22 K = new B2Mat22(new Vector2(k11, k12), new Vector2(k12, k22));
 
-                B2Vec2 b = b2Solve22(K, b2Add(Cdot, bias));
-                B2Vec2 deltaImpulse;
+                Vector2 b = b2Solve22(K, b2Add(Cdot, bias));
+                Vector2 deltaImpulse;
                 deltaImpulse.X = -massScale * b.X - impulseScale * joint.impulse.X;
                 deltaImpulse.Y = -massScale * b.Y - impulseScale * joint.impulse.Y;
 
                 joint.impulse.X += deltaImpulse.X;
                 joint.impulse.Y += deltaImpulse.Y;
 
-                B2Vec2 P = b2MulSV(deltaImpulse.X, perpA);
+                Vector2 P = b2MulSV(deltaImpulse.X, perpA);
                 float LA = deltaImpulse.X * s1 + deltaImpulse.Y;
                 float LB = deltaImpulse.X * s2 + deltaImpulse.Y;
 
@@ -697,7 +698,7 @@ namespace Box2D.NET
 
             B2WorldTransform frameA = b2MulWorldTransforms(transformA, @base.localFrameA);
             B2WorldTransform frameB = b2MulWorldTransforms(transformB, @base.localFrameB);
-            B2Vec2 axisA = b2RotateVector(frameA.q, new B2Vec2(1.0f, 0.0f));
+            Vector2 axisA = b2RotateVector(frameA.q, new Vector2(1.0f, 0.0f));
 
             draw.DrawLineFcn(frameA.p, frameB.p, B2HexColor.b2_colorDimGray, draw.context);
 
@@ -706,7 +707,7 @@ namespace Box2D.NET
                 float b = 0.25f * drawScale;
                 B2Pos lower = b2OffsetPos(frameA.p, b2MulSV(joint.lowerTranslation, axisA));
                 B2Pos upper = b2OffsetPos(frameA.p, b2MulSV(joint.upperTranslation, axisA));
-                B2Vec2 perp = b2LeftPerp(axisA);
+                Vector2 perp = b2LeftPerp(axisA);
                 draw.DrawLineFcn(lower, upper, B2HexColor.b2_colorGray, draw.context);
                 draw.DrawLineFcn(b2OffsetPos(lower, b2MulSV(-b, perp)), b2OffsetPos(lower, b2MulSV(b, perp)), B2HexColor.b2_colorGreen, draw.context);
                 draw.DrawLineFcn(b2OffsetPos(upper, b2MulSV(-b, perp)), b2OffsetPos(upper, b2MulSV(b, perp)), B2HexColor.b2_colorRed, draw.context);

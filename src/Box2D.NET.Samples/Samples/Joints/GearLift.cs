@@ -36,7 +36,7 @@ public class GearLift : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 6.0f);
+            m_camera.center = new Vector2(0.0f, 6.0f);
             m_camera.zoom = 7.0f;
             m_context.debugDraw.drawJoints = false;
         }
@@ -52,9 +52,9 @@ public class GearLift : Sample
                 + "-2.64583 h -2.64583 v -2.64584 l -2.64584,1e-5 v -2.64583 l -2.64583,-1e-5 V 174.625 h -2.645834 v -2.64584 l "
                 + "-2.645833,1e-5 v -2.64584 H 92.60417 v -2.64583 h -2.645834 v -2.64583 l -26.458334,0 0,37.04166";
 
-            B2Vec2[] points = new B2Vec2[128];
+            Vector2[] points = new Vector2[128];
 
-            B2Vec2 offset = new B2Vec2(-120.0f, -200.0f);
+            Vector2 offset = new Vector2(-120.0f, -200.0f);
             float scale = 0.2f;
             int count = SvgParser.ParsePath(path, offset, points, 64, scale, false);
 
@@ -80,13 +80,13 @@ public class GearLift : Sample
         float linkCount = 40;
         float doorHalfHeight = 1.5f;
 
-        B2Vec2 gearPosition1 = new B2Vec2(-4.25f, 9.75f);
-        B2Vec2 gearPosition2 = gearPosition1 + new B2Vec2(2.0f, 1.0f);
-        B2Vec2 linkAttachPosition = gearPosition2 + new B2Vec2(gearRadius + 2.0f * toothHalfWidth + toothRadius, 0.0f);
-        B2Vec2 doorPosition = linkAttachPosition - new B2Vec2(0.0f, 2.0f * linkCount * linkHalfLength + doorHalfHeight);
+        Vector2 gearPosition1 = new Vector2(-4.25f, 9.75f);
+        Vector2 gearPosition2 = gearPosition1 + new Vector2(2.0f, 1.0f);
+        Vector2 linkAttachPosition = gearPosition2 + new Vector2(gearRadius + 2.0f * toothHalfWidth + toothRadius, 0.0f);
+        Vector2 doorPosition = linkAttachPosition - new Vector2(0.0f, 2.0f * linkCount * linkHalfLength + doorHalfHeight);
 
         {
-            B2Vec2 position = gearPosition1;
+            Vector2 position = gearPosition1;
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
             bodyDef.position = b2ToPos(position);
@@ -96,13 +96,13 @@ public class GearLift : Sample
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.material.friction = 0.1f;
             shapeDef.material.customColor = (uint)B2HexColor.b2_colorSaddleBrown;
-            B2Circle circle = new B2Circle(b2Vec2_zero, gearRadius);
+            B2Circle circle = new B2Circle(Vector2Zero, gearRadius);
             b2CreateCircleShape(bodyId, shapeDef, circle);
 
             int count = 16;
             float deltaAngle = 2.0f * B2_PI / 16;
             B2Rot dq = b2MakeRot(deltaAngle);
-            B2Vec2 center = new B2Vec2(gearRadius + toothHalfHeight, 0.0f);
+            Vector2 center = new Vector2(gearRadius + toothHalfHeight, 0.0f);
             B2Rot rotation = b2Rot_identity;
 
             for (int i = 0; i < count; ++i)
@@ -112,7 +112,7 @@ public class GearLift : Sample
                 b2CreatePolygonShape(bodyId, shapeDef, tooth);
 
                 rotation = b2MulRot(dq, rotation);
-                center = b2RotateVector(rotation, new B2Vec2(gearRadius + toothHalfHeight, 0.0f));
+                center = b2RotateVector(rotation, new Vector2(gearRadius + toothHalfHeight, 0.0f));
             }
 
             B2RevoluteJointDef revoluteDef = b2DefaultRevoluteJointDef();
@@ -124,7 +124,7 @@ public class GearLift : Sample
             revoluteDef.@base.bodyIdA = groundId;
             revoluteDef.@base.bodyIdB = bodyId;
             revoluteDef.@base.localFrameA.p = b2Body_GetLocalPoint(groundId, b2ToPos(position));
-            revoluteDef.@base.localFrameB.p = b2Vec2_zero;
+            revoluteDef.@base.localFrameB.p = Vector2Zero;
             revoluteDef.enableMotor = m_enableMotor;
             revoluteDef.maxMotorTorque = m_motorTorque;
             revoluteDef.motorSpeed = m_motorSpeed;
@@ -134,7 +134,7 @@ public class GearLift : Sample
         B2BodyId followerId;
 
         {
-            B2Vec2 position = gearPosition2;
+            Vector2 position = gearPosition2;
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
             bodyDef.position = b2ToPos(position);
@@ -144,13 +144,13 @@ public class GearLift : Sample
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.material.friction = 0.1f;
             shapeDef.material.customColor = (uint)B2HexColor.b2_colorSaddleBrown;
-            B2Circle circle = new B2Circle(b2Vec2_zero, gearRadius);
+            B2Circle circle = new B2Circle(Vector2Zero, gearRadius);
             b2CreateCircleShape(followerId, shapeDef, circle);
 
             int count = 16;
             float deltaAngle = 2.0f * B2_PI / 16;
             B2Rot dq = b2MakeRot(deltaAngle);
-            B2Vec2 center = new B2Vec2(gearRadius + toothHalfWidth, 0.0f);
+            Vector2 center = new Vector2(gearRadius + toothHalfWidth, 0.0f);
             B2Rot rotation = b2Rot_identity;
 
             for (int i = 0; i < count; ++i)
@@ -160,7 +160,7 @@ public class GearLift : Sample
                 b2CreatePolygonShape(followerId, shapeDef, tooth);
 
                 rotation = b2MulRot(dq, rotation);
-                center = b2RotateVector(rotation, new B2Vec2(gearRadius + toothHalfWidth, 0.0f));
+                center = b2RotateVector(rotation, new Vector2(gearRadius + toothHalfWidth, 0.0f));
             }
 
             B2RevoluteJointDef revoluteDef = b2DefaultRevoluteJointDef();
@@ -169,7 +169,7 @@ public class GearLift : Sample
             revoluteDef.@base.bodyIdB = followerId;
             revoluteDef.@base.localFrameA.p = b2Body_GetLocalPoint(groundId, b2ToPos(position));
             revoluteDef.@base.localFrameA.q = b2MakeRot(0.25f * B2_PI);
-            revoluteDef.@base.localFrameB.p = b2Vec2_zero;
+            revoluteDef.@base.localFrameB.p = Vector2Zero;
             revoluteDef.enableMotor = true;
             revoluteDef.maxMotorTorque = 0.5f;
             revoluteDef.lowerAngle = -0.3f * B2_PI;
@@ -180,7 +180,7 @@ public class GearLift : Sample
 
         B2BodyId lastLinkId;
         {
-            B2Capsule capsule = new B2Capsule(new B2Vec2(0.0f, -linkHalfLength), new B2Vec2(0.0f, linkHalfLength), linkRadius);
+            B2Capsule capsule = new B2Capsule(new Vector2(0.0f, -linkHalfLength), new Vector2(0.0f, linkHalfLength), linkRadius);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.density = 2.0f;
@@ -192,7 +192,7 @@ public class GearLift : Sample
 
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            B2Vec2 position = linkAttachPosition + new B2Vec2(0.0f, -linkHalfLength);
+            Vector2 position = linkAttachPosition + new Vector2(0.0f, -linkHalfLength);
 
             int count = 40;
             B2BodyId prevBodyId = followerId;
@@ -203,7 +203,7 @@ public class GearLift : Sample
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
                 b2CreateCapsuleShape(bodyId, shapeDef, capsule);
 
-                B2Vec2 pivot = new B2Vec2(position.X, position.Y + linkHalfLength);
+                Vector2 pivot = new Vector2(position.X, position.Y + linkHalfLength);
                 jointDef.@base.bodyIdA = prevBodyId;
                 jointDef.@base.bodyIdB = bodyId;
                 jointDef.@base.localFrameA.p = b2Body_GetLocalPoint(jointDef.@base.bodyIdA, b2ToPos(pivot));
@@ -232,25 +232,25 @@ public class GearLift : Sample
             b2CreatePolygonShape(bodyId, shapeDef, box);
 
             {
-                B2Vec2 pivot = doorPosition + new B2Vec2(0.0f, doorHalfHeight);
+                Vector2 pivot = doorPosition + new Vector2(0.0f, doorHalfHeight);
                 B2RevoluteJointDef revoluteDef = b2DefaultRevoluteJointDef();
                 revoluteDef.@base.bodyIdA = lastLinkId;
                 revoluteDef.@base.bodyIdB = bodyId;
                 revoluteDef.@base.localFrameA.p = b2Body_GetLocalPoint(lastLinkId, b2ToPos(pivot));
-                revoluteDef.@base.localFrameB.p = new B2Vec2(0.0f, doorHalfHeight);
+                revoluteDef.@base.localFrameB.p = new Vector2(0.0f, doorHalfHeight);
                 revoluteDef.enableMotor = true;
                 revoluteDef.maxMotorTorque = 0.05f;
                 b2CreateRevoluteJoint(m_worldId, revoluteDef);
             }
 
             {
-                B2Vec2 localAxis = new B2Vec2(0.0f, 1.0f);
+                Vector2 localAxis = new Vector2(0.0f, 1.0f);
                 B2PrismaticJointDef jointDef = b2DefaultPrismaticJointDef();
                 jointDef.@base.bodyIdA = groundId;
                 jointDef.@base.bodyIdB = bodyId;
                 jointDef.@base.localFrameA.p = b2Body_GetLocalPoint(groundId, b2ToPos(doorPosition));
                 jointDef.@base.localFrameA.q = b2MakeRotFromUnitVector(localAxis);
-                jointDef.@base.localFrameB.p = b2Vec2_zero;
+                jointDef.@base.localFrameB.p = Vector2Zero;
                 jointDef.@base.localFrameB.q = b2MakeRotFromUnitVector(localAxis);
                 jointDef.maxMotorForce = 0.2f;
                 jointDef.enableMotor = true;
@@ -277,7 +277,7 @@ public class GearLift : Sample
                 float x = -3.15f;
                 for (int j = 0; j < xCount; ++j)
                 {
-                    bodyDef.position = b2ToPos(new B2Vec2(x, y));
+                    bodyDef.position = b2ToPos(new Vector2(x, y));
                     B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
                     B2Polygon poly = RandomPolygon(0.1f);
                     poly.radius = RandomFloatRange(0.01f, 0.02f);

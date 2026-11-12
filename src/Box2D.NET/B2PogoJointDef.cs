@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2026 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     /// Pogo joint definition
@@ -12,7 +14,7 @@ namespace Box2D.NET
         public B2JointDef @base;
 
         /// Normal vector at the contact
-        public B2Vec2 normal;
+        public Vector2 normal;
 
         /// The spring stiffness Hertz, cycles per second
         public float hertz;

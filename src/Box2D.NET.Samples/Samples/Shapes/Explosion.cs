@@ -37,7 +37,7 @@ public class Explosion : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 0.0f);
+            m_camera.center = new Vector2(0.0f, 0.0f);
             m_camera.zoom = 14.0f;
         }
 
@@ -53,7 +53,7 @@ public class Explosion : Sample
         B2WeldJointDef weldDef = b2DefaultWeldJointDef();
         weldDef.@base.bodyIdA = groundId;
         weldDef.@base.localFrameA.q = b2MakeRot(m_referenceAngle);
-        weldDef.@base.localFrameB.p = b2Vec2_zero;
+        weldDef.@base.localFrameB.p = Vector2Zero;
         weldDef.angularHertz = 0.5f;
         weldDef.angularDampingRatio = 0.7f;
         weldDef.linearHertz = 0.5f;
@@ -63,7 +63,7 @@ public class Explosion : Sample
         for (float angle = 0.0f; angle < 360.0f; angle += 30.0f)
         {
             B2CosSin cosSin = b2ComputeCosSin(angle * B2_PI / 180.0f);
-            bodyDef.position = b2ToPos(new B2Vec2(r * cosSin.cosine, r * cosSin.sine));
+            bodyDef.position = b2ToPos(new Vector2(r * cosSin.cosine, r * cosSin.sine));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2Polygon box = b2MakeBox(1.0f, 0.1f);
@@ -129,7 +129,7 @@ public class Explosion : Sample
 
         DrawScreenTextLine($"reference angle = {FormatFloat(m_referenceAngle)}");
 
-        DrawCircle(m_draw, b2Vec2_zero, m_radius + m_falloff, B2HexColor.b2_colorBox2DBlue);
-        DrawCircle(m_draw, b2Vec2_zero, m_radius, B2HexColor.b2_colorBox2DYellow);
+        DrawCircle(m_draw, Vector2Zero, m_radius + m_falloff, B2HexColor.b2_colorBox2DBlue);
+        DrawCircle(m_draw, Vector2Zero, m_radius, B2HexColor.b2_colorBox2DYellow);
     }
 }

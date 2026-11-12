@@ -38,8 +38,8 @@ public class DynamicTree : Sample
     private float m_ratio;
     private float m_grid;
 
-    private B2Vec2 m_startPoint;
-    private B2Vec2 m_endPoint;
+    private Vector2 m_startPoint;
+    private Vector2 m_endPoint;
 
     private bool m_rayDrag;
     private bool m_queryDrag;
@@ -78,7 +78,7 @@ public class DynamicTree : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(500.0f, 500.0f);
+            m_camera.center = new Vector2(500.0f, 500.0f);
             m_camera.zoom = 25.0f * 21.0f;
         }
 
@@ -102,8 +102,8 @@ public class DynamicTree : Sample
         m_timeStamp = 0;
         m_updateType = (int)UpdateType.Update_Incremental;
 
-        m_startPoint = new B2Vec2(0.0f, 0.0f);
-        m_endPoint = new B2Vec2(0.0f, 0.0f);
+        m_startPoint = new Vector2(0.0f, 0.0f);
+        m_endPoint = new Vector2(0.0f, 0.0f);
         m_queryDrag = false;
         m_rayDrag = false;
         m_validate = true;
@@ -141,7 +141,7 @@ public class DynamicTree : Sample
 
         m_tree = b2CreateDynamicTree(16);
 
-        B2Vec2 aabbMargin = new B2Vec2(0.1f, 0.1f);
+        Vector2 aabbMargin = new Vector2(0.1f, 0.1f);
 
         for (int i = 0; i < m_rowCount; ++i)
         {
@@ -154,7 +154,7 @@ public class DynamicTree : Sample
                 {
                     B2_ASSERT(m_proxyCount <= m_proxyCapacity);
                     Proxy p = m_proxies[m_proxyCount];
-                    p.position = new B2Vec2(x, y);
+                    p.position = new Vector2(x, y);
 
                     float ratio = RandomFloatRange(1.0f, m_ratio);
                     float width = RandomFloatRange(0.1f, 0.5f);
@@ -169,8 +169,8 @@ public class DynamicTree : Sample
                         p.width.Y = ratio * width;
                     }
 
-                    p.box.lowerBound = new B2Vec2(x, y);
-                    p.box.upperBound = new B2Vec2(x + p.width.X, y + p.width.Y);
+                    p.box.lowerBound = new Vector2(x, y);
+                    p.box.upperBound = new Vector2(x + p.width.X, y + p.width.Y);
                     p.fatBox.lowerBound = b2Sub(p.box.lowerBound, aabbMargin);
                     p.fatBox.upperBound = b2Add(p.box.upperBound, aabbMargin);
 
@@ -261,7 +261,7 @@ public class DynamicTree : Sample
         return true;
     }
 
-    public override void MouseDown(B2Vec2 p, MouseButton button, KeyModifiers mods)
+    public override void MouseDown(Vector2 p, MouseButton button, KeyModifiers mods)
     {
         if (button == (int)MouseButton.Left)
         {
@@ -280,7 +280,7 @@ public class DynamicTree : Sample
         }
     }
 
-    public override void MouseUp(B2Vec2 p, MouseButton button)
+    public override void MouseUp(Vector2 p, MouseButton button)
     {
         if (button == (int)MouseButton.Left)
         {
@@ -289,7 +289,7 @@ public class DynamicTree : Sample
         }
     }
 
-    public override void MouseMove(B2Vec2 p)
+    public override void MouseMove(Vector2 p)
     {
         m_endPoint = p;
     }
@@ -303,7 +303,7 @@ public class DynamicTree : Sample
         B2HexColor c = B2HexColor.b2_colorBlue;
         B2HexColor qc = B2HexColor.b2_colorGreen;
 
-        B2Vec2 aabbMargin = new B2Vec2(0.1f, 0.1f);
+        Vector2 aabbMargin = new Vector2(0.1f, 0.1f);
 
         for (int i = 0; i < m_proxyCount; ++i)
         {

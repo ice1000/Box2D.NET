@@ -26,7 +26,7 @@ public class MultiplePrismatic : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(0.0f, 8.0f);
+            m_context.camera.center = new Vector2(0.0f, 8.0f);
             m_context.camera.zoom = 25.0f * 0.5f;
         }
 
@@ -40,8 +40,8 @@ public class MultiplePrismatic : Sample
         B2Polygon box = b2MakeBox(0.5f, 0.5f);
         B2PrismaticJointDef jointDef = b2DefaultPrismaticJointDef();
         jointDef.@base.bodyIdA = groundId;
-        jointDef.@base.localFrameA.p = new B2Vec2(0.0f, 0.0f);
-        jointDef.@base.localFrameB.p = new B2Vec2(0.0f, -0.6f);
+        jointDef.@base.localFrameA.p = new Vector2(0.0f, 0.0f);
+        jointDef.@base.localFrameB.p = new Vector2(0.0f, -0.6f);
         jointDef.@base.drawScale = 1.0f;
         jointDef.@base.constraintHertz = 240.0f;
         jointDef.lowerTranslation = -6.0f;
@@ -51,7 +51,7 @@ public class MultiplePrismatic : Sample
         for (int i = 0; i < 6; ++i)
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 0.6f + 1.2f * i));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 0.6f + 1.2f * i));
             bodyDef.type = B2BodyType.b2_dynamicBody;
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
@@ -61,7 +61,7 @@ public class MultiplePrismatic : Sample
             b2CreatePrismaticJoint(m_worldId, jointDef);
 
             jointDef.@base.bodyIdA = bodyId;
-            jointDef.@base.localFrameA.p = new B2Vec2(0.0f, 0.6f);
+            jointDef.@base.localFrameA.p = new Vector2(0.0f, 0.6f);
         }
 
         // Increase the mouse force

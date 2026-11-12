@@ -8,8 +8,8 @@ public class Proxy
 {
     public B2AABB box;
     public B2AABB fatBox;
-    public B2Vec2 position;
-    public B2Vec2 width;
+    public Vector2 position;
+    public Vector2 width;
     public int proxyId;
     public int rayStamp;
     public int queryStamp;

@@ -47,10 +47,10 @@ public class OverlapWorld : Sample
     private int m_shapeType;
     private B2Transform m_transform;
 
-    private B2Vec2 m_startPosition;
+    private Vector2 m_startPosition;
 
-    private B2Vec2 m_position;
-    private B2Vec2 m_basePosition;
+    private Vector2 m_position;
+    private Vector2 m_basePosition;
     private float m_angle;
     private float m_baseAngle;
 
@@ -90,7 +90,7 @@ public class OverlapWorld : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 10.0f);
+            m_camera.center = new Vector2(0.0f, 10.0f);
             m_camera.zoom = 25.0f * 0.7f;
         }
 
@@ -101,13 +101,13 @@ public class OverlapWorld : Sample
         }
 
         {
-            B2Vec2[] vertices = new B2Vec2[3] { new B2Vec2(-0.5f, 0.0f), new B2Vec2(0.5f, 0.0f), new B2Vec2(0.0f, 1.5f), };
+            Vector2[] vertices = new Vector2[3] { new Vector2(-0.5f, 0.0f), new Vector2(0.5f, 0.0f), new Vector2(0.0f, 1.5f), };
             B2Hull hull = b2ComputeHull(vertices, 3);
             m_polygons[0] = b2MakePolygon(hull, 0.0f);
         }
 
         {
-            B2Vec2[] vertices = new B2Vec2[3] { new B2Vec2(-0.1f, 0.0f), new B2Vec2(0.1f, 0.0f), new B2Vec2(0.0f, 1.5f) };
+            Vector2[] vertices = new Vector2[3] { new Vector2(-0.1f, 0.0f), new Vector2(0.1f, 0.0f), new Vector2(0.0f, 1.5f) };
             B2Hull hull = b2ComputeHull(vertices, 3);
             m_polygons[1] = b2MakePolygon(hull, 0.0f);
         }
@@ -117,16 +117,16 @@ public class OverlapWorld : Sample
             float b = w / (2.0f + MathF.Sqrt(2.0f));
             float s = MathF.Sqrt(2.0f) * b;
 
-            B2Vec2[] vertices = new B2Vec2[8]
+            Vector2[] vertices = new Vector2[8]
             {
-                new B2Vec2(0.5f * s, 0.0f),
-                new B2Vec2(0.5f * w, b),
-                new B2Vec2(0.5f * w, b + s),
-                new B2Vec2(0.5f * s, w),
-                new B2Vec2(-0.5f * s, w),
-                new B2Vec2(-0.5f * w, b + s),
-                new B2Vec2(-0.5f * w, b),
-                new B2Vec2(-0.5f * s, 0.0f),
+                new Vector2(0.5f * s, 0.0f),
+                new Vector2(0.5f * w, b),
+                new Vector2(0.5f * w, b + s),
+                new Vector2(0.5f * s, w),
+                new Vector2(-0.5f * s, w),
+                new Vector2(-0.5f * w, b + s),
+                new Vector2(-0.5f * w, b),
+                new Vector2(-0.5f * s, 0.0f),
             };
 
             B2Hull hull = b2ComputeHull(vertices, 8);
@@ -134,9 +134,9 @@ public class OverlapWorld : Sample
         }
 
         m_polygons[3] = b2MakeBox(0.5f, 0.5f);
-        m_capsule = new B2Capsule(new B2Vec2(-0.5f, 0.0f), new B2Vec2(0.5f, 0.0f), 0.25f);
-        m_circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
-        m_segment = new B2Segment(new B2Vec2(-1.0f, 0.0f), new B2Vec2(1.0f, 0.0f));
+        m_capsule = new B2Capsule(new Vector2(-0.5f, 0.0f), new Vector2(0.5f, 0.0f), 0.25f);
+        m_circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
+        m_segment = new B2Segment(new Vector2(-1.0f, 0.0f), new Vector2(1.0f, 0.0f));
 
         m_bodyIndex = 0;
 
@@ -149,7 +149,7 @@ public class OverlapWorld : Sample
 
         m_shapeType = e_circleShape;
 
-        m_position = new B2Vec2(.0f, 10.0f);
+        m_position = new Vector2(.0f, 10.0f);
         m_angle = 0.0f;
         m_dragging = false;
         m_rotating = false;
@@ -171,7 +171,7 @@ public class OverlapWorld : Sample
         float y = RandomFloatRange(0.0f, 20.0f);
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
-        bodyDef.position = b2ToPos(new B2Vec2(x, y));
+        bodyDef.position = b2ToPos(new Vector2(x, y));
         bodyDef.rotation = b2MakeRot(RandomFloatRange(-B2_PI, B2_PI));
 
         m_bodyIds[m_bodyIndex] = b2CreateBody(m_worldId, bodyDef);
@@ -226,7 +226,7 @@ public class OverlapWorld : Sample
         }
     }
 
-    public override void MouseDown(B2Vec2 p, MouseButton button, KeyModifiers mods)
+    public override void MouseDown(Vector2 p, MouseButton button, KeyModifiers mods)
     {
         if (button == (int)MouseButton.Left)
         {
@@ -244,7 +244,7 @@ public class OverlapWorld : Sample
         }
     }
 
-    public override void MouseUp(B2Vec2 p, MouseButton button)
+    public override void MouseUp(Vector2 p, MouseButton button)
     {
         if (button == (int)MouseButton.Left)
         {
@@ -253,7 +253,7 @@ public class OverlapWorld : Sample
         }
     }
 
-    public override void MouseMove(B2Vec2 p)
+    public override void MouseMove(Vector2 p)
     {
         if (m_dragging)
         {
@@ -349,8 +349,8 @@ public class OverlapWorld : Sample
         else if (m_shapeType == e_capsuleShape)
         {
             B2Capsule capsule;
-            capsule.center1 = b2TransformPoint(transform, new B2Vec2(-1.0f, 0.0f));
-            capsule.center2 = b2TransformPoint(transform, new B2Vec2(1.0f, 0.0f));
+            capsule.center1 = b2TransformPoint(transform, new Vector2(-1.0f, 0.0f));
+            capsule.center2 = b2TransformPoint(transform, new Vector2(1.0f, 0.0f));
             capsule.radius = 0.5f;
             proxy = b2MakeProxy(capsule.center1, capsule.center2, 2, capsule.radius);
             DrawSolidCapsule(m_draw, capsule.center1, capsule.center2, capsule.radius, B2HexColor.b2_colorWhite);
@@ -394,7 +394,7 @@ public class OverlapWorld : Sample
 
         if (B2_IS_NON_NULL(m_bodyIds[m_ignoreIndex]))
         {
-            B2Vec2 p = b2ToVec2(b2Body_GetPosition(m_bodyIds[m_ignoreIndex]));
+            Vector2 p = b2ToVec2(b2Body_GetPosition(m_bodyIds[m_ignoreIndex]));
             p.X -= 0.2f;
             DrawWorldString(m_draw, m_camera, p, B2HexColor.b2_colorWhite, "skip");
         }

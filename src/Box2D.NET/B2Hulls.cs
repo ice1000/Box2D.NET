@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using static Box2D.NET.B2MathFunction;
 using static Box2D.NET.B2Constants;
 using static Box2D.NET.B2Diagnostics;
@@ -12,7 +13,7 @@ namespace Box2D.NET
     public static class B2Hulls
     {
         // quickhull recursion
-        internal static B2Hull b2RecurseHull(B2Vec2 p1, B2Vec2 p2, Span<B2Vec2> ps, int count)
+        internal static B2Hull b2RecurseHull(Vector2 p1, Vector2 p2, Span<Vector2> ps, int count)
         {
             B2Hull hull = new B2Hull();
             hull.count = 0;
@@ -23,10 +24,10 @@ namespace Box2D.NET
             }
 
             // create an edge vector pointing from p1 to p2
-            B2Vec2 e = b2Normalize(b2Sub(p2, p1));
+            Vector2 e = b2Normalize(b2Sub(p2, p1));
 
             // discard points left of e and find point furthest to the right of e
-            Span<B2Vec2> rightPoints = stackalloc B2Vec2[B2_MAX_POLYGON_VERTICES];
+            Span<Vector2> rightPoints = stackalloc Vector2[B2_MAX_POLYGON_VERTICES];
             int rightCount = 0;
 
             int bestIndex = 0;
@@ -56,7 +57,7 @@ namespace Box2D.NET
                 return hull;
             }
 
-            B2Vec2 bestPoint = ps[bestIndex];
+            Vector2 bestPoint = ps[bestIndex];
 
             // compute hull to the right of p1-bestPoint
             B2Hull hull1 = b2RecurseHull(p1, bestPoint, rightPoints, rightCount);
@@ -90,7 +91,7 @@ namespace Box2D.NET
         /// - more than B2_MAX_POLYGON_VERTICES points
         /// This welds close points and removes collinear points.
         /// @warning Do not modify a hull once it has been computed
-        public static B2Hull b2ComputeHull(ReadOnlySpan<B2Vec2> points, int count)
+        public static B2Hull b2ComputeHull(ReadOnlySpan<Vector2> points, int count)
         {
             B2Hull hull = new B2Hull();
             hull.count = 0;
@@ -103,11 +104,11 @@ namespace Box2D.NET
 
             count = b2MinInt(count, B2_MAX_POLYGON_VERTICES);
 
-            B2AABB aabb = new B2AABB(new B2Vec2(float.MaxValue, float.MaxValue), new B2Vec2(-float.MaxValue, -float.MaxValue));
+            B2AABB aabb = new B2AABB(new Vector2(float.MaxValue, float.MaxValue), new Vector2(-float.MaxValue, -float.MaxValue));
 
             // Perform aggressive point welding. First point always remains.
             // Also compute the bounding box for later.
-            Span<B2Vec2> ps = stackalloc B2Vec2[B2_MAX_POLYGON_VERTICES];
+            Span<Vector2> ps = stackalloc Vector2[B2_MAX_POLYGON_VERTICES];
             int n = 0;
             float linearSlop = B2_LINEAR_SLOP;
             float tolSqr = 0.25f * linearSlop * linearSlop;
@@ -116,12 +117,12 @@ namespace Box2D.NET
                 aabb.lowerBound = b2Min(aabb.lowerBound, points[i]);
                 aabb.upperBound = b2Max(aabb.upperBound, points[i]);
 
-                B2Vec2 vi = points[i];
+                Vector2 vi = points[i];
 
                 bool unique = true;
                 for (int j = 0; j < n; ++j)
                 {
-                    B2Vec2 vj = ps[j];
+                    Vector2 vj = ps[j];
 
                     float distSqr = b2DistanceSquared(vi, vj);
                     if (distSqr < tolSqr)
@@ -144,7 +145,7 @@ namespace Box2D.NET
             }
 
             // Find an extreme point as the first point on the hull
-            B2Vec2 c = b2AABB_Center(aabb);
+            Vector2 c = b2AABB_Center(aabb);
             int f1 = 0;
             float dsq1 = b2DistanceSquared(c, ps[f1]);
             for (int i = 1; i < n; ++i)
@@ -158,7 +159,7 @@ namespace Box2D.NET
             }
 
             // remove p1 from working set
-            B2Vec2 p1 = ps[f1];
+            Vector2 p1 = ps[f1];
             ps[f1] = ps[n - 1];
             n = n - 1;
 
@@ -175,18 +176,18 @@ namespace Box2D.NET
             }
 
             // remove p2 from working set
-            B2Vec2 p2 = ps[f2];
+            Vector2 p2 = ps[f2];
             ps[f2] = ps[n - 1];
             n = n - 1;
 
             // split the points into points that are left and right of the line p1-p2.
-            Span<B2Vec2> rightPoints = stackalloc B2Vec2[B2_MAX_POLYGON_VERTICES - 2];
+            Span<Vector2> rightPoints = stackalloc Vector2[B2_MAX_POLYGON_VERTICES - 2];
             int rightCount = 0;
 
-            Span<B2Vec2> leftPoints = stackalloc B2Vec2[B2_MAX_POLYGON_VERTICES - 2];
+            Span<Vector2> leftPoints = stackalloc Vector2[B2_MAX_POLYGON_VERTICES - 2];
             int leftCount = 0;
 
-            B2Vec2 e = b2Normalize(b2Sub(p2, p1));
+            Vector2 e = b2Normalize(b2Sub(p2, p1));
 
             for (int i = 0; i < n; ++i)
             {
@@ -242,12 +243,12 @@ namespace Box2D.NET
                     int i2 = (i + 1) % hull.count;
                     int i3 = (i + 2) % hull.count;
 
-                    B2Vec2 s1 = hull.points[i1];
-                    B2Vec2 s2 = hull.points[i2];
-                    B2Vec2 s3 = hull.points[i3];
+                    Vector2 s1 = hull.points[i1];
+                    Vector2 s2 = hull.points[i2];
+                    Vector2 s3 = hull.points[i3];
 
                     // unit edge vector for s1-s3
-                    B2Vec2 r = b2Normalize(b2Sub(s3, s1));
+                    Vector2 r = b2Normalize(b2Sub(s3, s1));
 
                     float distance = b2Cross(b2Sub(s2, s1), r);
                     if (distance <= 2.0f * linearSlop)
@@ -294,8 +295,8 @@ namespace Box2D.NET
                 // create an edge vector
                 int i1 = i;
                 int i2 = i < hull.count - 1 ? i1 + 1 : 0;
-                B2Vec2 p = hull.points[i1];
-                B2Vec2 e = b2Normalize(b2Sub(hull.points[i2], p));
+                Vector2 p = hull.points[i1];
+                Vector2 e = b2Normalize(b2Sub(hull.points[i2], p));
 
                 for (int j = 0; j < hull.count; ++j)
                 {
@@ -321,11 +322,11 @@ namespace Box2D.NET
                 int i2 = (i + 1) % hull.count;
                 int i3 = (i + 2) % hull.count;
 
-                B2Vec2 p1 = hull.points[i1];
-                B2Vec2 p2 = hull.points[i2];
-                B2Vec2 p3 = hull.points[i3];
+                Vector2 p1 = hull.points[i1];
+                Vector2 p2 = hull.points[i2];
+                Vector2 p3 = hull.points[i3];
 
-                B2Vec2 e = b2Normalize(b2Sub(p3, p1));
+                Vector2 e = b2Normalize(b2Sub(p3, p1));
 
                 float distance = b2Cross(b2Sub(p2, p1), e);
                 if (distance <= linearSlop)

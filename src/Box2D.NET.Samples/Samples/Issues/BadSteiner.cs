@@ -24,7 +24,7 @@ public class BadSteiner : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(0.0f, 1.75f);
+            m_context.camera.center = new Vector2(0.0f, 1.75f);
             m_context.camera.zoom = 2.5f;
         }
 
@@ -33,23 +33,23 @@ public class BadSteiner : Sample
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(-100.0f, 0.0f), new B2Vec2(100.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-100.0f, 0.0f), new Vector2(100.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(-48.0f, 62.0f));
+            bodyDef.position = b2ToPos(new Vector2(-48.0f, 62.0f));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
 
-            B2Vec2[] points =
+            Vector2[] points =
             [
-                new B2Vec2(48.7599983f, -60.5699997f),
-                new B2Vec2(48.7400017f, -60.5400009f),
-                new B2Vec2(48.6800003f, -60.5600014f)
+                new Vector2(48.7599983f, -60.5699997f),
+                new Vector2(48.7400017f, -60.5400009f),
+                new Vector2(48.6800003f, -60.5600014f)
             ];
 
             B2Hull hull = b2ComputeHull(points, 3);

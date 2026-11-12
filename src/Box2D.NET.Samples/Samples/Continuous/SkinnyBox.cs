@@ -35,7 +35,7 @@ public class SkinnyBox : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(1.0f, 5.0f);
+            m_camera.center = new Vector2(1.0f, 5.0f);
             m_camera.zoom = 25.0f * 0.25f;
         }
 
@@ -43,12 +43,12 @@ public class SkinnyBox : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Segment segment = new B2Segment(new B2Vec2(-10.0f, 0.0f), new B2Vec2(10.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-10.0f, 0.0f), new Vector2(10.0f, 0.0f));
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.material.friction = 0.9f;
             b2CreateSegmentShape(groundId, shapeDef, segment);
 
-            B2Polygon box = b2MakeOffsetBox(0.1f, 1.0f, new B2Vec2(0.0f, 1.0f), b2Rot_identity);
+            B2Polygon box = b2MakeOffsetBox(0.1f, 1.0f, new Vector2(0.0f, 1.0f), b2Rot_identity);
             b2CreatePolygonShape(groundId, shapeDef, box);
         }
 
@@ -79,9 +79,9 @@ public class SkinnyBox : Sample
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(0.0f, 8.0f));
+        bodyDef.position = b2ToPos(new Vector2(0.0f, 8.0f));
         bodyDef.angularVelocity = m_angularVelocity;
-        bodyDef.linearVelocity = new B2Vec2(0.0f, -100.0f);
+        bodyDef.linearVelocity = new Vector2(0.0f, -100.0f);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
         shapeDef.density = 1.0f;
@@ -91,7 +91,7 @@ public class SkinnyBox : Sample
 
         if (m_capsule)
         {
-            B2Capsule capsule = new B2Capsule(new B2Vec2(0.0f, -1.0f), new B2Vec2(0.0f, 1.0f), 0.1f);
+            B2Capsule capsule = new B2Capsule(new Vector2(0.0f, -1.0f), new Vector2(0.0f, 1.0f), 0.1f);
             b2CreateCapsuleShape(m_bodyId, shapeDef, capsule);
         }
         else
@@ -104,8 +104,8 @@ public class SkinnyBox : Sample
         {
             B2Polygon polygon = b2MakeBox(0.25f, 0.25f);
             m_x = RandomFloatRange(-1.0f, 1.0f);
-            bodyDef.position = b2ToPos(new B2Vec2(m_x, 10.0f));
-            bodyDef.linearVelocity = new B2Vec2(0.0f, -50.0f);
+            bodyDef.position = b2ToPos(new Vector2(m_x, 10.0f));
+            bodyDef.linearVelocity = new Vector2(0.0f, -50.0f);
             m_bulletId = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(m_bulletId, shapeDef, polygon);
         }

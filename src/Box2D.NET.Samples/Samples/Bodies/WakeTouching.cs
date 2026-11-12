@@ -31,7 +31,7 @@ public class WakeTouching : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(0.0f, 4.0f);
+            m_context.camera.center = new Vector2(0.0f, 4.0f);
             m_context.camera.zoom = 8.0f;
         }
 
@@ -39,7 +39,7 @@ public class WakeTouching : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             m_groundId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Segment segment = new B2Segment(new B2Vec2(-20.0f, 0.0f), new B2Vec2(20.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             b2CreateSegmentShape(m_groundId, shapeDef, segment);
         }
@@ -57,7 +57,7 @@ public class WakeTouching : Sample
 
             for (int i = 0; i < m_count; ++i)
             {
-                bodyDef.position = b2ToPos(new B2Vec2(x, 4.0f));
+                bodyDef.position = b2ToPos(new Vector2(x, 4.0f));
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
                 b2CreatePolygonShape(bodyId, shapeDef, box);
                 x += 2.0f;

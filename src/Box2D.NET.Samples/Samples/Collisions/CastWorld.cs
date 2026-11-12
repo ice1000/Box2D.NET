@@ -64,13 +64,13 @@ public class CastWorld : Sample
     private CastType m_castType;
     private float m_castRadius;
 
-    private B2Vec2 m_angleAnchor;
+    private Vector2 m_angleAnchor;
     private float m_baseAngle;
     private float m_angle;
     private bool m_rotating;
 
-    private B2Vec2 m_rayStart;
-    private B2Vec2 m_rayEnd;
+    private Vector2 m_rayStart;
+    private Vector2 m_rayEnd;
     private bool m_dragging;
 
 
@@ -84,7 +84,7 @@ public class CastWorld : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(2.0f, 14.0f);
+            m_camera.center = new Vector2(2.0f, 14.0f);
             m_camera.zoom = 25.0f * 0.75f;
         }
 
@@ -94,12 +94,12 @@ public class CastWorld : Sample
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(-40.0f, 0.0f), new B2Vec2(40.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
         {
-            B2Vec2[] vertices = new B2Vec2[3] { new B2Vec2(-0.1f, 0.0f), new B2Vec2(0.1f, 0.0f), new B2Vec2(0.0f, 1.5f) };
+            Vector2[] vertices = new Vector2[3] { new Vector2(-0.1f, 0.0f), new Vector2(0.1f, 0.0f), new Vector2(0.0f, 1.5f) };
             B2Hull hull = b2ComputeHull(vertices, 3);
             m_polygons[0] = b2MakePolygon(hull, 0.0f);
             m_polygons[0].radius = 0.5f;
@@ -110,16 +110,16 @@ public class CastWorld : Sample
             float b = w / (2.0f + MathF.Sqrt(2.0f));
             float s = MathF.Sqrt(2.0f) * b;
 
-            B2Vec2[] vertices = new B2Vec2[8]
+            Vector2[] vertices = new Vector2[8]
             {
-                new B2Vec2(0.5f * s, 0.0f),
-                new B2Vec2(0.5f * w, b),
-                new B2Vec2(0.5f * w, b + s),
-                new B2Vec2(0.5f * s, w),
-                new B2Vec2(-0.5f * s, w),
-                new B2Vec2(-0.5f * w, b + s),
-                new B2Vec2(-0.5f * w, b),
-                new B2Vec2(-0.5f * s, 0.0f),
+                new Vector2(0.5f * s, 0.0f),
+                new Vector2(0.5f * w, b),
+                new Vector2(0.5f * w, b + s),
+                new Vector2(0.5f * s, w),
+                new Vector2(-0.5f * s, w),
+                new Vector2(-0.5f * w, b + s),
+                new Vector2(-0.5f * w, b),
+                new Vector2(-0.5f * s, 0.0f),
             };
 
             B2Hull hull = b2ComputeHull(vertices, 8);
@@ -132,9 +132,9 @@ public class CastWorld : Sample
             m_userData[i] = new ShapeUserData();
         }
 
-        m_capsule = new B2Capsule(new B2Vec2(-0.5f, 0.0f), new B2Vec2(0.5f, 0.0f), 0.25f);
-        m_circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
-        m_segment = new B2Segment(new B2Vec2(-1.0f, 0.0f), new B2Vec2(1.0f, 0.0f));
+        m_capsule = new B2Capsule(new Vector2(-0.5f, 0.0f), new Vector2(0.5f, 0.0f), 0.25f);
+        m_circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
+        m_segment = new B2Segment(new Vector2(-1.0f, 0.0f), new Vector2(1.0f, 0.0f));
 
         m_bodyIndex = 0;
 
@@ -149,13 +149,13 @@ public class CastWorld : Sample
         m_castType = CastType.e_rayCast;
         m_castRadius = 0.5f;
 
-        m_rayStart = new B2Vec2(-20.0f, 10.0f);
-        m_rayEnd = new B2Vec2(20.0f, 10.0f);
+        m_rayStart = new Vector2(-20.0f, 10.0f);
+        m_rayEnd = new Vector2(20.0f, 10.0f);
         m_dragging = false;
 
         m_angle = 0.0f;
         m_baseAngle = 0.0f;
-        m_angleAnchor = new B2Vec2(0.0f, 0.0f);
+        m_angleAnchor = new Vector2(0.0f, 0.0f);
         m_rotating = false;
 
         m_simple = false;
@@ -173,7 +173,7 @@ public class CastWorld : Sample
         float y = RandomFloatRange(0.0f, 20.0f);
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
-        bodyDef.position = b2ToPos(new B2Vec2(x, y));
+        bodyDef.position = b2ToPos(new Vector2(x, y));
         bodyDef.rotation = b2MakeRot(RandomFloatRange(-B2_PI, B2_PI));
 
         int mod = m_bodyIndex % 3;
@@ -224,7 +224,7 @@ public class CastWorld : Sample
         }
         else
         {
-            B2Vec2[] points = [new B2Vec2(1.0f, 0.0f), new B2Vec2(-1.0f, 0.0f), new B2Vec2(-1.0f, -1.0f), new B2Vec2(1.0f, -1.0f)];
+            Vector2[] points = [new Vector2(1.0f, 0.0f), new Vector2(-1.0f, 0.0f), new Vector2(-1.0f, -1.0f), new Vector2(1.0f, -1.0f)];
             B2ChainDef chainDef = b2DefaultChainDef();
             chainDef.points = points;
             chainDef.pointCount = 4;
@@ -256,7 +256,7 @@ public class CastWorld : Sample
         }
     }
 
-    public override void MouseDown(B2Vec2 p, MouseButton button, KeyModifiers mods)
+    public override void MouseDown(Vector2 p, MouseButton button, KeyModifiers mods)
     {
         if (button == (int)MouseButton.Left)
         {
@@ -275,7 +275,7 @@ public class CastWorld : Sample
         }
     }
 
-    public override void MouseUp(B2Vec2 p, MouseButton button)
+    public override void MouseUp(Vector2 p, MouseButton button)
     {
         if (button == (int)MouseButton.Left)
         {
@@ -284,7 +284,7 @@ public class CastWorld : Sample
         }
     }
 
-    public override void MouseMove(B2Vec2 p)
+    public override void MouseMove(Vector2 p)
     {
         if (m_dragging)
         {
@@ -380,7 +380,7 @@ public class CastWorld : Sample
         B2HexColor color2 = B2HexColor.b2_colorLightGray;
         B2HexColor color3 = B2HexColor.b2_colorMagenta;
 
-        B2Vec2 rayTranslation = b2Sub(m_rayEnd, m_rayStart);
+        Vector2 rayTranslation = b2Sub(m_rayEnd, m_rayStart);
 
         if (m_simple)
         {
@@ -389,10 +389,10 @@ public class CastWorld : Sample
 
             if (result.hit == true && result.fraction > 0.0f)
             {
-                B2Vec2 c = b2MulAdd(m_rayStart, result.fraction, rayTranslation);
+                Vector2 c = b2MulAdd(m_rayStart, result.fraction, rayTranslation);
                 DrawPoint(m_draw, b2ToVec2(result.point), 5.0f, color1);
                 DrawLine(m_draw, m_rayStart, c, color2);
-                B2Vec2 head = b2MulAdd(b2ToVec2(result.point), 0.5f, result.normal);
+                Vector2 head = b2MulAdd(b2ToVec2(result.point), 0.5f, result.normal);
                 DrawLine(m_draw, b2ToVec2(result.point), head, color3);
             }
             else
@@ -420,7 +420,7 @@ public class CastWorld : Sample
 
             B2Transform transform = new B2Transform(m_rayStart, b2MakeRot(m_angle));
             B2Circle circle = new B2Circle(m_rayStart, m_castRadius);
-            B2Capsule capsule = new B2Capsule(b2TransformPoint(transform, new B2Vec2(-0.25f, 0.0f)), b2TransformPoint(transform, new B2Vec2(0.25f, 0.0f)), m_castRadius);
+            B2Capsule capsule = new B2Capsule(b2TransformPoint(transform, new Vector2(-0.25f, 0.0f)), b2TransformPoint(transform, new Vector2(0.25f, 0.0f)), m_castRadius);
             B2Polygon box = b2MakeOffsetRoundedBox(0.125f, 0.25f, transform.p, transform.q, m_castRadius);
 
             B2ShapeProxy proxy = new B2ShapeProxy();
@@ -452,15 +452,15 @@ public class CastWorld : Sample
                 B2HexColor[] colors = new B2HexColor[3] { B2HexColor.b2_colorRed, B2HexColor.b2_colorGreen, B2HexColor.b2_colorBlue };
                 for (int i = 0; i < context.count; ++i)
                 {
-                    B2Vec2 c = b2MulAdd(m_rayStart, context.fractions[i], rayTranslation);
-                    B2Vec2 p = context.points[i];
-                    B2Vec2 n = context.normals[i];
+                    Vector2 c = b2MulAdd(m_rayStart, context.fractions[i], rayTranslation);
+                    Vector2 p = context.points[i];
+                    Vector2 n = context.normals[i];
                     DrawPoint(m_draw, p, 5.0f, colors[i]);
                     DrawLine(m_draw, m_rayStart, c, color2);
-                    B2Vec2 head = b2MulAdd(p, 1.0f, n);
+                    Vector2 head = b2MulAdd(p, 1.0f, n);
                     DrawLine(m_draw, p, head, color3);
 
-                    B2Vec2 t = b2MulSV(context.fractions[i], rayTranslation);
+                    Vector2 t = b2MulSV(context.fractions[i], rayTranslation);
                     B2Transform shiftedTransform = new B2Transform(t, b2Rot_identity);
 
                     if (m_castType == CastType.e_circleCast)
@@ -469,8 +469,8 @@ public class CastWorld : Sample
                     }
                     else if (m_castType == CastType.e_capsuleCast)
                     {
-                        B2Vec2 p1 = capsule.center1 + t;
-                        B2Vec2 p2 = capsule.center2 + t;
+                        Vector2 p1 = capsule.center1 + t;
+                        Vector2 p2 = capsule.center2 + t;
                         DrawSolidCapsule(m_draw, p1, p2, m_castRadius, B2HexColor.b2_colorYellow);
                     }
                     else if (m_castType == CastType.e_polygonCast)
@@ -490,8 +490,8 @@ public class CastWorld : Sample
                 }
                 else if (m_castType == CastType.e_capsuleCast)
                 {
-                    B2Vec2 p1 = capsule.center1 + rayTranslation;
-                    B2Vec2 p2 = capsule.center2 + rayTranslation;
+                    Vector2 p1 = capsule.center1 + rayTranslation;
+                    Vector2 p2 = capsule.center2 + rayTranslation;
                     DrawSolidCapsule(m_draw, p1, p2, m_castRadius, B2HexColor.b2_colorYellow);
                 }
                 else if (m_castType == CastType.e_polygonCast)
@@ -543,7 +543,7 @@ public class CastWorld : Sample
 
         if (B2_IS_NON_NULL(m_bodyIds[m_ignoreIndex]))
         {
-            B2Vec2 p = b2ToVec2(b2Body_GetPosition(m_bodyIds[m_ignoreIndex]));
+            Vector2 p = b2ToVec2(b2Body_GetPosition(m_bodyIds[m_ignoreIndex]));
             p.X -= 0.2f;
             DrawWorldString(m_draw, m_camera, p, B2HexColor.b2_colorWhite, "ign");
         }
@@ -551,7 +551,7 @@ public class CastWorld : Sample
 
 
     // This callback finds the closest hit. This is the most common callback used in games.
-    static float RayCastClosestCallback(B2ShapeId shapeId, B2Pos point, B2Vec2 normal, float fraction, ref CastContext context)
+    static float RayCastClosestCallback(B2ShapeId shapeId, B2Pos point, Vector2 normal, float fraction, ref CastContext context)
     {
         CastContext rayContext = context;
 
@@ -579,7 +579,7 @@ public class CastWorld : Sample
     // This callback finds any hit. For this type of query we are usually just checking for obstruction,
     // so the hit data is not relevant.
     // NOTE: shape hits are not ordered, so this may not return the closest hit
-    static float RayCastAnyCallback(B2ShapeId shapeId, B2Pos point, B2Vec2 normal, float fraction, ref CastContext context)
+    static float RayCastAnyCallback(B2ShapeId shapeId, B2Pos point, Vector2 normal, float fraction, ref CastContext context)
     {
         CastContext rayContext = context;
 
@@ -609,7 +609,7 @@ public class CastWorld : Sample
     // NOTE: shape hits are not ordered, so this may return hits in any order. This means that
     // if you limit the number of results, you may discard the closest hit. You can see this
     // behavior in the sample.
-    static float RayCastMultipleCallback(B2ShapeId shapeId, B2Pos point, B2Vec2 normal, float fraction, ref CastContext context)
+    static float RayCastMultipleCallback(B2ShapeId shapeId, B2Pos point, Vector2 normal, float fraction, ref CastContext context)
     {
         CastContext rayContext = context;
 
@@ -643,7 +643,7 @@ public class CastWorld : Sample
     }
 
     // This ray cast collects multiple hits along the ray and sorts them.
-    static float RayCastSortedCallback(B2ShapeId shapeId, B2Pos point, B2Vec2 normal, float fraction, ref CastContext context)
+    static float RayCastSortedCallback(B2ShapeId shapeId, B2Pos point, Vector2 normal, float fraction, ref CastContext context)
     {
         CastContext rayContext = context;
 

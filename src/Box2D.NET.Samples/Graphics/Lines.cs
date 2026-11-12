@@ -71,7 +71,7 @@ public static class Lines
         }
     }
 
-    public static void AddLine(ref LineRender render, B2Vec2 p1, B2Vec2 p2, B2HexColor c)
+    public static void AddLine(ref LineRender render, Vector2 p1, Vector2 p2, B2HexColor c)
     {
         RGBA8 rgba = RGBA8.MakeRGBA8(c, 1.0f);
         render.m_points.Add(new VertexData(p1, rgba));

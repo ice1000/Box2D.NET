@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using static Box2D.NET.B2Diagnostics;
 
@@ -28,10 +29,10 @@ namespace Box2D.NET
         /// Smallest positive normalized float (C FLT_MIN)
         public const float FLT_MIN = 1.17549435e-38f;
 
-        public static readonly B2Vec2 b2Vec2_zero = new B2Vec2(0.0f, 0.0f);
+        public static readonly Vector2 Vector2Zero = new Vector2(0.0f, 0.0f);
         public static readonly B2Rot b2Rot_identity = new B2Rot(1.0f, 0.0f);
-        public static readonly B2Transform b2Transform_identity = new B2Transform(new B2Vec2(0.0f, 0.0f), new B2Rot(1.0f, 0.0f));
-        public static readonly B2Mat22 b2Mat22_zero = new B2Mat22(new B2Vec2(0.0f, 0.0f), new B2Vec2(0.0f, 0.0f));
+        public static readonly B2Transform b2Transform_identity = new B2Transform(new Vector2(0.0f, 0.0f), new B2Rot(1.0f, 0.0f));
+        public static readonly B2Mat22 b2Mat22_zero = new B2Mat22(new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f));
 
         // Initializers valid in both modes
         public static readonly B2Pos b2Pos_zero = new B2Pos(0.0f, 0.0f);
@@ -104,108 +105,108 @@ namespace Box2D.NET
 
         /// Vector dot product
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float b2Dot(in B2Vec2 a, in B2Vec2 b)
+        public static float b2Dot(in Vector2 a, in Vector2 b)
         {
             return a.X * b.X + a.Y * b.Y;
         }
 
         /// Vector cross product. In 2D this yields a scalar.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float b2Cross(in B2Vec2 a, in B2Vec2 b)
+        public static float b2Cross(in Vector2 a, in Vector2 b)
         {
             return a.X * b.Y - a.Y * b.X;
         }
 
         /// Perform the cross product on a vector and a scalar. In 2D this produces a vector.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2CrossVS(in B2Vec2 v, float s)
+        public static Vector2 b2CrossVS(in Vector2 v, float s)
         {
-            return new B2Vec2(s * v.Y, -s * v.X);
+            return new Vector2(s * v.Y, -s * v.X);
         }
 
         /// Perform the cross product on a scalar and a vector. In 2D this produces a vector.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2CrossSV(float s, in B2Vec2 v)
+        public static Vector2 b2CrossSV(float s, in Vector2 v)
         {
-            return new B2Vec2(-s * v.Y, s * v.X);
+            return new Vector2(-s * v.Y, s * v.X);
         }
 
         /// Get a left pointing perpendicular vector. Equivalent to b2CrossSV(1.0f, v)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2LeftPerp(in B2Vec2 v)
+        public static Vector2 b2LeftPerp(in Vector2 v)
         {
-            return new B2Vec2(-v.Y, v.X);
+            return new Vector2(-v.Y, v.X);
         }
 
         /// Get a right pointing perpendicular vector. Equivalent to b2CrossVS(v, 1.0f)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2RightPerp(in B2Vec2 v)
+        public static Vector2 b2RightPerp(in Vector2 v)
         {
-            return new B2Vec2(v.Y, -v.X);
+            return new Vector2(v.Y, -v.X);
         }
 
         /// Vector addition
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2Add(in B2Vec2 a, in B2Vec2 b)
+        public static Vector2 b2Add(in Vector2 a, in Vector2 b)
         {
-            return new B2Vec2(a.X + b.X, a.Y + b.Y);
+            return new Vector2(a.X + b.X, a.Y + b.Y);
         }
 
         /// Vector subtraction
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2Sub(in B2Vec2 a, in B2Vec2 b)
+        public static Vector2 b2Sub(in Vector2 a, in Vector2 b)
         {
-            return new B2Vec2(a.X - b.X, a.Y - b.Y);
+            return new Vector2(a.X - b.X, a.Y - b.Y);
         }
 
         /// Vector negation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2Neg(in B2Vec2 a)
+        public static Vector2 b2Neg(in Vector2 a)
         {
-            return new B2Vec2(-a.X, -a.Y);
+            return new Vector2(-a.X, -a.Y);
         }
 
         /// Vector linear interpolation
         /// https://fgiesen.wordpress.com/2012/08/15/linear-interpolation-past-present-and-future/
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2Lerp(in B2Vec2 a, in B2Vec2 b, float t)
+        public static Vector2 b2Lerp(in Vector2 a, in Vector2 b, float t)
         {
-            return new B2Vec2((1.0f - t) * a.X + t * b.X, (1.0f - t) * a.Y + t * b.Y);
+            return new Vector2((1.0f - t) * a.X + t * b.X, (1.0f - t) * a.Y + t * b.Y);
         }
 
         /// Component-wise multiplication
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2Mul(in B2Vec2 a, in B2Vec2 b)
+        public static Vector2 b2Mul(in Vector2 a, in Vector2 b)
         {
-            return new B2Vec2(a.X * b.X, a.Y * b.Y);
+            return new Vector2(a.X * b.X, a.Y * b.Y);
         }
 
         /// Multiply a scalar and vector
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2MulSV(float s, in B2Vec2 v)
+        public static Vector2 b2MulSV(float s, in Vector2 v)
         {
-            return new B2Vec2(s * v.X, s * v.Y);
+            return new Vector2(s * v.X, s * v.Y);
         }
 
         /// a + s * b
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2MulAdd(in B2Vec2 a, float s, in B2Vec2 b)
+        public static Vector2 b2MulAdd(in Vector2 a, float s, in Vector2 b)
         {
-            return new B2Vec2(a.X + s * b.X, a.Y + s * b.Y);
+            return new Vector2(a.X + s * b.X, a.Y + s * b.Y);
         }
 
         /// a - s * b
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2MulSub(in B2Vec2 a, float s, in B2Vec2 b)
+        public static Vector2 b2MulSub(in Vector2 a, float s, in Vector2 b)
         {
-            return new B2Vec2(a.X - s * b.X, a.Y - s * b.Y);
+            return new Vector2(a.X - s * b.X, a.Y - s * b.Y);
         }
 
         /// Component-wise absolute vector
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2Abs(in B2Vec2 a)
+        public static Vector2 b2Abs(in Vector2 a)
         {
-            B2Vec2 b;
+            Vector2 b;
             b.X = b2AbsFloat(a.X);
             b.Y = b2AbsFloat(a.Y);
             return b;
@@ -213,9 +214,9 @@ namespace Box2D.NET
 
         /// Component-wise minimum vector
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2Min(in B2Vec2 a, in B2Vec2 b)
+        public static Vector2 b2Min(in Vector2 a, in Vector2 b)
         {
-            B2Vec2 c;
+            Vector2 c;
             c.X = b2MinFloat(a.X, b.X);
             c.Y = b2MinFloat(a.Y, b.Y);
             return c;
@@ -223,9 +224,9 @@ namespace Box2D.NET
 
         /// Component-wise maximum vector
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2Max(in B2Vec2 a, in B2Vec2 b)
+        public static Vector2 b2Max(in Vector2 a, in Vector2 b)
         {
-            B2Vec2 c;
+            Vector2 c;
             c.X = b2MaxFloat(a.X, b.X);
             c.Y = b2MaxFloat(a.Y, b.Y);
             return c;
@@ -233,9 +234,9 @@ namespace Box2D.NET
 
         /// Component-wise clamp vector v into the range [a, b]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2Clamp(in B2Vec2 v, in B2Vec2 a, in B2Vec2 b)
+        public static Vector2 b2Clamp(in Vector2 v, in Vector2 a, in Vector2 b)
         {
-            B2Vec2 c;
+            Vector2 c;
             c.X = b2ClampFloat(v.X, a.X, b.X);
             c.Y = b2ClampFloat(v.Y, a.Y, b.Y);
             return c;
@@ -243,14 +244,14 @@ namespace Box2D.NET
 
         /// Get the length of this vector (the norm)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float b2Length(in B2Vec2 v)
+        public static float b2Length(in Vector2 v)
         {
             return MathF.Sqrt(v.X * v.X + v.Y * v.Y);
         }
 
         /// Get the distance between two points
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float b2Distance(in B2Vec2 a, in B2Vec2 b)
+        public static float b2Distance(in Vector2 a, in Vector2 b)
         {
             float dx = b.X - a.X;
             float dy = b.Y - a.Y;
@@ -260,22 +261,22 @@ namespace Box2D.NET
         /// Convert a vector into a unit vector if possible, otherwise returns the zero vector.
         /// todo MSVC is not inlining this function in several places per warning 4710
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2Normalize(in B2Vec2 a)
+        public static Vector2 b2Normalize(in Vector2 a)
         {
             float lengthSquared = a.X * a.X + a.Y * a.Y;
             if (lengthSquared > 1000.0f * FLT_MIN)
             {
                 float s = 1.0f / MathF.Sqrt(lengthSquared);
-                B2Vec2 u = new B2Vec2(s * a.X, s * a.Y);
+                Vector2 u = new Vector2(s * a.X, s * a.Y);
                 return u;
             }
 
-            return new B2Vec2(0.0f, 0.0f);
+            return new Vector2(0.0f, 0.0f);
         }
 
         /// Determines if the provided vector is normalized (norm(a) == 1).
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool b2IsNormalized(in B2Vec2 a)
+        public static bool b2IsNormalized(in Vector2 a)
         {
             float aa = b2Dot(a, a);
             return b2AbsFloat(1.0f - aa) < 100.0f * FLT_EPSILON;
@@ -284,19 +285,19 @@ namespace Box2D.NET
         /// Convert a vector into a unit vector if possible, otherwise returns the zero vector. Also
         /// outputs the length.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2GetLengthAndNormalize(ref float length, in B2Vec2 a)
+        public static Vector2 b2GetLengthAndNormalize(ref float length, in Vector2 a)
         {
             float lengthSquared = a.X * a.X + a.Y * a.Y;
             if (lengthSquared > 1000.0f * FLT_MIN)
             {
                 length = MathF.Sqrt(lengthSquared);
                 float s = 1.0f / length;
-                B2Vec2 u = new B2Vec2(s * a.X, s * a.Y);
+                Vector2 u = new Vector2(s * a.X, s * a.Y);
                 return u;
             }
 
             length = 0.0f;
-            return new B2Vec2(0.0f, 0.0f);
+            return new Vector2(0.0f, 0.0f);
         }
 
         /// Normalize rotation
@@ -328,16 +329,16 @@ namespace Box2D.NET
 
         /// Get the length squared of this vector
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float b2LengthSquared(in B2Vec2 v)
+        public static float b2LengthSquared(in Vector2 v)
         {
             return v.X * v.X + v.Y * v.Y;
         }
 
         /// Get the distance squared between points
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float b2DistanceSquared(in B2Vec2 a, in B2Vec2 b)
+        public static float b2DistanceSquared(in Vector2 a, in Vector2 b)
         {
-            B2Vec2 c = new B2Vec2(b.X - a.X, b.Y - a.Y);
+            Vector2 c = new Vector2(b.X - a.X, b.Y - a.Y);
             return c.X * c.X + c.Y * c.Y;
         }
 
@@ -351,7 +352,7 @@ namespace Box2D.NET
 
         /// Make a rotation using a unit vector
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Rot b2MakeRotFromUnitVector(in B2Vec2 unitVector)
+        public static B2Rot b2MakeRotFromUnitVector(in Vector2 unitVector)
         {
             B2_ASSERT(b2IsNormalized(unitVector));
             return new B2Rot(unitVector.X, unitVector.Y);
@@ -422,17 +423,17 @@ namespace Box2D.NET
 
         /// Get the x-axis
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2Rot_GetXAxis(in B2Rot q)
+        public static Vector2 b2Rot_GetXAxis(in B2Rot q)
         {
-            B2Vec2 v = new B2Vec2(q.c, q.s);
+            Vector2 v = new Vector2(q.c, q.s);
             return v;
         }
 
         /// Get the y-axis
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2Rot_GetYAxis(in B2Rot q)
+        public static Vector2 b2Rot_GetYAxis(in B2Rot q)
         {
-            B2Vec2 v = new B2Vec2(-q.s, q.c);
+            Vector2 v = new Vector2(-q.s, q.c);
             return v;
         }
 
@@ -497,35 +498,35 @@ namespace Box2D.NET
 
         /// Rotate a vector
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2RotateVector(in B2Rot q, in B2Vec2 v)
+        public static Vector2 b2RotateVector(in B2Rot q, in Vector2 v)
         {
-            return new B2Vec2(q.c * v.X - q.s * v.Y, q.s * v.X + q.c * v.Y);
+            return new Vector2(q.c * v.X - q.s * v.Y, q.s * v.X + q.c * v.Y);
         }
 
         /// Inverse rotate a vector
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2InvRotateVector(in B2Rot q, in B2Vec2 v)
+        public static Vector2 b2InvRotateVector(in B2Rot q, in Vector2 v)
         {
-            return new B2Vec2(q.c * v.X + q.s * v.Y, -q.s * v.X + q.c * v.Y);
+            return new Vector2(q.c * v.X + q.s * v.Y, -q.s * v.X + q.c * v.Y);
         }
 
         /// Transform a point (e.g. local space to world space)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2TransformPoint(in B2Transform t, in B2Vec2 p)
+        public static Vector2 b2TransformPoint(in B2Transform t, in Vector2 p)
         {
             float x = (t.q.c * p.X - t.q.s * p.Y) + t.p.X;
             float y = (t.q.s * p.X + t.q.c * p.Y) + t.p.Y;
 
-            return new B2Vec2(x, y);
+            return new Vector2(x, y);
         }
 
         /// Inverse transform a point (e.g. world space to local space)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2InvTransformPoint(in B2Transform t, in B2Vec2 p)
+        public static Vector2 b2InvTransformPoint(in B2Transform t, in Vector2 p)
         {
             float vx = p.X - t.p.X;
             float vy = p.Y - t.p.Y;
-            return new B2Vec2(t.q.c * vx + t.q.s * vy, -t.q.s * vx + t.q.c * vy);
+            return new Vector2(t.q.c * vx + t.q.s * vy, -t.q.s * vx + t.q.c * vy);
         }
 
         /// Multiply two transforms. If the result is applied to a point p local to frame B,
@@ -556,16 +557,16 @@ namespace Box2D.NET
 
         /// Convert a vector to a world position. no-op in single precision.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Pos b2ToPos(in B2Vec2 v)
+        public static B2Pos b2ToPos(in Vector2 v)
         {
             return new B2Pos(v.X, v.Y);
         }
 
         /// Lossy conversion of a world position to a float vector. no-op in single precision.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2ToVec2(in B2Pos p)
+        public static Vector2 b2ToVec2(in B2Pos p)
         {
-            return new B2Vec2(p.X, p.Y);
+            return new Vector2(p.X, p.Y);
         }
 
         /// Narrow a world coordinate to float, rounding toward negative infinity. Use with
@@ -586,14 +587,14 @@ namespace Box2D.NET
 
         /// a - b, demoted to float. The primary precision boundary operation.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2SubPos(in B2Pos a, in B2Pos b)
+        public static Vector2 b2SubPos(in B2Pos a, in B2Pos b)
         {
-            return new B2Vec2(a.X - b.X, a.Y - b.Y);
+            return new Vector2(a.X - b.X, a.Y - b.Y);
         }
 
         /// p + d
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Pos b2OffsetPos(in B2Pos p, in B2Vec2 d)
+        public static B2Pos b2OffsetPos(in B2Pos p, in Vector2 d)
         {
             return new B2Pos(p.X + d.X, p.Y + d.Y);
         }
@@ -607,7 +608,7 @@ namespace Box2D.NET
 
         /// Transform a local point to a world position. Rotation in float, translation in double.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Pos b2TransformWorldPoint(in B2WorldTransform t, in B2Vec2 p)
+        public static B2Pos b2TransformWorldPoint(in B2WorldTransform t, in Vector2 p)
         {
             float rx = t.q.c * p.X - t.q.s * p.Y;
             float ry = t.q.s * p.X + t.q.c * p.Y;
@@ -616,11 +617,11 @@ namespace Box2D.NET
 
         /// Transform a world position to a local point. One double subtraction, then float.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2InvTransformWorldPoint(in B2WorldTransform t, in B2Pos p)
+        public static Vector2 b2InvTransformWorldPoint(in B2WorldTransform t, in B2Pos p)
         {
             float vx = p.X - t.p.X;
             float vy = p.Y - t.p.Y;
-            return new B2Vec2(t.q.c * vx + t.q.s * vy, -t.q.s * vx + t.q.c * vy);
+            return new Vector2(t.q.c * vx + t.q.s * vy, -t.q.s * vx + t.q.c * vy);
         }
 
         /// Relative transform of frame B in frame A.
@@ -629,7 +630,7 @@ namespace Box2D.NET
         {
             B2Transform C;
             C.q = b2InvMulRot(A.q, B.q);
-            B2Vec2 d = new B2Vec2(B.p.X - A.p.X, B.p.Y - A.p.Y);
+            Vector2 d = new Vector2(B.p.X - A.p.X, B.p.Y - A.p.Y);
             C.p = b2InvRotateVector(A.q, d);
             return C;
         }
@@ -650,7 +651,7 @@ namespace Box2D.NET
         {
             B2Transform r;
             r.q = t.q;
-            r.p = new B2Vec2(t.p.X - @base.X, t.p.Y - @base.Y);
+            r.p = new Vector2(t.p.X - @base.X, t.p.Y - @base.Y);
             return r;
         }
 
@@ -666,9 +667,9 @@ namespace Box2D.NET
 
         /// Multiply a 2-by-2 matrix times a 2D vector
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2MulMV(in B2Mat22 A, in B2Vec2 v)
+        public static Vector2 b2MulMV(in B2Mat22 A, in Vector2 v)
         {
-            B2Vec2 u = new B2Vec2
+            Vector2 u = new Vector2
             {
                 X = A.cx.X * v.X + A.cy.X * v.Y,
                 Y = A.cx.Y * v.X + A.cy.Y * v.Y,
@@ -687,14 +688,14 @@ namespace Box2D.NET
                 det = 1.0f / det;
             }
 
-            B2Mat22 B = new B2Mat22(new B2Vec2(det * d, -det * c), new B2Vec2(-det * b, det * a));
+            B2Mat22 B = new B2Mat22(new Vector2(det * d, -det * c), new Vector2(-det * b, det * a));
             return B;
         }
 
         /// Solve A * x = b, where b is a column vector. This is more efficient
         /// than computing the inverse in one-shot cases.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2Solve22(in B2Mat22 A, in B2Vec2 b)
+        public static Vector2 b2Solve22(in B2Mat22 A, in Vector2 b)
         {
             float a11 = A.cx.X, a12 = A.cy.X, a21 = A.cx.Y, a22 = A.cy.Y;
             float det = a11 * a22 - a12 * a21;
@@ -703,7 +704,7 @@ namespace Box2D.NET
                 det = 1.0f / det;
             }
 
-            B2Vec2 x = new B2Vec2(det * (a22 * b.X - a12 * b.Y), det * (a11 * b.Y - a21 * b.X));
+            Vector2 x = new Vector2(det * (a22 * b.X - a12 * b.Y), det * (a11 * b.Y - a21 * b.X));
             return x;
         }
 
@@ -721,17 +722,17 @@ namespace Box2D.NET
 
         /// Get the center of the AABB.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2AABB_Center(in B2AABB a)
+        public static Vector2 b2AABB_Center(in B2AABB a)
         {
-            B2Vec2 b = new B2Vec2(0.5f * (a.lowerBound.X + a.upperBound.X), 0.5f * (a.lowerBound.Y + a.upperBound.Y));
+            Vector2 b = new Vector2(0.5f * (a.lowerBound.X + a.upperBound.X), 0.5f * (a.lowerBound.Y + a.upperBound.Y));
             return b;
         }
 
         /// Get the extents of the AABB (half-widths).
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Vec2 b2AABB_Extents(in B2AABB a)
+        public static Vector2 b2AABB_Extents(in B2AABB a)
         {
-            B2Vec2 b = new B2Vec2(0.5f * (a.upperBound.X - a.lowerBound.X), 0.5f * (a.upperBound.Y - a.lowerBound.Y));
+            Vector2 b = new Vector2(0.5f * (a.upperBound.X - a.lowerBound.X), 0.5f * (a.upperBound.Y - a.lowerBound.Y));
             return b;
         }
 
@@ -757,7 +758,7 @@ namespace Box2D.NET
 
         /// Compute the bounding box of an array of circles
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2AABB b2MakeAABB(ReadOnlySpan<B2Vec2> points, int count, float radius)
+        public static B2AABB b2MakeAABB(ReadOnlySpan<Vector2> points, int count, float radius)
         {
             B2_ASSERT(count > 0);
             B2AABB a = new B2AABB(points[0], points[0]);
@@ -767,7 +768,7 @@ namespace Box2D.NET
                 a.upperBound = b2Max(a.upperBound, points[i]);
             }
 
-            B2Vec2 r = new B2Vec2(radius, radius);
+            Vector2 r = new Vector2(radius, radius);
             a.lowerBound = b2Sub(a.lowerBound, r);
             a.upperBound = b2Add(a.upperBound, r);
 
@@ -776,7 +777,7 @@ namespace Box2D.NET
 
         /// Signed separation of a point from a plane
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float b2PlaneSeparation(in B2Plane plane, in B2Vec2 point)
+        public static float b2PlaneSeparation(in B2Plane plane, in Vector2 point)
         {
             return b2Dot(plane.normal, point) - plane.offset;
         }
@@ -816,7 +817,7 @@ namespace Box2D.NET
 
         /// Is this a valid vector? Not NaN or infinity.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool b2IsValidVec2(in B2Vec2 v)
+        public static bool b2IsValidVec2(in Vector2 v)
         {
             if (float.IsNaN(v.X) || float.IsNaN(v.Y))
             {
@@ -891,7 +892,7 @@ namespace Box2D.NET
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool b2IsValidAABB(in B2AABB a)
         {
-            B2Vec2 d = b2Sub(a.upperBound, a.lowerBound);
+            Vector2 d = b2Sub(a.upperBound, a.lowerBound);
             bool valid = d.X >= 0.0f && d.Y >= 0.0f;
             valid = valid && b2IsValidVec2(a.lowerBound) && b2IsValidVec2(a.upperBound);
             return valid;
@@ -998,7 +999,7 @@ namespace Box2D.NET
 
         /// Compute the rotation between two unit vectors
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static B2Rot b2ComputeRotationBetweenUnitVectors(in B2Vec2 v1, in B2Vec2 v2)
+        public static B2Rot b2ComputeRotationBetweenUnitVectors(in Vector2 v1, in Vector2 v2)
         {
             B2_ASSERT(b2AbsFloat(1.0f - b2Length(v1)) < 100.0f * FLT_EPSILON);
             B2_ASSERT(b2AbsFloat(1.0f - b2Length(v2)) < 100.0f * FLT_EPSILON);

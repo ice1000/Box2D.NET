@@ -23,13 +23,13 @@ public class DoubleDomino : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 4.0f);
+            m_camera.center = new Vector2(0.0f, 4.0f);
             m_camera.zoom = 25.0f * 0.25f;
         }
 
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, -1.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, -1.0f));
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2Polygon box = b2MakeBox(100.0f, 1.0f);
@@ -49,12 +49,12 @@ public class DoubleDomino : Sample
             float x = -0.5f * count;
             for (int i = 0; i < count; ++i)
             {
-                bodyDef.position = b2ToPos(new B2Vec2(x, 0.5f));
+                bodyDef.position = b2ToPos(new Vector2(x, 0.5f));
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
                 b2CreatePolygonShape(bodyId, shapeDef, box);
                 if (i == 0)
                 {
-                    b2Body_ApplyLinearImpulse(bodyId, new B2Vec2(0.2f, 0.0f), b2ToPos(new B2Vec2(x, 1.0f)), true);
+                    b2Body_ApplyLinearImpulse(bodyId, new Vector2(0.2f, 0.0f), b2ToPos(new Vector2(x, 1.0f)), true);
                 }
 
                 x += 1.0f;

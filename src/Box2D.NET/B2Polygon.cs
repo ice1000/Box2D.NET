@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     /// A solid convex polygon. It is assumed that the interior of the polygon is to
@@ -13,13 +15,13 @@ namespace Box2D.NET
     public struct B2Polygon
     {
         /// The polygon vertices
-        public B2FixedArray8<B2Vec2> vertices; // = new B2Vec2[B2Constants.B2_MAX_POLYGON_VERTICES];
+        public B2FixedArray8<Vector2> vertices; // = new B2Vec2[B2Constants.B2_MAX_POLYGON_VERTICES];
 
         /// The outward normal vectors of the polygon sides
-        public B2FixedArray8<B2Vec2> normals; // = new B2Vec2[B2Constants.B2_MAX_POLYGON_VERTICES];
+        public B2FixedArray8<Vector2> normals; // = new B2Vec2[B2Constants.B2_MAX_POLYGON_VERTICES];
 
         /// The centroid of the polygon
-        public B2Vec2 centroid;
+        public Vector2 centroid;
 
         /// The external radius for rounded polygons
         public float radius;

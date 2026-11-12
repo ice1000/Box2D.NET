@@ -38,7 +38,7 @@ public class Restitution : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(4.0f, 17.0f);
+            m_camera.center = new Vector2(4.0f, 17.0f);
             m_camera.zoom = 27.5f;
         }
 
@@ -47,7 +47,7 @@ public class Restitution : Sample
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             float h = 1.0f * m_count;
-            B2Segment segment = new B2Segment(new B2Vec2(-h, 0.0f), new B2Vec2(h, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-h, 0.0f), new Vector2(h, 0.0f));
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
@@ -68,7 +68,7 @@ public class Restitution : Sample
             }
         }
 
-        B2Circle circle = new B2Circle(new B2Vec2(), 0.0f);
+        B2Circle circle = new B2Circle(new Vector2(), 0.0f);
         circle.radius = 0.5f;
 
         B2Polygon box = b2MakeBox(0.5f, 0.5f);
@@ -86,7 +86,7 @@ public class Restitution : Sample
 
         for (int i = 0; i < m_count; ++i)
         {
-            bodyDef.position = b2ToPos(new B2Vec2(x, 40.0f));
+            bodyDef.position = b2ToPos(new Vector2(x, 40.0f));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             m_bodyIds[i] = bodyId;

@@ -4,6 +4,7 @@
 
 using System;
 using System.IO;
+using System.Numerics;
 using static Box2D.NET.B2Tables;
 using static Box2D.NET.B2Arrays;
 using static Box2D.NET.B2DynamicTrees;
@@ -597,18 +598,18 @@ namespace Box2D.NET
                         {
                             B2Rot dqA = b2MulRot(transformA.q, b2InvertRot(cachedQA));
                             B2Rot dqB = b2MulRot(transformB.q, b2InvertRot(cachedQB));
-                            B2Vec2 normal = contactSim.manifold.normal;
+                            Vector2 normal = contactSim.manifold.normal;
 
                             // Minimize round-off
-                            B2Vec2 dc = b2SubPos(bodySimB.center, bodySimA.center);
+                            Vector2 dc = b2SubPos(bodySimB.center, bodySimA.center);
 
                             for (int i = 0; i < contactSim.manifold.pointCount; ++i)
                             {
                                 // Keep anchors but update separation, same as sub-stepping. This eliminates jitter.
                                 ref B2ManifoldPoint mp = ref contactSim.manifold.points[i];
-                                B2Vec2 rA = b2RotateVector(dqA, mp.anchorA);
-                                B2Vec2 rB = b2RotateVector(dqB, mp.anchorB);
-                                B2Vec2 dp = b2Add(dc, b2Sub(rB, rA));
+                                Vector2 rA = b2RotateVector(dqA, mp.anchorA);
+                                Vector2 rB = b2RotateVector(dqB, mp.anchorB);
+                                Vector2 dp = b2Add(dc, b2Sub(rB, rA));
                                 mp.separation = mp.baseSeparation + b2Dot(dp, normal);
 
                                 mp.normalVelocity = 0.0f;
@@ -629,8 +630,8 @@ namespace Box2D.NET
                     contactSim.cachedRelativePose = b2InvMulWorldTransforms(transformA, transformB);
                     contactSim.simFlags |= (uint)B2ContactFlags.b2_simRelativeTransformValid;
 
-                    B2Vec2 centerOffsetA = b2RotateVector(transformA.q, bodySimA.localCenter);
-                    B2Vec2 centerOffsetB = b2RotateVector(transformB.q, bodySimB.localCenter);
+                    Vector2 centerOffsetA = b2RotateVector(transformA.q, bodySimA.localCenter);
+                    Vector2 centerOffsetB = b2RotateVector(transformB.q, bodySimB.localCenter);
 
                     // This updates solid contacts
                     bool touching =
@@ -1116,8 +1117,8 @@ namespace Box2D.NET
                     if (drawChainNormals)
                     {
                         B2Pos c = b2LerpPos(p1, p2, 0.5f);
-                        B2Vec2 e = b2Normalize(b2SubPos(p2, p1));
-                        B2Vec2 n = b2RightPerp(e);
+                        Vector2 e = b2Normalize(b2SubPos(p2, p1));
+                        Vector2 n = b2RightPerp(e);
                         float L = 0.2f * b2GetLengthUnitsPerMeter();
                         draw.DrawLineFcn(c, b2OffsetPos(c, b2MulSV(L, n)), B2HexColor.b2_colorPaleGreen, draw.context);
                     }
@@ -1271,7 +1272,7 @@ namespace Box2D.NET
 
                     if (draw.drawBodyNames && !string.IsNullOrEmpty(body.name))
                     {
-                        B2Vec2 offset = new B2Vec2(0.1f, 0.1f);
+                        Vector2 offset = new Vector2(0.1f, 0.1f);
                         B2BodySim bodySim = b2GetBodySim(world, body);
 
                         B2WorldTransform transform = new B2WorldTransform(bodySim.center, bodySim.transform.q);
@@ -1281,7 +1282,7 @@ namespace Box2D.NET
 
                     if (draw.drawMass && body.type == B2BodyType.b2_dynamicBody)
                     {
-                        B2Vec2 offset = new B2Vec2(0.1f, 0.1f);
+                        Vector2 offset = new Vector2(0.1f, 0.1f);
                         B2BodySim bodySim = b2GetBodySim(world, body);
 
                         B2WorldTransform transform = new B2WorldTransform(bodySim.center, bodySim.transform.q);
@@ -1335,7 +1336,7 @@ namespace Box2D.NET
                                 B2BodySim bodySimB = b2GetBodySim(world, bodyB);
 
                                 int pointCount = contactSim.manifold.pointCount;
-                                B2Vec2 normal = contactSim.manifold.normal;
+                                Vector2 normal = contactSim.manifold.normal;
                                 string buffer;
 
                                 for (int j = 0; j < pointCount; ++j)
@@ -1405,7 +1406,7 @@ namespace Box2D.NET
                                     if (draw.drawFrictionForces)
                                     {
                                         float force = 0.5f * mp.tangentImpulse * world.inv_h;
-                                        B2Vec2 tangent = b2RightPerp(normal);
+                                        Vector2 tangent = b2RightPerp(normal);
                                         B2Pos p1 = p;
                                         B2Pos p2 = b2OffsetPos(p1, b2MulSV(draw.forceScale * force, tangent));
                                         draw.DrawLineFcn(p1, p2, frictionColor, draw.context);
@@ -1434,8 +1435,8 @@ namespace Box2D.NET
 
                             int shapeCount = 0;
                             B2AABB aabb = new B2AABB(
-                                lowerBound: new B2Vec2(float.MaxValue, float.MaxValue),
-                                upperBound: new B2Vec2(-float.MaxValue, -float.MaxValue)
+                                lowerBound: new Vector2(float.MaxValue, float.MaxValue),
+                                upperBound: new Vector2(-float.MaxValue, -float.MaxValue)
                             );
 
                             for (int bodyIndex = 0; bodyIndex < island.bodies.count; ++bodyIndex)
@@ -1519,7 +1520,7 @@ namespace Box2D.NET
         }
 
         // Equivalent to hashing the bytes of a b2Vec2 one at a time (little-endian)
-        private static ulong b2FnvMixVec2Bytes(ulong hash, B2Vec2 v)
+        private static ulong b2FnvMixVec2Bytes(ulong hash, Vector2 v)
         {
             uint bx = (uint)BitConverter.SingleToInt32Bits(v.X);
             uint by = (uint)BitConverter.SingleToInt32Bits(v.Y);
@@ -2576,7 +2577,7 @@ namespace Box2D.NET
             B2Transform transform = b2ToRelativeTransform(bodyTransform, worldContext.origin);
 
             B2RayCastInput localInput = input;
-            localInput.origin = b2Vec2_zero;
+            localInput.origin = Vector2Zero;
             B2CastOutput output = b2RayCastShape(localInput, shape, transform);
 
             if (output.hit)
@@ -2607,7 +2608,7 @@ namespace Box2D.NET
         /// @param fcn A user implemented callback function
         /// @param context A user context that is passed along to the callback function
         /// @return traversal performance counters
-        public static B2TreeStats b2World_CastRay<T>(B2WorldId worldId, B2Pos origin, B2Vec2 translation, in B2QueryFilter filter, b2CastResultCallbackFcn<T> callbackFcn, T context) where T : class
+        public static B2TreeStats b2World_CastRay<T>(B2WorldId worldId, B2Pos origin, Vector2 translation, in B2QueryFilter filter, b2CastResultCallbackFcn<T> callbackFcn, T context) where T : class
         {
             B2TreeStats treeStats = new B2TreeStats();
 
@@ -2647,7 +2648,7 @@ namespace Box2D.NET
         }
 
         // This callback finds the closest hit. This is the most common callback used in games.
-        internal static float b2RayCastClosestFcn(B2ShapeId shapeId, B2Pos point, B2Vec2 normal, float fraction, ref B2RayResult context)
+        internal static float b2RayCastClosestFcn(B2ShapeId shapeId, B2Pos point, Vector2 normal, float fraction, ref B2RayResult context)
         {
             // Ignore initial overlap
             if (fraction == 0.0f)
@@ -2666,7 +2667,7 @@ namespace Box2D.NET
 
         /// Cast a ray into the world to collect the closest hit. This is a convenience function. Ignores initial overlap.
         /// This is less general than b2World_CastRay() and does not allow for custom filtering.
-        public static B2RayResult b2World_CastRayClosest(B2WorldId worldId, B2Pos origin, B2Vec2 translation, in B2QueryFilter filter)
+        public static B2RayResult b2World_CastRayClosest(B2WorldId worldId, B2Pos origin, Vector2 translation, in B2QueryFilter filter)
         {
             B2RayResult result = new B2RayResult();
 
@@ -2750,7 +2751,7 @@ namespace Box2D.NET
         /// Cast a shape through the world. Similar to a cast ray except that a shape is cast instead of a point.
         /// The proxy points are relative to the origin. Callback points are world positions.
         /// @see b2World_CastRay
-        public static B2TreeStats b2World_CastShape<T>(B2WorldId worldId, B2Pos origin, ref B2ShapeProxy proxy, B2Vec2 translation, in B2QueryFilter filter, b2CastResultCallbackFcn<T> callbackFcn, T context) where T : class
+        public static B2TreeStats b2World_CastShape<T>(B2WorldId worldId, B2Pos origin, ref B2ShapeProxy proxy, Vector2 translation, in B2QueryFilter filter, b2CastResultCallbackFcn<T> callbackFcn, T context) where T : class
         {
             B2TreeStats treeStats = new B2TreeStats();
 
@@ -2836,7 +2837,7 @@ namespace Box2D.NET
 
         /// Cast a capsule mover through the world. This is a special shape cast that handles sliding along other shapes while reducing
         /// clipping. The mover capsule is relative to the origin. Near the origin pass b2Pos_zero and a world capsule.
-        public static float b2World_CastMover(B2WorldId worldId, B2Pos origin, in B2Capsule mover, B2Vec2 translation, in B2QueryFilter filter)
+        public static float b2World_CastMover(B2WorldId worldId, B2Pos origin, in B2Capsule mover, Vector2 translation, in B2QueryFilter filter)
         {
             B2_ASSERT(b2IsValidPos(origin));
             B2_ASSERT(b2IsValidVec2(translation));
@@ -2863,7 +2864,7 @@ namespace Box2D.NET
             worldContext.input.canEncroach = true;
 
             // Bound the capsule in origin relative space then lift to a conservative world float box
-            Span<B2Vec2> centers = stackalloc B2Vec2[2] { mover.center1, mover.center2 };
+            Span<Vector2> centers = stackalloc Vector2[2] { mover.center1, mover.center2 };
             B2AABB box = b2OffsetAABB(b2MakeAABB(centers, 2, mover.radius), origin);
             B2BoxCastInput treeInput = new B2BoxCastInput();
             treeInput.box = box;
@@ -2931,7 +2932,7 @@ namespace Box2D.NET
 
             B2_ASSERT(b2IsValidPos(origin));
 
-            B2Vec2 r = new B2Vec2(mover.radius, mover.radius);
+            Vector2 r = new Vector2(mover.radius, mover.radius);
 
             // Relative box lifted to world float with outward rounding, conservative for the tree
             B2AABB relBox;
@@ -3037,7 +3038,7 @@ void b2World_Dump()
         /// Set the gravity vector for the entire world. Box2D has no concept of an up direction and this
         /// is left as a decision for the application. Usually in m/s^2.
         /// @see b2WorldDef
-        public static void b2World_SetGravity(B2WorldId worldId, B2Vec2 gravity)
+        public static void b2World_SetGravity(B2WorldId worldId, Vector2 gravity)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(gravity)) == false) return;
 
@@ -3045,7 +3046,7 @@ void b2World_Dump()
             world.gravity = gravity;
         }
         /// Get the gravity vector
-        public static B2Vec2 b2World_GetGravity(B2WorldId worldId)
+        public static Vector2 b2World_GetGravity(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
             return world.gravity;
@@ -3069,7 +3070,7 @@ void b2World_Dump()
 
             // Re-center the explosion into the shape local frame so distance and direction stay precise
             // far from the origin. Everything below runs in that near-origin frame.
-            B2Vec2 localPosition = b2InvTransformWorldPoint(xf, explosionContext.position);
+            Vector2 localPosition = b2InvTransformWorldPoint(xf, explosionContext.position);
 
             B2DistanceInput input = new B2DistanceInput();
             input.proxyA = b2MakeShapeDistanceProxy(shape);
@@ -3094,23 +3095,23 @@ void b2World_Dump()
                 return true;
             }
 
-            B2Vec2 closestPoint = output.pointA;
+            Vector2 closestPoint = output.pointA;
             if (output.distance == 0.0f)
             {
                 closestPoint = b2GetShapeCentroid(shape);
             }
 
-            B2Vec2 direction = b2Sub(closestPoint, localPosition);
+            Vector2 direction = b2Sub(closestPoint, localPosition);
             if (b2LengthSquared(direction) > 100.0f * FLT_EPSILON * FLT_EPSILON)
             {
                 direction = b2Normalize(direction);
             }
             else
             {
-                direction = new B2Vec2(1.0f, 0.0f);
+                direction = new Vector2(1.0f, 0.0f);
             }
 
-            B2Vec2 localLine = b2LeftPerp(direction);
+            Vector2 localLine = b2LeftPerp(direction);
             float perimeter = b2GetShapeProjectedPerimeter(shape, localLine);
             float scale = 1.0f;
             if (output.distance > radius && falloff > 0.0f)
@@ -3119,7 +3120,7 @@ void b2World_Dump()
             }
 
             float magnitude = explosionContext.impulsePerLength * perimeter * scale;
-            B2Vec2 impulse = b2MulSV(magnitude, b2RotateVector(xf.q, direction));
+            Vector2 impulse = b2MulSV(magnitude, b2RotateVector(xf.q, direction));
 
             int localIndex = body.localIndex;
             B2SolverSet set = b2Array_Get(ref world.solverSets, (int)B2SolverSetType.b2_awakeSet);
@@ -3128,7 +3129,7 @@ void b2World_Dump()
             state.linearVelocity = b2MulAdd(state.linearVelocity, bodySim.invMass, impulse);
 
             // Lever arm from the center of mass to the closest point, rotated to world
-            B2Vec2 r = b2RotateVector(xf.q, b2Sub(closestPoint, bodySim.localCenter));
+            Vector2 r = b2RotateVector(xf.q, b2Sub(closestPoint, bodySim.localCenter));
             state.angularVelocity += bodySim.invInertia * b2Cross(r, impulse);
 
             return true;
@@ -3160,7 +3161,7 @@ void b2World_Dump()
 
             // The broad-phase tree is float, so translate a local query box out to world with outward rounding
             float extent = radius + falloff;
-            B2AABB localBox = new B2AABB(new B2Vec2(-extent, -extent), new B2Vec2(extent, extent));
+            B2AABB localBox = new B2AABB(new Vector2(-extent, -extent), new Vector2(extent, extent));
             B2AABB aabb = b2OffsetAABB(localBox, position);
 
             b2DynamicTree_OverlapAABB(world.broadPhase.trees[(int)B2BodyType.b2_dynamicBody], aabb, maskBits, ExplosionCallback, ref explosionContext);

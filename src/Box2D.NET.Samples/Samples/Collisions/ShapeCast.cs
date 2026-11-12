@@ -29,7 +29,7 @@ public class ShapeCast : Sample
 
     private B2Polygon m_box;
     private B2Polygon m_triangle;
-    private B2Vec2 m_point;
+    private Vector2 m_point;
     private B2Segment m_segment;
 
     private ShapeType m_typeA;
@@ -41,10 +41,10 @@ public class ShapeCast : Sample
 
     private B2Transform m_transform;
     private float m_angle;
-    private B2Vec2 m_translation;
+    private Vector2 m_translation;
 
-    private B2Vec2 m_basePosition;
-    private B2Vec2 m_startPoint;
+    private Vector2 m_basePosition;
+    private Vector2 m_startPoint;
     private float m_baseAngle;
 
     private bool m_dragging;
@@ -69,15 +69,15 @@ public class ShapeCast : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(-0.0f, 0.25f);
+            m_camera.center = new Vector2(-0.0f, 0.25f);
             m_camera.zoom = 3.0f;
         }
 
-        m_point = b2Vec2_zero;
-        m_segment = new B2Segment(new B2Vec2(0.0f, 0.0f), new B2Vec2(0.5f, 0.0f));
+        m_point = Vector2Zero;
+        m_segment = new B2Segment(new Vector2(0.0f, 0.0f), new Vector2(0.5f, 0.0f));
 
         {
-            B2Vec2[] points = [new B2Vec2(-0.5f, 0.0f), new B2Vec2(0.5f, 0.0f), new B2Vec2(0.0f, 1.0f)];
+            Vector2[] points = [new Vector2(-0.5f, 0.0f), new Vector2(0.5f, 0.0f), new Vector2(0.0f, 1.0f)];
             B2Hull hull = b2ComputeHull(points, 3);
             m_triangle = b2MakePolygon(hull, 0.0f);
         }
@@ -125,11 +125,11 @@ public class ShapeCast : Sample
         }
 #endif
 
-        m_transform = new B2Transform(new B2Vec2(-0.6f, 0.0f), b2Rot_identity);
-        m_translation = new B2Vec2(2.0f, 0.0f);
+        m_transform = new B2Transform(new Vector2(-0.6f, 0.0f), b2Rot_identity);
+        m_translation = new Vector2(2.0f, 0.0f);
         m_angle = 0.0f;
-        m_startPoint = new B2Vec2(0.0f, 0.0f);
-        m_basePosition = new B2Vec2(0.0f, 0.0f);
+        m_startPoint = new Vector2(0.0f, 0.0f);
+        m_basePosition = new Vector2(0.0f, 0.0f);
         m_baseAngle = 0.0f;
 
         m_dragging = false;
@@ -156,7 +156,7 @@ public class ShapeCast : Sample
         switch (type)
         {
             case ShapeType.e_point:
-                proxy.points[0] = b2Vec2_zero;
+                proxy.points[0] = Vector2Zero;
                 proxy.count = 1;
                 break;
 
@@ -197,7 +197,7 @@ public class ShapeCast : Sample
         {
             case ShapeType.e_point:
             {
-                B2Vec2 p = b2TransformPoint(transform, m_point);
+                Vector2 p = b2TransformPoint(transform, m_point);
                 if (radius > 0.0f)
                 {
                     DrawSolidCircle(m_draw, new B2Transform(m_point, transform.q), radius, color);
@@ -211,8 +211,8 @@ public class ShapeCast : Sample
 
             case ShapeType.e_segment:
             {
-                B2Vec2 p1 = b2TransformPoint(transform, m_segment.point1);
-                B2Vec2 p2 = b2TransformPoint(transform, m_segment.point2);
+                Vector2 p1 = b2TransformPoint(transform, m_segment.point1);
+                Vector2 p2 = b2TransformPoint(transform, m_segment.point2);
 
                 if (radius > 0.0f)
                 {
@@ -239,7 +239,7 @@ public class ShapeCast : Sample
         }
     }
 
-    public override void MouseDown(B2Vec2 p, MouseButton button, KeyModifiers mods)
+    public override void MouseDown(Vector2 p, MouseButton button, KeyModifiers mods)
     {
         if (button == (int)MouseButton.Left)
         {
@@ -265,12 +265,12 @@ public class ShapeCast : Sample
                 m_sweeping = true;
                 m_rotating = false;
                 m_startPoint = p;
-                m_basePosition = b2Vec2_zero;
+                m_basePosition = Vector2Zero;
             }
         }
     }
 
-    public override void MouseUp(B2Vec2 p, MouseButton button)
+    public override void MouseUp(Vector2 p, MouseButton button)
     {
         if (button == (int)MouseButton.Left)
         {
@@ -280,7 +280,7 @@ public class ShapeCast : Sample
         }
     }
 
-    public override void MouseMove(B2Vec2 p)
+    public override void MouseMove(Vector2 p)
     {
         if (m_dragging)
         {
@@ -409,13 +409,13 @@ public class ShapeCast : Sample
         {
             for (int i = 0; i < m_proxyA.count; ++i)
             {
-                B2Vec2 p = m_proxyA.points[i];
+                Vector2 p = m_proxyA.points[i];
                 DrawWorldString(m_draw, m_camera, p, B2HexColor.b2_colorWhite, $" {i}");
             }
 
             for (int i = 0; i < m_proxyB.count; ++i)
             {
-                B2Vec2 p = b2TransformPoint(m_transform, m_proxyB.points[i]);
+                Vector2 p = b2TransformPoint(m_transform, m_proxyB.points[i]);
                 DrawWorldString(m_draw, m_camera, p, B2HexColor.b2_colorWhite, $" {i}");
             }
         }

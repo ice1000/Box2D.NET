@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
 using static Box2D.NET.B2Arrays;
 using static Box2D.NET.B2Cores;
 using static Box2D.NET.B2Diagnostics;
@@ -98,9 +99,9 @@ namespace Box2D.NET
             B2Transform transformA = b2ToRelativeTransform(wxfA, wxfA.p);
             B2Transform transformB = b2ToRelativeTransform(b2GetBodyTransform(world, @base.bodyIdB), wxfA.p);
 
-            B2Vec2 pA = b2TransformPoint(transformA, @base.localFrameA.p);
-            B2Vec2 pB = b2TransformPoint(transformB, @base.localFrameB.p);
-            B2Vec2 d = b2Sub(pB, pA);
+            Vector2 pA = b2TransformPoint(transformA, @base.localFrameA.p);
+            Vector2 pB = b2TransformPoint(transformB, @base.localFrameB.p);
+            Vector2 d = b2Sub(pB, pA);
             float length = b2Length(d);
             return length;
         }
@@ -235,7 +236,7 @@ namespace Box2D.NET
             return joint.uj.distanceJoint.maxMotorForce;
         }
 
-        internal static B2Vec2 b2GetDistanceJointForce(B2World world, B2JointSim @base)
+        internal static Vector2 b2GetDistanceJointForce(B2World world, B2JointSim @base)
         {
             ref readonly B2DistanceJoint joint = ref @base.uj.distanceJoint;
 
@@ -244,10 +245,10 @@ namespace Box2D.NET
             B2WorldTransform worldTransformB = b2GetBodyTransform(world, @base.bodyIdB);
             B2Transform transformB = b2ToRelativeTransform(worldTransformB, worldTransformA.p);
 
-            B2Vec2 pA = b2TransformPoint(transformA, @base.localFrameA.p);
-            B2Vec2 pB = b2TransformPoint(transformB, @base.localFrameB.p);
-            B2Vec2 d = b2Sub(pB, pA);
-            B2Vec2 axis = b2Normalize(d);
+            Vector2 pA = b2TransformPoint(transformA, @base.localFrameA.p);
+            Vector2 pB = b2TransformPoint(transformB, @base.localFrameB.p);
+            Vector2 d = b2Sub(pB, pA);
+            Vector2 axis = b2Normalize(d);
             float force = (joint.impulse + joint.lowerImpulse - joint.upperImpulse + joint.motorImpulse) * world.inv_h;
             return b2MulSV(force, axis);
         }
@@ -309,10 +310,10 @@ namespace Box2D.NET
             joint.anchorB = b2RotateVector(bodySimB.transform.q, b2Sub(@base.localFrameB.p, bodySimB.localCenter));
             joint.deltaCenter = b2SubPos(bodySimB.center, bodySimA.center);
 
-            B2Vec2 rA = joint.anchorA;
-            B2Vec2 rB = joint.anchorB;
-            B2Vec2 separation = b2Add(b2Sub(rB, rA), joint.deltaCenter);
-            B2Vec2 axis = b2Normalize(separation);
+            Vector2 rA = joint.anchorA;
+            Vector2 rB = joint.anchorB;
+            Vector2 separation = b2Add(b2Sub(rB, rA), joint.deltaCenter);
+            Vector2 axis = b2Normalize(separation);
 
             // compute effective mass
             float crA = b2Cross(rA, axis);
@@ -347,15 +348,15 @@ namespace Box2D.NET
             B2BodyState stateA = joint.indexA == B2_NULL_INDEX ? dummyState : context.states[joint.indexA];
             B2BodyState stateB = joint.indexB == B2_NULL_INDEX ? dummyState : context.states[joint.indexB];
 
-            B2Vec2 rA = b2RotateVector(stateA.deltaRotation, joint.anchorA);
-            B2Vec2 rB = b2RotateVector(stateB.deltaRotation, joint.anchorB);
+            Vector2 rA = b2RotateVector(stateA.deltaRotation, joint.anchorA);
+            Vector2 rB = b2RotateVector(stateB.deltaRotation, joint.anchorB);
 
-            B2Vec2 ds = b2Add(b2Sub(stateB.deltaPosition, stateA.deltaPosition), b2Sub(rB, rA));
-            B2Vec2 separation = b2Add(joint.deltaCenter, ds);
-            B2Vec2 axis = b2Normalize(separation);
+            Vector2 ds = b2Add(b2Sub(stateB.deltaPosition, stateA.deltaPosition), b2Sub(rB, rA));
+            Vector2 separation = b2Add(joint.deltaCenter, ds);
+            Vector2 axis = b2Normalize(separation);
 
             float axialImpulse = joint.impulse + joint.lowerImpulse - joint.upperImpulse + joint.motorImpulse;
-            B2Vec2 P = b2MulSV(axialImpulse, axis);
+            Vector2 P = b2MulSV(axialImpulse, axis);
 
             if (0 != (stateA.flags & (uint)B2BodyFlags.b2_dynamicFlag))
             {
@@ -386,21 +387,21 @@ namespace Box2D.NET
             B2BodyState stateA = joint.indexA == B2_NULL_INDEX ? dummyState : context.states[joint.indexA];
             B2BodyState stateB = joint.indexB == B2_NULL_INDEX ? dummyState : context.states[joint.indexB];
 
-            B2Vec2 vA = stateA.linearVelocity;
+            Vector2 vA = stateA.linearVelocity;
             float wA = stateA.angularVelocity;
-            B2Vec2 vB = stateB.linearVelocity;
+            Vector2 vB = stateB.linearVelocity;
             float wB = stateB.angularVelocity;
 
             // current anchors
-            B2Vec2 rA = b2RotateVector(stateA.deltaRotation, joint.anchorA);
-            B2Vec2 rB = b2RotateVector(stateB.deltaRotation, joint.anchorB);
+            Vector2 rA = b2RotateVector(stateA.deltaRotation, joint.anchorA);
+            Vector2 rB = b2RotateVector(stateB.deltaRotation, joint.anchorB);
 
             // current separation
-            B2Vec2 ds = b2Add(b2Sub(stateB.deltaPosition, stateA.deltaPosition), b2Sub(rB, rA));
-            B2Vec2 separation = b2Add(joint.deltaCenter, ds);
+            Vector2 ds = b2Add(b2Sub(stateB.deltaPosition, stateA.deltaPosition), b2Sub(rB, rA));
+            Vector2 separation = b2Add(joint.deltaCenter, ds);
 
             float length = b2Length(separation);
-            B2Vec2 axis = b2Normalize(separation);
+            Vector2 axis = b2Normalize(separation);
 
             // joint is soft if
             // - spring is enabled
@@ -411,7 +412,7 @@ namespace Box2D.NET
                 if (joint.hertz > 0.0f)
                 {
                     // Cdot = dot(u, v + cross(w, r))
-                    B2Vec2 vr = b2Add(b2Sub(vB, vA), b2Sub(b2CrossSV(wB, rB), b2CrossSV(wA, rA)));
+                    Vector2 vr = b2Add(b2Sub(vB, vA), b2Sub(b2CrossSV(wB, rB), b2CrossSV(wA, rA)));
                     float cdot = b2Dot(axis, vr);
                     float c = length - joint.length;
                     float bias = joint.distanceSoftness.biasRate * c;
@@ -424,7 +425,7 @@ namespace Box2D.NET
                     joint.impulse = b2ClampFloat(joint.impulse + impulse, joint.lowerSpringForce * h, joint.upperSpringForce * h);
                     impulse = joint.impulse - oldImpulse;
 
-                    B2Vec2 P = b2MulSV(impulse, axis);
+                    Vector2 P = b2MulSV(impulse, axis);
                     vA = b2MulSub(vA, mA, P);
                     wA -= iA * b2Cross(rA, P);
                     vB = b2MulAdd(vB, mB, P);
@@ -433,7 +434,7 @@ namespace Box2D.NET
 
                 if (joint.enableMotor)
                 {
-                    B2Vec2 vr = b2Add(b2Sub(vB, vA), b2Sub(b2CrossSV(wB, rB), b2CrossSV(wA, rA)));
+                    Vector2 vr = b2Add(b2Sub(vB, vA), b2Sub(b2CrossSV(wB, rB), b2CrossSV(wA, rA)));
                     float Cdot = b2Dot(axis, vr);
                     float impulse = joint.axialMass * (joint.motorSpeed - Cdot);
                     float oldImpulse = joint.motorImpulse;
@@ -441,7 +442,7 @@ namespace Box2D.NET
                     joint.motorImpulse = b2ClampFloat(joint.motorImpulse + impulse, -maxImpulse, maxImpulse);
                     impulse = joint.motorImpulse - oldImpulse;
 
-                    B2Vec2 P = b2MulSV(impulse, axis);
+                    Vector2 P = b2MulSV(impulse, axis);
                     vA = b2MulSub(vA, mA, P);
                     wA -= iA * b2Cross(rA, P);
                     vB = b2MulAdd(vB, mB, P);
@@ -452,7 +453,7 @@ namespace Box2D.NET
                 {
                     // lower limit
                     {
-                        B2Vec2 vr = b2Add(b2Sub(vB, vA), b2Sub(b2CrossSV(wB, rB), b2CrossSV(wA, rA)));
+                        Vector2 vr = b2Add(b2Sub(vB, vA), b2Sub(b2CrossSV(wB, rB), b2CrossSV(wA, rA)));
                         float cdot = b2Dot(axis, vr);
 
                         float c = length - joint.minLength;
@@ -477,7 +478,7 @@ namespace Box2D.NET
                         impulse = newImpulse - joint.lowerImpulse;
                         joint.lowerImpulse = newImpulse;
 
-                        B2Vec2 P = b2MulSV(impulse, axis);
+                        Vector2 P = b2MulSV(impulse, axis);
                         vA = b2MulSub(vA, mA, P);
                         wA -= iA * b2Cross(rA, P);
                         vB = b2MulAdd(vB, mB, P);
@@ -486,7 +487,7 @@ namespace Box2D.NET
 
                     // upper
                     {
-                        B2Vec2 vr = b2Add(b2Sub(vA, vB), b2Sub(b2CrossSV(wA, rA), b2CrossSV(wB, rB)));
+                        Vector2 vr = b2Add(b2Sub(vA, vB), b2Sub(b2CrossSV(wA, rA), b2CrossSV(wB, rB)));
                         float Cdot = b2Dot(axis, vr);
 
                         float C = joint.maxLength - length;
@@ -511,7 +512,7 @@ namespace Box2D.NET
                         impulse = newImpulse - joint.upperImpulse;
                         joint.upperImpulse = newImpulse;
 
-                        B2Vec2 P = b2MulSV(-impulse, axis);
+                        Vector2 P = b2MulSV(-impulse, axis);
                         vA = b2MulSub(vA, mA, P);
                         wA -= iA * b2Cross(rA, P);
                         vB = b2MulAdd(vB, mB, P);
@@ -522,7 +523,7 @@ namespace Box2D.NET
             else
             {
                 // rigid constraint
-                B2Vec2 vr = b2Add(b2Sub(vB, vA), b2Sub(b2CrossSV(wB, rB), b2CrossSV(wA, rA)));
+                Vector2 vr = b2Add(b2Sub(vB, vA), b2Sub(b2CrossSV(wB, rB), b2CrossSV(wA, rA)));
                 float Cdot = b2Dot(axis, vr);
 
                 float C = length - joint.length;
@@ -540,7 +541,7 @@ namespace Box2D.NET
                 float impulse = -massScale * joint.axialMass * (Cdot + bias) - impulseScale * joint.impulse;
                 joint.impulse += impulse;
 
-                B2Vec2 P = b2MulSV(impulse, axis);
+                Vector2 P = b2MulSV(impulse, axis);
                 vA = b2MulSub(vA, mA, P);
                 wA -= iA * b2Cross(rA, P);
                 vB = b2MulAdd(vB, mB, P);
@@ -590,13 +591,13 @@ namespace Box2D.NET
             B2Pos pA = b2TransformWorldPoint(transformA, @base.localFrameA.p);
             B2Pos pB = b2TransformWorldPoint(transformB, @base.localFrameB.p);
 
-            B2Vec2 axis = b2Normalize(b2SubPos(pB, pA));
+            Vector2 axis = b2Normalize(b2SubPos(pB, pA));
 
             if (joint.minLength < joint.maxLength && joint.enableLimit)
             {
                 B2Pos pMin = b2OffsetPos(pA, b2MulSV(joint.minLength, axis));
                 B2Pos pMax = b2OffsetPos(pA, b2MulSV(joint.maxLength, axis));
-                B2Vec2 offset = b2MulSV(0.05f * b2GetLengthUnitsPerMeter(), b2RightPerp(axis));
+                Vector2 offset = b2MulSV(0.05f * b2GetLengthUnitsPerMeter(), b2RightPerp(axis));
 
                 if (joint.minLength > B2_LINEAR_SLOP)
                 {

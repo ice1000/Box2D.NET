@@ -25,7 +25,7 @@ public class UnstablePrismaticJoints : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(0.0f, 1.75f);
+            m_context.camera.center = new Vector2(0.0f, 1.75f);
             m_context.camera.zoom = 32.0f;
         }
 
@@ -34,7 +34,7 @@ public class UnstablePrismaticJoints : Sample
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(-100.0f, 0.0f), new B2Vec2(100.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-100.0f, 0.0f), new Vector2(100.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
@@ -42,13 +42,13 @@ public class UnstablePrismaticJoints : Sample
         {
             B2BodyDef bd = b2DefaultBodyDef();
             bd.type = B2BodyType.b2_dynamicBody;
-            bd.position = b2ToPos(new B2Vec2(0, 3));
+            bd.position = b2ToPos(new Vector2(0, 3));
             centerId = b2CreateBody(m_worldId, bd);
 
             B2ShapeDef sd = b2DefaultShapeDef();
 
             B2Circle circle;
-            circle.center = new B2Vec2(0, 0);
+            circle.center = new Vector2(0, 0);
 
             // Note: this will crash due to divergence (inf/nan) with a radius of 0.1
             //circle.radius = 0.1f;
@@ -65,14 +65,14 @@ public class UnstablePrismaticJoints : Sample
         {
             B2BodyDef bd = b2DefaultBodyDef();
             bd.type = B2BodyType.b2_dynamicBody;
-            bd.position = b2ToPos(new B2Vec2(-3.5f, 3));
+            bd.position = b2ToPos(new Vector2(-3.5f, 3));
 
             B2BodyId leftId = b2CreateBody(m_worldId, bd);
 
             B2ShapeDef sd = b2DefaultShapeDef();
 
             B2Circle circle;
-            circle.center = new B2Vec2(0, 0);
+            circle.center = new Vector2(0, 0);
             circle.radius = 2.0f;
             b2CreateCircleShape(leftId, sd, circle);
 
@@ -85,13 +85,13 @@ public class UnstablePrismaticJoints : Sample
         {
             B2BodyDef bd = b2DefaultBodyDef();
             bd.type = B2BodyType.b2_dynamicBody;
-            bd.position = b2ToPos(new B2Vec2(3.5f, 3));
+            bd.position = b2ToPos(new Vector2(3.5f, 3));
             B2BodyId rightId = b2CreateBody(m_worldId, bd);
 
             B2ShapeDef sd = b2DefaultShapeDef();
 
             B2Circle circle;
-            circle.center = new B2Vec2(0, 0);
+            circle.center = new Vector2(0, 0);
             circle.radius = 2.0f;
 
             b2CreateCircleShape(rightId, sd, circle);

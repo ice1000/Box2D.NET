@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using static Box2D.NET.B2Arrays;
 using static Box2D.NET.B2Cores;
@@ -205,8 +206,8 @@ namespace Box2D.NET
             shape.proxyKey = B2_NULL_INDEX;
             shape.localCentroid = b2GetShapeCentroid(shape);
             shape.aabbMargin = b2ComputeShapeMargin(shape);
-            shape.aabb = new B2AABB(b2Vec2_zero, b2Vec2_zero);
-            world.fatAABBs.data[shapeId] = new B2AABB(b2Vec2_zero, b2Vec2_zero);
+            shape.aabb = new B2AABB(Vector2Zero, Vector2Zero);
+            world.fatAABBs.data[shapeId] = new B2AABB(Vector2Zero, Vector2Zero);
             shape.generation += 1;
 
             if (body.setIndex != (int)B2SolverSetType.b2_disabledSet)
@@ -281,21 +282,21 @@ namespace Box2D.NET
         // Fix degenerate ghost vertices. They get converted to convex corners.
         internal static void b2FixGhostVertices(ref B2ChainSegment chainSegment)
         {
-            B2Vec2 p1 = chainSegment.segment.point1;
-            B2Vec2 p2 = chainSegment.segment.point2;
+            Vector2 p1 = chainSegment.segment.point1;
+            Vector2 p2 = chainSegment.segment.point2;
             float tolSqr = B2_LINEAR_SLOP * B2_LINEAR_SLOP;
 
             // normal is computed twice in the worst case, but neither should happen normally.
 
             if (b2DistanceSquared(chainSegment.ghost1, p1) <= tolSqr)
             {
-                B2Vec2 normal = b2RightPerp(b2Normalize(b2Sub(p2, p1)));
+                Vector2 normal = b2RightPerp(b2Normalize(b2Sub(p2, p1)));
                 chainSegment.ghost1 = b2Sub(p1, normal);
             }
 
             if (b2DistanceSquared(chainSegment.ghost2, p2) <= tolSqr)
             {
-                B2Vec2 normal = b2RightPerp(b2Normalize(b2Sub(p2, p1)));
+                Vector2 normal = b2RightPerp(b2Normalize(b2Sub(p2, p1)));
                 chainSegment.ghost2 = b2Sub(p2, normal);
             }
         }
@@ -613,7 +614,7 @@ namespace Box2D.NET
             shapeDef.enableContactEvents = false;
             shapeDef.enableHitEvents = false;
 
-            ref readonly B2Vec2[] points = ref def.points;
+            ref readonly Vector2[] points = ref def.points;
             int n = segmentCount;
             chainShape.shapeIndices = b2Alloc<int>(n);
 
@@ -850,13 +851,13 @@ namespace Box2D.NET
                 default:
                 {
                     B2_ASSERT(false);
-                    B2AABB empty = new B2AABB(new B2Vec2(0.0f, 0.0f), new B2Vec2(0.0f, 0.0f));
+                    B2AABB empty = new B2AABB(new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f));
                     return empty;
                 }
             }
         }
 
-        internal static B2Vec2 b2GetShapeCentroid(B2Shape shape)
+        internal static Vector2 b2GetShapeCentroid(B2Shape shape)
         {
             switch (shape.type)
             {
@@ -871,7 +872,7 @@ namespace Box2D.NET
                 case B2ShapeType.b2_chainSegmentShape:
                     return b2Lerp(shape.us.chainSegment.segment.point1, shape.us.chainSegment.segment.point2, 0.5f);
                 default:
-                    return b2Vec2_zero;
+                    return Vector2Zero;
             }
         }
 
@@ -887,14 +888,14 @@ namespace Box2D.NET
                     return 2.0f * B2_PI * shape.us.circle.radius;
                 case B2ShapeType.b2_polygonShape:
                 {
-                    ReadOnlySpan<B2Vec2> points = shape.us.polygon.vertices.AsSpan();
+                    ReadOnlySpan<Vector2> points = shape.us.polygon.vertices.AsSpan();
                     int count = shape.us.polygon.count;
                     float perimeter = 2.0f * B2_PI * shape.us.polygon.radius;
                     B2_ASSERT(count > 0);
-                    B2Vec2 prev = points[count - 1];
+                    Vector2 prev = points[count - 1];
                     for (int i = 0; i < count; ++i)
                     {
-                        B2Vec2 next = points[i];
+                        Vector2 next = points[i];
                         perimeter += b2Length(b2Sub(next, prev));
                         prev = next;
                     }
@@ -911,13 +912,13 @@ namespace Box2D.NET
         }
 
         // This projects the shape perimeter onto an infinite line
-        internal static float b2GetShapeProjectedPerimeter(B2Shape shape, B2Vec2 line)
+        internal static float b2GetShapeProjectedPerimeter(B2Shape shape, Vector2 line)
         {
             switch (shape.type)
             {
                 case B2ShapeType.b2_capsuleShape:
                 {
-                    B2Vec2 axis = b2Sub(shape.us.capsule.center2, shape.us.capsule.center1);
+                    Vector2 axis = b2Sub(shape.us.capsule.center2, shape.us.capsule.center1);
                     float projectedLength = b2AbsFloat(b2Dot(axis, line));
                     return projectedLength + 2.0f * shape.us.capsule.radius;
                 }
@@ -927,7 +928,7 @@ namespace Box2D.NET
 
                 case B2ShapeType.b2_polygonShape:
                 {
-                    ReadOnlySpan<B2Vec2> points = shape.us.polygon.vertices.AsSpan();
+                    ReadOnlySpan<Vector2> points = shape.us.polygon.vertices.AsSpan();
                     int count = shape.us.polygon.count;
                     B2_ASSERT(count > 0);
                     float value = b2Dot(points[0], line);
@@ -977,7 +978,7 @@ namespace Box2D.NET
             }
         }
 
-        internal static B2ShapeExtent b2ComputeShapeExtent(B2Shape shape, B2Vec2 localCenter)
+        internal static B2ShapeExtent b2ComputeShapeExtent(B2Shape shape, Vector2 localCenter)
         {
             B2ShapeExtent extent = new B2ShapeExtent();
 
@@ -987,8 +988,8 @@ namespace Box2D.NET
                 {
                     float radius = shape.us.capsule.radius;
                     extent.minExtent = radius;
-                    B2Vec2 c1 = b2Sub(shape.us.capsule.center1, localCenter);
-                    B2Vec2 c2 = b2Sub(shape.us.capsule.center2, localCenter);
+                    Vector2 c1 = b2Sub(shape.us.capsule.center1, localCenter);
+                    Vector2 c2 = b2Sub(shape.us.capsule.center2, localCenter);
                     extent.maxExtent = MathF.Sqrt(b2MaxFloat(b2LengthSquared(c1), b2LengthSquared(c2))) + radius;
                 }
                     break;
@@ -1009,7 +1010,7 @@ namespace Box2D.NET
                     int count = poly.count;
                     for (int i = 0; i < count; ++i)
                     {
-                        B2Vec2 v = poly.vertices[i];
+                        Vector2 v = poly.vertices[i];
                         float planeOffset = b2Dot(poly.normals[i], b2Sub(v, poly.centroid));
                         minExtent = b2MinFloat(minExtent, planeOffset);
 
@@ -1025,8 +1026,8 @@ namespace Box2D.NET
                 case B2ShapeType.b2_segmentShape:
                 {
                     extent.minExtent = 0.0f;
-                    B2Vec2 c1 = b2Sub(shape.us.segment.point1, localCenter);
-                    B2Vec2 c2 = b2Sub(shape.us.segment.point2, localCenter);
+                    Vector2 c1 = b2Sub(shape.us.segment.point1, localCenter);
+                    Vector2 c2 = b2Sub(shape.us.segment.point2, localCenter);
                     extent.maxExtent = MathF.Sqrt(b2MaxFloat(b2LengthSquared(c1), b2LengthSquared(c2)));
                 }
                     break;
@@ -1034,8 +1035,8 @@ namespace Box2D.NET
                 case B2ShapeType.b2_chainSegmentShape:
                 {
                     extent.minExtent = 0.0f;
-                    B2Vec2 c1 = b2Sub(shape.us.chainSegment.segment.point1, localCenter);
-                    B2Vec2 c2 = b2Sub(shape.us.chainSegment.segment.point2, localCenter);
+                    Vector2 c1 = b2Sub(shape.us.chainSegment.segment.point1, localCenter);
+                    Vector2 c2 = b2Sub(shape.us.chainSegment.segment.point2, localCenter);
                     extent.maxExtent = MathF.Sqrt(b2MaxFloat(b2LengthSquared(c1), b2LengthSquared(c2)));
                 }
                     break;
@@ -1117,7 +1118,7 @@ namespace Box2D.NET
                 case B2ShapeType.b2_chainSegmentShape:
                 {
                     // Check for back side collision
-                    B2Vec2 approximateCentroid = localInput.proxy.points[0];
+                    Vector2 approximateCentroid = localInput.proxy.points[0];
                     for (int i = 1; i < localInput.proxy.count; ++i)
                     {
                         approximateCentroid = b2Add(approximateCentroid, localInput.proxy.points[i]);
@@ -1125,8 +1126,8 @@ namespace Box2D.NET
 
                     approximateCentroid = b2MulSV(1.0f / localInput.proxy.count, approximateCentroid);
 
-                    B2Vec2 edge = b2Sub(shape.us.chainSegment.segment.point2, shape.us.chainSegment.segment.point1);
-                    B2Vec2 r = b2Sub(approximateCentroid, shape.us.chainSegment.segment.point1);
+                    Vector2 edge = b2Sub(shape.us.chainSegment.segment.point2, shape.us.chainSegment.segment.point1);
+                    Vector2 r = b2Sub(approximateCentroid, shape.us.chainSegment.segment.point1);
 
                     if (b2Cross(r, edge) < 0.0f)
                     {
@@ -1171,9 +1172,9 @@ namespace Box2D.NET
                     break;
                 case B2ShapeType.b2_chainSegmentShape:
                 {
-                    B2Vec2 centroid = b2Lerp(localMover.center1, localMover.center2, 0.5f);
-                    B2Vec2 edge = b2Sub(shape.us.chainSegment.segment.point2, shape.us.chainSegment.segment.point1);
-                    B2Vec2 r = b2Sub(centroid, shape.us.chainSegment.segment.point1);
+                    Vector2 centroid = b2Lerp(localMover.center1, localMover.center2, 0.5f);
+                    Vector2 edge = b2Sub(shape.us.chainSegment.segment.point2, shape.us.chainSegment.segment.point1);
+                    Vector2 r = b2Sub(centroid, shape.us.chainSegment.segment.point1);
 
                     // Skip backside collision.
                     if (b2Cross(r, edge) < 0.0f)
@@ -1287,7 +1288,7 @@ namespace Box2D.NET
             B2Shape shape = b2GetShape(world, shapeId);
 
             B2WorldTransform transform = b2GetBodyTransform(world, shape.bodyId);
-            B2Vec2 localPoint = b2InvTransformWorldPoint(transform, point);
+            Vector2 localPoint = b2InvTransformWorldPoint(transform, point);
 
             switch (shape.type)
             {
@@ -1307,7 +1308,7 @@ namespace Box2D.NET
 
         /// Ray cast a single shape. The ray starts at the origin and extends by the translation. The output
         /// point is a world position.
-        public static B2WorldCastOutput b2Shape_CastRay(B2ShapeId shapeId, B2Pos origin, B2Vec2 translation)
+        public static B2WorldCastOutput b2Shape_CastRay(B2ShapeId shapeId, B2Pos origin, Vector2 translation)
         {
             B2_ASSERT(b2IsValidPos(origin));
             B2_ASSERT(b2IsValidVec2(translation));
@@ -1319,7 +1320,7 @@ namespace Box2D.NET
             B2Transform transform = b2ToRelativeTransform(b2GetBodyTransform(world, shape.bodyId), origin);
 
             // The ray starts at the origin, so its origin in the re-centered frame is zero
-            B2RayCastInput input = new B2RayCastInput(b2Vec2_zero, translation, 1.0f);
+            B2RayCastInput input = new B2RayCastInput(Vector2Zero, translation, 1.0f);
 
             // Lift the re-centered float result back to a world position
             B2CastOutput local = b2RayCastShape(input, shape, transform);
@@ -2053,7 +2054,7 @@ namespace Box2D.NET
 
             // The target rides in as the frame of proxy B, so the relative pose is differenced in double
             // and the result stays exact far from the origin
-            B2Vec2 zero = b2Vec2_zero;
+            Vector2 zero = Vector2Zero;
             B2WorldTransform targetTransform = new B2WorldTransform(target, b2Rot_identity);
 
             B2DistanceInput input = new B2DistanceInput();
@@ -2081,7 +2082,7 @@ namespace Box2D.NET
         /// @param drag the drag coefficient, the force that opposes the relative velocity
         /// @param lift the lift coefficient, the force that is perpendicular to the relative velocity
         /// @param wake should this wake the body
-        public static void b2Shape_ApplyWind(B2ShapeId shapeId, B2Vec2 wind, float drag, float lift, bool wake)
+        public static void b2Shape_ApplyWind(B2ShapeId shapeId, Vector2 wind, float drag, float lift, bool wake)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(wind)) == false) return;
             if (B2_CHECK_INPUT(b2IsValidFloat(drag)) == false) return;
@@ -2132,7 +2133,7 @@ namespace Box2D.NET
             // In 2D I'm assuming unit depth
             float airDensity = 1.2250f / (volumeUnits);
 
-            B2Vec2 force = new B2Vec2();
+            Vector2 force = new Vector2();
             float torque = 0.0f;
 
             switch (shape.type)
@@ -2140,12 +2141,12 @@ namespace Box2D.NET
                 case B2ShapeType.b2_circleShape:
                 {
                     float radius = shape.us.circle.radius;
-                    B2Vec2 centroid = shape.localCentroid;
-                    B2Vec2 lever = b2RotateVector(transform.q, b2Sub(centroid, sim.localCenter));
-                    B2Vec2 shapeVelocity = b2Add(state.linearVelocity, b2CrossSV(state.angularVelocity, lever));
-                    B2Vec2 relativeVelocity = b2MulSub(wind, drag, shapeVelocity);
+                    Vector2 centroid = shape.localCentroid;
+                    Vector2 lever = b2RotateVector(transform.q, b2Sub(centroid, sim.localCenter));
+                    Vector2 shapeVelocity = b2Add(state.linearVelocity, b2CrossSV(state.angularVelocity, lever));
+                    Vector2 relativeVelocity = b2MulSub(wind, drag, shapeVelocity);
                     float speed = 0.0f;
-                    B2Vec2 direction = b2GetLengthAndNormalize(ref speed, relativeVelocity);
+                    Vector2 direction = b2GetLengthAndNormalize(ref speed, relativeVelocity);
                     float projectedArea = 2.0f * radius;
                     force = b2MulSV(0.5f * airDensity * projectedArea * speed * speed, direction);
                     torque = b2Cross(lever, force);
@@ -2154,54 +2155,54 @@ namespace Box2D.NET
 
                 case B2ShapeType.b2_capsuleShape:
                 {
-                    B2Vec2 centroid = shape.localCentroid;
-                    B2Vec2 lever = b2RotateVector(transform.q, b2Sub(centroid, sim.localCenter));
-                    B2Vec2 shapeVelocity = b2Add(state.linearVelocity, b2CrossSV(state.angularVelocity, lever));
-                    B2Vec2 relativeVelocity = b2MulSub(wind, drag, shapeVelocity);
+                    Vector2 centroid = shape.localCentroid;
+                    Vector2 lever = b2RotateVector(transform.q, b2Sub(centroid, sim.localCenter));
+                    Vector2 shapeVelocity = b2Add(state.linearVelocity, b2CrossSV(state.angularVelocity, lever));
+                    Vector2 relativeVelocity = b2MulSub(wind, drag, shapeVelocity);
                     float speed = 0.0f;
                     ;
-                    B2Vec2 direction = b2GetLengthAndNormalize(ref speed, relativeVelocity);
+                    Vector2 direction = b2GetLengthAndNormalize(ref speed, relativeVelocity);
 
-                    B2Vec2 d = b2Sub(shape.us.capsule.center2, shape.us.capsule.center1);
+                    Vector2 d = b2Sub(shape.us.capsule.center2, shape.us.capsule.center1);
                     d = b2RotateVector(transform.q, d);
 
                     float radius = shape.us.capsule.radius;
                     float projectedArea = 2.0f * radius + b2AbsFloat(b2Cross(d, direction));
 
                     // Normal that opposes the wind
-                    B2Vec2 normal = b2LeftPerp(b2Normalize(d));
+                    Vector2 normal = b2LeftPerp(b2Normalize(d));
                     normal = b2Dot(normal, direction) > 0.0f ? b2Neg(normal) : normal;
 
                     // portion of wind that is perpendicular to surface
-                    B2Vec2 liftDirection = b2CrossSV(b2Cross(normal, direction), direction);
+                    Vector2 liftDirection = b2CrossSV(b2Cross(normal, direction), direction);
 
                     float forceMagnitude = 0.5f * airDensity * projectedArea * speed * speed;
                     force = b2MulSV(forceMagnitude, b2MulAdd(direction, lift, liftDirection));
 
-                    B2Vec2 edgeLever = b2MulAdd(lever, radius, normal);
+                    Vector2 edgeLever = b2MulAdd(lever, radius, normal);
                     torque = b2Cross(edgeLever, force);
                 }
                     break;
 
                 case B2ShapeType.b2_polygonShape:
                 {
-                    B2Vec2 centroid = shape.localCentroid;
-                    B2Vec2 lever = b2RotateVector(transform.q, b2Sub(centroid, sim.localCenter));
-                    B2Vec2 shapeVelocity = b2Add(state.linearVelocity, b2CrossSV(state.angularVelocity, lever));
-                    B2Vec2 relativeVelocity = b2MulSub(wind, drag, shapeVelocity);
+                    Vector2 centroid = shape.localCentroid;
+                    Vector2 lever = b2RotateVector(transform.q, b2Sub(centroid, sim.localCenter));
+                    Vector2 shapeVelocity = b2Add(state.linearVelocity, b2CrossSV(state.angularVelocity, lever));
+                    Vector2 relativeVelocity = b2MulSub(wind, drag, shapeVelocity);
                     float speed = 0.0f;
-                    B2Vec2 direction = b2GetLengthAndNormalize(ref speed, relativeVelocity);
+                    Vector2 direction = b2GetLengthAndNormalize(ref speed, relativeVelocity);
 
                     // polygon radius is ignored for simplicity
                     int count = shape.us.polygon.count;
-                    Span<B2Vec2> vertices = shape.us.polygon.vertices.AsSpan();
+                    Span<Vector2> vertices = shape.us.polygon.vertices.AsSpan();
 
-                    B2Vec2 v1 = vertices[count - 1];
+                    Vector2 v1 = vertices[count - 1];
                     for (int i = 0; i < count; ++i)
                     {
-                        B2Vec2 v2 = vertices[i];
-                        B2Vec2 d = b2Sub(v2, v1);
-                        B2Vec2 edgeCenter = b2Lerp(v1, v2, 0.5f);
+                        Vector2 v2 = vertices[i];
+                        Vector2 d = b2Sub(v2, v1);
+                        Vector2 edgeCenter = b2Lerp(v1, v2, 0.5f);
                         v1 = v2;
 
                         d = b2RotateVector(transform.q, d);
@@ -2213,15 +2214,15 @@ namespace Box2D.NET
                             continue;
                         }
 
-                        B2Vec2 normal = b2RightPerp(b2Normalize(d));
+                        Vector2 normal = b2RightPerp(b2Normalize(d));
 
                         // portion of wind that is perpendicular to surface
-                        B2Vec2 liftDirection = b2CrossSV(b2Cross(normal, direction), direction);
+                        Vector2 liftDirection = b2CrossSV(b2Cross(normal, direction), direction);
 
                         float forceMagnitude = 0.5f * airDensity * projectedArea * speed * speed;
-                        B2Vec2 f = b2MulSV(forceMagnitude, b2MulAdd(direction, lift, liftDirection));
+                        Vector2 f = b2MulSV(forceMagnitude, b2MulAdd(direction, lift, liftDirection));
 
-                        B2Vec2 edgeLever = b2RotateVector(transform.q, b2Sub(edgeCenter, sim.localCenter));
+                        Vector2 edgeLever = b2RotateVector(transform.q, b2Sub(edgeCenter, sim.localCenter));
 
                         force = b2Add(force, f);
                         torque += b2Cross(edgeLever, f);

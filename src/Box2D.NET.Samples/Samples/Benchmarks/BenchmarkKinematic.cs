@@ -23,7 +23,7 @@ public class BenchmarkKinematic : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 0.0f);
+            m_camera.center = new Vector2(0.0f, 0.0f);
             m_camera.zoom = 150.0f;
         }
 
@@ -54,7 +54,7 @@ public class BenchmarkKinematic : Sample
             for (int j = -span; j < span; ++j)
             {
                 float x = j * grid;
-                B2Polygon square = b2MakeOffsetBox(0.5f * grid, 0.5f * grid, new B2Vec2(x, y), b2Rot_identity);
+                B2Polygon square = b2MakeOffsetBox(0.5f * grid, 0.5f * grid, new Vector2(x, y), b2Rot_identity);
                 b2CreatePolygonShape(bodyId, shapeDef, square);
             }
         }

@@ -19,7 +19,7 @@ public class BenchmarkTumbler : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(1.5f, 10.0f);
+            m_camera.center = new Vector2(1.5f, 10.0f);
             m_camera.zoom = 15.0f;
         }
 

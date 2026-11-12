@@ -25,7 +25,7 @@ public class BenchmarkManyPyramids : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(16.0f, 110.0f);
+            m_camera.center = new Vector2(16.0f, 110.0f);
             m_camera.zoom = 25.0f * 5.0f;
             m_context.enableSleep = false;
         }

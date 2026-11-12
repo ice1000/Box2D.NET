@@ -31,7 +31,7 @@ public class Kinematic : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 0.0f);
+            m_camera.center = new Vector2(0.0f, 0.0f);
             m_camera.zoom = 4.0f;
         }
 
@@ -73,12 +73,12 @@ public class Kinematic : Sample
 
         if (m_timeStep > 0.0f)
         {
-            B2Vec2 point;
+            Vector2 point;
             point.X = 2.0f * m_amplitude * MathF.Cos(m_time);
             point.Y = m_amplitude * MathF.Sin(2.0f * m_time);
             B2Rot rotation = b2MakeRot(2.0f * m_time);
 
-            B2Vec2 axis = b2RotateVector(rotation, new B2Vec2(0.0f, 1.0f));
+            Vector2 axis = b2RotateVector(rotation, new Vector2(0.0f, 1.0f));
             DrawLine(m_draw, point - 0.5f * axis, point + 0.5f * axis, B2HexColor.b2_colorPlum);
             DrawPoint(m_draw, point, 10.0f, B2HexColor.b2_colorPlum);
 

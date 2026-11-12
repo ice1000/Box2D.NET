@@ -27,7 +27,7 @@ public class PixelImperfect : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(7.0f, 5.0f);
+            m_camera.center = new Vector2(7.0f, 5.0f);
             m_camera.zoom = 6.0f;
         }
 
@@ -36,7 +36,7 @@ public class PixelImperfect : Sample
         {
             B2BodyDef block4BodyDef = b2DefaultBodyDef();
             block4BodyDef.type = B2BodyType.b2_staticBody;
-            block4BodyDef.position = b2ToPos(new B2Vec2(175.0f / pixelsPerMeter, 150.0f / pixelsPerMeter));
+            block4BodyDef.position = b2ToPos(new Vector2(175.0f / pixelsPerMeter, 150.0f / pixelsPerMeter));
             B2BodyId block4BodyId = b2CreateBody(m_worldId, block4BodyDef);
             B2Polygon block4Shape = b2MakeBox(20.0f / pixelsPerMeter, 10.0f / pixelsPerMeter);
             B2ShapeDef block4ShapeDef = b2DefaultShapeDef();
@@ -47,7 +47,7 @@ public class PixelImperfect : Sample
         {
             B2BodyDef ballBodyDef = b2DefaultBodyDef();
             ballBodyDef.type = B2BodyType.b2_dynamicBody;
-            ballBodyDef.position = b2ToPos(new B2Vec2(200.0f / pixelsPerMeter, 275.0f / pixelsPerMeter));
+            ballBodyDef.position = b2ToPos(new Vector2(200.0f / pixelsPerMeter, 275.0f / pixelsPerMeter));
             ballBodyDef.gravityScale = 0.0f;
 
             m_ballId = b2CreateBody(m_worldId, ballBodyDef);
@@ -58,7 +58,7 @@ public class PixelImperfect : Sample
             ballShapeDef.material.friction = 0.0f;
             //ballShapeDef.restitution = 1.f;
             b2CreatePolygonShape(m_ballId, ballShapeDef, ballShape);
-            b2Body_SetLinearVelocity(m_ballId, new B2Vec2(0.0f, -5.0f));
+            b2Body_SetLinearVelocity(m_ballId, new Vector2(0.0f, -5.0f));
             b2Body_SetMotionLocks(m_ballId, new B2MotionLocks(false, false, true));
         }
     }
@@ -75,8 +75,8 @@ public class PixelImperfect : Sample
     {
         base.Draw();
 
-        B2Vec2 p = b2ToVec2(b2Body_GetPosition(m_ballId));
-        B2Vec2 v = b2Body_GetLinearVelocity(m_ballId);
+        Vector2 p = b2ToVec2(b2Body_GetPosition(m_ballId));
+        Vector2 v = b2Body_GetLinearVelocity(m_ballId);
         DrawScreenTextLine($"p.x = {p.X:F9}, v.y = {v.Y:F9}");
     }
 }

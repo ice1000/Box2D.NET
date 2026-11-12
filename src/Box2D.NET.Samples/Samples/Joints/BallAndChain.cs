@@ -34,7 +34,7 @@ public class BallAndChain : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, -8.0f);
+            m_camera.center = new Vector2(0.0f, -8.0f);
             m_camera.zoom = 27.5f;
         }
 
@@ -48,7 +48,7 @@ public class BallAndChain : Sample
 
         {
             float hx = 0.5f;
-            B2Capsule capsule = new B2Capsule(new B2Vec2(-hx, 0.0f), new B2Vec2(hx, 0.0f), 0.125f);
+            B2Capsule capsule = new B2Capsule(new Vector2(-hx, 0.0f), new Vector2(hx, 0.0f), 0.125f);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.density = 20.0f;
@@ -63,11 +63,11 @@ public class BallAndChain : Sample
             {
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
-                bodyDef.position = b2ToPos(new B2Vec2((1.0f + 2.0f * i) * hx, m_count * hx));
+                bodyDef.position = b2ToPos(new Vector2((1.0f + 2.0f * i) * hx, m_count * hx));
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
                 b2CreateCapsuleShape(bodyId, shapeDef, capsule);
 
-                B2Vec2 pivot = new B2Vec2((2.0f * i) * hx, m_count * hx);
+                Vector2 pivot = new Vector2((2.0f * i) * hx, m_count * hx);
                 jointDef.@base.bodyIdA = prevBodyId;
                 jointDef.@base.bodyIdB = bodyId;
                 jointDef.@base.localFrameA.p = b2Body_GetLocalPoint(jointDef.@base.bodyIdA, b2ToPos(pivot));
@@ -82,18 +82,18 @@ public class BallAndChain : Sample
             }
 
             {
-                B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 4.0f);
+                B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 4.0f);
 
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
-                bodyDef.position = b2ToPos(new B2Vec2((1.0f + 2.0f * m_count) * hx + circle.radius - hx, m_count * hx));
+                bodyDef.position = b2ToPos(new Vector2((1.0f + 2.0f * m_count) * hx + circle.radius - hx, m_count * hx));
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
                 shapeDef.filter.categoryBits = 0x2;
                 shapeDef.filter.maskBits = 0x1;
                 b2CreateCircleShape(bodyId, shapeDef, circle);
 
-                B2Vec2 pivot = new B2Vec2((2.0f * m_count) * hx, m_count * hx);
+                Vector2 pivot = new Vector2((2.0f * m_count) * hx, m_count * hx);
                 jointDef.@base.bodyIdA = prevBodyId;
                 jointDef.@base.bodyIdB = bodyId;
                 jointDef.@base.localFrameA.p = b2Body_GetLocalPoint(jointDef.@base.bodyIdA, b2ToPos(pivot));

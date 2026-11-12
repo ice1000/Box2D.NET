@@ -32,7 +32,7 @@ public class Pinball : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 9.0f);
+            m_camera.center = new Vector2(0.0f, 9.0f);
             m_camera.zoom = 25.0f * 0.5f;
         }
 
@@ -44,13 +44,13 @@ public class Pinball : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             groundId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Vec2[] vs = new B2Vec2[5]
+            Vector2[] vs = new Vector2[5]
             {
-                new B2Vec2(-8.0f, 6.0f),
-                new B2Vec2(-8.0f, 20.0f),
-                new B2Vec2(8.0f, 20.0f),
-                new B2Vec2(8.0f, 6.0f),
-                new B2Vec2(0.0f, -2.0f),
+                new Vector2(-8.0f, 6.0f),
+                new Vector2(-8.0f, 20.0f),
+                new Vector2(8.0f, 20.0f),
+                new Vector2(8.0f, 6.0f),
+                new Vector2(0.0f, -2.0f),
             };
 
             B2ChainDef chainDef = b2DefaultChainDef();
@@ -62,7 +62,7 @@ public class Pinball : Sample
 
         // Flippers
         {
-            B2Vec2 p1 = new B2Vec2(-2.0f, 0.0f), p2 = new B2Vec2(2.0f, 0.0f);
+            Vector2 p1 = new Vector2(-2.0f, 0.0f), p2 = new Vector2(2.0f, 0.0f);
 
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
@@ -83,7 +83,7 @@ public class Pinball : Sample
 
             B2RevoluteJointDef jointDef = b2DefaultRevoluteJointDef();
             jointDef.@base.bodyIdA = groundId;
-            jointDef.@base.localFrameB.p = b2Vec2_zero;
+            jointDef.@base.localFrameB.p = Vector2Zero;
             jointDef.enableMotor = true;
             jointDef.maxMotorTorque = 1000.0f;
             jointDef.enableLimit = true;
@@ -107,7 +107,7 @@ public class Pinball : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(-4.0f, 17.0f));
+            bodyDef.position = b2ToPos(new Vector2(-4.0f, 17.0f));
 
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
@@ -122,12 +122,12 @@ public class Pinball : Sample
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = bodyId;
             jointDef.@base.localFrameA.p = b2ToVec2(bodyDef.position);
-            jointDef.@base.localFrameB.p = b2Vec2_zero;
+            jointDef.@base.localFrameB.p = Vector2Zero;
             jointDef.enableMotor = true;
             jointDef.maxMotorTorque = 0.1f;
             b2CreateRevoluteJoint(m_worldId, jointDef);
 
-            bodyDef.position = b2ToPos(new B2Vec2(4.0f, 8.0f));
+            bodyDef.position = b2ToPos(new Vector2(4.0f, 8.0f));
             bodyId = b2CreateBody(m_worldId, bodyDef);
             b2CreatePolygonShape(bodyId, shapeDef, box1);
             b2CreatePolygonShape(bodyId, shapeDef, box2);
@@ -139,17 +139,17 @@ public class Pinball : Sample
         // Bumpers
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(-4.0f, 8.0f));
+            bodyDef.position = b2ToPos(new Vector2(-4.0f, 8.0f));
 
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.material.restitution = 1.5f;
 
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 1.0f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 1.0f);
             b2CreateCircleShape(bodyId, shapeDef, circle);
 
-            bodyDef.position = b2ToPos(new B2Vec2(4.0f, 17.0f));
+            bodyDef.position = b2ToPos(new Vector2(4.0f, 17.0f));
             bodyId = b2CreateBody(m_worldId, bodyDef);
             b2CreateCircleShape(bodyId, shapeDef, circle);
         }
@@ -157,14 +157,14 @@ public class Pinball : Sample
         // Ball
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(1.0f, 15.0f));
+            bodyDef.position = b2ToPos(new Vector2(1.0f, 15.0f));
             bodyDef.type = B2BodyType.b2_dynamicBody;
             bodyDef.isBullet = true;
 
             m_ballId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.2f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.2f);
             b2CreateCircleShape(m_ballId, shapeDef, circle);
         }
     }

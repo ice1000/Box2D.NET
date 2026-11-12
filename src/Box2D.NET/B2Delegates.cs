@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 
 namespace Box2D.NET
 {
@@ -91,7 +92,7 @@ namespace Box2D.NET
     /// Return false if you want to disable the time of impact event.
     /// @warning Do not attempt to modify the world inside this callback
     /// @ingroup world
-    public delegate bool b2PreContinuousCallbackFcn(B2ShapeId shapeIdA, B2ShapeId shapeIdB, B2Pos point, B2Vec2 normal, object context);
+    public delegate bool b2PreContinuousCallbackFcn(B2ShapeId shapeIdA, B2ShapeId shapeIdB, B2Pos point, Vector2 normal, object context);
 
     /// Prototype callback for overlap queries.
     /// Called for each shape found in the query.
@@ -116,7 +117,7 @@ namespace Box2D.NET
     /// @return -1 to filter, 0 to terminate, fraction to clip the ray for closest hit, 1 to continue
     /// @see b2World_CastRay
     /// @ingroup world
-    public delegate float b2CastResultCallbackFcn<T>(B2ShapeId shapeId, B2Pos point, B2Vec2 normal, float fraction, ref T context);
+    public delegate float b2CastResultCallbackFcn<T>(B2ShapeId shapeId, B2Pos point, Vector2 normal, float fraction, ref T context);
 
     // Used to collect collision planes for character movers.
     // Return true to continue gathering planes.
@@ -161,16 +162,16 @@ namespace Box2D.NET
     // -----------------------------------------------------------------------------------------------------------------
 
     /// Draw a closed polygon provided in CCW order.
-        public delegate void DrawPolygonFcn(in B2WorldTransform transform, ReadOnlySpan<B2Vec2> vertices, int vertexCount, B2HexColor color, object context);
+        public delegate void DrawPolygonFcn(in B2WorldTransform transform, ReadOnlySpan<Vector2> vertices, int vertexCount, B2HexColor color, object context);
 
     /// Draw a solid closed polygon provided in CCW order.
-    public delegate void DrawSolidPolygonFcn(in B2WorldTransform transform, ReadOnlySpan<B2Vec2> vertices, int vertexCount, float radius, B2HexColor color, object context);
+    public delegate void DrawSolidPolygonFcn(in B2WorldTransform transform, ReadOnlySpan<Vector2> vertices, int vertexCount, float radius, B2HexColor color, object context);
 
     /// Draw a circle.
     public delegate void DrawCircleFcn(in B2Pos center, float radius, B2HexColor color, object context);
 
     /// Draw a solid circle.
-    public delegate void DrawSolidCircleFcn(in B2WorldTransform transform, B2Vec2 center, float radius, B2HexColor color, object context);
+    public delegate void DrawSolidCircleFcn(in B2WorldTransform transform, Vector2 center, float radius, B2HexColor color, object context);
 
     /// Draw a solid capsule.
     public delegate void DrawSolidCapsuleFcn(in B2Pos p1, in B2Pos p2, float radius, B2HexColor color, object context);

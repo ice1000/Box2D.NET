@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     public struct B2ContinuousContext
@@ -9,7 +11,7 @@ namespace Box2D.NET
         public B2World world;
         public B2BodySim fastBodySim;
         public B2Shape fastShape;
-        public B2Vec2 centroid1, centroid2;
+        public Vector2 centroid1, centroid2;
         public B2Sweep sweep;
         public B2Pos @base;
         public float fraction;

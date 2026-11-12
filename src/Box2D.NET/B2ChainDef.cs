@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     /// Used to create a chain of line segments. This is designed to eliminate ghost collisions with some limitations.
@@ -25,7 +27,7 @@ namespace Box2D.NET
 
         /// Array of chain points. Each consecutive pair forms a segment. For a loop
         /// the last and first point form a segment. Cloned.
-        public B2Vec2[] points;
+        public Vector2[] points;
 
         /// The point count. At least 2 for an open chain and at least 3 for a loop.
         /// segmentCount = isLoop ? pointCount : pointCount - 1
@@ -33,11 +35,11 @@ namespace Box2D.NET
 
         /// Leading ghost point for an open chain. Distance from first point must be greater
         /// than B2_LINEAR_SLOP. Ignored for loops.
-        public B2Vec2 ghost1;
+        public Vector2 ghost1;
 
         /// Ending ghost point for an open chain. Distance from last point must be greater
         /// than B2_LINEAR_SLOP. Ignored for loops.
-        public B2Vec2 ghost2;
+        public Vector2 ghost2;
 
         /// One material for the whole chain or one for each segment. Cloned.
         public B2SurfaceMaterial[] materials;

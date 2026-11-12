@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using static Box2D.NET.B2Constants;
 using static Box2D.NET.B2Cores;
 using static Box2D.NET.B2Diagnostics;
@@ -114,14 +115,14 @@ namespace Box2D.NET
             return def;
         }
 
-        public static void b2EmptyDrawPolygon(in B2WorldTransform transform, ReadOnlySpan<B2Vec2> vertices, int vertexCount, B2HexColor color, object context)
+        public static void b2EmptyDrawPolygon(in B2WorldTransform transform, ReadOnlySpan<Vector2> vertices, int vertexCount, B2HexColor color, object context)
         {
-            B2_UNUSED((B2Vec2[])null, vertexCount, color, context);
+            B2_UNUSED((Vector2[])null, vertexCount, color, context);
         }
 
-        public static void b2EmptyDrawSolidPolygon(in B2WorldTransform transform, ReadOnlySpan<B2Vec2> vertices, int vertexCount, float radius, B2HexColor color, object context)
+        public static void b2EmptyDrawSolidPolygon(in B2WorldTransform transform, ReadOnlySpan<Vector2> vertices, int vertexCount, float radius, B2HexColor color, object context)
         {
-            B2_UNUSED(transform, (B2Vec2[])null, vertexCount, radius, color, context);
+            B2_UNUSED(transform, (Vector2[])null, vertexCount, radius, color, context);
         }
 
         public static void b2EmptyDrawCircle(in B2Pos center, float radius, B2HexColor color, object context)
@@ -129,7 +130,7 @@ namespace Box2D.NET
             B2_UNUSED(center, radius, color, context);
         }
 
-        public static void b2EmptyDrawSolidCircle(in B2WorldTransform transform, B2Vec2 center, float radius, B2HexColor color, object context)
+        public static void b2EmptyDrawSolidCircle(in B2WorldTransform transform, Vector2 center, float radius, B2HexColor color, object context)
         {
             B2_UNUSED(transform, radius, color, context);
         }
@@ -182,8 +183,8 @@ namespace Box2D.NET
             draw.DrawStringFcn = b2EmptyDrawString;
             draw.DrawBoundsFcn = b2EmptyDrawBounds;
 
-            draw.drawingBounds.lowerBound = new B2Vec2(-float.MaxValue, -float.MaxValue);
-            draw.drawingBounds.upperBound = new B2Vec2(float.MaxValue, float.MaxValue);
+            draw.drawingBounds.lowerBound = new Vector2(-float.MaxValue, -float.MaxValue);
+            draw.drawingBounds.upperBound = new Vector2(float.MaxValue, float.MaxValue);
             draw.forceScale = 1.0f;
             draw.jointScale = 1.0f;
             draw.drawShapes = true;

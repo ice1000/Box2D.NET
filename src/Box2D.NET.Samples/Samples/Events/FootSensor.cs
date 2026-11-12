@@ -43,7 +43,7 @@ public class FootSensor : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 6.0f);
+            m_camera.center = new Vector2(0.0f, 6.0f);
             m_camera.zoom = 7.5f;
         }
 
@@ -51,19 +51,19 @@ public class FootSensor : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Vec2[] points = new B2Vec2[18];
+            Vector2[] points = new Vector2[18];
             float x = 9.0f;
             for (int i = 0; i < 18; ++i)
             {
-                points[i] = new B2Vec2(x, 0.0f);
+                points[i] = new Vector2(x, 0.0f);
                 x -= 1.0f;
             }
 
             B2ChainDef chainDef = b2DefaultChainDef();
             chainDef.points = points;
             chainDef.pointCount = 18;
-            chainDef.ghost1 = new B2Vec2(10.0f, 0.0f);
-            chainDef.ghost2 = new B2Vec2(-9.0f, 0.0f);
+            chainDef.ghost1 = new Vector2(10.0f, 0.0f);
+            chainDef.ghost2 = new Vector2(-9.0f, 0.0f);
             chainDef.filter.categoryBits = GROUND;
             chainDef.filter.maskBits = FOOT | PLAYER;
             chainDef.isLoop = false;
@@ -76,16 +76,16 @@ public class FootSensor : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
             bodyDef.motionLocks.angularZ = true;
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 1.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 1.0f));
             m_playerId = b2CreateBody(m_worldId, bodyDef);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.filter.categoryBits = PLAYER;
             shapeDef.filter.maskBits = GROUND;
             shapeDef.material.friction = 0.3f;
-            B2Capsule capsule = new B2Capsule(new B2Vec2(0.0f, -0.5f), new B2Vec2(0.0f, 0.5f), 0.5f);
+            B2Capsule capsule = new B2Capsule(new Vector2(0.0f, -0.5f), new Vector2(0.0f, 0.5f), 0.5f);
             b2CreateCapsuleShape(m_playerId, shapeDef, capsule);
 
-            B2Polygon box = b2MakeOffsetBox(0.5f, 0.25f, new B2Vec2(0.0f, -1.0f), b2Rot_identity);
+            B2Polygon box = b2MakeOffsetBox(0.5f, 0.25f, new Vector2(0.0f, -1.0f), b2Rot_identity);
             shapeDef.filter.categoryBits = FOOT;
             shapeDef.filter.maskBits = GROUND;
             shapeDef.isSensor = true;
@@ -100,12 +100,12 @@ public class FootSensor : Sample
     {
         if (GetKey(Keys.A) == InputAction.Press)
         {
-            b2Body_ApplyForceToCenter(m_playerId, new B2Vec2(-50.0f, 0.0f), true);
+            b2Body_ApplyForceToCenter(m_playerId, new Vector2(-50.0f, 0.0f), true);
         }
 
         if (GetKey(Keys.D) == InputAction.Press)
         {
-            b2Body_ApplyForceToCenter(m_playerId, new B2Vec2(50.0f, 0.0f), true);
+            b2Body_ApplyForceToCenter(m_playerId, new Vector2(50.0f, 0.0f), true);
         }
 
         base.Step();
@@ -149,7 +149,7 @@ public class FootSensor : Sample
         {
             B2ShapeId shapeId = m_visitorIds[i];
             B2AABB aabb = b2Shape_GetBounds(shapeId);
-            B2Vec2 point = b2AABB_Center(aabb);
+            Vector2 point = b2AABB_Center(aabb);
             DrawPoint(m_draw, point, 10.0f, B2HexColor.b2_colorWhite);
         }
 

@@ -23,7 +23,7 @@ public class SoftBody : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 5.0f);
+            m_camera.center = new Vector2(0.0f, 5.0f);
             m_camera.zoom = 25.0f * 0.25f;
         }
 
@@ -31,11 +31,11 @@ public class SoftBody : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(-20.0f, 0.0f), new B2Vec2(20.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
         m_donut = new();
-        m_donut.Create(m_worldId, new B2Vec2(0.0f, 10.0f), 2.0f, 0, false, B2UserData.Empty);
+        m_donut.Create(m_worldId, new Vector2(0.0f, 10.0f), 2.0f, 0, false, B2UserData.Empty);
     }
 }

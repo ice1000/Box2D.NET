@@ -15,10 +15,10 @@ public static class SvgParser
     // Parse an SVG path element with only straight lines. Example:
     // "M 47.625004,185.20833 H 161.39585 l 29.10417,-2.64583 26.45834,-7.9375 26.45833,-13.22917 23.81251,-21.16666 h "
     // "13.22916 v 44.97916 H 592.66669 V 0 h 21.16671 v 206.375 l -566.208398,-1e-5 z"
-    public static int ParsePath(string svgPath, B2Vec2 offset, Span<B2Vec2> points, int capacity, float scale, bool reverseOrder)
+    public static int ParsePath(string svgPath, Vector2 offset, Span<Vector2> points, int capacity, float scale, bool reverseOrder)
     {
         int pointCount = 0;
-        B2Vec2 currentPoint = new B2Vec2();
+        Vector2 currentPoint = new Vector2();
         int ptr = 0;
         char command = svgPath[ptr];
 
@@ -124,7 +124,7 @@ public static class SvgParser
                     break;
             }
 
-            points[pointCount] = new B2Vec2(scale * (currentPoint.X + offset.X), -scale * (currentPoint.Y + offset.Y));
+            points[pointCount] = new Vector2(scale * (currentPoint.X + offset.X), -scale * (currentPoint.Y + offset.Y));
             pointCount += 1;
             if (pointCount == capacity)
             {

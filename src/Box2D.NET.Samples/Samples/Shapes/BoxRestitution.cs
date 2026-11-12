@@ -26,7 +26,7 @@ public class BoxRestitution : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(0.0f, 5.0f);
+            m_context.camera.center = new Vector2(0.0f, 5.0f);
             m_context.camera.zoom = 10.0f;
         }
 
@@ -35,7 +35,7 @@ public class BoxRestitution : Sample
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             float h = 2.0f * m_count;
-            B2Segment segment = new B2Segment(new B2Vec2(-h, 0.0f), new B2Vec2(h, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-h, 0.0f), new Vector2(h, 0.0f));
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
@@ -58,13 +58,13 @@ public class BoxRestitution : Sample
             {
                 string buffer = $"{shapeDef.material.restitution:F2}";
 
-                bodyDef.position = b2ToPos(new B2Vec2(x, 1.0f));
+                bodyDef.position = b2ToPos(new Vector2(x, 1.0f));
                 bodyDef.name = buffer;
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
                 b2CreatePolygonShape(bodyId, shapeDef, box);
 
-                bodyDef.position = b2ToPos(new B2Vec2(x, 4.0f));
+                bodyDef.position = b2ToPos(new Vector2(x, 4.0f));
                 bodyDef.name = buffer;
                 bodyId = b2CreateBody(m_worldId, bodyDef);
 

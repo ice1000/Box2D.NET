@@ -43,7 +43,7 @@ public class MotorJoint : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 7.0f);
+            m_camera.center = new Vector2(0.0f, 7.0f);
             m_camera.zoom = 25.0f * 0.4f;
         }
 
@@ -52,11 +52,11 @@ public class MotorJoint : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             groundId = b2CreateBody(m_worldId, bodyDef);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(-20.0f, 0.0f), new B2Vec2(20.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
-        m_transform = new B2Transform(new B2Vec2(0.0f, 8.0f), b2Rot_identity);
+        m_transform = new B2Transform(new Vector2(0.0f, 8.0f), b2Rot_identity);
 
         // Define a target body
         {
@@ -97,7 +97,7 @@ public class MotorJoint : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(-2.0f, 2.0f));
+            bodyDef.position = b2ToPos(new Vector2(-2.0f, 2.0f));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2Polygon box = b2MakeSquare(0.5f);
@@ -107,8 +107,8 @@ public class MotorJoint : Sample
             B2MotorJointDef jointDef = b2DefaultMotorJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = bodyId;
-            jointDef.@base.localFrameA.p = b2Add(b2ToVec2(bodyDef.position), new B2Vec2(0.25f, 0.25f));
-            jointDef.@base.localFrameB.p = new B2Vec2(0.25f, 0.25f);
+            jointDef.@base.localFrameA.p = b2Add(b2ToVec2(bodyDef.position), new Vector2(0.25f, 0.25f));
+            jointDef.@base.localFrameB.p = new Vector2(0.25f, 0.25f);
             jointDef.linearHertz = 7.5f;
             jointDef.linearDampingRatio = 0.7f;
             jointDef.angularHertz = 7.5f;
@@ -144,7 +144,7 @@ public class MotorJoint : Sample
 
         if (ImGui.Button("Apply Impulse"))
         {
-            b2Body_ApplyLinearImpulseToCenter(m_bodyId, new B2Vec2(100.0f, 0.0f), true);
+            b2Body_ApplyLinearImpulseToCenter(m_bodyId, new Vector2(100.0f, 0.0f), true);
         }
 
         return true;
@@ -167,7 +167,7 @@ public class MotorJoint : Sample
         {
             m_time += m_speed * timeStep;
 
-            B2Vec2 linearOffset;
+            Vector2 linearOffset;
             linearOffset.X = 6.0f * MathF.Sin(2.0f * m_time);
             linearOffset.Y = 8.0f + 4.0f * MathF.Sin(1.0f * m_time);
 
@@ -187,7 +187,7 @@ public class MotorJoint : Sample
     {
         base.Draw();
 
-        B2Vec2 force = b2Joint_GetConstraintForce(m_jointId);
+        Vector2 force = b2Joint_GetConstraintForce(m_jointId);
         float torque = b2Joint_GetConstraintTorque(m_jointId);
 
         DrawScreenTextLine(FormattableString.Invariant($"force = {{{force.X,3:F0}, {force.Y,3:F0}}}, torque = {torque,3:F0}"));

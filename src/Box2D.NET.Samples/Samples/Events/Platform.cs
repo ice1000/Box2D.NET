@@ -44,7 +44,7 @@ public class Platform : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.5f, 7.5f);
+            m_camera.center = new Vector2(0.5f, 7.5f);
             m_camera.zoom = 25.0f * 0.4f;
         }
 
@@ -55,7 +55,7 @@ public class Platform : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(-20.0f, 0.0f), new B2Vec2(20.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
@@ -64,7 +64,7 @@ public class Platform : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_staticBody;
-            bodyDef.position = b2ToPos(new B2Vec2(-6.0f, 6.0f));
+            bodyDef.position = b2ToPos(new Vector2(-6.0f, 6.0f));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -80,8 +80,8 @@ public class Platform : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_kinematicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 6.0f));
-            bodyDef.linearVelocity = new B2Vec2(2.0f, 0.0f);
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 6.0f));
+            bodyDef.linearVelocity = new Vector2(2.0f, 0.0f);
             m_movingPlatformId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -99,11 +99,11 @@ public class Platform : Sample
             bodyDef.type = B2BodyType.b2_dynamicBody;
             bodyDef.motionLocks.angularZ = true;
             bodyDef.linearDamping = 0.5f;
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 1.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 1.0f));
             m_playerId = b2CreateBody(m_worldId, bodyDef);
 
             m_radius = 0.5f;
-            B2Capsule capsule = new B2Capsule(new B2Vec2(0.0f, 0.0f), new B2Vec2(0.0f, 1.0f), m_radius);
+            B2Capsule capsule = new B2Capsule(new Vector2(0.0f, 0.0f), new Vector2(0.0f, 1.0f), m_radius);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.material.friction = 0.1f;
 
@@ -125,7 +125,7 @@ public class Platform : Sample
         }
     }
 
-    private static bool PreContinuousStatic(B2ShapeId shapeIdA, B2ShapeId shapeIdB, B2Pos point, B2Vec2 normal, object context)
+    private static bool PreContinuousStatic(B2ShapeId shapeIdA, B2ShapeId shapeIdB, B2Pos point, Vector2 normal, object context)
     {
         Platform self = context as Platform;
         return self.PreSolve(shapeIdA, shapeIdB, normal);
@@ -134,7 +134,7 @@ public class Platform : Sample
     // This callback must be thread-safe. It may be called multiple times simultaneously.
     // Notice how this method is constant and doesn't change any data. It also
     // does not try to access any values in the world that may be changing, such as contact data.
-    public bool PreSolve(B2ShapeId shapeIdA, B2ShapeId shapeIdB, B2Vec2 normal)
+    public bool PreSolve(B2ShapeId shapeIdA, B2ShapeId shapeIdB, Vector2 normal)
     {
         B2_ASSERT(b2Shape_IsValid(shapeIdA));
         B2_ASSERT(b2Shape_IsValid(shapeIdB));
@@ -176,7 +176,7 @@ public class Platform : Sample
     public override void Step()
     {
         m_canJump = false;
-        B2Vec2 velocity = b2Body_GetLinearVelocity(m_playerId);
+        Vector2 velocity = b2Body_GetLinearVelocity(m_playerId);
         if (m_jumpDelay == 0.0f && m_jumping == false && velocity.Y < 0.01f)
         {
             int capacity = b2Body_GetContactCapacity(m_playerId);
@@ -207,24 +207,24 @@ public class Platform : Sample
 
         // A kinematic body is moved by setting its velocity. This
         // ensure friction works correctly.
-        B2Vec2 platformPosition = b2ToVec2(b2Body_GetPosition(m_movingPlatformId));
+        Vector2 platformPosition = b2ToVec2(b2Body_GetPosition(m_movingPlatformId));
         if (platformPosition.X < -15.0f)
         {
-            b2Body_SetLinearVelocity(m_movingPlatformId, new B2Vec2(2.0f, 0.0f));
+            b2Body_SetLinearVelocity(m_movingPlatformId, new Vector2(2.0f, 0.0f));
         }
         else if (platformPosition.X > 15.0f)
         {
-            b2Body_SetLinearVelocity(m_movingPlatformId, new B2Vec2(-2.0f, 0.0f));
+            b2Body_SetLinearVelocity(m_movingPlatformId, new Vector2(-2.0f, 0.0f));
         }
 
         if (GetKey(Keys.A) == InputAction.Press)
         {
-            b2Body_ApplyForceToCenter(m_playerId, new B2Vec2(-m_force, 0.0f), true);
+            b2Body_ApplyForceToCenter(m_playerId, new Vector2(-m_force, 0.0f), true);
         }
 
         if (GetKey(Keys.D) == InputAction.Press)
         {
-            b2Body_ApplyForceToCenter(m_playerId, new B2Vec2(m_force, 0.0f), true);
+            b2Body_ApplyForceToCenter(m_playerId, new Vector2(m_force, 0.0f), true);
         }
 
         var keyState = GetKey(Keys.Space);
@@ -232,7 +232,7 @@ public class Platform : Sample
         {
             if (m_canJump)
             {
-                b2Body_ApplyLinearImpulseToCenter(m_playerId, new B2Vec2(0.0f, m_impulse), true);
+                b2Body_ApplyLinearImpulseToCenter(m_playerId, new Vector2(0.0f, m_impulse), true);
                 m_jumpDelay = 0.5f;
                 m_jumping = true;
             }

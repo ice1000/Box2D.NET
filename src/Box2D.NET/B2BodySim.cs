@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     // Body simulation data used for integration of position and velocity
@@ -19,9 +21,9 @@ namespace Box2D.NET
         public B2Pos center0;
 
         // location of center of mass relative to the body origin
-        public B2Vec2 localCenter;
+        public Vector2 localCenter;
 
-        public B2Vec2 force;
+        public Vector2 force;
         public float torque;
 
         // inverse inertia
@@ -49,9 +51,9 @@ namespace Box2D.NET
             rotation0 = new B2Rot();
             center0 = new B2Pos();
 
-            localCenter = new B2Vec2();
+            localCenter = new Vector2();
 
-            force = new B2Vec2();
+            force = new Vector2();
             torque = 0.0f;
 
             invMass = 0.0f;

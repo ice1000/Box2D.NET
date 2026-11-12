@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using static Box2D.NET.B2Arrays;
 using static Box2D.NET.B2Constants;
@@ -140,9 +141,9 @@ namespace Box2D.NET
             return joint.uj.weldJoint.angularDampingRatio;
         }
 
-        internal static B2Vec2 b2GetWeldJointForce(B2World world, B2JointSim @base)
+        internal static Vector2 b2GetWeldJointForce(B2World world, B2JointSim @base)
         {
-            B2Vec2 force = b2MulSV(world.inv_h, @base.uj.weldJoint.linearImpulse);
+            Vector2 force = b2MulSV(world.inv_h, @base.uj.weldJoint.linearImpulse);
             return force;
         }
 
@@ -241,7 +242,7 @@ namespace Box2D.NET
 
             if (context.enableWarmStarting == false)
             {
-                joint.linearImpulse = b2Vec2_zero;
+                joint.linearImpulse = Vector2Zero;
                 joint.angularImpulse = 0.0f;
             }
         }
@@ -261,8 +262,8 @@ namespace Box2D.NET
             B2BodyState stateA = joint.indexA == B2_NULL_INDEX ? dummyState : context.states[joint.indexA];
             B2BodyState stateB = joint.indexB == B2_NULL_INDEX ? dummyState : context.states[joint.indexB];
 
-            B2Vec2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
-            B2Vec2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
+            Vector2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
+            Vector2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
 
             if (0 != (stateA.flags & (uint)B2BodyFlags.b2_dynamicFlag))
             {
@@ -294,9 +295,9 @@ namespace Box2D.NET
             B2BodyState stateA = joint.indexA == B2_NULL_INDEX ? dummyState : context.states[joint.indexA];
             B2BodyState stateB = joint.indexB == B2_NULL_INDEX ? dummyState : context.states[joint.indexB];
 
-            B2Vec2 vA = stateA.linearVelocity;
+            Vector2 vA = stateA.linearVelocity;
             float wA = stateA.angularVelocity;
-            B2Vec2 vB = stateB.linearVelocity;
+            Vector2 vB = stateB.linearVelocity;
             float wB = stateB.angularVelocity;
 
             // Block solve doesn't work correctly with mixed stiffness values
@@ -419,33 +420,33 @@ namespace Box2D.NET
 
             // linear constraint
             {
-                B2Vec2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
-                B2Vec2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
+                Vector2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
+                Vector2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
 
-                B2Vec2 bias = b2Vec2_zero;
+                Vector2 bias = Vector2Zero;
                 float massScale = 1.0f;
                 float impulseScale = 0.0f;
                 if (useBias || joint.linearHertz > 0.0f)
                 {
-                    B2Vec2 dcA = stateA.deltaPosition;
-                    B2Vec2 dcB = stateB.deltaPosition;
-                    B2Vec2 C = b2Add(b2Add(b2Sub(dcB, dcA), b2Sub(rB, rA)), joint.deltaCenter);
+                    Vector2 dcA = stateA.deltaPosition;
+                    Vector2 dcB = stateB.deltaPosition;
+                    Vector2 C = b2Add(b2Add(b2Sub(dcB, dcA), b2Sub(rB, rA)), joint.deltaCenter);
 
                     bias = b2MulSV(joint.linearSpring.biasRate, C);
                     massScale = joint.linearSpring.massScale;
                     impulseScale = joint.linearSpring.impulseScale;
                 }
 
-                B2Vec2 Cdot = b2Sub(b2Add(vB, b2CrossSV(wB, rB)), b2Add(vA, b2CrossSV(wA, rA)));
+                Vector2 Cdot = b2Sub(b2Add(vB, b2CrossSV(wB, rB)), b2Add(vA, b2CrossSV(wA, rA)));
 
                 B2Mat22 K;
                 K.cx.X = mA + mB + rA.Y * rA.Y * iA + rB.Y * rB.Y * iB;
                 K.cy.X = -rA.Y * rA.X * iA - rB.Y * rB.X * iB;
                 K.cx.Y = K.cy.X;
                 K.cy.Y = mA + mB + rA.X * rA.X * iA + rB.X * rB.X * iB;
-                B2Vec2 b = b2Solve22(K, b2Add(Cdot, bias));
+                Vector2 b = b2Solve22(K, b2Add(Cdot, bias));
 
-                B2Vec2 impulse = new B2Vec2(
+                Vector2 impulse = new Vector2(
                     -massScale * b.X - impulseScale * joint.linearImpulse.X,
                     -massScale * b.Y - impulseScale * joint.linearImpulse.Y
                 );

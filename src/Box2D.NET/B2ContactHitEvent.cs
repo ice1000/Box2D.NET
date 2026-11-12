@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     /// A hit touch event is generated when two shapes collide with a speed faster than the hit speed threshold.
@@ -26,7 +28,7 @@ namespace Box2D.NET
         public B2Pos point;
 
         /// Normal vector pointing from shape A to shape B
-        public B2Vec2 normal;
+        public Vector2 normal;
 
         /// The speed the shapes are approaching. Always positive. Typically in meters per second.
         public float approachSpeed;

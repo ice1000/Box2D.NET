@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2026 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     /// Input for casting an AABB through a dynamic tree
@@ -11,7 +13,7 @@ namespace Box2D.NET
         public B2AABB box;
 
         /// The sweep translation.
-        public B2Vec2 translation;
+        public Vector2 translation;
 
         /// The maximum fraction of the translation to consider, typically 1.
         public float maxFraction;

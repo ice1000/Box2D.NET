@@ -25,7 +25,7 @@ public class UnstableWindmill : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(0.0f, 1.75f);
+            m_context.camera.center = new Vector2(0.0f, 1.75f);
             m_context.camera.zoom = 32.0f;
         }
 
@@ -34,7 +34,7 @@ public class UnstableWindmill : Sample
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(-100.0f, -10.0f), new B2Vec2(100.0f, -10.0f));
+            B2Segment segment = new B2Segment(new Vector2(-100.0f, -10.0f), new Vector2(100.0f, -10.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
@@ -46,9 +46,9 @@ public class UnstableWindmill : Sample
         sdef.material.friction = 0.1f;
 
         // center
-        bdef.position = b2ToPos(new B2Vec2(10, 10));
+        bdef.position = b2ToPos(new Vector2(10, 10));
         B2BodyId center = b2CreateBody(m_worldId, bdef);
-        B2Circle circle = new B2Circle(new B2Vec2(0, 0), 5);
+        B2Circle circle = new B2Circle(new Vector2(0, 0), 5);
         b2CreateCircleShape(center, sdef, circle);
 
         // rotors
@@ -60,40 +60,40 @@ public class UnstableWindmill : Sample
 
         B2Polygon polygon;
 
-        bdef.position = b2ToPos(new B2Vec2(10, 0));
+        bdef.position = b2ToPos(new Vector2(10, 0));
         B2BodyId body = b2CreateBody(m_worldId, bdef);
         polygon = b2MakeBox(4, 5);
         b2CreatePolygonShape(body, sdef, polygon);
-        wjdef.@base.localFrameA = new B2Transform(new B2Vec2(0, -5), b2Rot_identity);
+        wjdef.@base.localFrameA = new B2Transform(new Vector2(0, -5), b2Rot_identity);
         wjdef.@base.bodyIdB = body;
-        wjdef.@base.localFrameB = new B2Transform(new B2Vec2(0, 5), b2Rot_identity);
+        wjdef.@base.localFrameB = new B2Transform(new Vector2(0, 5), b2Rot_identity);
         b2CreateWeldJoint(m_worldId, wjdef);
 
-        bdef.position = b2ToPos(new B2Vec2(20, 10));
+        bdef.position = b2ToPos(new Vector2(20, 10));
         body = b2CreateBody(m_worldId, bdef);
         polygon = b2MakeBox(5, 4);
         b2CreatePolygonShape(body, sdef, polygon);
-        wjdef.@base.localFrameA = new B2Transform(new B2Vec2(5, 0), b2Rot_identity);
+        wjdef.@base.localFrameA = new B2Transform(new Vector2(5, 0), b2Rot_identity);
         wjdef.@base.bodyIdB = body;
-        wjdef.@base.localFrameB = new B2Transform(new B2Vec2(-5, 0), b2Rot_identity);
+        wjdef.@base.localFrameB = new B2Transform(new Vector2(-5, 0), b2Rot_identity);
         b2CreateWeldJoint(m_worldId, wjdef);
 
-        bdef.position = b2ToPos(new B2Vec2(10, 20));
+        bdef.position = b2ToPos(new Vector2(10, 20));
         body = b2CreateBody(m_worldId, bdef);
         polygon = b2MakeBox(4, 5);
         b2CreatePolygonShape(body, sdef, polygon);
-        wjdef.@base.localFrameA = new B2Transform(new B2Vec2(0, 5), b2Rot_identity);
+        wjdef.@base.localFrameA = new B2Transform(new Vector2(0, 5), b2Rot_identity);
         wjdef.@base.bodyIdB = body;
-        wjdef.@base.localFrameB = new B2Transform(new B2Vec2(0, -5), b2Rot_identity);
+        wjdef.@base.localFrameB = new B2Transform(new Vector2(0, -5), b2Rot_identity);
         b2CreateWeldJoint(m_worldId, wjdef);
 
-        bdef.position = b2ToPos(new B2Vec2(0, 10));
+        bdef.position = b2ToPos(new Vector2(0, 10));
         body = b2CreateBody(m_worldId, bdef);
         polygon = b2MakeBox(5, 4);
         b2CreatePolygonShape(body, sdef, polygon);
-        wjdef.@base.localFrameA = new B2Transform(new B2Vec2(-5, 0), b2Rot_identity);
+        wjdef.@base.localFrameA = new B2Transform(new Vector2(-5, 0), b2Rot_identity);
         wjdef.@base.bodyIdB = body;
-        wjdef.@base.localFrameB = new B2Transform(new B2Vec2(5, 0), b2Rot_identity);
+        wjdef.@base.localFrameB = new B2Transform(new Vector2(5, 0), b2Rot_identity);
         b2CreateWeldJoint(m_worldId, wjdef);
     }
 }

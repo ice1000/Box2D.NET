@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
 using static Box2D.NET.B2Buffers;
 using static Box2D.NET.B2Constants;
 
@@ -109,7 +110,7 @@ namespace Box2D.NET
         // - if no bodies want to sleep then there is no reason to perform island splitting
         public int splitIslandId;
 
-        public B2Vec2 gravity;
+        public Vector2 gravity;
         public float hitEventThreshold;
         public float restitutionThreshold;
         public int restitutionIterations;
@@ -225,7 +226,7 @@ namespace Box2D.NET
 
             splitIslandId = B2_NULL_INDEX;
 
-            gravity = new B2Vec2();
+            gravity = new Vector2();
             hitEventThreshold = 0.0f;
             restitutionThreshold = 0.0f;
             restitutionIterations = 0;

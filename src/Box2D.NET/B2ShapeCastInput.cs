@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     /// Low level shape cast input in generic form. This allows casting an arbitrary point
@@ -13,7 +15,7 @@ namespace Box2D.NET
         public B2ShapeProxy proxy;
 
         /// The translation of the shape cast
-        public B2Vec2 translation;
+        public Vector2 translation;
 
         /// The maximum fraction of the translation to consider, typically 1
         public float maxFraction;

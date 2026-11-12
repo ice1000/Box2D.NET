@@ -35,7 +35,7 @@ public class MotionLocks : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 8.0f);
+            m_camera.center = new Vector2(0.0f, 8.0f);
             m_camera.zoom = 25.0f * 0.7f;
         }
 
@@ -49,7 +49,7 @@ public class MotionLocks : Sample
             m_bodyIds[i] = b2_nullBodyId;
         }
 
-        B2Vec2 position = new B2Vec2(-12.5f, 10.0f);
+        Vector2 position = new Vector2(-12.5f, 10.0f);
         bodyDef.type = B2BodyType.b2_dynamicBody;
         bodyDef.motionLocks = m_motionLocks;
 
@@ -67,8 +67,8 @@ public class MotionLocks : Sample
             b2CreatePolygonShape(m_bodyIds[index], shapeDef, box);
 
             float length = 2.0f;
-            B2Vec2 pivot1 = new B2Vec2(position.X, position.Y + 1.0f + length);
-            B2Vec2 pivot2 = new B2Vec2(position.X, position.Y + 1.0f);
+            Vector2 pivot1 = new Vector2(position.X, position.Y + 1.0f + length);
+            Vector2 pivot2 = new Vector2(position.X, position.Y + 1.0f);
             B2DistanceJointDef jointDef = b2DefaultDistanceJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = m_bodyIds[index];
@@ -111,7 +111,7 @@ public class MotionLocks : Sample
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             b2CreatePolygonShape(m_bodyIds[index], shapeDef, box);
 
-            B2Vec2 pivot = new B2Vec2(position.X - 1.0f, position.Y);
+            Vector2 pivot = new Vector2(position.X - 1.0f, position.Y);
             B2PrismaticJointDef jointDef = b2DefaultPrismaticJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = m_bodyIds[index];
@@ -132,7 +132,7 @@ public class MotionLocks : Sample
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             b2CreatePolygonShape(m_bodyIds[index], shapeDef, box);
 
-            B2Vec2 pivot = new B2Vec2(position.X - 1.0f, position.Y);
+            Vector2 pivot = new Vector2(position.X - 1.0f, position.Y);
             B2RevoluteJointDef jointDef = b2DefaultRevoluteJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = m_bodyIds[index];
@@ -153,7 +153,7 @@ public class MotionLocks : Sample
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             b2CreatePolygonShape(m_bodyIds[index], shapeDef, box);
 
-            B2Vec2 pivot = new B2Vec2(position.X - 1.0f, position.Y);
+            Vector2 pivot = new Vector2(position.X - 1.0f, position.Y);
             B2WeldJointDef jointDef = b2DefaultWeldJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = m_bodyIds[index];
@@ -178,7 +178,7 @@ public class MotionLocks : Sample
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             b2CreatePolygonShape(m_bodyIds[index], shapeDef, box);
 
-            B2Vec2 pivot = new B2Vec2(position.X - 1.0f, position.Y);
+            Vector2 pivot = new Vector2(position.X - 1.0f, position.Y);
             B2WheelJointDef jointDef = b2DefaultWheelJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = m_bodyIds[index];
@@ -241,7 +241,7 @@ public class MotionLocks : Sample
 
         if (GetKey(Keys.L) == InputAction.Press)
         {
-            b2Body_ApplyLinearImpulseToCenter(m_bodyIds[0], new B2Vec2(
+            b2Body_ApplyLinearImpulseToCenter(m_bodyIds[0], new Vector2(
                 100.0f, 0.0f
             ), true);
         }

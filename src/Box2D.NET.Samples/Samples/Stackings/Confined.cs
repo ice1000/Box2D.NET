@@ -31,7 +31,7 @@ public class Confined : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 10.0f);
+            m_camera.center = new Vector2(0.0f, 10.0f);
             m_camera.zoom = 25.0f * 0.5f;
         }
 
@@ -41,13 +41,13 @@ public class Confined : Sample
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             B2Capsule capsule;
-            capsule = new B2Capsule(new B2Vec2(-10.5f, 0.0f), new B2Vec2(10.5f, 0.0f), 0.5f);
+            capsule = new B2Capsule(new Vector2(-10.5f, 0.0f), new Vector2(10.5f, 0.0f), 0.5f);
             b2CreateCapsuleShape(groundId, shapeDef, capsule);
-            capsule = new B2Capsule(new B2Vec2(-10.5f, 0.0f), new B2Vec2(-10.5f, 20.5f), 0.5f);
+            capsule = new B2Capsule(new Vector2(-10.5f, 0.0f), new Vector2(-10.5f, 20.5f), 0.5f);
             b2CreateCapsuleShape(groundId, shapeDef, capsule);
-            capsule = new B2Capsule(new B2Vec2(10.5f, 0.0f), new B2Vec2(10.5f, 20.5f), 0.5f);
+            capsule = new B2Capsule(new Vector2(10.5f, 0.0f), new Vector2(10.5f, 20.5f), 0.5f);
             b2CreateCapsuleShape(groundId, shapeDef, capsule);
-            capsule = new B2Capsule(new B2Vec2(-10.5f, 20.5f), new B2Vec2(10.5f, 20.5f), 0.5f);
+            capsule = new B2Capsule(new Vector2(-10.5f, 20.5f), new Vector2(10.5f, 20.5f), 0.5f);
             b2CreateCapsuleShape(groundId, shapeDef, capsule);
         }
 
@@ -61,7 +61,7 @@ public class Confined : Sample
             bodyDef.gravityScale = 0.0f;
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
 
             while (m_count < m_maxCount)
             {
@@ -71,7 +71,7 @@ public class Confined : Sample
                     float x = -8.75f + m_column * 18.0f / m_gridCount;
                     float y = 1.5f + m_row * 18.0f / m_gridCount;
 
-                    bodyDef.position = b2ToPos(new B2Vec2(x, y));
+                    bodyDef.position = b2ToPos(new Vector2(x, y));
                     B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
                     b2CreateCircleShape(bodyId, shapeDef, circle);
 

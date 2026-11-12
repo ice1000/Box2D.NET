@@ -32,7 +32,7 @@ public class CustomFilter : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 5.0f);
+            m_camera.center = new Vector2(0.0f, 5.0f);
             m_camera.zoom = 10.0f;
         }
 
@@ -42,7 +42,7 @@ public class CustomFilter : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
-            B2Segment segment = new B2Segment(new B2Vec2(-40.0f, 0.0f), new B2Vec2(40.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
 
@@ -59,7 +59,7 @@ public class CustomFilter : Sample
 
             for (int i = 0; i < e_count; ++i)
             {
-                bodyDef.position = b2ToPos(new B2Vec2(x, 5.0f));
+                bodyDef.position = b2ToPos(new Vector2(x, 5.0f));
                 m_bodyIds[i] = b2CreateBody(m_worldId, bodyDef);
 
                 shapeDef.userData = B2UserData.Signed(i + 1);
@@ -106,8 +106,8 @@ public class CustomFilter : Sample
 
         for (int i = 0; i < e_count; ++i)
         {
-            B2Vec2 p = b2ToVec2(b2Body_GetPosition(m_bodyIds[i]));
-            DrawWorldString(m_draw, m_camera, new B2Vec2(p.X, p.Y), B2HexColor.b2_colorWhite, $"{i}");
+            Vector2 p = b2ToVec2(b2Body_GetPosition(m_bodyIds[i]));
+            DrawWorldString(m_draw, m_camera, new Vector2(p.X, p.Y), B2HexColor.b2_colorWhite, $"{i}");
         }
     }
 }

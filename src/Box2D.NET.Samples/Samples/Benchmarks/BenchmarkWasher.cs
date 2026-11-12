@@ -20,7 +20,7 @@ public class BenchmarkWasher : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(1.5f, 10.0f);
+            m_context.camera.center = new Vector2(1.5f, 10.0f);
             m_context.camera.zoom = 20.0f;
         }
 

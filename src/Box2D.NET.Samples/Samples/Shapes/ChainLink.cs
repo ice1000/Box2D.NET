@@ -24,17 +24,17 @@ public class ChainLink : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 5.0f);
+            m_camera.center = new Vector2(0.0f, 5.0f);
             m_camera.zoom = 25.0f * 0.5f;
         }
 
-        B2Vec2[] points1 = new B2Vec2[]
+        Vector2[] points1 = new Vector2[]
         {
-            new B2Vec2(0.0f, 0.0f), new B2Vec2(-40.0f, 0.0f), new B2Vec2(-40.0f, -1.0f), new B2Vec2(0.0f, -1.0f),
+            new Vector2(0.0f, 0.0f), new Vector2(-40.0f, 0.0f), new Vector2(-40.0f, -1.0f), new Vector2(0.0f, -1.0f),
         };
-        B2Vec2[] points2 = new B2Vec2[]
+        Vector2[] points2 = new Vector2[]
         {
-            new B2Vec2(0.0f, -1.0f), new B2Vec2(40.0f, -1.0f), new B2Vec2(40.0f, 0.0f), new B2Vec2(0.0f, 0.0f),
+            new Vector2(0.0f, -1.0f), new Vector2(40.0f, -1.0f), new Vector2(40.0f, 0.0f), new Vector2(0.0f, 0.0f),
         };
 
         int count1 = points1.Length;
@@ -49,8 +49,8 @@ public class ChainLink : Sample
             chainDef.pointCount = count1;
 
             // The other chain carries on past both ends of this one
-            chainDef.ghost1 = new B2Vec2(40.0f, 1.0f);
-            chainDef.ghost2 = new B2Vec2(40.0f, -1.0f);
+            chainDef.ghost1 = new Vector2(40.0f, 1.0f);
+            chainDef.ghost2 = new Vector2(40.0f, -1.0f);
             chainDef.isLoop = false;
             b2CreateChain(groundId, chainDef);
         }
@@ -59,8 +59,8 @@ public class ChainLink : Sample
             B2ChainDef chainDef = b2DefaultChainDef();
             chainDef.points = points2;
             chainDef.pointCount = count2;
-            chainDef.ghost1 = new B2Vec2(-40.0f, -1.0f);
-            chainDef.ghost2 = new B2Vec2(-40.0f, 0.0f);
+            chainDef.ghost1 = new Vector2(-40.0f, -1.0f);
+            chainDef.ghost2 = new Vector2(-40.0f, 0.0f);
             chainDef.isLoop = false;
             b2CreateChain(groundId, chainDef);
         }
@@ -69,21 +69,21 @@ public class ChainLink : Sample
         B2ShapeDef shapeDef = b2DefaultShapeDef();
 
         {
-            bodyDef.position = b2ToPos(new B2Vec2(-5.0f, 2.0f));
+            bodyDef.position = b2ToPos(new Vector2(-5.0f, 2.0f));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
             b2CreateCircleShape(bodyId, shapeDef, circle);
         }
 
         {
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 2.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 2.0f));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
-            B2Capsule capsule = new B2Capsule(new B2Vec2(-0.5f, 0.0f), new B2Vec2(0.5f, 0.0f), 0.25f);
+            B2Capsule capsule = new B2Capsule(new Vector2(-0.5f, 0.0f), new Vector2(0.5f, 0.0f), 0.25f);
             b2CreateCapsuleShape(bodyId, shapeDef, capsule);
         }
 
         {
-            bodyDef.position = b2ToPos(new B2Vec2(5.0f, 2.0f));
+            bodyDef.position = b2ToPos(new Vector2(5.0f, 2.0f));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
             float h = 0.5f;
             B2Polygon box = b2MakeBox(h, h);

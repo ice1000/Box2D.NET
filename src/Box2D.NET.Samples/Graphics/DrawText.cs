@@ -22,14 +22,14 @@ public static partial class Draws
         // Old STB path treated y as the text baseline; ImGui::AddText treats y as the top of the
         // glyph. Shift up by the font ascent so existing callers work.
         float ascent = ImGui.GetFont().Ascent;
-        Vector2 viewportPosition = ImGui.GetMainViewport().Pos;
-        ImGui.GetBackgroundDrawList().AddText(viewportPosition + new Vector2(x, y - ascent), col, message);
+        System.Numerics.Vector2 viewportPosition = ImGui.GetMainViewport().Pos;
+        ImGui.GetBackgroundDrawList().AddText(viewportPosition + new System.Numerics.Vector2(x, y - ascent), col, message);
     }
 
-    public static void DrawWorldString(Draw draw, Camera camera, B2Vec2 p, B2HexColor color, string message)
+    public static void DrawWorldString(Draw draw, Camera camera, Vector2 p, B2HexColor color, string message)
     {
         message = message.Length > 255 ? message[..255] : message;
-        B2Vec2 ps = ConvertWorldToScreen(camera, p);
+        Vector2 ps = ConvertWorldToScreen(camera, p);
         DrawScreenString(draw, ps.X, ps.Y, color, message);
     }
 }

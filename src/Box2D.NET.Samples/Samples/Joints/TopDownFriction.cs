@@ -30,7 +30,7 @@ public class TopDownFriction : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(0.0f, 7.0f);
+            m_context.camera.center = new Vector2(0.0f, 7.0f);
             m_context.camera.zoom = 25.0f * 0.4f;
         }
 
@@ -39,16 +39,16 @@ public class TopDownFriction : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             groundId = b2CreateBody(m_worldId, bodyDef);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(-10.0f, 0.0f), new B2Vec2(10.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-10.0f, 0.0f), new Vector2(10.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
 
-            segment = new B2Segment(new B2Vec2(-10.0f, 0.0f), new B2Vec2(-10.0f, 20.0f));
+            segment = new B2Segment(new Vector2(-10.0f, 0.0f), new Vector2(-10.0f, 20.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
 
-            segment = new B2Segment(new B2Vec2(10.0f, 0.0f), new B2Vec2(10.0f, 20.0f));
+            segment = new B2Segment(new Vector2(10.0f, 0.0f), new Vector2(10.0f, 20.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
 
-            segment = new B2Segment(new B2Vec2(-10.0f, 20.0f), new B2Vec2(10.0f, 20.0f));
+            segment = new B2Segment(new Vector2(-10.0f, 20.0f), new Vector2(10.0f, 20.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
@@ -58,8 +58,8 @@ public class TopDownFriction : Sample
         jointDef.maxVelocityForce = 10.0f;
         jointDef.maxVelocityTorque = 10.0f;
 
-        B2Capsule capsule = new B2Capsule(new B2Vec2(-0.25f, 0.0f), new B2Vec2(0.25f, 0.0f), 0.25f);
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.35f);
+        B2Capsule capsule = new B2Capsule(new Vector2(-0.25f, 0.0f), new Vector2(0.25f, 0.0f), 0.25f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.35f);
         B2Polygon square = b2MakeSquare(0.35f);
 
         {
@@ -75,7 +75,7 @@ public class TopDownFriction : Sample
             {
                 for (int j = 0; j < n; ++j)
                 {
-                    bodyDef.position = b2ToPos(new B2Vec2(x, y));
+                    bodyDef.position = b2ToPos(new Vector2(x, y));
                     B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
                     int remainder = (n * i + j) % 4;
@@ -117,7 +117,7 @@ public class TopDownFriction : Sample
         if (ImGui.Button("Explode"))
         {
             B2ExplosionDef def = b2DefaultExplosionDef();
-            def.position = b2ToPos(new B2Vec2(0.0f, 10.0f));
+            def.position = b2ToPos(new Vector2(0.0f, 10.0f));
             def.radius = 10.0f;
             def.falloff = 5.0f;
             def.impulsePerLength = 10.0f;

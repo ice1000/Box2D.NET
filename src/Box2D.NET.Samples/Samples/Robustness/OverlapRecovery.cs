@@ -36,7 +36,7 @@ public class OverlapRecovery : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 2.5f);
+            m_camera.center = new Vector2(0.0f, 2.5f);
             m_camera.zoom = 3.75f;
         }
 
@@ -52,7 +52,7 @@ public class OverlapRecovery : Sample
         B2BodyDef bodyDef = b2DefaultBodyDef();
         B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
         B2ShapeDef shapeDef = b2DefaultShapeDef();
-        B2Segment segment = new B2Segment(new B2Vec2(-40.0f, 0.0f), new B2Vec2(40.0f, 0.0f));
+        B2Segment segment = new B2Segment(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
         b2CreateSegmentShape(groundId, shapeDef, segment);
 
         CreateScene();
@@ -86,7 +86,7 @@ public class OverlapRecovery : Sample
             float x = fraction * m_extent * (i - m_baseCount);
             for (int j = i; j < m_baseCount; ++j)
             {
-                bodyDef.position = b2ToPos(new B2Vec2(x, y));
+                bodyDef.position = b2ToPos(new Vector2(x, y));
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
                 b2CreatePolygonShape(bodyId, shapeDef, box);

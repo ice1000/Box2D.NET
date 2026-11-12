@@ -8,8 +8,8 @@ public struct ContactPoint
 {
     public B2ShapeId shapeIdA;
     public B2ShapeId shapeIdB;
-    public B2Vec2 normal;
-    public B2Vec2 position;
+    public Vector2 normal;
+    public Vector2 position;
     public bool persisted;
     public float normalImpulse;
     public float tangentImpulse;

@@ -26,13 +26,13 @@ public class RayCast : Sample
     private B2Transform m_transform;
     private float m_angle;
 
-    private B2Vec2 m_rayStart;
-    private B2Vec2 m_rayEnd;
+    private Vector2 m_rayStart;
+    private Vector2 m_rayEnd;
 
-    private B2Vec2 m_basePosition;
+    private Vector2 m_basePosition;
     private float m_baseAngle;
 
-    private B2Vec2 m_startPosition;
+    private Vector2 m_startPosition;
 
     private bool m_rayDrag;
     private bool m_translating;
@@ -49,29 +49,29 @@ public class RayCast : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 20.0f);
+            m_camera.center = new Vector2(0.0f, 20.0f);
             m_camera.zoom = 17.5f;
         }
 
-        m_circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 2.0f);
-        m_capsule = new B2Capsule(new B2Vec2(-1.0f, 1.0f), new B2Vec2(1.0f, -1.0f), 1.5f);
+        m_circle = new B2Circle(new Vector2(0.0f, 0.0f), 2.0f);
+        m_capsule = new B2Capsule(new Vector2(-1.0f, 1.0f), new Vector2(1.0f, -1.0f), 1.5f);
         m_box = b2MakeBox(2.0f, 2.0f);
 
-        B2Vec2[] vertices = new B2Vec2[3] { new B2Vec2(-2.0f, 0.0f), new B2Vec2(2.0f, 0.0f), new B2Vec2(2.0f, 3.0f) };
+        Vector2[] vertices = new Vector2[3] { new Vector2(-2.0f, 0.0f), new Vector2(2.0f, 0.0f), new Vector2(2.0f, 3.0f) };
         B2Hull hull = b2ComputeHull(vertices, 3);
         m_triangle = b2MakePolygon(hull, 0.0f);
 
-        m_segment = new B2Segment(new B2Vec2(-3.0f, 0.0f), new B2Vec2(3.0f, 0.0f));
+        m_segment = new B2Segment(new Vector2(-3.0f, 0.0f), new Vector2(3.0f, 0.0f));
 
         m_transform = b2Transform_identity;
         m_angle = 0.0f;
 
-        m_basePosition = new B2Vec2(0.0f, 0.0f);
+        m_basePosition = new Vector2(0.0f, 0.0f);
         m_baseAngle = 0.0f;
-        m_startPosition = new B2Vec2(0.0f, 0.0f);
+        m_startPosition = new Vector2(0.0f, 0.0f);
 
-        m_rayStart = new B2Vec2(0.0f, 30.0f);
-        m_rayEnd = new B2Vec2(0.0f, 0.0f);
+        m_rayStart = new Vector2(0.0f, 30.0f);
+        m_rayEnd = new Vector2(0.0f, 0.0f);
 
         m_rayDrag = false;
         m_translating = false;
@@ -118,7 +118,7 @@ public class RayCast : Sample
         return true;
     }
 
-    public override void MouseDown(B2Vec2 p, MouseButton button, KeyModifiers mods)
+    public override void MouseDown(Vector2 p, MouseButton button, KeyModifiers mods)
     {
         if (button == (int)MouseButton.Left)
         {
@@ -142,7 +142,7 @@ public class RayCast : Sample
         }
     }
 
-    public override void MouseUp(B2Vec2 p, MouseButton button)
+    public override void MouseUp(Vector2 p, MouseButton button)
     {
         if (button == (int)MouseButton.Left)
         {
@@ -152,7 +152,7 @@ public class RayCast : Sample
         }
     }
 
-    public override void MouseMove(B2Vec2 p)
+    public override void MouseMove(Vector2 p)
     {
         if (m_rayDrag)
         {
@@ -173,13 +173,13 @@ public class RayCast : Sample
 
     void DrawRay(ref B2CastOutput output)
     {
-        B2Vec2 p1 = m_rayStart;
-        B2Vec2 p2 = m_rayEnd;
-        B2Vec2 d = b2Sub(p2, p1);
+        Vector2 p1 = m_rayStart;
+        Vector2 p2 = m_rayEnd;
+        Vector2 d = b2Sub(p2, p1);
 
         if (output.hit)
         {
-            B2Vec2 p;
+            Vector2 p;
 
             if (output.fraction == 0.0f)
             {
@@ -194,13 +194,13 @@ public class RayCast : Sample
                 DrawPoint(m_draw, p1, 5.0f, B2HexColor.b2_colorGreen);
                 DrawPoint(m_draw, output.point, 5.0f, B2HexColor.b2_colorWhite);
 
-                B2Vec2 n = b2MulAdd(p, 1.0f, output.normal);
+                Vector2 n = b2MulAdd(p, 1.0f, output.normal);
                 DrawLine(m_draw, p, n, B2HexColor.b2_colorViolet);
             }
 
             if (m_showFraction)
             {
-                B2Vec2 ps = new B2Vec2(p.X + 0.05f, p.Y - 0.02f);
+                Vector2 ps = new Vector2(p.X + 0.05f, p.Y - 0.02f);
                 DrawWorldString(m_draw, m_camera, ps, B2HexColor.b2_colorWhite, $"{output.fraction:F2}");
             }
         }
@@ -214,8 +214,8 @@ public class RayCast : Sample
 
     public override void Step()
     {
-        B2Vec2 offset = new B2Vec2(-20.0f, 20.0f);
-        B2Vec2 increment = new B2Vec2(10.0f, 0.0f);
+        Vector2 offset = new Vector2(-20.0f, 20.0f);
+        Vector2 increment = new Vector2(10.0f, 0.0f);
 
         B2HexColor color1 = B2HexColor.b2_colorYellow;
 
@@ -227,8 +227,8 @@ public class RayCast : Sample
             B2Transform transform = new B2Transform(b2Add(m_transform.p, offset), m_transform.q);
             DrawSolidCircle(m_draw, new B2Transform(m_circle.center, transform.q), m_circle.radius, color1);
 
-            B2Vec2 start = b2InvTransformPoint(transform, m_rayStart);
-            B2Vec2 translation = b2InvRotateVector(transform.q, b2Sub(m_rayEnd, m_rayStart));
+            Vector2 start = b2InvTransformPoint(transform, m_rayStart);
+            Vector2 translation = b2InvRotateVector(transform.q, b2Sub(m_rayEnd, m_rayStart));
             B2RayCastInput input = new B2RayCastInput(start, translation, maxFraction);
 
             B2CastOutput localOutput = b2CastRayCircle(m_circle, input);
@@ -246,12 +246,12 @@ public class RayCast : Sample
         // capsule
         {
             B2Transform transform = new B2Transform(b2Add(m_transform.p, offset), m_transform.q);
-            B2Vec2 v1 = b2TransformPoint(transform, m_capsule.center1);
-            B2Vec2 v2 = b2TransformPoint(transform, m_capsule.center2);
+            Vector2 v1 = b2TransformPoint(transform, m_capsule.center1);
+            Vector2 v2 = b2TransformPoint(transform, m_capsule.center2);
             DrawSolidCapsule(m_draw, v1, v2, m_capsule.radius, color1);
 
-            B2Vec2 start = b2InvTransformPoint(transform, m_rayStart);
-            B2Vec2 translation = b2InvRotateVector(transform.q, b2Sub(m_rayEnd, m_rayStart));
+            Vector2 start = b2InvTransformPoint(transform, m_rayStart);
+            Vector2 translation = b2InvRotateVector(transform.q, b2Sub(m_rayEnd, m_rayStart));
             B2RayCastInput input = new B2RayCastInput(start, translation, maxFraction);
 
             B2CastOutput localOutput = b2CastRayCapsule(m_capsule, input);
@@ -271,8 +271,8 @@ public class RayCast : Sample
             B2Transform transform = new B2Transform(b2Add(m_transform.p, offset), m_transform.q);
             DrawSolidPolygon(m_draw, transform, m_box.vertices.AsSpan(), m_box.count, 0.0f, color1);
 
-            B2Vec2 start = b2InvTransformPoint(transform, m_rayStart);
-            B2Vec2 translation = b2InvRotateVector(transform.q, b2Sub(m_rayEnd, m_rayStart));
+            Vector2 start = b2InvTransformPoint(transform, m_rayStart);
+            Vector2 translation = b2InvRotateVector(transform.q, b2Sub(m_rayEnd, m_rayStart));
             B2RayCastInput input = new B2RayCastInput(start, translation, maxFraction);
 
             B2CastOutput localOutput = b2CastRayPolygon(ref m_box, input);
@@ -292,8 +292,8 @@ public class RayCast : Sample
             B2Transform transform = new B2Transform(b2Add(m_transform.p, offset), m_transform.q);
             DrawSolidPolygon(m_draw, transform, m_triangle.vertices.AsSpan(), m_triangle.count, 0.0f, color1);
 
-            B2Vec2 start = b2InvTransformPoint(transform, m_rayStart);
-            B2Vec2 translation = b2InvRotateVector(transform.q, b2Sub(m_rayEnd, m_rayStart));
+            Vector2 start = b2InvTransformPoint(transform, m_rayStart);
+            Vector2 translation = b2InvRotateVector(transform.q, b2Sub(m_rayEnd, m_rayStart));
             B2RayCastInput input = new B2RayCastInput(start, translation, maxFraction);
 
             B2CastOutput localOutput = b2CastRayPolygon(ref m_triangle, input);
@@ -312,12 +312,12 @@ public class RayCast : Sample
         {
             B2Transform transform = new B2Transform(b2Add(m_transform.p, offset), m_transform.q);
 
-            B2Vec2 p1 = b2TransformPoint(transform, m_segment.point1);
-            B2Vec2 p2 = b2TransformPoint(transform, m_segment.point2);
+            Vector2 p1 = b2TransformPoint(transform, m_segment.point1);
+            Vector2 p2 = b2TransformPoint(transform, m_segment.point2);
             DrawLine(m_draw, p1, p2, color1);
 
-            B2Vec2 start = b2InvTransformPoint(transform, m_rayStart);
-            B2Vec2 translation = b2InvRotateVector(transform.q, b2Sub(m_rayEnd, m_rayStart));
+            Vector2 start = b2InvTransformPoint(transform, m_rayStart);
+            Vector2 translation = b2InvRotateVector(transform.q, b2Sub(m_rayEnd, m_rayStart));
             B2RayCastInput input = new B2RayCastInput(start, translation, maxFraction);
 
             B2CastOutput localOutput = b2CastRaySegment(m_segment, input, false);

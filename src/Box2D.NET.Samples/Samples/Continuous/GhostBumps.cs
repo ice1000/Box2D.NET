@@ -46,7 +46,7 @@ public class GhostBumps : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(1.5f, 16.0f);
+            m_camera.center = new Vector2(1.5f, 16.0f);
             m_camera.zoom = 25.0f * 0.8f;
         }
 
@@ -81,27 +81,27 @@ public class GhostBumps : Sample
 
         if (m_useChain)
         {
-            B2Vec2[] points = new B2Vec2[20];
-            points[0] = new B2Vec2(-3.0f * hx, hy);
-            points[1] = b2Add(points[0], new B2Vec2(-2.0f * hx * m, 2.0f * hx * m));
-            points[2] = b2Add(points[1], new B2Vec2(-2.0f * hx * m, 2.0f * hx * m));
-            points[3] = b2Add(points[2], new B2Vec2(-2.0f * hx * m, 2.0f * hx * m));
-            points[4] = b2Add(points[3], new B2Vec2(-2.0f * hy * m, -2.0f * hy * m));
-            points[5] = b2Add(points[4], new B2Vec2(2.0f * hx * m, -2.0f * hx * m));
-            points[6] = b2Add(points[5], new B2Vec2(2.0f * hx * m, -2.0f * hx * m));
-            points[7] = b2Add(points[6], new B2Vec2(2.0f * hx * m + 2.0f * hy * (1.0f - m), -2.0f * hx * m - 2.0f * hy * (1.0f - m)));
-            points[8] = b2Add(points[7], new B2Vec2(2.0f * hx + hy * mm, 0.0f));
-            points[9] = b2Add(points[8], new B2Vec2(2.0f * hx, 0.0f));
-            points[10] = b2Add(points[9], new B2Vec2(2.0f * hx + hy * mm, 0.0f));
-            points[11] = b2Add(points[10], new B2Vec2(2.0f * hx * m + 2.0f * hy * (1.0f - m), 2.0f * hx * m + 2.0f * hy * (1.0f - m)));
-            points[12] = b2Add(points[11], new B2Vec2(2.0f * hx * m, 2.0f * hx * m));
-            points[13] = b2Add(points[12], new B2Vec2(2.0f * hx * m, 2.0f * hx * m));
-            points[14] = b2Add(points[13], new B2Vec2(-2.0f * hy * m, 2.0f * hy * m));
-            points[15] = b2Add(points[14], new B2Vec2(-2.0f * hx * m, -2.0f * hx * m));
-            points[16] = b2Add(points[15], new B2Vec2(-2.0f * hx * m, -2.0f * hx * m));
-            points[17] = b2Add(points[16], new B2Vec2(-2.0f * hx * m, -2.0f * hx * m));
-            points[18] = b2Add(points[17], new B2Vec2(-2.0f * hx, 0.0f));
-            points[19] = b2Add(points[18], new B2Vec2(-2.0f * hx, 0.0f));
+            Vector2[] points = new Vector2[20];
+            points[0] = new Vector2(-3.0f * hx, hy);
+            points[1] = b2Add(points[0], new Vector2(-2.0f * hx * m, 2.0f * hx * m));
+            points[2] = b2Add(points[1], new Vector2(-2.0f * hx * m, 2.0f * hx * m));
+            points[3] = b2Add(points[2], new Vector2(-2.0f * hx * m, 2.0f * hx * m));
+            points[4] = b2Add(points[3], new Vector2(-2.0f * hy * m, -2.0f * hy * m));
+            points[5] = b2Add(points[4], new Vector2(2.0f * hx * m, -2.0f * hx * m));
+            points[6] = b2Add(points[5], new Vector2(2.0f * hx * m, -2.0f * hx * m));
+            points[7] = b2Add(points[6], new Vector2(2.0f * hx * m + 2.0f * hy * (1.0f - m), -2.0f * hx * m - 2.0f * hy * (1.0f - m)));
+            points[8] = b2Add(points[7], new Vector2(2.0f * hx + hy * mm, 0.0f));
+            points[9] = b2Add(points[8], new Vector2(2.0f * hx, 0.0f));
+            points[10] = b2Add(points[9], new Vector2(2.0f * hx + hy * mm, 0.0f));
+            points[11] = b2Add(points[10], new Vector2(2.0f * hx * m + 2.0f * hy * (1.0f - m), 2.0f * hx * m + 2.0f * hy * (1.0f - m)));
+            points[12] = b2Add(points[11], new Vector2(2.0f * hx * m, 2.0f * hx * m));
+            points[13] = b2Add(points[12], new Vector2(2.0f * hx * m, 2.0f * hx * m));
+            points[14] = b2Add(points[13], new Vector2(-2.0f * hy * m, 2.0f * hy * m));
+            points[15] = b2Add(points[14], new Vector2(-2.0f * hx * m, -2.0f * hx * m));
+            points[16] = b2Add(points[15], new Vector2(-2.0f * hx * m, -2.0f * hx * m));
+            points[17] = b2Add(points[16], new Vector2(-2.0f * hx * m, -2.0f * hx * m));
+            points[18] = b2Add(points[17], new Vector2(-2.0f * hx, 0.0f));
+            points[19] = b2Add(points[18], new Vector2(-2.0f * hx, 0.0f));
 
             B2SurfaceMaterial material = new B2SurfaceMaterial();
             material.friction = m_friction;
@@ -125,27 +125,27 @@ public class GhostBumps : Sample
             if (m_bevel > 0.0f)
             {
                 float hb = m_bevel;
-                B2Vec2[] vs = new B2Vec2[8]
+                Vector2[] vs = new Vector2[8]
                 {
-                    new B2Vec2(hx + hb, hy - 0.05f),
-                    new B2Vec2(hx, hy),
-                    new B2Vec2(-hx, hy),
-                    new B2Vec2(-hx - hb, hy - 0.05f),
-                    new B2Vec2(-hx - hb, -hy + 0.05f),
-                    new B2Vec2(-hx, -hy),
-                    new B2Vec2(hx, -hy),
-                    new B2Vec2(hx + hb, -hy + 0.05f),
+                    new Vector2(hx + hb, hy - 0.05f),
+                    new Vector2(hx, hy),
+                    new Vector2(-hx, hy),
+                    new Vector2(-hx - hb, hy - 0.05f),
+                    new Vector2(-hx - hb, -hy + 0.05f),
+                    new Vector2(-hx, -hy),
+                    new Vector2(hx, -hy),
+                    new Vector2(hx + hb, -hy + 0.05f),
                 };
                 hull = b2ComputeHull(vs, 8);
             }
             else
             {
-                B2Vec2[] vs = new B2Vec2[4]
+                Vector2[] vs = new Vector2[4]
                 {
-                    new B2Vec2(hx, hy),
-                    new B2Vec2(-hx, hy),
-                    new B2Vec2(-hx, -hy),
-                    new B2Vec2(hx, -hy),
+                    new Vector2(hx, hy),
+                    new Vector2(-hx, hy),
+                    new Vector2(-hx, -hy),
+                    new Vector2(hx, -hy),
                 };
                 hull = b2ComputeHull(vs, 4);
             }
@@ -159,21 +159,21 @@ public class GhostBumps : Sample
             transform.q = b2MakeRot(-0.25f * B2_PI);
 
             {
-                transform.p = new B2Vec2(x, y);
+                transform.p = new Vector2(x, y);
                 B2Polygon polygon = b2MakeOffsetPolygon(hull, transform.p, transform.q);
                 b2CreatePolygonShape(m_groundId, shapeDef, polygon);
                 x -= 2.0f * m * hx;
                 y += 2.0f * m * hx;
             }
             {
-                transform.p = new B2Vec2(x, y);
+                transform.p = new Vector2(x, y);
                 B2Polygon polygon = b2MakeOffsetPolygon(hull, transform.p, transform.q);
                 b2CreatePolygonShape(m_groundId, shapeDef, polygon);
                 x -= 2.0f * m * hx;
                 y += 2.0f * m * hx;
             }
             {
-                transform.p = new B2Vec2(x, y);
+                transform.p = new Vector2(x, y);
                 B2Polygon polygon = b2MakeOffsetPolygon(hull, transform.p, transform.q);
                 b2CreatePolygonShape(m_groundId, shapeDef, polygon);
                 x -= 2.0f * m * hx;
@@ -185,19 +185,19 @@ public class GhostBumps : Sample
             transform.q = b2MakeRot(0.0f);
 
             {
-                transform.p = new B2Vec2(x, y);
+                transform.p = new Vector2(x, y);
                 B2Polygon polygon = b2MakeOffsetPolygon(hull, transform.p, transform.q);
                 b2CreatePolygonShape(m_groundId, shapeDef, polygon);
                 x += 2.0f * hx;
             }
             {
-                transform.p = new B2Vec2(x, y);
+                transform.p = new Vector2(x, y);
                 B2Polygon polygon = b2MakeOffsetPolygon(hull, transform.p, transform.q);
                 b2CreatePolygonShape(m_groundId, shapeDef, polygon);
                 x += 2.0f * hx;
             }
             {
-                transform.p = new B2Vec2(x, y);
+                transform.p = new Vector2(x, y);
                 B2Polygon polygon = b2MakeOffsetPolygon(hull, transform.p, transform.q);
                 b2CreatePolygonShape(m_groundId, shapeDef, polygon);
                 x += 2.0f * hx;
@@ -208,21 +208,21 @@ public class GhostBumps : Sample
             transform.q = b2MakeRot(0.25f * B2_PI);
 
             {
-                transform.p = new B2Vec2(x, y);
+                transform.p = new Vector2(x, y);
                 B2Polygon polygon = b2MakeOffsetPolygon(hull, transform.p, transform.q);
                 b2CreatePolygonShape(m_groundId, shapeDef, polygon);
                 x += 2.0f * m * hx;
                 y += 2.0f * m * hx;
             }
             {
-                transform.p = new B2Vec2(x, y);
+                transform.p = new Vector2(x, y);
                 B2Polygon polygon = b2MakeOffsetPolygon(hull, transform.p, transform.q);
                 b2CreatePolygonShape(m_groundId, shapeDef, polygon);
                 x += 2.0f * m * hx;
                 y += 2.0f * m * hx;
             }
             {
-                transform.p = new B2Vec2(x, y);
+                transform.p = new Vector2(x, y);
                 B2Polygon polygon = b2MakeOffsetPolygon(hull, transform.p, transform.q);
                 b2CreatePolygonShape(m_groundId, shapeDef, polygon);
                 x += 2.0f * m * hx;
@@ -241,8 +241,8 @@ public class GhostBumps : Sample
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(-28.0f, 18.0f));
-        bodyDef.linearVelocity = new B2Vec2(0.0f, 0.0f);
+        bodyDef.position = b2ToPos(new Vector2(-28.0f, 18.0f));
+        bodyDef.linearVelocity = new Vector2(0.0f, 0.0f);
         m_bodyId = b2CreateBody(m_worldId, bodyDef);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -251,12 +251,12 @@ public class GhostBumps : Sample
 
         if (m_shapeType == ShapeType.e_circleShape)
         {
-            B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+            B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
             m_shapeId = b2CreateCircleShape(m_bodyId, shapeDef, circle);
         }
         else if (m_shapeType == ShapeType.e_capsuleShape)
         {
-            B2Capsule capsule = new B2Capsule(new B2Vec2(-0.5f, 0.0f), new B2Vec2(0.5f, 0.0f), 0.25f);
+            B2Capsule capsule = new B2Capsule(new Vector2(-0.5f, 0.0f), new Vector2(0.5f, 0.0f), 0.25f);
             m_shapeId = b2CreateCapsuleShape(m_bodyId, shapeDef, capsule);
         }
         else

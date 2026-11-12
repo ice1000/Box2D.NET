@@ -27,7 +27,7 @@ public class RollingResistance : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(5.0f, 20.0f);
+            m_camera.center = new Vector2(5.0f, 20.0f);
             m_camera.zoom = 27.5f;
         }
 
@@ -38,7 +38,7 @@ public class RollingResistance : Sample
 
     void CreateScene()
     {
-        B2Circle circle = new B2Circle(b2Vec2_zero, 0.5f);
+        B2Circle circle = new B2Circle(Vector2Zero, 0.5f);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
 
@@ -47,13 +47,13 @@ public class RollingResistance : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
-            B2Segment segment = new B2Segment(new B2Vec2(-40.0f, 2.0f * i), new B2Vec2(40.0f, 2.0f * i + m_lift));
+            B2Segment segment = new B2Segment(new Vector2(-40.0f, 2.0f * i), new Vector2(40.0f, 2.0f * i + m_lift));
             b2CreateSegmentShape(groundId, shapeDef, segment);
 
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(-39.5f, 2.0f * i + 0.75f));
+            bodyDef.position = b2ToPos(new Vector2(-39.5f, 2.0f * i + 0.75f));
             bodyDef.angularVelocity = -10.0f;
-            bodyDef.linearVelocity = new B2Vec2(5.0f, 0.0f);
+            bodyDef.linearVelocity = new Vector2(5.0f, 0.0f);
 
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
             shapeDef.material.rollingResistance = m_resistScale * i;
@@ -95,7 +95,7 @@ public class RollingResistance : Sample
 
         for (int i = 0; i < 20; ++i)
         {
-            DrawWorldString(m_draw, m_camera, new B2Vec2(-41.5f, 2.0f * i + 1.0f), B2HexColor.b2_colorWhite, $"{m_resistScale * i:F2}");
+            DrawWorldString(m_draw, m_camera, new Vector2(-41.5f, 2.0f * i + 1.0f), B2HexColor.b2_colorWhite, $"{m_resistScale * i:F2}");
         }
     }
 }

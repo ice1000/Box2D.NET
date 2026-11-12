@@ -43,13 +43,13 @@ public class ShapeFilter : Sample
         if (m_context.restart == false)
         {
             m_camera.zoom = 25.0f * 0.5f;
-            m_camera.center = new B2Vec2(0.0f, 5.0f);
+            m_camera.center = new Vector2(0.0f, 5.0f);
         }
 
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
-            B2Segment segment = new B2Segment(new B2Vec2(-20.0f, 0.0f), new B2Vec2(20.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.filter.categoryBits = GROUND;
@@ -62,13 +62,13 @@ public class ShapeFilter : Sample
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
 
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 2.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 2.0f));
             m_player1Id = b2CreateBody(m_worldId, bodyDef);
 
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 5.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 5.0f));
             m_player2Id = b2CreateBody(m_worldId, bodyDef);
 
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 8.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 8.0f));
             m_player3Id = b2CreateBody(m_worldId, bodyDef);
 
             B2Polygon box = b2MakeBox(2.0f, 1.0f);
@@ -206,13 +206,13 @@ public class ShapeFilter : Sample
     {
         base.Draw();
 
-        B2Vec2 p1 = b2ToVec2(b2Body_GetPosition(m_player1Id));
-        DrawWorldString(m_draw, m_camera, new B2Vec2(p1.X - 0.5f, p1.Y), B2HexColor.b2_colorWhite, "player 1");
+        Vector2 p1 = b2ToVec2(b2Body_GetPosition(m_player1Id));
+        DrawWorldString(m_draw, m_camera, new Vector2(p1.X - 0.5f, p1.Y), B2HexColor.b2_colorWhite, "player 1");
 
-        B2Vec2 p2 = b2ToVec2(b2Body_GetPosition(m_player2Id));
-        DrawWorldString(m_draw, m_camera, new B2Vec2(p2.X - 0.5f, p2.Y), B2HexColor.b2_colorWhite, "player 2");
+        Vector2 p2 = b2ToVec2(b2Body_GetPosition(m_player2Id));
+        DrawWorldString(m_draw, m_camera, new Vector2(p2.X - 0.5f, p2.Y), B2HexColor.b2_colorWhite, "player 2");
 
-        B2Vec2 p3 = b2ToVec2(b2Body_GetPosition(m_player3Id));
-        DrawWorldString(m_draw, m_camera, new B2Vec2(p3.X - 0.5f, p3.Y), B2HexColor.b2_colorWhite, "player 3");
+        Vector2 p3 = b2ToVec2(b2Body_GetPosition(m_player3Id));
+        DrawWorldString(m_draw, m_camera, new Vector2(p3.X - 0.5f, p3.Y), B2HexColor.b2_colorWhite, "player 3");
     }
 }

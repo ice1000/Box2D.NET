@@ -2,11 +2,13 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     public struct B2ContactConstraintPoint
     {
-        public B2Vec2 anchorA, anchorB;
+        public Vector2 anchorA, anchorB;
         public float baseSeparation;
         public float relativeVelocity;
         public float normalImpulse;

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using Box2D.NET.Shared;
 using NUnit.Framework;
 using static Box2D.NET.B2Types;
@@ -189,11 +190,11 @@ public class B2DeterminismTest
         B2BodyId groundId = b2CreateBody(worldId, groundDef);
         B2ShapeDef groundShapeDef = b2DefaultShapeDef();
         groundShapeDef.material.tangentSpeed = 0.5f;
-        B2Segment segment = new B2Segment(new B2Vec2(-40.0f, 0.0f), new B2Vec2(40.0f, 0.0f));
+        B2Segment segment = new B2Segment(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
         b2CreateSegmentShape(groundId, groundShapeDef, segment);
 
         B2Polygon box = b2MakeRoundedBox(0.4f, 0.3f, 0.05f);
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.35f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.35f);
 
         for (int i = 0; i < 300; ++i)
         {

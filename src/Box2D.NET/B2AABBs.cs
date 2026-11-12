@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using static Box2D.NET.B2MathFunction;
 
@@ -52,7 +53,7 @@ namespace Box2D.NET
 
 
         // Ray cast an AABB
-        public static B2CastOutput b2AABB_RayCast(in B2AABB a, in B2Vec2 p1, in B2Vec2 p2)
+        public static B2CastOutput b2AABB_RayCast(in B2AABB a, in Vector2 p1, in Vector2 p2)
         {
             // Radius not handled
             B2CastOutput output = new B2CastOutput();
@@ -60,11 +61,11 @@ namespace Box2D.NET
             float tMin = -float.MaxValue;
             float tMax = float.MaxValue;
 
-            B2Vec2 p = p1;
-            B2Vec2 d = b2Sub(p2, p1);
-            B2Vec2 absD = b2Abs(d);
+            Vector2 p = p1;
+            Vector2 d = b2Sub(p2, p1);
+            Vector2 absD = b2Abs(d);
 
-            B2Vec2 normal = b2Vec2_zero;
+            Vector2 normal = Vector2Zero;
 
             // x-coordinate
             if (absD.X < FLT_EPSILON)

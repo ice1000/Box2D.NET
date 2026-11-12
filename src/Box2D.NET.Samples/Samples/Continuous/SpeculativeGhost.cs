@@ -24,7 +24,7 @@ public class SpeculativeGhost : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 1.75f);
+            m_camera.center = new Vector2(0.0f, 1.75f);
             m_camera.zoom = 2.0f;
         }
 
@@ -33,10 +33,10 @@ public class SpeculativeGhost : Sample
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
-            B2Segment segment = new B2Segment(new B2Vec2(-10.0f, 0.0f), new B2Vec2(10.0f, 0.0f));
+            B2Segment segment = new B2Segment(new Vector2(-10.0f, 0.0f), new Vector2(10.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
 
-            B2Polygon box = b2MakeOffsetBox(1.0f, 0.1f, new B2Vec2(0.0f, 0.9f), b2Rot_identity);
+            B2Polygon box = b2MakeOffsetBox(1.0f, 0.1f, new Vector2(0.0f, 0.9f), b2Rot_identity);
             b2CreatePolygonShape(groundId, shapeDef, box);
         }
 
@@ -45,8 +45,8 @@ public class SpeculativeGhost : Sample
             bodyDef.type = B2BodyType.b2_dynamicBody;
 
             // The speculative distance is 0.02 meters, so this avoid it
-            bodyDef.position = b2ToPos(new B2Vec2(0.015f, 2.515f));
-            bodyDef.linearVelocity = new B2Vec2(0.1f * 1.25f * m_context.hertz, -0.1f * 1.25f * m_context.hertz);
+            bodyDef.position = b2ToPos(new Vector2(0.015f, 2.515f));
+            bodyDef.linearVelocity = new Vector2(0.1f * 1.25f * m_context.hertz, -0.1f * 1.25f * m_context.hertz);
             bodyDef.gravityScale = 0.0f;
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 

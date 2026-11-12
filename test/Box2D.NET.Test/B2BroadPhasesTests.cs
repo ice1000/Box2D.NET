@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using Box2D.NET.Test.Helpers;
 using NUnit.Framework;
 using static Box2D.NET.B2BroadPhases;
@@ -35,7 +36,7 @@ public class B2BroadPhasesTests
 
     private static B2AABB Box(float x0, float y0, float x1, float y1)
     {
-        return new B2AABB(new B2Vec2(x0, y0), new B2Vec2(x1, y1));
+        return new B2AABB(new Vector2(x0, y0), new Vector2(x1, y1));
     }
 
     [Test]
@@ -207,11 +208,11 @@ public class B2BroadPhasesTests
         // A and B: Dynamic-Dynamic collision (overlapping)
         // C and D: Static-Dynamic collision (overlapping)
         // E: Isolated dynamic body (no collision)
-        B2ShapeId shapeIdA = B2TestHelper.Circle(worldId, new B2Vec2(0.0f, 0.0f), 1.0f, B2BodyType.b2_dynamicBody);
-        B2ShapeId shapeIdB = B2TestHelper.Circle(worldId, new B2Vec2(0.5f, 0.0f), 1.0f, B2BodyType.b2_dynamicBody);
-        B2ShapeId shapeIdC = B2TestHelper.Circle(worldId, new B2Vec2(3.0f, 0.0f), 1.0f, B2BodyType.b2_staticBody);
-        B2ShapeId shapeIdD = B2TestHelper.Circle(worldId, new B2Vec2(3.5f, 0.0f), 1.0f, B2BodyType.b2_dynamicBody);
-        B2ShapeId shapeIdE = B2TestHelper.Circle(worldId, new B2Vec2(50.0f, 50.0f), 1.0f, B2BodyType.b2_dynamicBody);
+        B2ShapeId shapeIdA = B2TestHelper.Circle(worldId, new Vector2(0.0f, 0.0f), 1.0f, B2BodyType.b2_dynamicBody);
+        B2ShapeId shapeIdB = B2TestHelper.Circle(worldId, new Vector2(0.5f, 0.0f), 1.0f, B2BodyType.b2_dynamicBody);
+        B2ShapeId shapeIdC = B2TestHelper.Circle(worldId, new Vector2(3.0f, 0.0f), 1.0f, B2BodyType.b2_staticBody);
+        B2ShapeId shapeIdD = B2TestHelper.Circle(worldId, new Vector2(3.5f, 0.0f), 1.0f, B2BodyType.b2_dynamicBody);
+        B2ShapeId shapeIdE = B2TestHelper.Circle(worldId, new Vector2(50.0f, 50.0f), 1.0f, B2BodyType.b2_dynamicBody);
 
         Assert.That(b2HasTreeMoved(world.broadPhase.trees[(int)B2BodyType.b2_dynamicBody]), Is.True);
 

@@ -2,11 +2,13 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     public struct B2RevoluteJoint
     {
-        public B2Vec2 linearImpulse;
+        public Vector2 linearImpulse;
         public float springImpulse;
         public float motorImpulse;
         public float lowerImpulse;
@@ -23,7 +25,7 @@ namespace Box2D.NET
         public int indexB;
         public B2Transform frameA;
         public B2Transform frameB;
-        public B2Vec2 deltaCenter;
+        public Vector2 deltaCenter;
         public float axialMass;
         public B2Softness springSoftness;
 

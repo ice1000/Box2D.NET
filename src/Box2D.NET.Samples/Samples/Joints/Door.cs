@@ -39,14 +39,14 @@ public class Door : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(0.0f, 0.0f);
+            m_context.camera.center = new Vector2(0.0f, 0.0f);
             m_context.camera.zoom = 4.0f;
         }
 
         B2BodyId groundId = b2_nullBodyId;
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 0.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 0.0f));
             groundId = b2CreateBody(m_worldId, bodyDef);
         }
 
@@ -59,7 +59,7 @@ public class Door : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 1.5f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 1.5f));
             bodyDef.gravityScale = 0.0f;
 
             m_doorId = b2CreateBody(m_worldId, bodyDef);
@@ -73,8 +73,8 @@ public class Door : Sample
             B2RevoluteJointDef jointDef = b2DefaultRevoluteJointDef();
             jointDef.@base.bodyIdA = groundId;
             jointDef.@base.bodyIdB = m_doorId;
-            jointDef.@base.localFrameA.p = new B2Vec2(0.0f, 0.0f);
-            jointDef.@base.localFrameB.p = new B2Vec2(0.0f, -1.5f);
+            jointDef.@base.localFrameA.p = new Vector2(0.0f, 0.0f);
+            jointDef.@base.localFrameB.p = new Vector2(0.0f, -1.5f);
             jointDef.@base.constraintHertz = m_jointHertz;
             jointDef.@base.constraintDampingRatio = m_jointDampingRatio;
             jointDef.targetAngle = 0.0f;
@@ -98,8 +98,8 @@ public class Door : Sample
 
         if (ImGui.Button("impulse"))
         {
-            B2Vec2 p = b2ToVec2(b2Body_GetWorldPoint(m_doorId, new B2Vec2(0.0f, 1.5f)));
-            b2Body_ApplyLinearImpulse(m_doorId, new B2Vec2(m_impulse, 0.0f), b2ToPos(p), true);
+            Vector2 p = b2ToVec2(b2Body_GetWorldPoint(m_doorId, new Vector2(0.0f, 1.5f)));
+            b2Body_ApplyLinearImpulse(m_doorId, new Vector2(m_impulse, 0.0f), b2ToPos(p), true);
             m_translationError = 0.0f;
         }
 
@@ -131,7 +131,7 @@ public class Door : Sample
     {
         base.Draw();
 
-        B2Vec2 p = b2ToVec2(b2Body_GetWorldPoint(m_doorId, new B2Vec2(0.0f, 1.5f)));
+        Vector2 p = b2ToVec2(b2Body_GetWorldPoint(m_doorId, new Vector2(0.0f, 1.5f)));
         DrawPoint(m_draw, p, 5.0f, B2HexColor.b2_colorDarkKhaki);
 
         float translationError = b2Joint_GetLinearSeparation(m_jointId);

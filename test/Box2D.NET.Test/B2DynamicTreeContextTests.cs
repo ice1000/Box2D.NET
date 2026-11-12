@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2026 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
 using NUnit.Framework;
 using static Box2D.NET.B2Distances;
 using static Box2D.NET.B2DynamicTrees;
@@ -39,7 +40,7 @@ public class B2DynamicTreeContextTests
         B2DynamicTree tree = b2CreateDynamicTree(1);
         try
         {
-            var bounds = new B2AABB(new B2Vec2(-1.0f, -1.0f), new B2Vec2(1.0f, 1.0f));
+            var bounds = new B2AABB(new Vector2(-1.0f, -1.0f), new Vector2(1.0f, 1.0f));
             b2CreateTreeProxy(tree, bounds, ulong.MaxValue, 1);
 
             var context = new CallbackContext();
@@ -47,16 +48,16 @@ public class B2DynamicTreeContextTests
             Assert.That(context.Visits, Is.EqualTo(1));
 
             context.Visits = 0;
-            var ray = new B2RayCastInput(new B2Vec2(-2.0f, 0.0f), new B2Vec2(4.0f, 0.0f), 1.0f);
+            var ray = new B2RayCastInput(new Vector2(-2.0f, 0.0f), new Vector2(4.0f, 0.0f), 1.0f);
             b2DynamicTree_CastRay(tree, ray, ulong.MaxValue, RayCallback, ref context);
             Assert.That(context.Visits, Is.EqualTo(1));
 
             context.Visits = 0;
-            var point = new B2Vec2(-2.0f, 0.0f);
+            var point = new Vector2(-2.0f, 0.0f);
             var boxCast = new B2BoxCastInput
             {
                 box = new B2AABB(point, point),
-                translation = new B2Vec2(4.0f, 0.0f),
+                translation = new Vector2(4.0f, 0.0f),
                 maxFraction = 1.0f,
             };
             b2DynamicTree_CastBox(tree, boxCast, ulong.MaxValue, BoxCallback, ref context);

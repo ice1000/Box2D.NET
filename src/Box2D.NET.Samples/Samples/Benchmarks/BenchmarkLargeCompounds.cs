@@ -23,7 +23,7 @@ public class BenchmarkLargeCompounds : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(18.0f, 115.0f);
+            m_camera.center = new Vector2(18.0f, 115.0f);
             m_camera.zoom = 25.0f * 5.5f;
         }
 
@@ -46,7 +46,7 @@ public class BenchmarkLargeCompounds : Sample
                 for (int j = i; j < width; ++j)
                 {
                     float x = grid * j;
-                    B2Polygon square = b2MakeOffsetBox(0.5f * grid, 0.5f * grid, new B2Vec2(x, y), b2Rot_identity);
+                    B2Polygon square = b2MakeOffsetBox(0.5f * grid, 0.5f * grid, new Vector2(x, y), b2Rot_identity);
                     b2CreatePolygonShape(groundId, shapeDef, square);
                 }
             }
@@ -57,7 +57,7 @@ public class BenchmarkLargeCompounds : Sample
                 for (int j = i; j < width; ++j)
                 {
                     float x = -grid * j;
-                    B2Polygon square = b2MakeOffsetBox(0.5f * grid, 0.5f * grid, new B2Vec2(x, y), b2Rot_identity);
+                    B2Polygon square = b2MakeOffsetBox(0.5f * grid, 0.5f * grid, new Vector2(x, y), b2Rot_identity);
                     b2CreatePolygonShape(groundId, shapeDef, square);
                 }
             }
@@ -85,7 +85,7 @@ public class BenchmarkLargeCompounds : Sample
                 for (int n = 0; n < count; ++n)
                 {
                     float xbody = -0.5f * grid * count * span + n * span * grid;
-                    bodyDef.position = b2ToPos(new B2Vec2(xbody, ybody));
+                    bodyDef.position = b2ToPos(new Vector2(xbody, ybody));
                     B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
                     for (int i = 0; i < span; ++i)
@@ -94,7 +94,7 @@ public class BenchmarkLargeCompounds : Sample
                         for (int j = 0; j < span; ++j)
                         {
                             float x = j * grid;
-                            B2Polygon square = b2MakeOffsetBox(0.5f * grid, 0.5f * grid, new B2Vec2(x, y), b2Rot_identity);
+                            B2Polygon square = b2MakeOffsetBox(0.5f * grid, 0.5f * grid, new Vector2(x, y), b2Rot_identity);
                             b2CreatePolygonShape(bodyId, shapeDef, square);
                         }
                     }

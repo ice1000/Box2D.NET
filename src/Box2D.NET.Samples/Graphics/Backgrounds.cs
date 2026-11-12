@@ -30,9 +30,9 @@ public static class Backgrounds
 
         // Single quad
         //B2ExplicitVec2[] vertices = [new(-1.0f, 1.0f), new(-1.0f, -1.0f), new(1.0f, 1.0f), new(1.0f, -1.0f)];
-        B2Vec2[] vertices = [new(-1.0f, 1.0f), new(-1.0f, -1.0f), new(1.0f, 1.0f), new(1.0f, -1.0f)];
+        Vector2[] vertices = [new(-1.0f, 1.0f), new(-1.0f, -1.0f), new(1.0f, 1.0f), new(1.0f, -1.0f)];
         gl.BindBuffer(GLEnum.ArrayBuffer, background.vboId[0]);
-        gl.BufferData<B2Vec2>(GLEnum.ArrayBuffer, vertices, GLEnum.StaticDraw);
+        gl.BufferData<Vector2>(GLEnum.ArrayBuffer, vertices, GLEnum.StaticDraw);
         gl.VertexAttribPointer(vertexAttribute, 2, VertexAttribPointerType.Float, false, 0, IntPtr.Zero);
 
         gl.CheckOpenGL();

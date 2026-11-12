@@ -42,7 +42,7 @@ public class BenchmarkSensor : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 105.0f);
+            m_camera.center = new Vector2(0.0f, 105.0f);
             m_camera.zoom = 125.0f;
         }
 
@@ -66,7 +66,7 @@ public class BenchmarkSensor : Sample
             float x = -40.0f * gridSize;
             for (int i = 0; i < 81; ++i)
             {
-                B2Polygon box = b2MakeOffsetBox(0.5f * gridSize, 0.5f * gridSize, new B2Vec2(x, y), b2Rot_identity);
+                B2Polygon box = b2MakeOffsetBox(0.5f * gridSize, 0.5f * gridSize, new Vector2(x, y), b2Rot_identity);
                 b2CreatePolygonShape(groundId, shapeDef, box);
                 x += gridSize;
             }
@@ -107,7 +107,7 @@ public class BenchmarkSensor : Sample
                 for (int i = 0; i < m_columnCount; ++i)
                 {
                     float x = i * shift - xCenter;
-                    B2Polygon box = b2MakeOffsetRoundedBox(0.5f, 0.5f, new B2Vec2(x, y), b2Rot_identity, 0.1f);
+                    B2Polygon box = b2MakeOffsetRoundedBox(0.5f, 0.5f, new Vector2(x, y), b2Rot_identity, 0.1f);
                     b2CreatePolygonShape(groundId, shapeDef, box);
                 }
             }
@@ -126,17 +126,17 @@ public class BenchmarkSensor : Sample
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
         bodyDef.gravityScale = 0.0f;
-        bodyDef.linearVelocity = new B2Vec2(0.0f, -5.0f);
+        bodyDef.linearVelocity = new Vector2(0.0f, -5.0f);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
         shapeDef.enableSensorEvents = true;
 
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
         for (int i = 0; i < m_columnCount; ++i)
         {
             // stagger bodies to avoid bunching up events into a single update
             float yOffset = RandomFloatRange(-1.0f, 1.0f);
-            bodyDef.position = b2ToPos(new B2Vec2(shift * i - xCenter, y + yOffset));
+            bodyDef.position = b2ToPos(new Vector2(shift * i - xCenter, y + yOffset));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             b2CreateCircleShape(bodyId, shapeDef, circle);

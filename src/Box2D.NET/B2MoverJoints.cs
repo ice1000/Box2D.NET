@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2026 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
 using static Box2D.NET.B2Arrays;
 using static Box2D.NET.B2Diagnostics;
 using static Box2D.NET.B2Constants;
@@ -22,7 +23,7 @@ namespace Box2D.NET
          * @{
          */
         /// Set the desired relative linear velocity in meters per second
-        public static void b2MoverJoint_SetLinearVelocity(B2JointId jointId, B2Vec2 velocity)
+        public static void b2MoverJoint_SetLinearVelocity(B2JointId jointId, Vector2 velocity)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(velocity)) == false) return;
 
@@ -31,14 +32,14 @@ namespace Box2D.NET
         }
 
         /// Get the desired relative linear velocity in meters per second
-        public static B2Vec2 b2MoverJoint_GetLinearVelocity(B2JointId jointId)
+        public static Vector2 b2MoverJoint_GetLinearVelocity(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_moverJoint);
             return joint.uj.moverJoint.linearVelocity;
         }
 
         /// Set the motor joint maximum force, usually in newtons
-        public static void b2MoverJoint_SetMaxVelocityForce(B2JointId jointId, B2Vec2 maxForce)
+        public static void b2MoverJoint_SetMaxVelocityForce(B2JointId jointId, Vector2 maxForce)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(maxForce)) == false) return;
 
@@ -47,7 +48,7 @@ namespace Box2D.NET
         }
 
         /// Get the motor joint maximum force, usually in newtons
-        public static B2Vec2 b2MoverJoint_GetMaxVelocityForce(B2JointId jointId)
+        public static Vector2 b2MoverJoint_GetMaxVelocityForce(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_moverJoint);
             return joint.uj.moverJoint.maxVelocityForce;
@@ -55,9 +56,9 @@ namespace Box2D.NET
 
         /**@}*/
 
-        internal static B2Vec2 b2GetMoverJointForce(B2World world, B2JointSim @base)
+        internal static Vector2 b2GetMoverJointForce(B2World world, B2JointSim @base)
         {
-            B2Vec2 force = b2MulSV(world.inv_h, @base.uj.moverJoint.linearVelocityImpulse);
+            Vector2 force = b2MulSV(world.inv_h, @base.uj.moverJoint.linearVelocityImpulse);
             return force;
         }
 
@@ -101,7 +102,7 @@ namespace Box2D.NET
 
             if (context.enableWarmStarting == false)
             {
-                joint.linearVelocityImpulse = b2Vec2_zero;
+                joint.linearVelocityImpulse = Vector2Zero;
             }
         }
 
@@ -145,20 +146,20 @@ namespace Box2D.NET
             B2BodyState stateA = joint.indexA == B2_NULL_INDEX ? dummyState : context.states[joint.indexA];
             B2BodyState stateB = joint.indexB == B2_NULL_INDEX ? dummyState : context.states[joint.indexB];
 
-            B2Vec2 vA = stateA.linearVelocity;
-            B2Vec2 vB = stateB.linearVelocity;
+            Vector2 vA = stateA.linearVelocity;
+            Vector2 vB = stateB.linearVelocity;
 
             // linear velocity
             if (joint.maxVelocityForce.X > 0.0f || joint.maxVelocityForce.Y > 0.0f)
             {
-                B2Vec2 cdot = b2Sub(vB, vA);
+                Vector2 cdot = b2Sub(vB, vA);
                 cdot = b2Sub(cdot, joint.linearVelocity);
-                B2Vec2 b = b2MulSV(joint.linearMass, cdot);
-                B2Vec2 impulse = new B2Vec2(-b.X, -b.Y);
+                Vector2 b = b2MulSV(joint.linearMass, cdot);
+                Vector2 impulse = new Vector2(-b.X, -b.Y);
 
-                B2Vec2 oldImpulse = joint.linearVelocityImpulse;
+                Vector2 oldImpulse = joint.linearVelocityImpulse;
                 joint.linearVelocityImpulse = b2Add(joint.linearVelocityImpulse, impulse);
-                B2Vec2 maxImpulse = b2MulSV(context.h, joint.maxVelocityForce);
+                Vector2 maxImpulse = b2MulSV(context.h, joint.maxVelocityForce);
 
                 // clamp x and y separately
                 joint.linearVelocityImpulse = b2Clamp(joint.linearVelocityImpulse, b2Neg(maxImpulse), maxImpulse);
@@ -169,7 +170,7 @@ namespace Box2D.NET
             }
             else
             {
-                joint.linearVelocityImpulse = b2Vec2_zero;
+                joint.linearVelocityImpulse = Vector2Zero;
             }
 
             if (0 != (stateA.flags & (uint)B2BodyFlags.b2_dynamicFlag))

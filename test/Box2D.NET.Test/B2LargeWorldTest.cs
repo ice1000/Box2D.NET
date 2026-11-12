@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using NUnit.Framework;
 using static Box2D.NET.B2Bodies;
 using static Box2D.NET.B2Geometries;
@@ -25,11 +26,11 @@ public class B2LargeWorldTest
     private struct PyramidResult
     {
         public int sleepStep;
-        public B2Vec2[] rel;
+        public Vector2[] rel;
     }
 
     // Read a body center of mass relative to a base position.
-    private static B2Vec2 BodyRelativeCenter(B2WorldId worldId, B2BodyId bodyId, B2Pos baseVec)
+    private static Vector2 BodyRelativeCenter(B2WorldId worldId, B2BodyId bodyId, B2Pos baseVec)
     {
         B2World world = b2GetWorldFromId(worldId);
         B2Body body = b2GetBodyFullId(world, bodyId);
@@ -58,10 +59,10 @@ public class B2LargeWorldTest
 
         // Each box is 1 m, centers on integer offsets. Row 0 rests on the ground, rows stack directly
         // above so the configuration is stable and sleeps quickly.
-        B2Vec2[] offsets =
+        Vector2[] offsets =
         {
-            new B2Vec2(-2.0f, 1.0f), new B2Vec2(-1.0f, 1.0f), new B2Vec2(0.0f, 1.0f), new B2Vec2(1.0f, 1.0f), new B2Vec2(2.0f, 1.0f),
-            new B2Vec2(-1.0f, 2.0f), new B2Vec2(0.0f, 2.0f), new B2Vec2(1.0f, 2.0f), new B2Vec2(0.0f, 3.0f),
+            new Vector2(-2.0f, 1.0f), new Vector2(-1.0f, 1.0f), new Vector2(0.0f, 1.0f), new Vector2(1.0f, 1.0f), new Vector2(2.0f, 1.0f),
+            new Vector2(-1.0f, 2.0f), new Vector2(0.0f, 2.0f), new Vector2(1.0f, 2.0f), new Vector2(0.0f, 3.0f),
         };
 
         B2BodyId[] bodyIds = new B2BodyId[PYRAMID_BODY_COUNT];
@@ -76,7 +77,7 @@ public class B2LargeWorldTest
             b2CreatePolygonShape(bodyIds[i], shapeDef, box);
         }
 
-        PyramidResult result = new PyramidResult { sleepStep = -1, rel = new B2Vec2[PYRAMID_BODY_COUNT] };
+        PyramidResult result = new PyramidResult { sleepStep = -1, rel = new Vector2[PYRAMID_BODY_COUNT] };
 
         for (int step = 0; step < 250; ++step)
         {
@@ -132,9 +133,9 @@ public class B2LargeWorldTest
         bodyDef.isBullet = true;
         bodyDef.gravityScale = 0.0f;
         bodyDef.position = new B2Pos(baseVec.X + 10.0f, baseVec.Y);
-        bodyDef.linearVelocity = new B2Vec2(-200.0f, 0.0f);
+        bodyDef.linearVelocity = new Vector2(-200.0f, 0.0f);
         B2BodyId bulletId = b2CreateBody(worldId, bodyDef);
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.1f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.1f);
         shapeDef = b2DefaultShapeDef();
         b2CreateCircleShape(bulletId, shapeDef, circle);
 
@@ -158,7 +159,7 @@ public class B2LargeWorldTest
     }
 
     // Cast a ray at a unit box on the base and report the hit point relative to the base.
-    private static B2Vec2 RunRayCast(B2Pos baseVec)
+    private static Vector2 RunRayCast(B2Pos baseVec)
     {
         B2WorldDef worldDef = b2DefaultWorldDef();
         worldDef.workerCount = 1;
@@ -173,11 +174,11 @@ public class B2LargeWorldTest
 
         // Ray from 5 m left of the box, traveling 10 m right. Hits the left face at base + {-0.5, 0}.
         B2Pos origin = new B2Pos(baseVec.X - 5.0f, baseVec.Y);
-        B2Vec2 translation = new B2Vec2(10.0f, 0.0f);
+        Vector2 translation = new Vector2(10.0f, 0.0f);
         B2RayResult result = b2World_CastRayClosest(worldId, origin, translation, b2DefaultQueryFilter());
 
         // A miss leaves the point at the origin, which the caller's position check rejects
-        B2Vec2 rel = b2SubPos(result.point, baseVec);
+        Vector2 rel = b2SubPos(result.point, baseVec);
         b2DestroyWorld(worldId);
         return rel;
     }
@@ -185,7 +186,7 @@ public class B2LargeWorldTest
     [Test]
     public void LargeWorldRayCastTest()
     {
-        B2Vec2 rel = RunRayCast(new B2Pos(0.0f, 0.0f));
+        Vector2 rel = RunRayCast(new B2Pos(0.0f, 0.0f));
         Assert.That(MathF.Abs(rel.X + 0.5f), Is.LessThanOrEqualTo(1e-4f));
         Assert.That(MathF.Abs(rel.Y), Is.LessThanOrEqualTo(1e-4f));
     }
@@ -209,7 +210,7 @@ public class B2LargeWorldTest
         return true;
     }
 
-    private static float OriginCastFcn(B2ShapeId id, B2Pos point, B2Vec2 normal, float fraction, ref OriginQueryData data)
+    private static float OriginCastFcn(B2ShapeId id, B2Pos point, Vector2 normal, float fraction, ref OriginQueryData data)
     {
         data.castPoint = point;
         data.castFraction = fraction;
@@ -243,27 +244,27 @@ public class B2LargeWorldTest
         data.castFraction = 1.0f;
 
         // Overlap a small circle centered on the box
-        B2Vec2 center = new B2Vec2(0.0f, 0.0f);
+        Vector2 center = new Vector2(0.0f, 0.0f);
         B2ShapeProxy overlapProxy = b2MakeProxy(center, 1, 0.1f);
         b2World_OverlapShape(worldId, @base, ref overlapProxy, filter, OriginOverlapFcn, data);
 
         // Cast a small circle at the left face. Center stops at -0.6, hit point on the face at -0.5.
-        B2Vec2 start = new B2Vec2(-5.0f, 0.0f);
+        Vector2 start = new Vector2(-5.0f, 0.0f);
         B2ShapeProxy castProxy = b2MakeProxy(start, 1, 0.1f);
-        b2World_CastShape(worldId, @base, ref castProxy, new B2Vec2(10.0f, 0.0f), filter, OriginCastFcn, data);
+        b2World_CastShape(worldId, @base, ref castProxy, new Vector2(10.0f, 0.0f), filter, OriginCastFcn, data);
 
         // Mover cast at the box
-        B2Capsule mover = new B2Capsule(new B2Vec2(-5.0f, -0.2f), new B2Vec2(-5.0f, 0.2f), 0.3f);
-        data.moverFraction = b2World_CastMover(worldId, @base, mover, new B2Vec2(10.0f, 0.0f), filter);
+        B2Capsule mover = new B2Capsule(new Vector2(-5.0f, -0.2f), new Vector2(-5.0f, 0.2f), 0.3f);
+        data.moverFraction = b2World_CastMover(worldId, @base, mover, new Vector2(10.0f, 0.0f), filter);
 
         // Mover overlapping the box gathers planes
-        B2Capsule touching = new B2Capsule(new B2Vec2(-0.9f, -0.2f), new B2Vec2(-0.9f, 0.2f), 0.5f);
+        B2Capsule touching = new B2Capsule(new Vector2(-0.9f, -0.2f), new Vector2(-0.9f, 0.2f), 0.5f);
         b2World_CollideMover(worldId, @base, touching, filter, OriginPlaneFcn, data);
 
         // Shape level queries at the base
         data.insidePoint = b2Shape_TestPoint(shapeId, @base);
 
-        B2WorldCastOutput rayOutput = b2Shape_CastRay(shapeId, b2OffsetPos(@base, new B2Vec2(-5.0f, 0.0f)), new B2Vec2(10.0f, 0.0f));
+        B2WorldCastOutput rayOutput = b2Shape_CastRay(shapeId, b2OffsetPos(@base, new Vector2(-5.0f, 0.0f)), new Vector2(10.0f, 0.0f));
         data.shapeRayHit = rayOutput.hit;
         data.shapeRayPoint = rayOutput.point;
 
@@ -282,9 +283,9 @@ public class B2LargeWorldTest
         Assert.That(origin.insidePoint, Is.True);
         Assert.That(origin.shapeRayHit, Is.True);
 
-        B2Vec2 castRel = b2SubPos(origin.castPoint, b2Pos_zero);
+        Vector2 castRel = b2SubPos(origin.castPoint, b2Pos_zero);
         Assert.That(MathF.Abs(castRel.X + 0.5f), Is.LessThanOrEqualTo(1e-3f));
-        B2Vec2 rayRel = b2SubPos(origin.shapeRayPoint, b2Pos_zero);
+        Vector2 rayRel = b2SubPos(origin.shapeRayPoint, b2Pos_zero);
         Assert.That(MathF.Abs(rayRel.X + 0.5f), Is.LessThanOrEqualTo(1e-3f));
     }
 }

@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     public struct B2WheelJoint
@@ -22,7 +24,7 @@ namespace Box2D.NET
         public int indexB;
         public B2Transform frameA;
         public B2Transform frameB;
-        public B2Vec2 deltaCenter;
+        public Vector2 deltaCenter;
         public float perpMass;
         public float motorMass;
         public float axialMass;

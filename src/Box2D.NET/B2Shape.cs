@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
 
 namespace Box2D.NET
 {
@@ -18,7 +19,7 @@ namespace Box2D.NET
         public float aabbMargin;
 
         public B2AABB aabb;
-        public B2Vec2 localCentroid;
+        public Vector2 localCentroid;
         public int proxyKey;
 
         public B2Filter filter;

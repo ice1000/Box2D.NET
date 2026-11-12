@@ -67,7 +67,7 @@ public class SampleContext
 
         showUI = true;
 
-        B2AABB bounds = new B2AABB(new B2Vec2(-float.MaxValue, -float.MaxValue), new B2Vec2(float.MaxValue, float.MaxValue));
+        B2AABB bounds = new B2AABB(new Vector2(-float.MaxValue, -float.MaxValue), new Vector2(float.MaxValue, float.MaxValue));
 
         debugDraw = b2DefaultDebugDraw();
         debugDraw.DrawPolygonFcn = DrawPolygonFcn;
@@ -126,11 +126,11 @@ public class SampleContext
         RenderBackground(draw.glfw, draw.gl, ref draw.background, camera);
     }
 
-    public static void DrawPolygonFcn(in B2WorldTransform transform, ReadOnlySpan<B2Vec2> vertices, int vertexCount, B2HexColor color, object context)
+    public static void DrawPolygonFcn(in B2WorldTransform transform, ReadOnlySpan<Vector2> vertices, int vertexCount, B2HexColor color, object context)
     {
         SampleContext sampleContext = (SampleContext)context;
         B2Transform xf = b2ToRelativeTransform(transform, b2Pos_zero);
-        Span<B2Vec2> points = stackalloc B2Vec2[vertexCount];
+        Span<Vector2> points = stackalloc Vector2[vertexCount];
         for (int i = 0; i < vertexCount; ++i)
         {
             points[i] = b2TransformPoint(xf, vertices[i]);
@@ -139,7 +139,7 @@ public class SampleContext
         DrawPolygon(sampleContext.draw, points, vertexCount, color);
     }
 
-    public static void DrawSolidPolygonFcn(in B2WorldTransform transform, ReadOnlySpan<B2Vec2> vertices, int vertexCount, float radius, B2HexColor color, object context)
+    public static void DrawSolidPolygonFcn(in B2WorldTransform transform, ReadOnlySpan<Vector2> vertices, int vertexCount, float radius, B2HexColor color, object context)
     {
         SampleContext sampleContext = (SampleContext)context;
         DrawSolidPolygon(sampleContext.draw, b2ToRelativeTransform(transform, b2Pos_zero), vertices, vertexCount, radius, color);
@@ -151,7 +151,7 @@ public class SampleContext
         DrawCircle(sampleContext.draw, b2ToVec2(center), radius, color);
     }
 
-    public static void DrawSolidCircleFcn(in B2WorldTransform transform, B2Vec2 center, float radius, B2HexColor color, object context)
+    public static void DrawSolidCircleFcn(in B2WorldTransform transform, Vector2 center, float radius, B2HexColor color, object context)
     {
         SampleContext sampleContext = (SampleContext)(context);
         B2Transform xf = b2ToRelativeTransform(transform, b2Pos_zero);

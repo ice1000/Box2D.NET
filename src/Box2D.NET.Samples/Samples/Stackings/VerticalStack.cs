@@ -53,23 +53,23 @@ public class VerticalStack : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(-7.0f, 9.0f);
+            m_camera.center = new Vector2(-7.0f, 9.0f);
             m_camera.zoom = 14.0f;
         }
 
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, 0.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, 0.0f));
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             //B2Polygon box = b2MakeBox(100.0f, 1.0f);
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             //b2CreatePolygonShape(groundId, ref shapeDef, ref box);
 
-            B2Segment segment = new B2Segment(new B2Vec2(10.0f, 0.0f), new B2Vec2(10.0f, 20.0f));
+            B2Segment segment = new B2Segment(new Vector2(10.0f, 0.0f), new Vector2(10.0f, 20.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
 
-            segment = new B2Segment(new B2Vec2(-30.0f, 0.0f), new B2Vec2(30.0f, 0.0f));
+            segment = new B2Segment(new Vector2(-30.0f, 0.0f), new Vector2(30.0f, 0.0f));
             b2CreateSegmentShape(groundId, shapeDef, segment);
         }
 
@@ -103,7 +103,7 @@ public class VerticalStack : Sample
             }
         }
 
-        B2Circle circle = new B2Circle(new B2Vec2(), 0.0f);
+        B2Circle circle = new B2Circle(new Vector2(), 0.0f);
         circle.radius = 0.5f;
 
         B2Polygon box = b2MakeRoundedBox(0.45f, 0.45f, 0.05f);
@@ -138,7 +138,7 @@ public class VerticalStack : Sample
                 int n = j * m_rowCount + i;
 
                 float shift = (i % 2 == 0 ? -offset : offset);
-                bodyDef.position = b2ToPos(new B2Vec2(x + shift, 0.5f + 1.0f * i));
+                bodyDef.position = b2ToPos(new Vector2(x + shift, 0.5f + 1.0f * i));
                 // bodyDef.position = {x + shift, 1.0f + 1.51f * i};
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
@@ -190,7 +190,7 @@ public class VerticalStack : Sample
 
     void FireBullets()
     {
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.25f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.25f);
         B2Polygon box = b2MakeBox(0.25f, 0.25f);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -200,9 +200,9 @@ public class VerticalStack : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(-26.7f - i, 6.0f));
+            bodyDef.position = b2ToPos(new Vector2(-26.7f - i, 6.0f));
             float speed = RandomFloatRange(200.0f, 300.0f);
-            bodyDef.linearVelocity = new B2Vec2(speed, 0.0f);
+            bodyDef.linearVelocity = new Vector2(speed, 0.0f);
             bodyDef.isBullet = true;
 
             B2BodyId bullet = b2CreateBody(m_worldId, bodyDef);

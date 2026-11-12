@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: 2025 Ikpil Choi(ikpil@naver.com)
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
+
 namespace Box2D.NET
 {
     /// World definition used to create a simulation world.
@@ -10,7 +12,7 @@ namespace Box2D.NET
     public struct B2WorldDef
     {
         /// Gravity vector. Box2D has no up-vector defined.
-        public B2Vec2 gravity;
+        public Vector2 gravity;
 
         /// Restitution speed threshold, usually in m/s. Collisions above this
         /// speed have restitution applied (will bounce).

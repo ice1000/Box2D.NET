@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Numerics;
 using System.Text;
 using static Box2D.NET.B2Arrays;
 using static Box2D.NET.B2Cores;
@@ -65,10 +66,10 @@ namespace Box2D.NET
         // Identity body state, notice the deltaRotation is {1, 0}
         internal static readonly B2BodyState b2_identityBodyState = new B2BodyState()
         {
-            linearVelocity = new B2Vec2(0.0f, 0.0f),
+            linearVelocity = new Vector2(0.0f, 0.0f),
             angularVelocity = 0.0f,
             flags = 0,
-            deltaPosition = new B2Vec2(0.0f, 0.0f),
+            deltaPosition = new Vector2(0.0f, 0.0f),
             deltaRotation = new B2Rot(1.0f, 0.0f),
         };
 
@@ -623,8 +624,8 @@ namespace Box2D.NET
             {
                 // No shapes, bracket the body origin so the box still contains the true position far away
                 B2WorldTransform transform = b2GetBodyTransform(world, body.id);
-                B2Vec2 lower = new B2Vec2(b2RoundDownFloat(transform.p.X), b2RoundDownFloat(transform.p.Y));
-                B2Vec2 upper = new B2Vec2(b2RoundUpFloat(transform.p.X), b2RoundUpFloat(transform.p.Y));
+                Vector2 lower = new Vector2(b2RoundDownFloat(transform.p.X), b2RoundDownFloat(transform.p.Y));
+                Vector2 upper = new Vector2(b2RoundUpFloat(transform.p.X), b2RoundUpFloat(transform.p.Y));
                 return new B2AABB(lower, upper);
             }
 
@@ -652,7 +653,7 @@ namespace Box2D.NET
 
             bodySim.invMass = 0.0f;
             bodySim.invInertia = 0.0f;
-            bodySim.localCenter = b2Vec2_zero;
+            bodySim.localCenter = Vector2Zero;
             bodySim.minExtent = B2_HUGE;
             bodySim.maxExtent = 0.0f;
 
@@ -670,7 +671,7 @@ namespace Box2D.NET
                     {
                         B2Shape s = b2Array_Get(ref world.shapes, nextShapeId);
 
-                        B2ShapeExtent extent = b2ComputeShapeExtent(s, b2Vec2_zero);
+                        B2ShapeExtent extent = b2ComputeShapeExtent(s, Vector2Zero);
                         bodySim.minExtent = b2MinFloat(bodySim.minExtent, extent.minExtent);
                         bodySim.maxExtent = b2MaxFloat(bodySim.maxExtent, extent.maxExtent);
 
@@ -685,7 +686,7 @@ namespace Box2D.NET
             ArraySegment<B2MassData> masses = b2StackAlloc<B2MassData>(world.stack, shapeCount, "mass data");
 
             // Accumulate mass over all shapes.
-            B2Vec2 localCenter = b2Vec2_zero;
+            Vector2 localCenter = Vector2Zero;
             int shapeId = body.headShapeId;
             int shapeIndex = 0;
             while (shapeId != B2_NULL_INDEX)
@@ -725,7 +726,7 @@ namespace Box2D.NET
                 }
 
                 // Shift to center of mass. This is safe because it can only increase.
-                B2Vec2 offset = b2Sub(localCenter, massData.center);
+                Vector2 offset = b2Sub(localCenter, massData.center);
                 float inertia = massData.rotationalInertia + massData.mass * b2Dot(offset, offset);
                 body.inertia += inertia;
             }
@@ -755,7 +756,7 @@ namespace Box2D.NET
             B2BodyState state = b2GetBodyState(world, body);
             if (state != null)
             {
-                B2Vec2 deltaLinear = b2CrossSV(state.angularVelocity, b2SubPos(bodySim.center, oldCenter));
+                Vector2 deltaLinear = b2CrossSV(state.angularVelocity, b2SubPos(bodySim.center, oldCenter));
                 state.linearVelocity = b2Add(state.linearVelocity, deltaLinear);
             }
 
@@ -812,7 +813,7 @@ namespace Box2D.NET
             return b2GetBodyTransformQuick(world, body);
         }
         /// Get a local point on a body given a world point
-        public static B2Vec2 b2Body_GetLocalPoint(B2BodyId bodyId, B2Pos worldPoint)
+        public static Vector2 b2Body_GetLocalPoint(B2BodyId bodyId, B2Pos worldPoint)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
@@ -820,7 +821,7 @@ namespace Box2D.NET
             return b2InvTransformWorldPoint(transform, worldPoint);
         }
         /// Get a world point on a body given a local point
-        public static B2Pos b2Body_GetWorldPoint(B2BodyId bodyId, B2Vec2 localPoint)
+        public static B2Pos b2Body_GetWorldPoint(B2BodyId bodyId, Vector2 localPoint)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
@@ -829,7 +830,7 @@ namespace Box2D.NET
         }
 
         /// Get a local vector on a body given a world vector
-        public static B2Vec2 b2Body_GetLocalVector(B2BodyId bodyId, B2Vec2 worldVector)
+        public static Vector2 b2Body_GetLocalVector(B2BodyId bodyId, Vector2 worldVector)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
@@ -838,7 +839,7 @@ namespace Box2D.NET
         }
 
         /// Get a world vector on a body given a local vector
-        public static B2Vec2 b2Body_GetWorldVector(B2BodyId bodyId, B2Vec2 localVector)
+        public static Vector2 b2Body_GetWorldVector(B2BodyId bodyId, Vector2 localVector)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
@@ -901,7 +902,7 @@ namespace Box2D.NET
             }
         }
         /// Get the linear velocity of a body's center of mass. Usually in meters per second.
-        public static B2Vec2 b2Body_GetLinearVelocity(B2BodyId bodyId)
+        public static Vector2 b2Body_GetLinearVelocity(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
@@ -911,7 +912,7 @@ namespace Box2D.NET
                 return state.linearVelocity;
             }
 
-            return b2Vec2_zero;
+            return Vector2Zero;
         }
         /// Get the angular velocity of a body in radians per second
         public static float b2Body_GetAngularVelocity(B2BodyId bodyId)
@@ -927,7 +928,7 @@ namespace Box2D.NET
             return 0.0f;
         }
         /// Set the linear velocity of a body. Usually in meters per second.
-        public static void b2Body_SetLinearVelocity(B2BodyId bodyId, B2Vec2 linearVelocity)
+        public static void b2Body_SetLinearVelocity(B2BodyId bodyId, Vector2 linearVelocity)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(linearVelocity)) == false) return;
 
@@ -1014,9 +1015,9 @@ namespace Box2D.NET
             B2BodySim sim = b2GetBodySim(world, body);
 
             // Compute linear velocity. The center difference is taken in world precision then demoted
-            B2Vec2 delta = b2SubPos(b2TransformWorldPoint(target, sim.localCenter), sim.center);
+            Vector2 delta = b2SubPos(b2TransformWorldPoint(target, sim.localCenter), sim.center);
             float invTimeStep = 1.0f / timeStep;
-            B2Vec2 linearVelocity = b2MulSV(invTimeStep, delta);
+            Vector2 linearVelocity = b2MulSV(invTimeStep, delta);
 
             // Compute angular velocity
             B2Rot q1 = sim.transform.q;
@@ -1047,40 +1048,40 @@ namespace Box2D.NET
         }
 
         /// Get the linear velocity of a local point attached to a body. Usually in meters per second.
-        public static B2Vec2 b2Body_GetLocalPointVelocity(B2BodyId bodyId, B2Vec2 localPoint)
+        public static Vector2 b2Body_GetLocalPointVelocity(B2BodyId bodyId, Vector2 localPoint)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
             B2BodyState state = b2GetBodyState(world, body);
             if (state == null)
             {
-                return b2Vec2_zero;
+                return Vector2Zero;
             }
 
             B2SolverSet set = b2Array_Get(ref world.solverSets, body.setIndex);
             B2BodySim bodySim = b2Array_Get(ref set.bodySims, body.localIndex);
 
-            B2Vec2 r = b2RotateVector(bodySim.transform.q, b2Sub(localPoint, bodySim.localCenter));
-            B2Vec2 v = b2Add(state.linearVelocity, b2CrossSV(state.angularVelocity, r));
+            Vector2 r = b2RotateVector(bodySim.transform.q, b2Sub(localPoint, bodySim.localCenter));
+            Vector2 v = b2Add(state.linearVelocity, b2CrossSV(state.angularVelocity, r));
             return v;
         }
 
         /// Get the linear velocity of a world point attached to a body. Usually in meters per second.
-        public static B2Vec2 b2Body_GetWorldPointVelocity(B2BodyId bodyId, B2Pos worldPoint)
+        public static Vector2 b2Body_GetWorldPointVelocity(B2BodyId bodyId, B2Pos worldPoint)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
             B2BodyState state = b2GetBodyState(world, body);
             if (state == null)
             {
-                return b2Vec2_zero;
+                return Vector2Zero;
             }
 
             B2SolverSet set = b2Array_Get(ref world.solverSets, body.setIndex);
             B2BodySim bodySim = b2Array_Get(ref set.bodySims, body.localIndex);
 
-            B2Vec2 r = b2SubPos(worldPoint, bodySim.center);
-            B2Vec2 v = b2Add(state.linearVelocity, b2CrossSV(state.angularVelocity, r));
+            Vector2 r = b2SubPos(worldPoint, bodySim.center);
+            Vector2 v = b2Add(state.linearVelocity, b2CrossSV(state.angularVelocity, r));
             return v;
         }
 
@@ -1091,7 +1092,7 @@ namespace Box2D.NET
         /// @param force The world force vector, usually in newtons (N)
         /// @param point The world position of the point of application
         /// @param wake Option to wake up the body
-        public static void b2Body_ApplyForce(B2BodyId bodyId, B2Vec2 force, B2Pos point, bool wake)
+        public static void b2Body_ApplyForce(B2BodyId bodyId, Vector2 force, B2Pos point, bool wake)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(force)) == false) return;
             if (B2_CHECK_INPUT(b2IsValidPos(point)) == false) return;
@@ -1122,7 +1123,7 @@ namespace Box2D.NET
         /// @param bodyId The body id
         /// @param force the world force vector, usually in newtons (N).
         /// @param wake also wake up the body
-        public static void b2Body_ApplyForceToCenter(B2BodyId bodyId, B2Vec2 force, bool wake)
+        public static void b2Body_ApplyForceToCenter(B2BodyId bodyId, Vector2 force, bool wake)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(force)) == false) return;
 
@@ -1184,7 +1185,7 @@ namespace Box2D.NET
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
             B2BodySim bodySim = b2GetBodySim(world, body);
-            bodySim.force = b2Vec2_zero;
+            bodySim.force = Vector2Zero;
             bodySim.torque = 0.0f;
         }
 
@@ -1199,7 +1200,7 @@ namespace Box2D.NET
         /// @param wake also wake up the body
         /// @warning This should be used for one-shot impulses. If you need a steady force,
         /// use a force instead, which will work better with the sub-stepping solver.
-        public static void b2Body_ApplyLinearImpulse(B2BodyId bodyId, B2Vec2 impulse, B2Pos point, bool wake)
+        public static void b2Body_ApplyLinearImpulse(B2BodyId bodyId, Vector2 impulse, B2Pos point, bool wake)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(impulse)) == false) return;
             if (B2_CHECK_INPUT(b2IsValidPos(point)) == false) return;
@@ -1237,7 +1238,7 @@ namespace Box2D.NET
         /// @param wake also wake up the body
         /// @warning This should be used for one-shot impulses. If you need a steady force,
         /// use a force instead, which will work better with the sub-stepping solver.
-        public static void b2Body_ApplyLinearImpulseToCenter(B2BodyId bodyId, B2Vec2 impulse, bool wake)
+        public static void b2Body_ApplyLinearImpulseToCenter(B2BodyId bodyId, Vector2 impulse, bool wake)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(impulse)) == false) return;
 
@@ -1570,7 +1571,7 @@ namespace Box2D.NET
             return body.inertia;
         }
         /// Get the center of mass position of the body in local space
-        public static B2Vec2 b2Body_GetLocalCenter(B2BodyId bodyId)
+        public static Vector2 b2Body_GetLocalCenter(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
@@ -1618,7 +1619,7 @@ namespace Box2D.NET
             B2BodyState state = b2GetBodyState(world, body);
             if (state != null)
             {
-                B2Vec2 deltaLinear = b2CrossSV(state.angularVelocity, b2SubPos(bodySim.center, oldCenter));
+                Vector2 deltaLinear = b2CrossSV(state.angularVelocity, b2SubPos(bodySim.center, oldCenter));
                 state.linearVelocity = b2Add(state.linearVelocity, deltaLinear);
             }
 

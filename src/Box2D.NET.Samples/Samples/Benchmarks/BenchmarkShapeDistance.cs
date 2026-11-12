@@ -40,14 +40,14 @@ public class BenchmarkShapeDistance : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 0.0f);
+            m_camera.center = new Vector2(0.0f, 0.0f);
             m_camera.zoom = 3.0f;
         }
 
         {
-            B2Vec2[] points = new B2Vec2[8];
+            Vector2[] points = new Vector2[8];
             B2Rot q = b2MakeRot(2.0f * B2_PI / 8.0f);
-            B2Vec2 p = new B2Vec2(0.5f, 0.0f);
+            Vector2 p = new Vector2(0.5f, 0.0f);
             points[0] = p;
             for (int i = 1; i < 8; ++i)
             {
@@ -59,9 +59,9 @@ public class BenchmarkShapeDistance : Sample
         }
 
         {
-            B2Vec2[] points = new B2Vec2[8];
+            Vector2[] points = new Vector2[8];
             B2Rot q = b2MakeRot(2.0f * B2_PI / 8.0f);
-            B2Vec2 p = new B2Vec2(0.5f, 0.0f);
+            Vector2 p = new Vector2(0.5f, 0.0f);
             points[0] = p;
             for (int i = 1; i < 8; ++i)
             {
@@ -151,9 +151,9 @@ public class BenchmarkShapeDistance : Sample
         DrawSolidPolygon(m_draw, xfA, m_polygonA.vertices.AsSpan(), m_polygonA.count, m_polygonA.radius, B2HexColor.b2_colorBox2DGreen);
         DrawSolidPolygon(m_draw, xfB, m_polygonB.vertices.AsSpan(), m_polygonB.count, m_polygonB.radius, B2HexColor.b2_colorBox2DBlue);
         // The query returns frame A results, project to world for drawing
-        B2Vec2 worldPointA = b2TransformPoint(xfA, output.pointA);
-        B2Vec2 worldPointB = b2TransformPoint(xfA, output.pointB);
-        B2Vec2 worldNormal = b2RotateVector(xfA.q, output.normal);
+        Vector2 worldPointA = b2TransformPoint(xfA, output.pointA);
+        Vector2 worldPointB = b2TransformPoint(xfA, output.pointB);
+        Vector2 worldNormal = b2RotateVector(xfA.q, output.normal);
 
         DrawLine(m_draw, worldPointA, worldPointB, B2HexColor.b2_colorDimGray);
         DrawPoint(m_draw, worldPointA, 10.0f, B2HexColor.b2_colorWhite);

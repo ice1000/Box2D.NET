@@ -43,14 +43,14 @@ public class Cart : Sample
     {
         if (m_context.restart == false)
         {
-            m_context.camera.center = new B2Vec2(0.0f, 1.0f);
+            m_context.camera.center = new Vector2(0.0f, 1.0f);
             m_context.camera.zoom = 1.5f;
             m_context.subStepCount = 12;
         }
 
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            bodyDef.position = b2ToPos(new B2Vec2(0.0f, -1.0f));
+            bodyDef.position = b2ToPos(new Vector2(0.0f, -1.0f));
             B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -58,7 +58,7 @@ public class Cart : Sample
             b2CreatePolygonShape(groundId, shapeDef, groundBox);
         }
 
-        b2World_SetGravity(m_worldId, new B2Vec2(0.0f, -22.0f));
+        b2World_SetGravity(m_worldId, new Vector2(0.0f, -22.0f));
 
         m_contactHertz = 240.0f;
         m_contactDampingRatio = 10.0f;
@@ -98,25 +98,25 @@ public class Cart : Sample
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(0.0f, yBase));
+        bodyDef.position = b2ToPos(new Vector2(0.0f, yBase));
         m_chassisId = b2CreateBody(m_worldId, bodyDef);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
         shapeDef.density = 1000.0f;
 
-        B2Polygon box = b2MakeOffsetBox(1.0f, 0.25f, new B2Vec2(0.0f, 0.25f), b2Rot_identity);
+        B2Polygon box = b2MakeOffsetBox(1.0f, 0.25f, new Vector2(0.0f, 0.25f), b2Rot_identity);
         b2CreatePolygonShape(m_chassisId, shapeDef, box);
 
         shapeDef = b2DefaultShapeDef();
         shapeDef.material.rollingResistance = 0.02f;
         shapeDef.density = 50.0f;
 
-        B2Circle circle = new B2Circle(b2Vec2_zero, 0.1f);
-        bodyDef.position = b2ToPos(new B2Vec2(-0.9f, yBase - 0.15f));
+        B2Circle circle = new B2Circle(Vector2Zero, 0.1f);
+        bodyDef.position = b2ToPos(new Vector2(-0.9f, yBase - 0.15f));
         m_wheelId1 = b2CreateBody(m_worldId, bodyDef);
         b2CreateCircleShape(m_wheelId1, shapeDef, circle);
 
-        bodyDef.position = b2ToPos(new B2Vec2(0.9f, yBase - 0.15f));
+        bodyDef.position = b2ToPos(new Vector2(0.9f, yBase - 0.15f));
         m_wheelId2 = b2CreateBody(m_worldId, bodyDef);
         b2CreateCircleShape(m_wheelId2, shapeDef, circle);
 
@@ -126,16 +126,16 @@ public class Cart : Sample
 
         jointDef.@base.bodyIdA = m_chassisId;
         jointDef.@base.bodyIdB = m_wheelId1;
-        jointDef.@base.localFrameA.p = new B2Vec2(-0.9f, -0.15f);
-        jointDef.@base.localFrameB.p = new B2Vec2(0.0f, 0.0f);
+        jointDef.@base.localFrameA.p = new Vector2(-0.9f, -0.15f);
+        jointDef.@base.localFrameB.p = new Vector2(0.0f, 0.0f);
 
         m_jointId1 = b2CreateRevoluteJoint(m_worldId, jointDef);
         b2Joint_SetConstraintTuning(m_jointId1, m_constraintHertz, m_constraintDampingRatio);
 
         jointDef.@base.bodyIdA = m_chassisId;
         jointDef.@base.bodyIdB = m_wheelId2;
-        jointDef.@base.localFrameA.p = new B2Vec2(0.9f, -0.15f);
-        jointDef.@base.localFrameB.p = new B2Vec2(0.0f, 0.0f);
+        jointDef.@base.localFrameA.p = new Vector2(0.9f, -0.15f);
+        jointDef.@base.localFrameB.p = new Vector2(0.0f, 0.0f);
 
         m_jointId2 = b2CreateRevoluteJoint(m_worldId, jointDef);
         b2Joint_SetConstraintTuning(m_jointId2, m_constraintHertz, m_constraintDampingRatio);

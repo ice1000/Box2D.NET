@@ -31,7 +31,7 @@ public class TangentSpeed : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(60.0f, -15.0f);
+            m_camera.center = new Vector2(60.0f, -15.0f);
             m_camera.zoom = 38.0f;
         }
 
@@ -47,10 +47,10 @@ public class TangentSpeed : Sample
                           + "-26.45833,-13.22917 -23.81251,-21.16666 h -13.22916 v 44.97916 H 68.791712 V 0 h -21.16671 v "
                           + "206.375 l 566.208398,-1e-5 z";
 
-            B2Vec2 offset = new B2Vec2(-47.375002f, 0.25f);
+            Vector2 offset = new Vector2(-47.375002f, 0.25f);
 
             float scale = 0.2f;
-            B2Vec2[] points = new B2Vec2[20];
+            Vector2[] points = new Vector2[20];
             int count = SvgParser.ParsePath(path, offset, points, 20, scale, true);
 
             B2SurfaceMaterial[] materials = new B2SurfaceMaterial[20];
@@ -90,11 +90,11 @@ public class TangentSpeed : Sample
 
     B2BodyId DropBall()
     {
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.5f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(110.0f, -30.0f));
+        bodyDef.position = b2ToPos(new Vector2(110.0f, -30.0f));
         B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();

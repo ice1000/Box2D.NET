@@ -36,7 +36,7 @@ public class Drop : Sample
     {
         if (m_context.restart == false)
         {
-            m_camera.center = new B2Vec2(0.0f, 1.5f);
+            m_camera.center = new Vector2(0.0f, 1.5f);
             m_camera.zoom = 3.0f;
             m_context.enableSleep = false;
             m_context.debugDraw.drawJoints = false;
@@ -103,7 +103,7 @@ public class Drop : Sample
 
         float w = 0.25f;
         int count = 40;
-        B2Segment segment = new B2Segment(new B2Vec2(-0.5f * count * w, 0.0f), new B2Vec2(0.5f * count * w, 0.0f));
+        B2Segment segment = new B2Segment(new Vector2(-0.5f * count * w, 0.0f), new Vector2(0.5f * count * w, 0.0f));
         b2CreateSegmentShape(groundId, shapeDef, segment);
 
         m_groundIds.Add(groundId);
@@ -130,7 +130,7 @@ public class Drop : Sample
         float h = 0.05f;
         for (int j = 0; j <= count; ++j)
         {
-            B2Polygon box = b2MakeOffsetBox(0.5f * w, h, new B2Vec2(x, 0.0f), b2Rot_identity);
+            B2Polygon box = b2MakeOffsetBox(0.5f * w, h, new Vector2(x, 0.0f), b2Rot_identity);
             b2CreatePolygonShape(groundId, shapeDef, box);
             x += w;
         }
@@ -154,9 +154,9 @@ public class Drop : Sample
 
         float w = 0.25f;
         int count = 40;
-        B2Segment segment = new B2Segment(new B2Vec2(-0.5f * count * w, 0.0f), new B2Vec2(0.5f * count * w, 0.0f));
+        B2Segment segment = new B2Segment(new Vector2(-0.5f * count * w, 0.0f), new Vector2(0.5f * count * w, 0.0f));
         b2CreateSegmentShape(groundId, shapeDef, segment);
-        segment = new B2Segment(new B2Vec2(3.0f, 0.0f), new B2Vec2(3.0f, 8.0f));
+        segment = new B2Segment(new Vector2(3.0f, 0.0f), new Vector2(3.0f, 8.0f));
         b2CreateSegmentShape(groundId, shapeDef, segment);
 
         m_groundIds.Add(groundId);
@@ -170,13 +170,13 @@ public class Drop : Sample
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(0.0f, 4.0f));
-        bodyDef.linearVelocity = new B2Vec2(0.0f, -100.0f);
+        bodyDef.position = b2ToPos(new Vector2(0.0f, 4.0f));
+        bodyDef.linearVelocity = new Vector2(0.0f, -100.0f);
 
         B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.125f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.125f);
         b2CreateCircleShape(bodyId, shapeDef, circle);
 
         m_bodyIds.Add(bodyId);
@@ -191,9 +191,9 @@ public class Drop : Sample
 
         B2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.position = b2ToPos(new B2Vec2(0.0f, 4.0f));
+        bodyDef.position = b2ToPos(new Vector2(0.0f, 4.0f));
         bodyDef.rotation = b2MakeRot(0.5f * B2_PI);
-        bodyDef.linearVelocity = new B2Vec2(0.0f, 0.0f);
+        bodyDef.linearVelocity = new Vector2(0.0f, 0.0f);
         bodyDef.angularVelocity = -0.5f;
 
         B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
@@ -216,7 +216,7 @@ public class Drop : Sample
         float jointHertz = 1.0f;
         float jointDampingRatio = 0.5f;
 
-        CreateHuman(ref m_human, m_worldId, b2ToPos(new B2Vec2(0.0f, 40.0f)), 1.0f, jointFrictionTorque, jointHertz, jointDampingRatio, 1, B2UserData.Empty, true);
+        CreateHuman(ref m_human, m_worldId, b2ToPos(new Vector2(0.0f, 40.0f)), 1.0f, jointFrictionTorque, jointHertz, jointDampingRatio, 1, B2UserData.Empty, true);
 
         m_frameCount = 1;
     }
@@ -239,21 +239,21 @@ public class Drop : Sample
             bodyDef.type = B2BodyType.b2_dynamicBody;
 
             float shift = (i % 2 == 0 ? -offset : offset);
-            bodyDef.position = b2ToPos(new B2Vec2(2.5f + shift, a + 2.0f * a * i));
+            bodyDef.position = b2ToPos(new Vector2(2.5f + shift, a + 2.0f * a * i));
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
 
             m_bodyIds.Add(bodyId);
             b2CreatePolygonShape(bodyId, shapeDef, box);
         }
 
-        B2Circle circle = new B2Circle(new B2Vec2(0.0f, 0.0f), 0.125f);
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.125f);
         shapeDef.density = 4.0f;
 
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.position = b2ToPos(new B2Vec2(-7.7f, 1.9f));
-            bodyDef.linearVelocity = new B2Vec2(200.0f, 0.0f);
+            bodyDef.position = b2ToPos(new Vector2(-7.7f, 1.9f));
+            bodyDef.linearVelocity = new Vector2(200.0f, 0.0f);
             bodyDef.isBullet = true;
 
             B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);

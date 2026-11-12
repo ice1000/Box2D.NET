@@ -149,21 +149,21 @@ namespace Box2D.NET
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 b2Add(in Vector2 a, in Vector2 b)
         {
-            return new Vector2(a.X + b.X, a.Y + b.Y);
+            return a + b;
         }
 
         /// Vector subtraction
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 b2Sub(in Vector2 a, in Vector2 b)
         {
-            return new Vector2(a.X - b.X, a.Y - b.Y);
+            return a - b;
         }
 
         /// Vector negation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 b2Neg(in Vector2 a)
         {
-            return new Vector2(-a.X, -a.Y);
+            return -a;
         }
 
         /// Vector linear interpolation
@@ -171,91 +171,83 @@ namespace Box2D.NET
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 b2Lerp(in Vector2 a, in Vector2 b, float t)
         {
-            return new Vector2((1.0f - t) * a.X + t * b.X, (1.0f - t) * a.Y + t * b.Y);
+            // Not Vector2.Lerp: it uses a different formula and rounds differently.
+            return (1.0f - t) * a + t * b;
         }
 
         /// Component-wise multiplication
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 b2Mul(in Vector2 a, in Vector2 b)
         {
-            return new Vector2(a.X * b.X, a.Y * b.Y);
+            return a * b;
         }
 
         /// Multiply a scalar and vector
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 b2MulSV(float s, in Vector2 v)
         {
-            return new Vector2(s * v.X, s * v.Y);
+            return s * v;
         }
 
         /// a + s * b
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 b2MulAdd(in Vector2 a, float s, in Vector2 b)
         {
-            return new Vector2(a.X + s * b.X, a.Y + s * b.Y);
+            return a + s * b;
         }
 
         /// a - s * b
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 b2MulSub(in Vector2 a, float s, in Vector2 b)
         {
-            return new Vector2(a.X - s * b.X, a.Y - s * b.Y);
+            return a - s * b;
         }
 
         /// Component-wise absolute vector
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 b2Abs(in Vector2 a)
         {
-            Vector2 b;
-            b.X = b2AbsFloat(a.X);
-            b.Y = b2AbsFloat(a.Y);
-            return b;
+            // Same as b2AbsFloat (keeps -0). Vector2.Abs would clear the sign of -0.
+            return Vector2.ConditionalSelect(Vector2.LessThan(a, Vector2.Zero), -a, a);
         }
 
         /// Component-wise minimum vector
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 b2Min(in Vector2 a, in Vector2 b)
         {
-            Vector2 c;
-            c.X = b2MinFloat(a.X, b.X);
-            c.Y = b2MinFloat(a.Y, b.Y);
-            return c;
+            // Same as b2MinFloat. Vector2.Min follows IEEE NaN/signed-zero rules instead.
+            return Vector2.ConditionalSelect(Vector2.LessThan(a, b), a, b);
         }
 
         /// Component-wise maximum vector
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 b2Max(in Vector2 a, in Vector2 b)
         {
-            Vector2 c;
-            c.X = b2MaxFloat(a.X, b.X);
-            c.Y = b2MaxFloat(a.Y, b.Y);
-            return c;
+            // Same as b2MaxFloat. Vector2.Max follows IEEE NaN/signed-zero rules instead.
+            return Vector2.ConditionalSelect(Vector2.GreaterThan(a, b), a, b);
         }
 
         /// Component-wise clamp vector v into the range [a, b]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 b2Clamp(in Vector2 v, in Vector2 a, in Vector2 b)
         {
-            Vector2 c;
-            c.X = b2ClampFloat(v.X, a.X, b.X);
-            c.Y = b2ClampFloat(v.Y, a.Y, b.Y);
-            return c;
+            // Same as b2ClampFloat: v < a ? a : (v > b ? b : v)
+            Vector2 r = Vector2.ConditionalSelect(Vector2.GreaterThan(v, b), b, v);
+            return Vector2.ConditionalSelect(Vector2.LessThan(v, a), a, r);
         }
 
         /// Get the length of this vector (the norm)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float b2Length(in Vector2 v)
         {
-            return MathF.Sqrt(v.X * v.X + v.Y * v.Y);
+            return v.Length();
         }
 
         /// Get the distance between two points
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float b2Distance(in Vector2 a, in Vector2 b)
         {
-            float dx = b.X - a.X;
-            float dy = b.Y - a.Y;
-            return MathF.Sqrt(dx * dx + dy * dy);
+            return Vector2.Distance(a, b);
         }
 
         /// Convert a vector into a unit vector if possible, otherwise returns the zero vector.
@@ -267,8 +259,7 @@ namespace Box2D.NET
             if (lengthSquared > 1000.0f * FLT_MIN)
             {
                 float s = 1.0f / MathF.Sqrt(lengthSquared);
-                Vector2 u = new Vector2(s * a.X, s * a.Y);
-                return u;
+                return s * a;
             }
 
             return new Vector2(0.0f, 0.0f);
@@ -292,8 +283,7 @@ namespace Box2D.NET
             {
                 length = MathF.Sqrt(lengthSquared);
                 float s = 1.0f / length;
-                Vector2 u = new Vector2(s * a.X, s * a.Y);
-                return u;
+                return s * a;
             }
 
             length = 0.0f;
@@ -331,15 +321,14 @@ namespace Box2D.NET
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float b2LengthSquared(in Vector2 v)
         {
-            return v.X * v.X + v.Y * v.Y;
+            return v.LengthSquared();
         }
 
         /// Get the distance squared between points
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float b2DistanceSquared(in Vector2 a, in Vector2 b)
         {
-            Vector2 c = new Vector2(b.X - a.X, b.Y - a.Y);
-            return c.X * c.X + c.Y * c.Y;
+            return Vector2.DistanceSquared(a, b);
         }
 
         /// Make a rotation using an angle in radians

@@ -11,7 +11,6 @@ namespace Box2D.NET
 {
     public static class B2Cores
     {
-        // note: I tried width of 1 and got no performance change
         public const int B2_SIMD_WIDTH = 4;
 
         /// Get the current version of Box2D

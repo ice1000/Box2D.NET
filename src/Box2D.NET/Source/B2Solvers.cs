@@ -117,7 +117,7 @@ namespace Box2D.NET
             for (int i = block.startIndex; i < block.startIndex + block.count; ++i)
             {
                 B2BodySim sim = sims[i];
-                B2BodyState state = states[i];
+                ref B2BodyState state = ref states[i];
 
                 Vector2 v = state.linearVelocity;
                 float w = state.angularVelocity;
@@ -165,7 +165,7 @@ namespace Box2D.NET
 
             for (int i = block.startIndex; i < block.startIndex + block.count; ++i)
             {
-                B2BodyState state = states[i];
+                ref B2BodyState state = ref states[i];
 
                 Vector2 v = state.linearVelocity;
                 float w = state.angularVelocity;
@@ -495,7 +495,7 @@ namespace Box2D.NET
                 fastBodySim.flags |= (uint)B2BodyFlags.b2_hadTimeOfImpact;
 
                 // Timeloss means there is a lost gravity contribution. Other forces and torques are ignored for now.
-                B2BodyState fastBodyState = b2Array_Get(ref awakeSet.bodyStates, bodySimIndex);
+                ref B2BodyState fastBodyState = ref b2Array_Get(ref awakeSet.bodyStates, bodySimIndex);
                 Vector2 v = fastBodyState.linearVelocity;
                 float timeLoss = (1.0f - context.fraction) * dt;
                 Vector2 dv = b2MulSV(-timeLoss * fastBodySim.gravityScale, world.gravity);
@@ -632,7 +632,7 @@ namespace Box2D.NET
 
             for (int simIndex = startIndex; simIndex < endIndex; ++simIndex)
             {
-                B2BodyState state = states[simIndex];
+                ref B2BodyState state = ref states[simIndex];
                 B2BodySim sim = sims[simIndex];
 
                 Vector2 v = state.linearVelocity;

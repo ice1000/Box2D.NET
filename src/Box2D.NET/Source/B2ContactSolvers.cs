@@ -6,6 +6,8 @@ using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.Arm;
+using System.Runtime.Intrinsics.X86;
 using static Box2D.NET.B2Arrays;
 using static Box2D.NET.B2Cores;
 using static Box2D.NET.B2Diagnostics;
@@ -207,7 +209,7 @@ namespace Box2D.NET
             B2BodyState[] states = awakeSet.bodyStates.data;
 
             // This is a dummy state to represent a static body because static bodies don't have a solver body.
-            B2BodyState dummyState = B2BodyState.Create(b2_identityBodyState);
+            B2BodyState dummyState = b2_identityBodyState;
 
             for (int i = 0; i < contactCount; ++i)
             {
@@ -216,8 +218,8 @@ namespace Box2D.NET
                 int indexA = constraint.indexA - 1;
                 int indexB = constraint.indexB - 1;
 
-                B2BodyState stateA = indexA == B2_NULL_INDEX ? dummyState : states[indexA];
-                B2BodyState stateB = indexB == B2_NULL_INDEX ? dummyState : states[indexB];
+                ref B2BodyState stateA = ref indexA == B2_NULL_INDEX ? ref dummyState : ref states[indexA];
+                ref B2BodyState stateB = ref indexB == B2_NULL_INDEX ? ref dummyState : ref states[indexB];
 
                 Vector2 vA = stateA.linearVelocity;
                 float wA = stateA.angularVelocity;
@@ -286,7 +288,7 @@ namespace Box2D.NET
             float contactSpeed = context.world.contactSpeed;
 
             // This is a dummy body to represent a static body since static bodies don't have a solver body.
-            B2BodyState dummyState = B2BodyState.Create(b2_identityBodyState);
+            B2BodyState dummyState = b2_identityBodyState;
 
             Span<float> rnA = stackalloc float[2];
             Span<float> rnB = stackalloc float[2];
@@ -303,12 +305,12 @@ namespace Box2D.NET
                 int indexA = constraint.indexA - 1;
                 int indexB = constraint.indexB - 1;
 
-                B2BodyState stateA = indexA == B2_NULL_INDEX ? dummyState : states[indexA];
+                ref B2BodyState stateA = ref indexA == B2_NULL_INDEX ? ref dummyState : ref states[indexA];
                 Vector2 vA = stateA.linearVelocity;
                 float wA = stateA.angularVelocity;
                 B2Rot dqA = stateA.deltaRotation;
 
-                B2BodyState stateB = indexB == B2_NULL_INDEX ? dummyState : states[indexB];
+                ref B2BodyState stateB = ref indexB == B2_NULL_INDEX ? ref dummyState : ref states[indexB];
                 Vector2 vB = stateB.linearVelocity;
                 float wB = stateB.angularVelocity;
                 B2Rot dqB = stateB.deltaRotation;
@@ -420,7 +422,7 @@ namespace Box2D.NET
             float inv_h = context.inv_h;
 
             // This is a dummy body to represent a static body since static bodies don't have a solver body.
-            B2BodyState dummyState = B2BodyState.Create(b2_identityBodyState);
+            B2BodyState dummyState = b2_identityBodyState;
 
             Span<float> normalImpulses = stackalloc float[2];
             Span<float> tangentImpulses = stackalloc float[2];
@@ -440,12 +442,12 @@ namespace Box2D.NET
                 int indexA = constraint.indexA - 1;
                 int indexB = constraint.indexB - 1;
 
-                B2BodyState stateA = indexA == B2_NULL_INDEX ? dummyState : states[indexA];
+                ref B2BodyState stateA = ref indexA == B2_NULL_INDEX ? ref dummyState : ref states[indexA];
                 Vector2 vA = stateA.linearVelocity;
                 float wA = stateA.angularVelocity;
                 B2Rot dqA = stateA.deltaRotation;
 
-                B2BodyState stateB = indexB == B2_NULL_INDEX ? dummyState : states[indexB];
+                ref B2BodyState stateB = ref indexB == B2_NULL_INDEX ? ref dummyState : ref states[indexB];
                 Vector2 vB = stateB.linearVelocity;
                 float wB = stateB.angularVelocity;
                 B2Rot dqB = stateB.deltaRotation;
@@ -605,7 +607,7 @@ namespace Box2D.NET
             float inv_h = context.inv_h;
             bool propagate = world.enableRestitutionPropagation;
 
-            B2BodyState dummyState = B2BodyState.Create(b2_identityBodyState);
+            B2BodyState dummyState = b2_identityBodyState;
 
             for (int i = 0; i < contactCount; ++i)
             {
@@ -623,12 +625,12 @@ namespace Box2D.NET
                 int indexA = constraint.indexA - 1;
                 int indexB = constraint.indexB - 1;
 
-                B2BodyState stateA = indexA == B2_NULL_INDEX ? dummyState : states[indexA];
+                ref B2BodyState stateA = ref indexA == B2_NULL_INDEX ? ref dummyState : ref states[indexA];
                 Vector2 vA = stateA.linearVelocity;
                 float wA = stateA.angularVelocity;
                 B2Rot dqA = stateA.deltaRotation;
 
-                B2BodyState stateB = indexB == B2_NULL_INDEX ? dummyState : states[indexB];
+                ref B2BodyState stateB = ref indexB == B2_NULL_INDEX ? ref dummyState : ref states[indexB];
                 Vector2 vB = stateB.linearVelocity;
                 float wB = stateB.angularVelocity;
                 B2Rot dqB = stateB.deltaRotation;
@@ -818,24 +820,21 @@ namespace Box2D.NET
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector<float> b2GreaterThanW(Vector<float> a, Vector<float> b)
         {
-            var mask = Vector.GreaterThan(a, b);
-            return Vector.ConditionalSelect(mask, Vector<float>.One, Vector<float>.Zero);
+            return Vector.GreaterThan(a, b).As<int, float>();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector<float> b2EqualsW(Vector<float> a, Vector<float> b)
         {
-            var mask = Vector.Equals(a, b);
-            return Vector.ConditionalSelect(mask, Vector<float>.One, Vector<float>.Zero);
+            return Vector.Equals(a, b).As<int, float>();
         }
 
         // component-wise returns mask ? b : a
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector<float> b2BlendW(Vector<float> a, Vector<float> b, Vector<float> mask)
         {
-            // component-wise returns mask ? b : a
-            var mask2 = Vector.Equals(mask, Vector<float>.Zero);
-            return Vector.ConditionalSelect(mask2, a, b);
+            // component-wise returns mask ? b : a, bit by bit
+            return Vector.ConditionalSelect(mask, b, a);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -936,36 +935,36 @@ namespace Box2D.NET
             return Vector4.ConditionalSelect(Vector4.LessThan(a, lower), lower, r);
         }
 
-        // Masks are stored as 1.0f (true) or 0.0f (false) per lane.
+        // Masks are stored as all bits set (true) or all bits clear (false) per lane, like the C SSE2/NEON paths.
+        // They only feed b2AndW, b2BlendW and b2AnyTrueW, never arithmetic.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2AndW(in Vector4 a, in Vector4 b)
         {
-            Vector4 anyZero = Vector4.Equals(a, Vector4.Zero) | Vector4.Equals(b, Vector4.Zero);
-            return Vector4.AndNot(Vector4.One, anyZero);
+            return a & b;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2GreaterThanW(in Vector4 a, in Vector4 b)
         {
-            return Vector4.GreaterThan(a, b) & Vector4.One;
+            return Vector4.GreaterThan(a, b);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2EqualsW(in Vector4 a, in Vector4 b)
         {
-            return Vector4.Equals(a, b) & Vector4.One;
+            return Vector4.Equals(a, b);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2LessThanW(in Vector4 a, in Vector4 b)
         {
-            return Vector4.LessThan(a, b) & Vector4.One;
+            return Vector4.LessThan(a, b);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool b2AnyTrueW(in Vector4 mask)
         {
-            return Vector4.EqualsAll(mask, Vector4.Zero) == false;
+            return Vector128.ExtractMostSignificantBits(mask.AsVector128()) != 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -978,8 +977,8 @@ namespace Box2D.NET
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2BlendW(in Vector4 a, in Vector4 b, in Vector4 mask)
         {
-            // component-wise returns mask ? b : a
-            return Vector4.ConditionalSelect(Vector4.Equals(mask, Vector4.Zero), a, b);
+            // component-wise returns mask ? b : a, bit by bit
+            return Vector4.ConditionalSelect(mask, b, a);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -988,7 +987,15 @@ namespace Box2D.NET
             // Integer lanes: Vector4 has no int API, so this stays on Vector128<int>.
             Vector128<int> zero = Vector128<int>.Zero;
             Vector128<int> mask = Vector128.Equals(Vector128.Create(indexA), zero) | Vector128.Equals(Vector128.Create(indexB), zero);
-            return (mask.AsSingle() & Vector128.Create(1.0f)).AsVector4();
+            return mask.AsSingle().AsVector4();
+        }
+
+        // Read one lane straight from memory. A switch or Vector4 indexer with a variable index is much slower.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static float b2GetLaneW(in Vector4 v, int laneIndex)
+        {
+            B2_ASSERT(0 <= laneIndex && laneIndex < B2_SIMD_WIDTH);
+            return Unsafe.Add(ref Unsafe.As<Vector4, float>(ref Unsafe.AsRef(in v)), laneIndex);
         }
 
         // a - b
@@ -1398,13 +1405,65 @@ static void b2ScatterBodies( b2BodyState* states, int* indices, const b2BodyStat
 
 #else
 
+        // 4x4 transpose building blocks, named after the SSE2 intrinsics used by the C version.
+        // Each one only moves lanes, so results are bit-identical on every path.
+
+        // (a0, b0, a1, b1)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Vector128<float> b2UnpackLoW(Vector128<float> a, Vector128<float> b)
+        {
+            if (Sse.IsSupported) return Sse.UnpackLow(a, b);
+            if (AdvSimd.Arm64.IsSupported) return AdvSimd.Arm64.ZipLow(a, b);
+            return Vector128.Create(a.GetElement(0), b.GetElement(0), a.GetElement(1), b.GetElement(1));
+        }
+
+        // (a2, b2, a3, b3)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Vector128<float> b2UnpackHiW(Vector128<float> a, Vector128<float> b)
+        {
+            if (Sse.IsSupported) return Sse.UnpackHigh(a, b);
+            if (AdvSimd.Arm64.IsSupported) return AdvSimd.Arm64.ZipHigh(a, b);
+            return Vector128.Create(a.GetElement(2), b.GetElement(2), a.GetElement(3), b.GetElement(3));
+        }
+
+        // _mm_movelh_ps: (a0, a1, b0, b1)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Vector128<float> b2MoveLHW(Vector128<float> a, Vector128<float> b)
+        {
+            if (Sse.IsSupported) return Sse.MoveLowToHigh(a, b);
+            if (AdvSimd.Arm64.IsSupported) return AdvSimd.Arm64.ZipLow(a.AsUInt64(), b.AsUInt64()).AsSingle();
+            return Vector128.Create(a.GetElement(0), a.GetElement(1), b.GetElement(0), b.GetElement(1));
+        }
+
+        // _mm_movehl_ps: (b2, b3, a2, a3)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Vector128<float> b2MoveHLW(Vector128<float> a, Vector128<float> b)
+        {
+            if (Sse.IsSupported) return Sse.MoveHighToLow(a, b);
+            if (AdvSimd.Arm64.IsSupported) return AdvSimd.Arm64.ZipHigh(b.AsUInt64(), a.AsUInt64()).AsSingle();
+            return Vector128.Create(b.GetElement(2), b.GetElement(3), a.GetElement(2), a.GetElement(3));
+        }
+
+        // First half of a body state: (v.x, v.y, w, flags)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Vector128<float> b2LoadBodyLo(ref readonly B2BodyState state)
+        {
+            return Unsafe.ReadUnaligned<Vector128<float>>(ref Unsafe.As<B2BodyState, byte>(ref Unsafe.AsRef(in state)));
+        }
+
+        // Second half of a body state: (dp.x, dp.y, dq.c, dq.s)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Vector128<float> b2LoadBodyHi(ref readonly B2BodyState state)
+        {
+            return Unsafe.ReadUnaligned<Vector128<float>>(ref Unsafe.Add(ref Unsafe.As<B2BodyState, byte>(ref Unsafe.AsRef(in state)), 16));
+        }
+
         // This is a load and transpose
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static B2BodyStateW b2GatherBodies(ReadOnlySpan<B2BodyState> states, ReadOnlySpan<int> indices)
         {
+            B2_ASSERT(Unsafe.SizeOf<B2BodyState>() == 32);
             B2_VALIDATE(indices[0] >= 0 && indices[1] >= 0 && indices[2] >= 0 && indices[3] >= 0);
-
-            // Read-only here, so alias the shared instance instead of allocating a copy per call.
-            B2BodyState identity = b2_identityBodyState;
 
             // zero means null
             int i1 = indices[0] - 1;
@@ -1412,28 +1471,62 @@ static void b2ScatterBodies( b2BodyState* states, int* indices, const b2BodyStat
             int i3 = indices[2] - 1;
             int i4 = indices[3] - 1;
 
-            B2BodyState s1 = i1 == B2_NULL_INDEX ? identity : states[i1];
-            B2BodyState s2 = i2 == B2_NULL_INDEX ? identity : states[i2];
-            B2BodyState s3 = i3 == B2_NULL_INDEX ? identity : states[i3];
-            B2BodyState s4 = i4 == B2_NULL_INDEX ? identity : states[i4];
+            ref readonly B2BodyState s1 = ref i1 == B2_NULL_INDEX ? ref b2_identityBodyState : ref states[i1];
+            ref readonly B2BodyState s2 = ref i2 == B2_NULL_INDEX ? ref b2_identityBodyState : ref states[i2];
+            ref readonly B2BodyState s3 = ref i3 == B2_NULL_INDEX ? ref b2_identityBodyState : ref states[i3];
+            ref readonly B2BodyState s4 = ref i4 == B2_NULL_INDEX ? ref b2_identityBodyState : ref states[i4];
 
-            B2BodyStateW simdBody = new B2BodyStateW();
-            simdBody.v.X = new Vector4(s1.linearVelocity.X, s2.linearVelocity.X, s3.linearVelocity.X, s4.linearVelocity.X);
-            simdBody.v.Y = new Vector4(s1.linearVelocity.Y, s2.linearVelocity.Y, s3.linearVelocity.Y, s4.linearVelocity.Y);
-            simdBody.w = new Vector4(s1.angularVelocity, s2.angularVelocity, s3.angularVelocity, s4.angularVelocity);
-            simdBody.flags = new Vector4((float)s1.flags, (float)s2.flags, (float)s3.flags, (float)s4.flags);
-            simdBody.dp.X = new Vector4(s1.deltaPosition.X, s2.deltaPosition.X, s3.deltaPosition.X, s4.deltaPosition.X);
-            simdBody.dp.Y = new Vector4(s1.deltaPosition.Y, s2.deltaPosition.Y, s3.deltaPosition.Y, s4.deltaPosition.Y);
-            simdBody.dq.C = new Vector4(s1.deltaRotation.c, s2.deltaRotation.c, s3.deltaRotation.c, s4.deltaRotation.c);
-            simdBody.dq.S = new Vector4(s1.deltaRotation.s, s2.deltaRotation.s, s3.deltaRotation.s, s4.deltaRotation.s);
+            B2BodyStateW simdBody;
+
+            {
+                Vector128<float> r1 = b2LoadBodyLo(in s1);
+                Vector128<float> r2 = b2LoadBodyLo(in s2);
+                Vector128<float> r3 = b2LoadBodyLo(in s3);
+                Vector128<float> r4 = b2LoadBodyLo(in s4);
+
+                Vector128<float> t1 = b2UnpackLoW(r1, r2);
+                Vector128<float> t2 = b2UnpackHiW(r1, r2);
+                Vector128<float> t3 = b2UnpackLoW(r3, r4);
+                Vector128<float> t4 = b2UnpackHiW(r3, r4);
+
+                simdBody.v.X = b2MoveLHW(t1, t3).AsVector4();
+                simdBody.v.Y = b2MoveHLW(t3, t1).AsVector4();
+                simdBody.w = b2MoveLHW(t2, t4).AsVector4();
+                // raw flag bits, never used as numbers
+                simdBody.flags = b2MoveHLW(t4, t2).AsVector4();
+            }
+
+            {
+                Vector128<float> r1 = b2LoadBodyHi(in s1);
+                Vector128<float> r2 = b2LoadBodyHi(in s2);
+                Vector128<float> r3 = b2LoadBodyHi(in s3);
+                Vector128<float> r4 = b2LoadBodyHi(in s4);
+
+                Vector128<float> t1 = b2UnpackLoW(r1, r2);
+                Vector128<float> t2 = b2UnpackHiW(r1, r2);
+                Vector128<float> t3 = b2UnpackLoW(r3, r4);
+                Vector128<float> t4 = b2UnpackHiW(r3, r4);
+
+                simdBody.dp.X = b2MoveLHW(t1, t3).AsVector4();
+                simdBody.dp.Y = b2MoveHLW(t3, t1).AsVector4();
+                simdBody.dq.C = b2MoveLHW(t2, t4).AsVector4();
+                simdBody.dq.S = b2MoveHLW(t4, t2).AsVector4();
+            }
 
             return simdBody;
         }
 
-        // This writes only the velocities back to the solver bodies
-        internal static void b2ScatterBodies(ReadOnlySpan<B2BodyState> states, ReadOnlySpan<int> indices, ref B2BodyStateW simdBody)
+        // This writes only the velocities back to the solver bodies (plus the unchanged flags in the same 16 bytes)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void b2ScatterBodies(Span<B2BodyState> states, ReadOnlySpan<int> indices, ref B2BodyStateW simdBody)
         {
             B2_VALIDATE(indices[0] >= 0 && indices[1] >= 0 && indices[2] >= 0 && indices[3] >= 0);
+
+            // transpose
+            Vector128<float> t1 = b2UnpackLoW(simdBody.v.X.AsVector128(), simdBody.v.Y.AsVector128());
+            Vector128<float> t2 = b2UnpackHiW(simdBody.v.X.AsVector128(), simdBody.v.Y.AsVector128());
+            Vector128<float> t3 = b2UnpackLoW(simdBody.w.AsVector128(), simdBody.flags.AsVector128());
+            Vector128<float> t4 = b2UnpackHiW(simdBody.w.AsVector128(), simdBody.flags.AsVector128());
 
             // zero means null
             int i1 = indices[0] - 1;
@@ -1443,34 +1536,22 @@ static void b2ScatterBodies( b2BodyState* states, int* indices, const b2BodyStat
 
             if (i1 != B2_NULL_INDEX && (states[i1].flags & (uint)B2BodyFlags.b2_dynamicFlag) != 0)
             {
-                B2BodyState state = states[i1];
-                state.linearVelocity.X = simdBody.v.X.X;
-                state.linearVelocity.Y = simdBody.v.Y.X;
-                state.angularVelocity = simdBody.w.X;
+                Unsafe.WriteUnaligned(ref Unsafe.As<B2BodyState, byte>(ref states[i1]), b2MoveLHW(t1, t3));
             }
 
             if (i2 != B2_NULL_INDEX && (states[i2].flags & (uint)B2BodyFlags.b2_dynamicFlag) != 0)
             {
-                B2BodyState state = states[i2];
-                state.linearVelocity.X = simdBody.v.X.Y;
-                state.linearVelocity.Y = simdBody.v.Y.Y;
-                state.angularVelocity = simdBody.w.Y;
+                Unsafe.WriteUnaligned(ref Unsafe.As<B2BodyState, byte>(ref states[i2]), b2MoveHLW(t3, t1));
             }
 
             if (i3 != B2_NULL_INDEX && (states[i3].flags & (uint)B2BodyFlags.b2_dynamicFlag) != 0)
             {
-                B2BodyState state = states[i3];
-                state.linearVelocity.X = simdBody.v.X.Z;
-                state.linearVelocity.Y = simdBody.v.Y.Z;
-                state.angularVelocity = simdBody.w.Z;
+                Unsafe.WriteUnaligned(ref Unsafe.As<B2BodyState, byte>(ref states[i3]), b2MoveLHW(t2, t4));
             }
 
             if (i4 != B2_NULL_INDEX && (states[i4].flags & (uint)B2BodyFlags.b2_dynamicFlag) != 0)
             {
-                B2BodyState state = states[i4];
-                state.linearVelocity.X = simdBody.v.X.W;
-                state.linearVelocity.Y = simdBody.v.Y.W;
-                state.angularVelocity = simdBody.w.W;
+                Unsafe.WriteUnaligned(ref Unsafe.As<B2BodyState, byte>(ref states[i4]), b2MoveHLW(t4, t2));
             }
         }
 
@@ -2268,15 +2349,15 @@ static void b2ScatterBodies( b2BodyState* states, int* indices, const b2BodyStat
 
                         B2ContactSim contactSim = contactSims[contactIndex];
                         ref B2Manifold m = ref contactSim.manifold;
-                        m.rollingImpulse = rollingImpulse.GetAt(laneIndex);
+                        m.rollingImpulse = b2GetLaneW(in rollingImpulse, laneIndex);
 
-                        m.points[0].normalImpulse = normalImpulse1.GetAt(laneIndex);
-                        m.points[0].tangentImpulse = tangentImpulse1.GetAt(laneIndex);
-                        m.points[0].totalNormalImpulse = totalNormalImpulse1.GetAt(laneIndex);
+                        m.points[0].normalImpulse = b2GetLaneW(in normalImpulse1, laneIndex);
+                        m.points[0].tangentImpulse = b2GetLaneW(in tangentImpulse1, laneIndex);
+                        m.points[0].totalNormalImpulse = b2GetLaneW(in totalNormalImpulse1, laneIndex);
 
-                        m.points[1].normalImpulse = normalImpulse2.GetAt(laneIndex);
-                        m.points[1].tangentImpulse = tangentImpulse2.GetAt(laneIndex);
-                        m.points[1].totalNormalImpulse = totalNormalImpulse2.GetAt(laneIndex);
+                        m.points[1].normalImpulse = b2GetLaneW(in normalImpulse2, laneIndex);
+                        m.points[1].tangentImpulse = b2GetLaneW(in tangentImpulse2, laneIndex);
+                        m.points[1].totalNormalImpulse = b2GetLaneW(in totalNormalImpulse2, laneIndex);
 
                         // Check for hit events to speed up serial processing later in the step
                         if ((contactSim.simFlags & (uint)B2ContactFlags.b2_simEnableHitEvent) != 0)

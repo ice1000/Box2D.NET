@@ -1566,8 +1566,8 @@ namespace Box2D.NET
                 hash = b2FnvMixFloat(hash, sim.transform.q.c);
                 hash = b2FnvMixFloat(hash, sim.transform.q.s);
 
-                B2BodyState state = b2GetBodyState(world, body);
-                if (state != null)
+                ref B2BodyState state = ref b2GetBodyState(world, body, out bool awake);
+                if (awake)
                 {
                     hash = b2FnvMixFloat(hash, state.linearVelocity.X);
                     hash = b2FnvMixFloat(hash, state.linearVelocity.Y);
@@ -3124,7 +3124,7 @@ void b2World_Dump()
 
             int localIndex = body.localIndex;
             B2SolverSet set = b2Array_Get(ref world.solverSets, (int)B2SolverSetType.b2_awakeSet);
-            B2BodyState state = b2Array_Get(ref set.bodyStates, localIndex);
+            ref B2BodyState state = ref b2Array_Get(ref set.bodyStates, localIndex);
             B2BodySim bodySim = b2Array_Get(ref set.bodySims, localIndex);
             state.linearVelocity = b2MulAdd(state.linearVelocity, bodySim.invMass, impulse);
 
@@ -3353,8 +3353,8 @@ void b2World_Dump()
                             uint syncedFlags = body.flags & ~((uint)B2BodyFlags.b2_isFast | (uint)B2BodyFlags.b2_bodyTransientFlags);
                             B2_ASSERT((bodySim.flags & syncedFlags) == syncedFlags);
 
-                            B2BodyState bodyState = b2GetBodyState(world, body);
-                            if (bodyState != null)
+                            ref B2BodyState bodyState = ref b2GetBodyState(world, body, out bool awake);
+                            if (awake)
                             {
                                 B2_ASSERT((bodyState.flags & syncedFlags) == syncedFlags);
                             }

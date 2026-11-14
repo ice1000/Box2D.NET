@@ -4,6 +4,7 @@
 
 using System;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Box2D.NET.Test.Helpers;
 using NUnit.Framework;
@@ -42,13 +43,13 @@ public class B2BodiesTest
 
         // Get the body state
         B2Body body = b2GetBodyFullId(world, bodyId);
-        B2BodyState state = b2GetBodyState(world, body);
-        Assert.That(state, Is.Not.Null, "Body state should not be null");
+        ref B2BodyState state = ref b2GetBodyState(world, body, out bool awake);
+        Assert.That(awake, Is.True, "Body state should exist for an awake body");
 
         // Test case 1: Velocity within limits - should remain unchanged
         {
             state.linearVelocity = new Vector2(5.0f, 0.0f);
-            b2LimitVelocity(state, 10.0f);
+            b2LimitVelocity(ref state, 10.0f);
             Assert.That(state.linearVelocity.X, Is.EqualTo(5.0f), "Linear velocity should remain unchanged when within limits");
             Assert.That(state.linearVelocity.Y, Is.EqualTo(0.0f), "Linear velocity Y component should remain unchanged");
         }
@@ -56,7 +57,7 @@ public class B2BodiesTest
         // Test case 2: Linear velocity exceeds limit - should be capped
         {
             state.linearVelocity = new Vector2(15.0f, 0.0f);
-            b2LimitVelocity(state, 10.0f);
+            b2LimitVelocity(ref state, 10.0f);
             Assert.That(state.linearVelocity.X, Is.EqualTo(10.0f), "Linear velocity should be limited to maxLinearSpeed");
             Assert.That(state.linearVelocity.Y, Is.EqualTo(0.0f), "Linear velocity Y component should remain unchanged");
         }
@@ -64,7 +65,7 @@ public class B2BodiesTest
         // Test case 3: Diagonal velocity exceeds limit - magnitude should be capped while preserving direction
         {
             state.linearVelocity = new Vector2(8.0f, 8.0f);
-            b2LimitVelocity(state, 10.0f);
+            b2LimitVelocity(ref state, 10.0f);
             float expectedMagnitude = 10.0f;
             float actualMagnitude = b2Length(state.linearVelocity);
             Assert.That(actualMagnitude, Is.EqualTo(expectedMagnitude).Within(0.001f), "Diagonal velocity magnitude should be limited to maxLinearSpeed");
@@ -248,17 +249,20 @@ public class B2BodiesTest
         Assert.That(body, Is.Not.Null, "Body should not be null");
 
         {
-            B2BodyState state = b2GetBodyState(world, body);
-            Assert.That(state, Is.Not.Null, "Body state should not be null for awake body");
+            ref B2BodyState state = ref b2GetBodyState(world, body, out bool awake);
+            Assert.That(awake, Is.True, "Body state should exist for awake body");
+            Assert.That(Unsafe.IsNullRef(ref state), Is.False, "Awake body state should be a valid reference");
             
             b2Body_SetAwake(bodyId, false);
-            state = b2GetBodyState(world, body);
-            Assert.That(state, Is.Null, "Body state should be null for sleeping body");
+            state = ref b2GetBodyState(world, body, out awake);
+            Assert.That(awake, Is.False, "Body state should not exist for sleeping body");
+            Assert.That(Unsafe.IsNullRef(ref state), Is.True, "Sleeping body state should be a null reference");
 
             // Wake up the body
             b2Body_SetAwake(bodyId, true);
-            state = b2GetBodyState(world, body);
-            Assert.That(state, Is.Not.Null, "Body state should not be null after waking up");
+            state = ref b2GetBodyState(world, body, out awake);
+            Assert.That(awake, Is.True, "Body state should exist after waking up");
+            Assert.That(Unsafe.IsNullRef(ref state), Is.False, "Woken body state should be a valid reference");
         }
     }
 

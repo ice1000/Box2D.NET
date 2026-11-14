@@ -202,8 +202,8 @@ namespace Box2D.NET
             B2Body bodyB = b2Array_Get(ref world.bodies, @base.bodyIdB);
             B2BodySim bodySimA = b2GetBodySim(world, bodyA);
             B2BodySim bodySimB = b2GetBodySim(world, bodyB);
-            B2BodyState bodyStateA = b2GetBodyState(world, bodyA);
-            B2BodyState bodyStateB = b2GetBodyState(world, bodyB);
+            ref B2BodyState bodyStateA = ref b2GetBodyState(world, bodyA, out bool awakeA);
+            ref B2BodyState bodyStateB = ref b2GetBodyState(world, bodyB, out bool awakeB);
 
             B2Rot qA = bodySimA.transform.q;
             B2Rot qB = bodySimB.transform.q;
@@ -217,10 +217,10 @@ namespace Box2D.NET
             Vector2 dc = b2SubPos(bodySimB.center, bodySimA.center);
             Vector2 d = b2Add(dc, b2Sub(rB, rA));
 
-            Vector2 vA = null != bodyStateA ? bodyStateA.linearVelocity : Vector2Zero;
-            Vector2 vB = null != bodyStateB ? bodyStateB.linearVelocity : Vector2Zero;
-            float wA = null != bodyStateA ? bodyStateA.angularVelocity : 0.0f;
-            float wB = null != bodyStateB ? bodyStateB.angularVelocity : 0.0f;
+            Vector2 vA = awakeA ? bodyStateA.linearVelocity : Vector2Zero;
+            Vector2 vB = awakeB ? bodyStateB.linearVelocity : Vector2Zero;
+            float wA = awakeA ? bodyStateA.angularVelocity : 0.0f;
+            float wB = awakeB ? bodyStateB.angularVelocity : 0.0f;
 
             Vector2 vRel = b2Sub(b2Add(vB, b2CrossSV(wB, rB)), b2Add(vA, b2CrossSV(wA, rA)));
             float speed = b2Dot(d, b2CrossSV(wA, axisA)) + b2Dot(axisA, vRel);
@@ -362,12 +362,12 @@ namespace Box2D.NET
             float iB = @base.invIB;
 
             // dummy state for static bodies
-            B2BodyState dummyState = B2BodyState.Create(b2_identityBodyState);
+            B2BodyState dummyState = b2_identityBodyState;
 
             ref readonly B2PrismaticJoint joint = ref @base.uj.prismaticJoint;
 
-            B2BodyState stateA = joint.indexA == B2_NULL_INDEX ? dummyState : context.states[joint.indexA];
-            B2BodyState stateB = joint.indexB == B2_NULL_INDEX ? dummyState : context.states[joint.indexB];
+            ref B2BodyState stateA = ref joint.indexA == B2_NULL_INDEX ? ref dummyState : ref context.states[joint.indexA];
+            ref B2BodyState stateB = ref joint.indexB == B2_NULL_INDEX ? ref dummyState : ref context.states[joint.indexB];
 
             Vector2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
             Vector2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
@@ -416,12 +416,12 @@ namespace Box2D.NET
             float iB = @base.invIB;
 
             // dummy state for static bodies
-            B2BodyState dummyState = B2BodyState.Create(b2_identityBodyState);
+            B2BodyState dummyState = b2_identityBodyState;
 
             ref B2PrismaticJoint joint = ref @base.uj.prismaticJoint;
 
-            B2BodyState stateA = joint.indexA == B2_NULL_INDEX ? dummyState : context.states[joint.indexA];
-            B2BodyState stateB = joint.indexB == B2_NULL_INDEX ? dummyState : context.states[joint.indexB];
+            ref B2BodyState stateA = ref joint.indexA == B2_NULL_INDEX ? ref dummyState : ref context.states[joint.indexA];
+            ref B2BodyState stateB = ref joint.indexB == B2_NULL_INDEX ? ref dummyState : ref context.states[joint.indexB];
 
             Vector2 vA = stateA.linearVelocity;
             float wA = stateA.angularVelocity;

@@ -255,12 +255,12 @@ namespace Box2D.NET
             float iB = @base.invIB;
 
             // dummy state for static bodies
-            B2BodyState dummyState = B2BodyState.Create(b2_identityBodyState);
+            B2BodyState dummyState = b2_identityBodyState;
 
             ref readonly B2WeldJoint joint = ref @base.uj.weldJoint;
 
-            B2BodyState stateA = joint.indexA == B2_NULL_INDEX ? dummyState : context.states[joint.indexA];
-            B2BodyState stateB = joint.indexB == B2_NULL_INDEX ? dummyState : context.states[joint.indexB];
+            ref B2BodyState stateA = ref joint.indexA == B2_NULL_INDEX ? ref dummyState : ref context.states[joint.indexA];
+            ref B2BodyState stateB = ref joint.indexB == B2_NULL_INDEX ? ref dummyState : ref context.states[joint.indexB];
 
             Vector2 rA = b2RotateVector(stateA.deltaRotation, joint.frameA.p);
             Vector2 rB = b2RotateVector(stateB.deltaRotation, joint.frameB.p);
@@ -288,12 +288,12 @@ namespace Box2D.NET
             float iB = @base.invIB;
 
             // dummy state for static bodies
-            B2BodyState dummyState = B2BodyState.Create(b2_identityBodyState);
+            B2BodyState dummyState = b2_identityBodyState;
 
             ref B2WeldJoint joint = ref @base.uj.weldJoint;
 
-            B2BodyState stateA = joint.indexA == B2_NULL_INDEX ? dummyState : context.states[joint.indexA];
-            B2BodyState stateB = joint.indexB == B2_NULL_INDEX ? dummyState : context.states[joint.indexB];
+            ref B2BodyState stateA = ref joint.indexA == B2_NULL_INDEX ? ref dummyState : ref context.states[joint.indexA];
+            ref B2BodyState stateB = ref joint.indexB == B2_NULL_INDEX ? ref dummyState : ref context.states[joint.indexB];
 
             Vector2 vA = stateA.linearVelocity;
             float wA = stateA.angularVelocity;

@@ -4,6 +4,7 @@
 
 using System;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using static Box2D.NET.B2Arrays;
 using static Box2D.NET.B2Cores;
@@ -86,7 +87,7 @@ namespace Box2D.NET
             return s;
         }
 
-        public static void b2LimitVelocity(B2BodyState state, float maxLinearSpeed)
+        public static void b2LimitVelocity(ref B2BodyState state, float maxLinearSpeed)
         {
             float v2 = b2LengthSquared(state.linearVelocity);
             if (v2 > maxLinearSpeed * maxLinearSpeed)
@@ -158,15 +159,25 @@ namespace Box2D.NET
             return bodySim;
         }
 
-        public static B2BodyState b2GetBodyState(B2World world, B2Body body)
+        /// Get the solver state of a body, for reading or writing its velocity and flags in place.
+        /// Only bodies in the awake set have a body state. Sleeping, disabled and static bodies keep
+        /// their velocity in the body sim instead.
+        /// @param awake true if the body is awake and the returned reference is valid.
+        /// @return a reference into the awake set's body state array when awake is true. When awake is
+        /// false it is a null reference: do not read or write through it (that throws NullReferenceException).
+        /// The reference is invalidated by anything that adds or removes awake bodies (creating, destroying,
+        /// waking or sleeping bodies), because the array may grow or be compacted. Do not keep it across such calls.
+        public static ref B2BodyState b2GetBodyState(B2World world, B2Body body, out bool awake)
         {
             if (body.setIndex == (int)B2SolverSetType.b2_awakeSet)
             {
                 B2SolverSet set = b2Array_Get(ref world.solverSets, (int)B2SolverSetType.b2_awakeSet);
-                return b2Array_Get(ref set.bodyStates, body.localIndex);
+                awake = true;
+                return ref b2Array_Get(ref set.bodyStates, body.localIndex);
             }
 
-            return null;
+            awake = false;
+            return ref Unsafe.NullRef<B2BodyState>();
         }
 
         // Sync the body flags when something external changes them,
@@ -178,8 +189,8 @@ namespace Box2D.NET
             // Preserve the sim only flags: fast for contact recycling, time of impact for debug draw.
             bodySim.flags = (bodySim.flags & (uint)(B2BodyFlags.b2_isFast | B2BodyFlags.b2_hadTimeOfImpact)) | (body.flags & ~(uint)B2BodyFlags.b2_bodyTransientFlags);
 
-            B2BodyState bodyState = b2GetBodyState(world, body);
-            if (bodyState != null)
+            ref B2BodyState bodyState = ref b2GetBodyState(world, body, out bool awake);
+            if (awake)
             {
                 bodyState.flags = body.flags & ~(uint)B2BodyFlags.b2_bodyTransientFlags;
             }
@@ -753,8 +764,8 @@ namespace Box2D.NET
             bodySim.center0 = bodySim.center;
 
             // Update center of mass velocity
-            B2BodyState state = b2GetBodyState(world, body);
-            if (state != null)
+            ref B2BodyState state = ref b2GetBodyState(world, body, out bool awake);
+            if (awake)
             {
                 Vector2 deltaLinear = b2CrossSV(state.angularVelocity, b2SubPos(bodySim.center, oldCenter));
                 state.linearVelocity = b2Add(state.linearVelocity, deltaLinear);
@@ -906,8 +917,8 @@ namespace Box2D.NET
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
-            B2BodyState state = b2GetBodyState(world, body);
-            if (state != null)
+            ref B2BodyState state = ref b2GetBodyState(world, body, out bool awake);
+            if (awake)
             {
                 return state.linearVelocity;
             }
@@ -919,8 +930,8 @@ namespace Box2D.NET
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
-            B2BodyState state = b2GetBodyState(world, body);
-            if (state != null)
+            ref B2BodyState state = ref b2GetBodyState(world, body, out bool awake);
+            if (awake)
             {
                 return state.angularVelocity;
             }
@@ -945,8 +956,8 @@ namespace Box2D.NET
                 b2WakeBody(world, body);
             }
 
-            B2BodyState state = b2GetBodyState(world, body);
-            if (state == null)
+            ref B2BodyState state = ref b2GetBodyState(world, body, out bool awake);
+            if (awake == false)
             {
                 return;
             }
@@ -972,8 +983,8 @@ namespace Box2D.NET
                 b2WakeBody(world, body);
             }
 
-            B2BodyState state = b2GetBodyState(world, body);
-            if (state == null)
+            ref B2BodyState state = ref b2GetBodyState(world, body, out bool awake);
+            if (awake == false)
             {
                 return;
             }
@@ -1042,7 +1053,7 @@ namespace Box2D.NET
 
             B2_ASSERT(body.setIndex == (int)B2SolverSetType.b2_awakeSet);
 
-            B2BodyState state = b2GetBodyState(world, body);
+            ref B2BodyState state = ref b2GetBodyState(world, body, out _);
             state.linearVelocity = linearVelocity;
             state.angularVelocity = angularVelocity;
         }
@@ -1052,8 +1063,8 @@ namespace Box2D.NET
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
-            B2BodyState state = b2GetBodyState(world, body);
-            if (state == null)
+            ref B2BodyState state = ref b2GetBodyState(world, body, out bool awake);
+            if (awake == false)
             {
                 return Vector2Zero;
             }
@@ -1071,8 +1082,8 @@ namespace Box2D.NET
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
-            B2BodyState state = b2GetBodyState(world, body);
-            if (state == null)
+            ref B2BodyState state = ref b2GetBodyState(world, body, out bool awake);
+            if (awake == false)
             {
                 return Vector2Zero;
             }
@@ -1222,12 +1233,12 @@ namespace Box2D.NET
             {
                 int localIndex = body.localIndex;
                 B2SolverSet set = b2Array_Get(ref world.solverSets, (int)B2SolverSetType.b2_awakeSet);
-                B2BodyState state = b2Array_Get(ref set.bodyStates, localIndex);
+                ref B2BodyState state = ref b2Array_Get(ref set.bodyStates, localIndex);
                 B2BodySim bodySim = b2Array_Get(ref set.bodySims, localIndex);
                 state.linearVelocity = b2MulAdd(state.linearVelocity, bodySim.invMass, impulse);
                 state.angularVelocity += bodySim.invInertia * b2Cross(b2SubPos(point, bodySim.center), impulse);
 
-                b2LimitVelocity(state, world.maxLinearSpeed);
+                b2LimitVelocity(ref state, world.maxLinearSpeed);
             }
         }
 
@@ -1259,11 +1270,11 @@ namespace Box2D.NET
             {
                 int localIndex = body.localIndex;
                 B2SolverSet set = b2Array_Get(ref world.solverSets, (int)B2SolverSetType.b2_awakeSet);
-                B2BodyState state = b2Array_Get(ref set.bodyStates, localIndex);
+                ref B2BodyState state = ref b2Array_Get(ref set.bodyStates, localIndex);
                 B2BodySim bodySim = b2Array_Get(ref set.bodySims, localIndex);
                 state.linearVelocity = b2MulAdd(state.linearVelocity, bodySim.invMass, impulse);
 
-                b2LimitVelocity(state, world.maxLinearSpeed);
+                b2LimitVelocity(ref state, world.maxLinearSpeed);
             }
         }
 
@@ -1297,7 +1308,7 @@ namespace Box2D.NET
             {
                 int localIndex = body.localIndex;
                 B2SolverSet set = b2Array_Get(ref world.solverSets, (int)B2SolverSetType.b2_awakeSet);
-                B2BodyState state = b2Array_Get(ref set.bodyStates, localIndex);
+                ref B2BodyState state = ref b2Array_Get(ref set.bodyStates, localIndex);
                 B2BodySim bodySim = b2Array_Get(ref set.bodySims, localIndex);
                 state.angularVelocity += bodySim.invInertia * impulse;
             }
@@ -1616,8 +1627,8 @@ namespace Box2D.NET
             bodySim.center0 = center;
 
             // Update center of mass velocity
-            B2BodyState state = b2GetBodyState(world, body);
-            if (state != null)
+            ref B2BodyState state = ref b2GetBodyState(world, body, out bool awake);
+            if (awake)
             {
                 Vector2 deltaLinear = b2CrossSV(state.angularVelocity, b2SubPos(bodySim.center, oldCenter));
                 state.linearVelocity = b2Add(state.linearVelocity, deltaLinear);
@@ -2102,9 +2113,9 @@ namespace Box2D.NET
 
                 b2SyncBodyFlags(world, body);
 
-                B2BodyState state = b2GetBodyState(world, body);
+                ref B2BodyState state = ref b2GetBodyState(world, body, out bool awake);
 
-                if (state != null)
+                if (awake)
                 {
                     if (locks.linearX)
                     {

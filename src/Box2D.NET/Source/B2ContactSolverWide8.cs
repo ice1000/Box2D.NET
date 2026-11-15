@@ -304,7 +304,7 @@ namespace Box2D.NET
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void b2StoreBody(Span<B2BodyState> states, int index, Vector256<float> value)
+        private static void b2StoreBody(Span<B2BodyState> states, int index, Vector128<float> value)
         {
             // zero means null
             int i = index - 1;
@@ -315,7 +315,8 @@ namespace Box2D.NET
         }
 
         /// <summary>
-        /// This writes everything back to the solver bodies but only the velocities change
+        /// This writes only the velocities back to the solver bodies (plus the unchanged flags in the same 16 bytes),
+        /// like the 4-wide solver. The C AVX2 version transposes and stores all 32 bytes.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void b2ScatterBodies(Span<B2BodyState> states, ReadOnlySpan<int> indices, ref BodyStateW simdBody)
@@ -324,29 +325,23 @@ namespace Box2D.NET
             Vector256<float> t1 = Avx.UnpackHigh(simdBody.v.X, simdBody.v.Y);
             Vector256<float> t2 = Avx.UnpackLow(simdBody.w, simdBody.flags);
             Vector256<float> t3 = Avx.UnpackHigh(simdBody.w, simdBody.flags);
-            Vector256<float> t4 = Avx.UnpackLow(simdBody.dp.X, simdBody.dp.Y);
-            Vector256<float> t5 = Avx.UnpackHigh(simdBody.dp.X, simdBody.dp.Y);
-            Vector256<float> t6 = Avx.UnpackLow(simdBody.dq.C, simdBody.dq.S);
-            Vector256<float> t7 = Avx.UnpackHigh(simdBody.dq.C, simdBody.dq.S);
+
+            // 128-bit lane 0 of ttk holds (v.x, v.y, w, flags) of body k, lane 1 holds body k + 4
             Vector256<float> tt0 = Avx.Shuffle(t0, t2, SHUFFLE_1010);
             Vector256<float> tt1 = Avx.Shuffle(t0, t2, SHUFFLE_3232);
             Vector256<float> tt2 = Avx.Shuffle(t1, t3, SHUFFLE_1010);
             Vector256<float> tt3 = Avx.Shuffle(t1, t3, SHUFFLE_3232);
-            Vector256<float> tt4 = Avx.Shuffle(t4, t6, SHUFFLE_1010);
-            Vector256<float> tt5 = Avx.Shuffle(t4, t6, SHUFFLE_3232);
-            Vector256<float> tt6 = Avx.Shuffle(t5, t7, SHUFFLE_1010);
-            Vector256<float> tt7 = Avx.Shuffle(t5, t7, SHUFFLE_3232);
 
             // I don't use any dummy body in the body array because this will lead to multithreaded sharing and the
             // associated cache flushing.
-            b2StoreBody(states, indices[0], Avx.Permute2x128(tt0, tt4, 0x20));
-            b2StoreBody(states, indices[1], Avx.Permute2x128(tt1, tt5, 0x20));
-            b2StoreBody(states, indices[2], Avx.Permute2x128(tt2, tt6, 0x20));
-            b2StoreBody(states, indices[3], Avx.Permute2x128(tt3, tt7, 0x20));
-            b2StoreBody(states, indices[4], Avx.Permute2x128(tt0, tt4, 0x31));
-            b2StoreBody(states, indices[5], Avx.Permute2x128(tt1, tt5, 0x31));
-            b2StoreBody(states, indices[6], Avx.Permute2x128(tt2, tt6, 0x31));
-            b2StoreBody(states, indices[7], Avx.Permute2x128(tt3, tt7, 0x31));
+            b2StoreBody(states, indices[0], tt0.GetLower());
+            b2StoreBody(states, indices[1], tt1.GetLower());
+            b2StoreBody(states, indices[2], tt2.GetLower());
+            b2StoreBody(states, indices[3], tt3.GetLower());
+            b2StoreBody(states, indices[4], tt0.GetUpper());
+            b2StoreBody(states, indices[5], tt1.GetUpper());
+            b2StoreBody(states, indices[6], tt2.GetUpper());
+            b2StoreBody(states, indices[7], tt3.GetUpper());
         }
 
         private static readonly B2ContactSim b2_zeroContactSim = new B2ContactSim();

@@ -5,6 +5,7 @@
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.Arm;
 using System.Runtime.Intrinsics.X86;
@@ -190,31 +191,54 @@ namespace Box2D.NET
             Vector128<float> t3 = b2UnpackLoW(simdBody.w.AsVector128(), simdBody.flags.AsVector128());
             Vector128<float> t4 = b2UnpackHiW(simdBody.w.AsVector128(), simdBody.flags.AsVector128());
 
+            // Dynamic flag of each lane from the gathered flags. Null lanes gathered the identity body, whose flags
+            // are zero, so they drop out here too. This avoids reloading the flags from memory.
+            uint dynamicMask = b2DynamicMaskW(simdBody.flags);
+
             // zero means null
-            int i1 = indices[0] - 1;
-            int i2 = indices[1] - 1;
-            int i3 = indices[2] - 1;
-            int i4 = indices[3] - 1;
+            ref B2BodyState s0 = ref MemoryMarshal.GetReference(states);
 
-            if (i1 != B2_NULL_INDEX && (states[i1].flags & (uint)B2BodyFlags.b2_dynamicFlag) != 0)
+            if ((dynamicMask & 1) != 0)
             {
-                Unsafe.WriteUnaligned(ref Unsafe.As<B2BodyState, byte>(ref states[i1]), b2MoveLHW(t1, t3));
+                b2StoreBodyLo(ref s0, states.Length, indices[0] - 1, b2MoveLHW(t1, t3));
             }
 
-            if (i2 != B2_NULL_INDEX && (states[i2].flags & (uint)B2BodyFlags.b2_dynamicFlag) != 0)
+            if ((dynamicMask & 2) != 0)
             {
-                Unsafe.WriteUnaligned(ref Unsafe.As<B2BodyState, byte>(ref states[i2]), b2MoveHLW(t3, t1));
+                b2StoreBodyLo(ref s0, states.Length, indices[1] - 1, b2MoveHLW(t3, t1));
             }
 
-            if (i3 != B2_NULL_INDEX && (states[i3].flags & (uint)B2BodyFlags.b2_dynamicFlag) != 0)
+            if ((dynamicMask & 4) != 0)
             {
-                Unsafe.WriteUnaligned(ref Unsafe.As<B2BodyState, byte>(ref states[i3]), b2MoveLHW(t2, t4));
+                b2StoreBodyLo(ref s0, states.Length, indices[2] - 1, b2MoveLHW(t2, t4));
             }
 
-            if (i4 != B2_NULL_INDEX && (states[i4].flags & (uint)B2BodyFlags.b2_dynamicFlag) != 0)
+            if ((dynamicMask & 8) != 0)
             {
-                Unsafe.WriteUnaligned(ref Unsafe.As<B2BodyState, byte>(ref states[i4]), b2MoveHLW(t4, t2));
+                b2StoreBodyLo(ref s0, states.Length, indices[3] - 1, b2MoveHLW(t4, t2));
             }
+        }
+
+        /// <summary>
+        /// Bit k is set when lane k has b2_dynamicFlag. The flags lanes hold raw flag bits.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint b2DynamicMaskW(in Vector4 flags)
+        {
+            const int dynamicBit = 9;
+            B2_ASSERT((uint)B2BodyFlags.b2_dynamicFlag == 1u << dynamicBit);
+            return Vector128.ExtractMostSignificantBits(Vector128.ShiftLeft(flags.AsVector128().AsInt32(), 31 - dynamicBit));
+        }
+
+        /// <summary>
+        /// Write the first 16 bytes of a body state (v, w, flags) without a bounds check.
+        /// The constraint indices are validated when the constraints are built.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void b2StoreBodyLo(ref B2BodyState s0, int count, int index, Vector128<float> value)
+        {
+            B2_ASSERT(0 <= index && index < count);
+            Unsafe.WriteUnaligned(ref Unsafe.As<B2BodyState, byte>(ref Unsafe.Add(ref s0, index)), value);
         }
 
         private static readonly B2ContactSim b2_zeroContactSim = new B2ContactSim();

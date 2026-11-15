@@ -2053,13 +2053,15 @@ namespace Box2D.NET
         /// </summary>
         public static void b2World_EnableSSE2Fallback(B2WorldId worldId, bool flag)
         {
-            B2_UNUSED(flag);
             B2World world = b2GetWorldFromId(worldId);
             B2_ASSERT(world.locked == false);
             if (world.locked)
             {
                 return;
             }
+
+            // The wide constraint buffer only lives during a step, so the solver can be swapped between steps
+            world.contactSolverWide = flag ? new B2ContactSolverWide4() : B2ContactSolverWide.b2CreateContactSolverWide();
         }
         /// <summary>
         /// Is constraint warm starting enabled?

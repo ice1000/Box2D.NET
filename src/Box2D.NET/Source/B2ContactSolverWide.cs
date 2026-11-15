@@ -54,7 +54,8 @@ namespace Box2D.NET
         /// </summary>
         public static bool b2IsWide8Supported()
         {
-            return Avx.IsSupported && Vector256.IsHardwareAccelerated;
+            // AVX2 for the 256-bit integer shift in the scatter, like the C version
+            return Avx2.IsSupported && Vector256.IsHardwareAccelerated;
         }
 
         /// <summary>
@@ -72,7 +73,7 @@ namespace Box2D.NET
             {
                 if (b2IsWide8Supported() == false)
                 {
-                    throw new PlatformNotSupportedException("The 8-wide contact solver needs AVX.");
+                    throw new PlatformNotSupportedException("The 8-wide contact solver needs AVX2.");
                 }
 
                 return new B2ContactSolverWide8();

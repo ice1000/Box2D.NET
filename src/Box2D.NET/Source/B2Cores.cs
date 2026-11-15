@@ -15,7 +15,7 @@ namespace Box2D.NET
 
         /// <summary>
         /// SIMD width of the graph color contact solver, read when a world is created.
-        /// 0 picks 8 when AVX is available and 4 otherwise. 4 and 8 give bit-identical results.
+        /// 0 picks 8 when AVX2 is available and 4 otherwise. 4 and 8 give bit-identical results.
         /// </summary>
         public static int b2_contactSolverSimdWidth = 0;
 
@@ -46,11 +46,12 @@ namespace Box2D.NET
 
         /// <summary>
         /// @return true if the current CPU has the AVX2 instruction set.
-        /// Box2D.NET always solves contacts 4 wide, so the 8 wide AVX2 path is never available.
+        /// When true, worlds use the 8 wide contact solver unless b2_contactSolverSimdWidth or
+        /// b2World_EnableSSE2Fallback says otherwise.
         /// </summary>
         public static bool b2IsAVX2Available()
         {
-            return false;
+            return B2ContactSolverWide.b2IsWide8Supported();
         }
 
         /// <summary>

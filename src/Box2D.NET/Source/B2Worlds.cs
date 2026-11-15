@@ -230,6 +230,7 @@ namespace Box2D.NET
             world.inUse = true;
 
             world.stack = b2CreateStackAllocator(b2MaxInt(2048, def.capacity.arenaByteCount));
+            world.contactSolverWide = B2ContactSolverWide.b2CreateContactSolverWide();
             b2CreateBroadPhase(ref world.broadPhase, def.capacity);
             b2CreateGraph(ref world.constraintGraph, def.capacity);
 

@@ -15,6 +15,12 @@ namespace Box2D.NET
     public class B2World
     {
         public B2StackAllocator stack;
+
+        /// <summary>
+        /// Graph color contact solver for the SIMD width picked at world creation
+        /// </summary>
+        internal B2ContactSolverWide contactSolverWide;
+
         public B2BroadPhase broadPhase;
         public B2ConstraintGraph constraintGraph;
 
@@ -215,6 +221,7 @@ namespace Box2D.NET
         public void Clear()
         {
             stack = null;
+            contactSolverWide = null;
             broadPhase = null;
 
             bodyIdPool = null;

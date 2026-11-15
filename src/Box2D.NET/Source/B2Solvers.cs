@@ -46,27 +46,6 @@ namespace Box2D.NET
 
         public const float B2_CORE_FRACTION = 0.25f;
 
-        /// <summary>
-        /// TODO: @ikpil. check SIMD
-        /// </summary>
-        internal static readonly int B2_SIMD_SHIFT = b2SIMDShift();
-
-        internal static int b2SIMDShift()
-        {
-            if (8 == B2_SIMD_WIDTH)
-            {
-                return 3;
-            }
-            else if (4 == B2_SIMD_WIDTH)
-            {
-                return 2;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
 
         public static B2Softness b2MakeSoft(float hertz, float zeta, float h)
         {
@@ -926,7 +905,7 @@ namespace Box2D.NET
                     break;
 
                 case B2SolverStageType.b2_stagePrepareContacts:
-                    b2PrepareContacts_Wide(block, context);
+                    context.world.contactSolverWide.Prepare(block, context);
                     break;
 
                 case B2SolverStageType.b2_stageIntegrateVelocities:
@@ -936,7 +915,7 @@ namespace Box2D.NET
                 case B2SolverStageType.b2_stageWarmStart:
                     if (blockType == B2SolverBlockType.b2_graphContactBlock)
                     {
-                        b2WarmStartContacts_Wide(block, context);
+                        context.world.contactSolverWide.WarmStart(block, context);
                     }
                     else if (blockType == B2SolverBlockType.b2_graphJointBlock)
                     {
@@ -948,7 +927,7 @@ namespace Box2D.NET
                 case B2SolverStageType.b2_stageSolve:
                     if (blockType == B2SolverBlockType.b2_graphContactBlock)
                     {
-                        b2PushContacts_Wide(block, context);
+                        context.world.contactSolverWide.Push(block, context);
                     }
                     else if (blockType == B2SolverBlockType.b2_graphJointBlock)
                     {
@@ -965,7 +944,7 @@ namespace Box2D.NET
                 case B2SolverStageType.b2_stageRelax:
                     if (blockType == B2SolverBlockType.b2_graphContactBlock)
                     {
-                        b2SolveContacts_Wide(block, context);
+                        context.world.contactSolverWide.Solve(block, context);
                     }
                     else if (blockType == B2SolverBlockType.b2_graphJointBlock)
                     {
@@ -978,13 +957,13 @@ namespace Box2D.NET
                 case B2SolverStageType.b2_stageRestitution:
                     if (blockType == B2SolverBlockType.b2_graphContactBlock)
                     {
-                        b2ApplyRestitution_Wide(block, context);
+                        context.world.contactSolverWide.ApplyRestitution(block, context);
                     }
 
                     break;
 
                 case B2SolverStageType.b2_stageStoreImpulses:
-                    b2StoreImpulses_Wide(block, context, workerIndex);
+                    context.world.contactSolverWide.StoreImpulses(block, context, workerIndex);
                     break;
             }
         }
@@ -1436,6 +1415,9 @@ namespace Box2D.NET
                 int graphBlockCount = 0;
 
                 // c is the active color index
+                B2ContactSolverWide contactSolverWide = world.contactSolverWide;
+                int simdWidth = contactSolverWide.Width;
+                int simdShift = contactSolverWide.Shift;
                 int wideContactCount = 0;
                 int jointCount = 0;
                 int c = 0;
@@ -1452,7 +1434,7 @@ namespace Box2D.NET
                     activeColorIndices[c] = i;
 
                     // Ceiling for wide constraint count
-                    int colorContactCountW = colorContactCount > 0 ? ((colorContactCount - 1) >> B2_SIMD_SHIFT) + 1 : 0;
+                    int colorContactCountW = colorContactCount > 0 ? ((colorContactCount - 1) >> simdShift) + 1 : 0;
                     wideContactCount += colorContactCountW;
                     colorContactCounts[c] = colorContactCountW;
 
@@ -1475,10 +1457,7 @@ namespace Box2D.NET
                 B2BlockDim contactPrepareDim = b2ComputeBlockCount(wideContactCount, minContactsPerBlock, maxBlockCount);
                 B2BlockDim jointPrepareDim = b2ComputeBlockCount(jointCount, minJointsPerBlock, maxBlockCount);
 
-                B2_ASSERT(B2FixedArray4<B2ContactConstraintWide>.Size == B2_SIMD_WIDTH);
-                int wideContactConstraintByteCount = b2GetWideContactConstraintByteCount();
-                ArraySegment<B2ContactConstraintWide> wideContactConstraints =
-                    b2StackAlloc<B2ContactConstraintWide>(world.stack, wideContactCount /** wideContactConstraintByteCount */, "contact constraint");
+                contactSolverWide.Allocate(world.stack, wideContactCount);
 
                 ref B2GraphColor overflow = ref colors[B2_OVERFLOW_INDEX];
                 int overflowCount = overflow.contactSims.count;
@@ -1508,21 +1487,21 @@ namespace Box2D.NET
 
                         if (colorContactCount == 0)
                         {
-                            color.wideConstraints = null;
+                            color.wideConstraintStart = 0;
                             color.wideConstraintCount = 0;
                         }
                         else
                         {
-                            color.wideConstraints = wideContactConstraints.Slice(wideBase);
+                            color.wideConstraintStart = wideBase;
 
-                            int colorContactCountW = ((colorContactCount - 1) >> B2_SIMD_SHIFT) + 1;
+                            int colorContactCountW = ((colorContactCount - 1) >> simdShift) + 1;
                             color.wideConstraintCount = colorContactCountW;
 
                             // Zero remainder lanes in the tail wide slot so prepare workers don't need to
                             // initialize them.
-                            if ((colorContactCount & (B2_SIMD_WIDTH - 1)) != 0)
+                            if ((colorContactCount & (simdWidth - 1)) != 0)
                             {
-                                color.wideConstraints[colorContactCountW - 1] = new B2ContactConstraintWide();
+                                contactSolverWide.ClearConstraint(wideBase + colorContactCountW - 1);
                             }
 
                             wideBase += colorContactCountW;
@@ -1654,7 +1633,6 @@ namespace Box2D.NET
                 stepContext.workerCount = workerCount;
                 stepContext.stageCount = stageCount;
                 stepContext.stages = stages;
-                stepContext.wideContactConstraints = wideContactConstraints;
                 stepContext.contactPrepareSpans = contactPrepareSpans;
                 stepContext.wideContactCount = wideContactCount;
                 stepContext.jointPrepareSpans = jointPrepareSpans;
@@ -1760,7 +1738,7 @@ namespace Box2D.NET
                 b2StackFree(world.stack, bodyBlocks);
                 b2StackFree(world.stack, stages);
                 b2StackFree(world.stack, overflowContacts);
-                b2StackFree(world.stack, wideContactConstraints);
+                contactSolverWide.Free(world.stack);
 
                 world.profile.transforms = b2GetMilliseconds(transformTicks);
                 b2TracyCZoneEnd(B2TracyCZone.update_transforms);

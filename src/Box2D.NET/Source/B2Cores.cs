@@ -14,6 +14,12 @@ namespace Box2D.NET
         public const int B2_SIMD_WIDTH = 4;
 
         /// <summary>
+        /// SIMD width of the graph color contact solver, read when a world is created.
+        /// 0 picks 8 when AVX is available and 4 otherwise. 4 and 8 give bit-identical results.
+        /// </summary>
+        public static int b2_contactSolverSimdWidth = 0;
+
+        /// <summary>
         /// Get the current version of Box2D
         /// </summary>
         public const int B2_VERSION_MAJOR = 3;

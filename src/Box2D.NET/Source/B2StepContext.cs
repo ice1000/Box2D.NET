@@ -70,10 +70,9 @@ namespace Box2D.NET
         /// <summary>
         /// Flat view of the wide contact constraint array used by prepare and store.
         /// prepareSpans has activeColorCount + 1 entries, the last being a sentinel
-        /// at wideContactCount. wideContactConstraints is the contiguous base
-        /// pointer; per-color slices live at colors[i].wideConstraints.
+        /// at wideContactCount. The wide constraints themselves are owned by
+        /// world.contactSolverWide; colors[i].wideConstraintStart is each color's offset.
         /// </summary>
-        public ArraySegment<B2ContactConstraintWide> wideContactConstraints;
         public B2ContactPrepareSpan[] contactPrepareSpans;
         public int wideContactCount;
 

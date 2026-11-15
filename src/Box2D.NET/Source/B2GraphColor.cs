@@ -30,7 +30,10 @@ namespace Box2D.NET
         // TODO: @ikpil, check union
         // union
         //{
-        public ArraySegment<B2ContactConstraintWide> wideConstraints;
+        /// <summary>
+        /// Offset of this color's wide constraints in the contact solver's buffer (see B2ContactSolverWide)
+        /// </summary>
+        public int wideConstraintStart;
         public ArraySegment<B2ContactConstraint> overflowConstraints;
         //};
 

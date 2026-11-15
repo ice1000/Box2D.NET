@@ -7,15 +7,21 @@ namespace Box2D.NET
     {
         public static B2UserData Empty => default;
         
-        // Value types (Overlap at offset 0)
+        /// <summary>
+        /// Value types (Overlap at offset 0)
+        /// </summary>
         [FieldOffset(0)] public readonly double dValue;
         [FieldOffset(0)] public readonly long iValue;
         [FieldOffset(0)] public readonly ulong ulValue;
 
-        // Reference type (Offset 8 to avoid GC aliasing)
+        /// <summary>
+        /// Reference type (Offset 8 to avoid GC aliasing)
+        /// </summary>
         [FieldOffset(8)] public readonly object oValue;
 
-        // Type flag (Offset 16)
+        /// <summary>
+        /// Type flag (Offset 16)
+        /// </summary>
         [FieldOffset(16)] public readonly B2UserDataType type;
 
         public B2UserData(long i) : this()

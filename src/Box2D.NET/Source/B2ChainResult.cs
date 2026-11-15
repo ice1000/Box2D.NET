@@ -4,7 +4,9 @@
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// An array of chain loops created by merging polygons.
+    /// </summary>
     public struct B2ChainResult
     {
         public B2ChainData[] chains;

@@ -6,7 +6,9 @@ using System.Numerics;
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// Input parameters for b2ShapeCast
+    /// </summary>
     public struct B2ShapeCastPairInput
     {
         public B2ShapeProxy proxyA; // The proxy for shape A

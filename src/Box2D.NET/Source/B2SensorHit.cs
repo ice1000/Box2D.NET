@@ -4,7 +4,9 @@
 
 namespace Box2D.NET
 {
-    // Used to track shapes that hit sensors using time of impact
+    /// <summary>
+    /// Used to track shapes that hit sensors using time of impact
+    /// </summary>
     public struct B2SensorHit
     {
         public int sensorId;

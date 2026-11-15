@@ -4,7 +4,9 @@
 
 namespace Box2D.NET
 {
-    // Cached joint data stored in the island for fast contiguous iteration.
+    /// <summary>
+    /// Cached joint data stored in the island for fast contiguous iteration.
+    /// </summary>
     public class B2JointLink
     {
         public int jointId;

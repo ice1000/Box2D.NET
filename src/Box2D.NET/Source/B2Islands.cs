@@ -15,13 +15,15 @@ using static Box2D.NET.B2ArenaAllocators;
 
 namespace Box2D.NET
 {
-    // Deterministic solver
-    //
-    // Collide all awake contacts
-    // Use bit array to emit start/stop touching events in defined order, per thread. Try using contact index, assuming contacts are
-    // created in a deterministic order. bit-wise OR together bit arrays and issue changes:
-    // - start touching: merge islands - temporary linked list - mark root island dirty - wake all - largest island is root
-    // - stop touching: increment constraintRemoveCount
+    /// <summary>
+    /// Deterministic solver
+    ///
+    /// Collide all awake contacts
+    /// Use bit array to emit start/stop touching events in defined order, per thread. Try using contact index, assuming contacts are
+    /// created in a deterministic order. bit-wise OR together bit arrays and issue changes:
+    /// - start touching: merge islands - temporary linked list - mark root island dirty - wake all - largest island is root
+    /// - stop touching: increment constraintRemoveCount
+    /// </summary>
     public static class B2Islands
     {
         public const int B2_CONTACT_REMOVE_THRESHOLD = 1;
@@ -210,7 +212,9 @@ namespace Box2D.NET
             b2ValidateIsland(world, islandId);
         }
 
-        // Link contacts into the island graph when it starts having contact points
+        /// <summary>
+        /// Link contacts into the island graph when it starts having contact points
+        /// </summary>
         public static void b2LinkContact(B2World world, B2Contact contact)
         {
             B2_ASSERT((contact.flags & (uint)B2ContactFlags.b2_contactTouchingFlag) != 0);
@@ -251,7 +255,9 @@ namespace Box2D.NET
             b2AddContactToIsland(world, finalIslandId, contact);
         }
 
-        // Unlink contact from the island graph when it stops having contact points
+        /// <summary>
+        /// Unlink contact from the island graph when it stops having contact points
+        /// </summary>
         public static void b2UnlinkContact(B2World world, B2Contact contact)
         {
             B2_ASSERT(contact.islandId != B2_NULL_INDEX);
@@ -301,7 +307,9 @@ namespace Box2D.NET
 
             b2ValidateIsland(world, islandId);
         }
-        // Link a joint into the island graph when it is created
+        /// <summary>
+        /// Link a joint into the island graph when it is created
+        /// </summary>
         public static void b2LinkJoint(B2World world, B2Joint joint)
         {
             B2Body bodyA = b2Array_Get(ref world.bodies, joint.edges[0].bodyId);
@@ -329,7 +337,9 @@ namespace Box2D.NET
             // Add joint the island that survived
             b2AddJointToIsland(world, finalIslandId, joint);
         }
-        // Unlink a joint from the island graph when it is destroyed
+        /// <summary>
+        /// Unlink a joint from the island graph when it is destroyed
+        /// </summary>
         public static void b2UnlinkJoint(B2World world, B2Joint joint)
         {
             if (joint.islandId == B2_NULL_INDEX)
@@ -406,8 +416,10 @@ namespace Box2D.NET
             }
         }
 
-        // This uses union-find.
-        // https://en.wikipedia.org/wiki/Disjoint-set_data_structure
+        /// <summary>
+        /// This uses union-find.
+        /// https://en.wikipedia.org/wiki/Disjoint-set_data_structure
+        /// </summary>
         public static void b2SplitIsland(B2World world, int baseId)
         {
             B2Island baseIsland = b2Array_Get(ref world.islands, baseId);
@@ -671,13 +683,15 @@ namespace Box2D.NET
             b2StackFree(alloc, parents);
         }
 
-        // Split an island because some contacts and/or joints have been removed.
-        // This is called during the constraint solve while islands are not being touched. This uses union find and
-        // touches a lot of memory, so it can be slow.
-        // Note: contacts/joints connected to static bodies must belong to an island but don't affect island connectivity
-        // Note: static bodies are never in an island
-        // Note: this task interacts with some allocators without locks under the assumption that no other tasks
-        // are interacting with these data structures.
+        /// <summary>
+        /// Split an island because some contacts and/or joints have been removed.
+        /// This is called during the constraint solve while islands are not being touched. This uses union find and
+        /// touches a lot of memory, so it can be slow.
+        /// Note: contacts/joints connected to static bodies must belong to an island but don't affect island connectivity
+        /// Note: static bodies are never in an island
+        /// Note: this task interacts with some allocators without locks under the assumption that no other tasks
+        /// are interacting with these data structures.
+        /// </summary>
         public static void b2SplitIslandTask(object context)
         {
             b2TracyCZoneNC(B2TracyCZone.split, "Split Island", B2HexColor.b2_colorOlive, true);

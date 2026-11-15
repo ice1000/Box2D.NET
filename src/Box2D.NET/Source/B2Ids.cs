@@ -34,8 +34,10 @@ namespace Box2D.NET
      */
     public static class B2Ids
     {
+        /// <summary>
         /// Use these to make your identifiers null.
         /// You may also use zero initialization to get null.
+        /// </summary>
         public static readonly B2WorldId b2_nullWorldId = new B2WorldId(0, 0);
         public static readonly B2BodyId b2_nullBodyId = new B2BodyId(0, 0, 0);
         public static readonly B2ShapeId b2_nullShapeId = new B2ShapeId(0, 0, 0);
@@ -44,7 +46,9 @@ namespace Box2D.NET
         public static readonly B2ContactId b2_nullContactId = new B2ContactId(0, 0, 0, 0);
 
 
+        /// <summary>
         /// Macro to determine if any id is null.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool B2_IS_NULL(B2WorldId id) => id.index1 == 0;
 
@@ -63,7 +67,9 @@ namespace Box2D.NET
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool B2_IS_NULL(B2ContactId id) => id.index1 == 0;
 
+        /// <summary>
         /// Macro to determine if any id is non-null.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool B2_IS_NON_NULL(B2WorldId id) => id.index1 != 0;
 
@@ -82,7 +88,9 @@ namespace Box2D.NET
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool B2_IS_NON_NULL(B2ContactId id) => id.index1 != 0;
 
+        /// <summary>
         /// Compare two ids for equality. Doesn't work for b2WorldId. Don't mix types.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool B2_ID_EQUALS(B2BodyId id1, B2BodyId id2) => id1.index1 == id2.index1 && id1.world0 == id2.world0 && id1.generation == id2.generation;
 
@@ -97,14 +105,18 @@ namespace Box2D.NET
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool B2_ID_EQUALS(B2ContactId id1, B2ContactId id2) => id1.index1 == id2.index1 && id1.world0 == id2.world0 && id1.generation == id2.generation;
 
+        /// <summary>
         /// Store a world id into a uint32_t.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint b2StoreWorldId(B2WorldId id)
         {
             return ((uint)id.index1 << 16) | (uint)id.generation;
         }
 
+        /// <summary>
         /// Load a uint32_t into a world id.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static B2WorldId b2LoadWorldId(uint x)
         {
@@ -112,14 +124,18 @@ namespace Box2D.NET
             return id;
         }
 
+        /// <summary>
         /// Store a body id into a uint64_t.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong b2StoreBodyId(B2BodyId id)
         {
             return ((ulong)id.index1 << 32) | ((ulong)id.world0) << 16 | (ulong)id.generation;
         }
 
+        /// <summary>
         /// Load a uint64_t into a body id.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static B2BodyId b2LoadBodyId(ulong x)
         {
@@ -127,14 +143,18 @@ namespace Box2D.NET
             return id;
         }
 
+        /// <summary>
         /// Store a shape id into a uint64_t.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong b2StoreShapeId(B2ShapeId id)
         {
             return ((ulong)id.index1 << 32) | ((ulong)id.world0) << 16 | (ulong)id.generation;
         }
 
+        /// <summary>
         /// Load a uint64_t into a shape id.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static B2ShapeId b2LoadShapeId(ulong x)
         {
@@ -142,14 +162,18 @@ namespace Box2D.NET
             return id;
         }
 
+        /// <summary>
         /// Store a chain id into a uint64_t.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong b2StoreChainId(B2ChainId id)
         {
             return ((ulong)id.index1 << 32) | ((ulong)id.world0) << 16 | (ulong)id.generation;
         }
 
+        /// <summary>
         /// Load a uint64_t into a chain id.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static B2ChainId b2LoadChainId(ulong x)
         {
@@ -157,14 +181,18 @@ namespace Box2D.NET
             return id;
         }
 
+        /// <summary>
         /// Store a joint id into a uint64_t.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong b2StoreJointId(B2JointId id)
         {
             return ((ulong)id.index1 << 32) | ((ulong)id.world0) << 16 | (ulong)id.generation;
         }
 
+        /// <summary>
         /// Load a uint64_t into a joint id.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static B2JointId b2LoadJointId(ulong x)
         {
@@ -172,7 +200,9 @@ namespace Box2D.NET
             return id;
         }
 
+        /// <summary>
         /// Store a contact id into 16 bytes
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void b2StoreContactId(B2ContactId id, Span<uint> values)
         {
@@ -181,7 +211,9 @@ namespace Box2D.NET
             values[2] = (uint)id.generation;
         }
 
+        /// <summary>
         /// Load a two uint64_t into a contact id.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static B2ContactId b2LoadContactId(Span<uint> values)
         {

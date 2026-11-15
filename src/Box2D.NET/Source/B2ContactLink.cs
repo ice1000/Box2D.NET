@@ -4,8 +4,10 @@
 
 namespace Box2D.NET
 {
-    // Cached contact data stored in the island for fast contiguous iteration.
-    // Avoids touching b2Contact during union-find in b2SplitIsland.
+    /// <summary>
+    /// Cached contact data stored in the island for fast contiguous iteration.
+    /// Avoids touching b2Contact during union-find in b2SplitIsland.
+    /// </summary>
     public class B2ContactLink
     {
         public int contactId;

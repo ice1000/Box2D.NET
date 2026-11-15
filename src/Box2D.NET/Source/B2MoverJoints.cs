@@ -22,7 +22,9 @@ namespace Box2D.NET
          * The mover joint is designed for a dynamic character mover.
          * @{
          */
+        /// <summary>
         /// Set the desired relative linear velocity in meters per second
+        /// </summary>
         public static void b2MoverJoint_SetLinearVelocity(B2JointId jointId, Vector2 velocity)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(velocity)) == false) return;
@@ -31,14 +33,18 @@ namespace Box2D.NET
             joint.uj.moverJoint.linearVelocity = velocity;
         }
 
+        /// <summary>
         /// Get the desired relative linear velocity in meters per second
+        /// </summary>
         public static Vector2 b2MoverJoint_GetLinearVelocity(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_moverJoint);
             return joint.uj.moverJoint.linearVelocity;
         }
 
+        /// <summary>
         /// Set the motor joint maximum force, usually in newtons
+        /// </summary>
         public static void b2MoverJoint_SetMaxVelocityForce(B2JointId jointId, Vector2 maxForce)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(maxForce)) == false) return;
@@ -47,7 +53,9 @@ namespace Box2D.NET
             joint.uj.moverJoint.maxVelocityForce = maxForce;
         }
 
+        /// <summary>
         /// Get the motor joint maximum force, usually in newtons
+        /// </summary>
         public static Vector2 b2MoverJoint_GetMaxVelocityForce(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_moverJoint);

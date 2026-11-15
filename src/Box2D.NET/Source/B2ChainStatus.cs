@@ -4,7 +4,9 @@
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// Status after converging polygons to chains.
+    /// </summary>
     public enum B2ChainStatus
     {
         b2_chainStatusSuccess,

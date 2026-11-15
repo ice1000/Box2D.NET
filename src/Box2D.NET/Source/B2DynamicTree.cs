@@ -24,61 +24,97 @@ namespace Box2D.NET
      * spatial game data besides rigid bodies.
      * @{
      */
+    /// <summary>
     /// The dynamic tree structure. This should be considered private data.
     /// It is placed here for performance reasons.
+    /// </summary>
     public class B2DynamicTree
     {
+        /// <summary>
         /// Array of nodes. The root is at index zero and index 1 is empty.
-        // Otherwise siblings are paired at even indices. Has holes for free node pairs.
+        /// Otherwise siblings are paired at even indices. Has holes for free node pairs.
+        /// </summary>
         public B2TreeNode[] nodes;
 
+        /// <summary>
         /// Parent index per node. The free list is interweaved.
+        /// </summary>
         public int[] parents;
 
+        /// <summary>
         /// Proxy data split from node array as cold data.
+        /// </summary>
         public B2TreeProxy[] proxies;
 
+        /// <summary>
         /// Every allocated node has a lower index than this.
+        /// </summary>
         public int nodeEnd;
 
+        /// <summary>
         /// The allocated node space
+        /// </summary>
         public int nodeCapacity;
 
+        /// <summary>
         /// Free pairs below nodeEnd
+        /// </summary>
         public int pairFreeList;
 
+        /// <summary>
         /// Number of proxies created
+        /// </summary>
         public int proxyCount;
 
+        /// <summary>
         /// The allocated proxy space
+        /// </summary>
         public int proxyCapacity;
 
+        /// <summary>
         /// Proxy free list
+        /// </summary>
         public int proxyFreeList;
 
+        /// <summary>
         /// Array of nodes for rebuild.
+        /// </summary>
         public B2TreeNode[] swapNodes;
 
+        /// <summary>
         /// Leaf indices for rebuild
+        /// </summary>
         public int[] leafIndices;
 
+        /// <summary>
         /// Leaves for the rebuild. May represent a proxy or a retained subtree.
+        /// </summary>
         public B2TreeNode[] leafNodes;
 
+        /// <summary>
         /// Leaf bounding boxes for rebuild
+        /// </summary>
         public B2AABB[] leafBoxes;
 
+        /// <summary>
         /// Leaf bounding box centers for rebuild
+        /// </summary>
         public Vector2[] leafCenters;
 
+        /// <summary>
         /// Bins for sorting during rebuild
+        /// </summary>
         public int[] binIndices;
 
+        /// <summary>
         /// Allocated space for rebuilding
+        /// </summary>
         public int rebuildCapacity;
 
+        /// <summary>
         /// Rebuild orders the nodes so the children follow parents. Cache friendly for queries
         /// and refitting. The order can be disrupted by proxy creation.
+        /// </summary>
         public bool dfsOrdered;
 
         public void Clear()

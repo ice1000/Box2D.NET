@@ -6,7 +6,9 @@ using System.Numerics;
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// Output for b2ShapeDistance
+    /// </summary>
     public struct B2DistanceOutput
     {
         public Vector2 pointA; // Closest point on shapeA, in shape A's frame

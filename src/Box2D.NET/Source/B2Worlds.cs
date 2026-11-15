@@ -183,9 +183,11 @@ namespace Box2D.NET
             world.finishTaskFcn = b2SchedulerFinishTask;
             world.userTaskContext = world.scheduler;
         }
+        /// <summary>
         /// Create a world for rigid body simulation. A world contains bodies, shapes, and constraints. You make create
         /// up to 128 worlds. Each world is completely independent and may be simulated in parallel.
         /// @return the world id.
+        /// </summary>
         public static B2WorldId b2CreateWorld(in B2WorldDef def)
         {
             // check
@@ -368,7 +370,9 @@ namespace Box2D.NET
             // add one to worldId so that 0 represents a null b2WorldId
             return new B2WorldId((ushort)(worldId + 1), world.generation);
         }
+        /// <summary>
         /// Destroy a world
+        /// </summary>
         public static void b2DestroyWorld(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -704,7 +708,9 @@ namespace Box2D.NET
             }
         }
 
-        // Narrow-phase collision
+        /// <summary>
+        /// Narrow-phase collision
+        /// </summary>
         internal static void b2Collide(B2StepContext context)
         {
             B2World world = context.world;
@@ -923,10 +929,12 @@ namespace Box2D.NET
             b2TracyCZoneEnd(B2TracyCZone.contact_state);
             b2TracyCZoneEnd(B2TracyCZone.collide);
         }
+        /// <summary>
         /// Simulate a world for one time step. This performs collision detection, integration, and constraint solution.
         /// @param worldId The world to simulate
         /// @param timeStep The amount of time to simulate, this should be a fixed number. Usually 1/60.
         /// @param subStepCount The number of sub-steps, increasing the sub-step count can increase accuracy. Usually 4.
+        /// </summary>
         public static void b2World_Step(B2WorldId worldId, float timeStep, int subStepCount)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(timeStep)) == false) return;
@@ -1213,9 +1221,11 @@ namespace Box2D.NET
             return true;
         }
 
-        // todo this has varying order for moving shapes, causing flicker when overlapping shapes are moving
-        // solution: display order by shape id modulus 3, keep 3 buckets in GLSolid* and flush in 3 passes.
+        /// <summary>
+        /// todo this has varying order for moving shapes, causing flicker when overlapping shapes are moving
+        /// solution: display order by shape id modulus 3, keep 3 buckets in GLSolid* and flush in 3 passes.
         /// Call this to draw shapes and other debug draw data
+        /// </summary>
         public static void b2World_Draw(B2WorldId worldId, in B2DebugDraw draw)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -1468,8 +1478,10 @@ namespace Box2D.NET
             }
         }
 
-        // Union of the broad-phase root bounds across all body types. Returns false when no tree holds a
-        // proxy, so callers don't fold an empty world's origin into a running bounds.
+        /// <summary>
+        /// Union of the broad-phase root bounds across all body types. Returns false when no tree holds a
+        /// proxy, so callers don't fold an empty world's origin into a running bounds.
+        /// </summary>
         internal static bool b2ComputeWorldBounds(B2World world, out B2AABB bounds)
         {
             B2AABB worldBounds = new B2AABB();
@@ -1492,7 +1504,9 @@ namespace Box2D.NET
             return haveBounds;
         }
 
+        /// <summary>
         /// Call this to get the world bounds based on the union of all shape bounds.
+        /// </summary>
         public static B2AABB b2World_GetBounds(B2WorldId worldId)
         {
             B2World world = b2GetUnlockedWorldFromId(worldId);
@@ -1703,17 +1717,21 @@ namespace Box2D.NET
             return hash;
         }
 
+        /// <summary>
         /// Compute a deterministic hash of the simulation state: body transforms and velocities, contact and
         /// joint impulses, and the index bookkeeping that drives the solve. Reproduces exactly across worker
         /// counts and ignores struct padding and free slots, so two worlds that simulate identically always
         /// agree. Use this to detect desyncs (for example rollback resimulation).
+        /// </summary>
         public static ulong b2World_GetStateHash(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
             return b2HashWorldStateDeep(world);
         }
 
+        /// <summary>
         /// Get the body events for the current time step. The event data is transient. Do not store a reference to this data.
+        /// </summary>
         public static B2BodyEvents b2World_GetBodyEvents(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -1728,7 +1746,9 @@ namespace Box2D.NET
             return events;
         }
 
+        /// <summary>
         /// Get sensor events for the current time step. The event data is transient. Do not store a reference to this data.
+        /// </summary>
         public static B2SensorEvents b2World_GetSensorEvents(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -1754,7 +1774,9 @@ namespace Box2D.NET
             return events;
         }
 
+        /// <summary>
         /// Get contact events for this current time step. The event data is transient. Do not store a reference to this data.
+        /// </summary>
         public static B2ContactEvents b2World_GetContactEvents(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -1784,7 +1806,9 @@ namespace Box2D.NET
             return events;
         }
 
+        /// <summary>
         /// Get the joint events for the current time step. The event data is transient. Do not store a reference to this data.
+        /// </summary>
         public static B2JointEvents b2World_GetJointEvents(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -1798,7 +1822,9 @@ namespace Box2D.NET
             B2JointEvents events = new B2JointEvents(world.jointEvents.data, count);
             return events;
         }
+        /// <summary>
         /// World id validation. Provides validation for up to 64K allocations.
+        /// </summary>
         public static bool b2World_IsValid(B2WorldId id)
         {
             if (id.index1 < 1 || B2_MAX_WORLDS < id.index1)
@@ -1817,8 +1843,10 @@ namespace Box2D.NET
             return id.generation == world.generation;
         }
 
+        /// <summary>
         /// Body identifier validation. A valid body exists in a world and is non-null.
         /// This can be used to detect orphaned ids. Provides validation for up to 64K allocations.
+        /// </summary>
         public static bool b2Body_IsValid(B2BodyId id)
         {
             if (B2_MAX_WORLDS <= id.world0)
@@ -1857,7 +1885,9 @@ namespace Box2D.NET
 
             return true;
         }
+        /// <summary>
         /// Shape identifier validation. Provides validation for up to 64K allocations.
+        /// </summary>
         public static bool b2Shape_IsValid(B2ShapeId id)
         {
             if (B2_MAX_WORLDS <= id.world0)
@@ -1889,7 +1919,9 @@ namespace Box2D.NET
 
             return id.generation == shape.generation;
         }
+        /// <summary>
         /// Chain identifier validation. Provides validation for up to 64K allocations.
+        /// </summary>
         public static bool b2Chain_IsValid(B2ChainId id)
         {
             if (B2_MAX_WORLDS <= id.world0)
@@ -1921,7 +1953,9 @@ namespace Box2D.NET
 
             return id.generation == chain.generation;
         }
+        /// <summary>
         /// Joint identifier validation. Provides validation for up to 64K allocations.
+        /// </summary>
         public static bool b2Joint_IsValid(B2JointId id)
         {
             if (B2_MAX_WORLDS <= id.world0)
@@ -1953,9 +1987,11 @@ namespace Box2D.NET
 
             return id.generation == joint.generation;
         }
+        /// <summary>
         /// Enable/disable sleep. If your application does not need sleeping, you can gain some performance
         /// by disabling sleep completely at the world level.
         /// @see b2WorldDef
+        /// </summary>
         public static void b2World_EnableSleeping(B2WorldId worldId, bool flag)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -1985,15 +2021,19 @@ namespace Box2D.NET
                 }
             }
         }
+        /// <summary>
         /// Is body sleeping enabled?
+        /// </summary>
         public static bool b2World_IsSleepingEnabled(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
             return world.enableSleep;
         }
 
+        /// <summary>
         /// Enable/disable constraint warm starting. Advanced feature for testing. Disabling
         /// warm starting greatly reduces stability and provides no performance gain.
+        /// </summary>
         public static void b2World_EnableWarmStarting(B2WorldId worldId, bool flag)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -2006,8 +2046,10 @@ namespace Box2D.NET
             world.enableWarmStarting = flag;
         }
 
+        /// <summary>
         /// Enable the SSE2 fallback even when AVX2 is present. This is for testing.
         /// Box2D.NET always solves contacts 4 wide, so this only validates the call.
+        /// </summary>
         public static void b2World_EnableSSE2Fallback(B2WorldId worldId, bool flag)
         {
             B2_UNUSED(flag);
@@ -2018,23 +2060,29 @@ namespace Box2D.NET
                 return;
             }
         }
+        /// <summary>
         /// Is constraint warm starting enabled?
+        /// </summary>
         public static bool b2World_IsWarmStartingEnabled(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
             return world.enableWarmStarting;
         }
+        /// <summary>
         /// Get the number of awake bodies.
+        /// </summary>
         public static int b2World_GetAwakeBodyCount(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
             B2SolverSet awakeSet = b2Array_Get(ref world.solverSets, (int)B2SolverSetType.b2_awakeSet);
             return awakeSet.bodySims.count;
         }
+        /// <summary>
         /// Enable/disable continuous collision between dynamic and static bodies. Generally you should keep continuous
         /// collision enabled to prevent fast moving objects from going through static objects. The performance gain from
         /// disabling continuous collision is minor.
         /// @see b2WorldDef
+        /// </summary>
         public static void b2World_EnableContinuous(B2WorldId worldId, bool flag)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -2046,15 +2094,19 @@ namespace Box2D.NET
 
             world.enableContinuous = flag;
         }
+        /// <summary>
         /// Is continuous collision enabled?
+        /// </summary>
         public static bool b2World_IsContinuousEnabled(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
             return world.enableContinuous;
         }
+        /// <summary>
         /// Adjust the restitution threshold. It is recommended not to make this value very small
         /// because it will prevent bodies from sleeping. Usually in meters per second.
         /// @see b2WorldDef
+        /// </summary>
         public static void b2World_SetRestitutionThreshold(B2WorldId worldId, float value)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(value)) == false) return;
@@ -2068,15 +2120,19 @@ namespace Box2D.NET
 
             world.restitutionThreshold = b2ClampFloat(value, 0.0f, float.MaxValue);
         }
+        /// <summary>
         /// Get the the restitution speed threshold. Usually in meters per second.
+        /// </summary>
         public static float b2World_GetRestitutionThreshold(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
             return world.restitutionThreshold;
         }
 
+        /// <summary>
         /// Set the number of restitution iterations. More iterations can lead to less box spinning.
         /// Clamped to B2_MAX_RESTITUTION_ITERATIONS.
+        /// </summary>
         public static void b2World_SetRestitutionIterations(B2WorldId worldId, int iterations)
         {
             if (B2_CHECK_INPUT(iterations >= 0) == false) return;
@@ -2091,14 +2147,18 @@ namespace Box2D.NET
             world.restitutionIterations = b2ClampInt(iterations, 0, B2_MAX_RESTITUTION_ITERATIONS);
         }
 
+        /// <summary>
         /// Get the number of restitution iterations.
+        /// </summary>
         public static int b2World_GetRestitutionIterations(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
             return world.restitutionIterations;
         }
 
+        /// <summary>
         /// Enable full contact propagation in the restitution solver. Expensive.
+        /// </summary>
         public static void b2World_EnableRestitutionPropagation(B2WorldId worldId, bool flag)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -2111,15 +2171,19 @@ namespace Box2D.NET
             world.enableRestitutionPropagation = flag;
         }
 
+        /// <summary>
         /// Is restitution propagation enabled?
+        /// </summary>
         public static bool b2World_IsRestitutionPropagationEnabled(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
             return world.enableRestitutionPropagation;
         }
+        /// <summary>
         /// Adjust the hit event threshold. This controls the collision speed needed to generate a b2ContactHitEvent.
         /// Usually in meters per second.
         /// @see b2WorldDef::hitEventThreshold
+        /// </summary>
         public static void b2World_SetHitEventThreshold(B2WorldId worldId, float value)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(value)) == false) return;
@@ -2133,18 +2197,22 @@ namespace Box2D.NET
 
             world.hitEventThreshold = b2ClampFloat(value, 0.0f, float.MaxValue);
         }
+        /// <summary>
         /// Get the the hit event speed threshold. Usually in meters per second.
+        /// </summary>
         public static float b2World_GetHitEventThreshold(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
             return world.hitEventThreshold;
         }
+        /// <summary>
         /// Adjust contact tuning parameters
         /// @param worldId The world id
         /// @param hertz The contact stiffness (cycles per second)
         /// @param dampingRatio The contact bounciness with 1 being critical damping (non-dimensional)
         /// @param pushSpeed The maximum contact constraint push out speed (meters per second)
         /// @note Advanced feature
+        /// </summary>
         public static void b2World_SetContactTuning(B2WorldId worldId, float hertz, float dampingRatio, float pushSpeed)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(hertz)) == false) return;
@@ -2163,7 +2231,9 @@ namespace Box2D.NET
             world.contactSpeed = b2ClampFloat(pushSpeed, 0.0f, float.MaxValue);
         }
 
+        /// <summary>
         /// Get the contact tuning.
+        /// </summary>
         public static void b2World_GetContactTuning(B2WorldId worldId, out float hertz, out float dampingRatio, out float pushSpeed)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -2172,8 +2242,10 @@ namespace Box2D.NET
             pushSpeed = world.contactSpeed;
         }
 
+        /// <summary>
         /// Set the contact point recycling distance. Setting this to zero disables contact point recycling.
         /// Usually in meters.
+        /// </summary>
         public static void b2World_SetContactRecycleDistance(B2WorldId worldId, float recycleDistance)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(recycleDistance)) == false) return;
@@ -2188,13 +2260,17 @@ namespace Box2D.NET
             world.contactRecycleDistance = b2ClampFloat(recycleDistance, 0.0f, float.MaxValue);
         }
 
+        /// <summary>
         /// Get the contact point recycling distance. Usually in meters.
+        /// </summary>
         public static float b2World_GetContactRecycleDistance(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
             return world.contactRecycleDistance;
         }
+        /// <summary>
         /// Set the maximum linear speed. Usually in m/s.
+        /// </summary>
         public static void b2World_SetMaxLinearSpeed(B2WorldId worldId, float maximumLinearSpeed)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(maximumLinearSpeed) && maximumLinearSpeed > 0.0f) == false) return;
@@ -2208,20 +2284,26 @@ namespace Box2D.NET
 
             world.maxLinearSpeed = maximumLinearSpeed;
         }
+        /// <summary>
         /// Get the maximum linear speed. Usually in m/s.
+        /// </summary>
         public static float b2World_GetMaxLinearSpeed(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
             return world.maxLinearSpeed;
         }
+        /// <summary>
         /// Get the current world performance profile
+        /// </summary>
         public static B2Profile b2World_GetProfile(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
             return world.profile;
         }
 
+        /// <summary>
         /// Set the worker count. Must be between in the range [1, B2_MAX_WORKERS]
+        /// </summary>
         public static void b2World_SetWorkerCount(B2WorldId worldId, int count)
         {
             B2World world = b2GetUnlockedWorldFromId(worldId);
@@ -2240,7 +2322,9 @@ namespace Box2D.NET
             b2CreateWorkerContexts(world);
         }
 
+        /// <summary>
         /// Get the worker count.
+        /// </summary>
         public static int b2World_GetWorkerCount(B2WorldId worldId)
         {
             B2World world = b2GetUnlockedWorldFromId(worldId);
@@ -2251,7 +2335,9 @@ namespace Box2D.NET
 
             return world.workerCount;
         }
+        /// <summary>
         /// Get world counters and sizes
+        /// </summary>
         public static B2Counters b2World_GetCounters(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -2292,26 +2378,34 @@ namespace Box2D.NET
             return s;
         }
 
+        /// <summary>
         /// Get max capacity. This can be used with b2WorldDef to avoid run-time allocations and copies
+        /// </summary>
         public static B2Capacity b2World_GetMaxCapacity(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
             return world.maxCapacity;
         }
 
+        /// <summary>
         /// Set the user data pointer.
+        /// </summary>
         public static void b2World_SetUserData(B2WorldId worldId, B2UserData userData)
         {
             B2World world = b2GetWorldFromId(worldId);
             world.userData = userData;
         }
+        /// <summary>
         /// Get the user data pointer.
+        /// </summary>
         public static B2UserData b2World_GetUserData(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
             return world.userData;
         }
+        /// <summary>
         /// Set the friction callback. Passing NULL resets to default.
+        /// </summary>
         public static void b2World_SetFrictionCallback(B2WorldId worldId, b2FrictionCallbackFcn callbackFcn)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -2322,7 +2416,9 @@ namespace Box2D.NET
 
             world.frictionCallbackFcn = callbackFcn;
         }
+        /// <summary>
         /// Set the restitution callback. Passing NULL resets to default.
+        /// </summary>
         public static void b2World_SetRestitutionCallback(B2WorldId worldId, b2RestitutionCallbackFcn callbackFcn)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -2333,7 +2429,9 @@ namespace Box2D.NET
 
             world.restitutionCallbackFcn = callbackFcn;
         }
+        /// <summary>
         /// Dump memory stats to box2d_memory.txt
+        /// </summary>
         public static void b2World_DumpMemoryStats(B2WorldId worldId)
         {
             using StreamWriter writer = new StreamWriter("box2d_memory.txt");
@@ -2448,9 +2546,11 @@ namespace Box2D.NET
             bool result = worldContext.callbackFcn(id, worldContext.userContext);
             return result;
         }
+        /// <summary>
         /// Overlap test for all shapes that *potentially* overlap the provided AABB.
         /// The AABB is relative to the origin, which keeps the test precise far from the world origin
         /// in large world mode. Near the origin pass b2Pos_zero and a world AABB.
+        /// </summary>
         public static B2TreeStats b2World_OverlapAABB(B2WorldId worldId, B2Pos origin, in B2AABB aabb, in B2QueryFilter filter, b2OverlapResultCallbackFcn callbackFcn, object context)
         {
             B2TreeStats treeStats = new B2TreeStats();
@@ -2523,8 +2623,10 @@ namespace Box2D.NET
             return result;
         }
 
+        /// <summary>
         /// Overlap test for all shapes that overlap the provided shape proxy.
         /// The proxy points are relative to the origin. Near the origin pass b2Pos_zero and world points.
+        /// </summary>
         public static B2TreeStats b2World_OverlapShape(B2WorldId worldId, B2Pos origin, ref B2ShapeProxy proxy, in B2QueryFilter filter, b2OverlapResultCallbackFcn callbackFcn, object context)
         {
             B2TreeStats treeStats = new B2TreeStats();
@@ -2598,6 +2700,7 @@ namespace Box2D.NET
             return input.maxFraction;
         }
 
+        /// <summary>
         /// Cast a ray into the world to collect shapes in the path of the ray.
         /// Your callback function controls whether you get the closest point, any point, or n-points.
         /// @note The callback function may receive shapes in any order
@@ -2608,6 +2711,7 @@ namespace Box2D.NET
         /// @param fcn A user implemented callback function
         /// @param context A user context that is passed along to the callback function
         /// @return traversal performance counters
+        /// </summary>
         public static B2TreeStats b2World_CastRay<T>(B2WorldId worldId, B2Pos origin, Vector2 translation, in B2QueryFilter filter, b2CastResultCallbackFcn<T> callbackFcn, T context) where T : class
         {
             B2TreeStats treeStats = new B2TreeStats();
@@ -2647,7 +2751,9 @@ namespace Box2D.NET
             return treeStats;
         }
 
-        // This callback finds the closest hit. This is the most common callback used in games.
+        /// <summary>
+        /// This callback finds the closest hit. This is the most common callback used in games.
+        /// </summary>
         internal static float b2RayCastClosestFcn(B2ShapeId shapeId, B2Pos point, Vector2 normal, float fraction, ref B2RayResult context)
         {
             // Ignore initial overlap
@@ -2665,8 +2771,10 @@ namespace Box2D.NET
             return fraction;
         }
 
+        /// <summary>
         /// Cast a ray into the world to collect the closest hit. This is a convenience function. Ignores initial overlap.
         /// This is less general than b2World_CastRay() and does not allow for custom filtering.
+        /// </summary>
         public static B2RayResult b2World_CastRayClosest(B2WorldId worldId, B2Pos origin, Vector2 translation, in B2QueryFilter filter)
         {
             B2RayResult result = new B2RayResult();
@@ -2748,9 +2856,11 @@ namespace Box2D.NET
             return input.maxFraction;
         }
 
+        /// <summary>
         /// Cast a shape through the world. Similar to a cast ray except that a shape is cast instead of a point.
         /// The proxy points are relative to the origin. Callback points are world positions.
         /// @see b2World_CastRay
+        /// </summary>
         public static B2TreeStats b2World_CastShape<T>(B2WorldId worldId, B2Pos origin, ref B2ShapeProxy proxy, Vector2 translation, in B2QueryFilter filter, b2CastResultCallbackFcn<T> callbackFcn, T context) where T : class
         {
             B2TreeStats treeStats = new B2TreeStats();
@@ -2835,8 +2945,10 @@ namespace Box2D.NET
             return output.fraction;
         }
 
+        /// <summary>
         /// Cast a capsule mover through the world. This is a special shape cast that handles sliding along other shapes while reducing
         /// clipping. The mover capsule is relative to the origin. Near the origin pass b2Pos_zero and a world capsule.
+        /// </summary>
         public static float b2World_CastMover(B2WorldId worldId, B2Pos origin, in B2Capsule mover, Vector2 translation, in B2QueryFilter filter)
         {
             B2_ASSERT(b2IsValidPos(origin));
@@ -2919,8 +3031,10 @@ namespace Box2D.NET
         }
 
 
+        /// <summary>
         /// Collide a capsule mover with the world, gathering collision planes that can be fed to b2SolvePlanes. Useful for
         /// kinematic character movement. The mover capsule and the resulting planes are relative to the origin.
+        /// </summary>
         public static void b2World_CollideMover(B2WorldId worldId, B2Pos origin, in B2Capsule mover, in B2QueryFilter filter, b2PlaneResultCallbackFcn callbackFcn, object context)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -3019,14 +3133,18 @@ void b2World_Dump()
 	b2CloseDump();
 }
 #endif
+        /// <summary>
         /// Register the custom filter callback. This is optional.
+        /// </summary>
         public static void b2World_SetCustomFilterCallback(B2WorldId worldId, b2CustomFilterCallbackFcn callbackFcn, object context)
         {
             B2World world = b2GetWorldFromId(worldId);
             world.customFilterCallbackFcn = callbackFcn;
             world.customFilterContext = context;
         }
+        /// <summary>
         /// Register the pre-solve and pre-continuous callback. This is optional.
+        /// </summary>
         public static void b2World_SetPreSolveCallback(B2WorldId worldId, b2PreSolveCallbackFcn preSolveCallbackFcn, b2PreContinuousCallbackFcn preContinuousCallbackFcn, object context)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -3035,9 +3153,11 @@ void b2World_Dump()
             world.preContinuousCallbackFcn = preContinuousCallbackFcn;
             world.preSolveContext = context;
         }
+        /// <summary>
         /// Set the gravity vector for the entire world. Box2D has no concept of an up direction and this
         /// is left as a decision for the application. Usually in m/s^2.
         /// @see b2WorldDef
+        /// </summary>
         public static void b2World_SetGravity(B2WorldId worldId, Vector2 gravity)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(gravity)) == false) return;
@@ -3045,7 +3165,9 @@ void b2World_Dump()
             B2World world = b2GetWorldFromId(worldId);
             world.gravity = gravity;
         }
+        /// <summary>
         /// Get the gravity vector
+        /// </summary>
         public static Vector2 b2World_GetGravity(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -3134,9 +3256,11 @@ void b2World_Dump()
 
             return true;
         }
+        /// <summary>
         /// Apply a radial explosion
         /// @param worldId The world id
         /// @param explosionDef The explosion definition
+        /// </summary>
         public static void b2World_Explode(B2WorldId worldId, in B2ExplosionDef explosionDef)
         {
             ulong maskBits = explosionDef.maskBits;
@@ -3166,8 +3290,10 @@ void b2World_Dump()
 
             b2DynamicTree_OverlapAABB(world.broadPhase.trees[(int)B2BodyType.b2_dynamicBody], aabb, maskBits, ExplosionCallback, ref explosionContext);
         }
+        /// <summary>
         /// This is for internal testing
-        // This is for internal testing. Not optimized.
+        /// This is for internal testing. Not optimized.
+        /// </summary>
         public static void b2World_RebuildStaticTree(B2WorldId worldId)
         {
             B2World world = b2GetWorldFromId(worldId);
@@ -3203,7 +3329,9 @@ void b2World_Dump()
         }
 
 #if DEBUG
-        // This validates island graph connectivity for each body
+        /// <summary>
+        /// This validates island graph connectivity for each body
+        /// </summary>
         internal static void b2ValidateConnectivity(B2World world)
         {
             B2Body[] bodies = world.bodies.data;
@@ -3290,7 +3418,9 @@ void b2World_Dump()
             }
         }
 
-        // Validates solver sets, but not island connectivity
+        /// <summary>
+        /// Validates solver sets, but not island connectivity
+        /// </summary>
         internal static void b2ValidateSolverSets(B2World world)
         {
             B2_ASSERT(b2GetIdCapacity(world.bodyIdPool) == world.bodies.count);
@@ -3646,7 +3776,9 @@ void b2World_Dump()
 #endif
         }
 
-        // Validate contact touching status.
+        /// <summary>
+        /// Validate contact touching status.
+        /// </summary>
         internal static void b2ValidateContacts(B2World world)
         {
             int contactCount = world.contacts.count;
@@ -3707,17 +3839,23 @@ void b2World_Dump()
         }
 
 #else
-        // This validates island graph connectivity for each body
+        /// <summary>
+        /// This validates island graph connectivity for each body
+        /// </summary>
         internal static void b2ValidateConnectivity(B2World world)
         {
             B2_UNUSED(world);
         }
-        // Validates solver sets, but not island connectivity
+        /// <summary>
+        /// Validates solver sets, but not island connectivity
+        /// </summary>
         internal static void b2ValidateSolverSets(B2World world)
         {
             B2_UNUSED(world);
         }
-        // Validate contact touching status.
+        /// <summary>
+        /// Validate contact touching status.
+        /// </summary>
         internal static void b2ValidateContacts(B2World world)
         {
             B2_UNUSED(world);
@@ -3729,7 +3867,9 @@ void b2World_Dump()
  * Access to contacts
  * @{
  */
+        /// <summary>
         /// Contact identifier validation. Provides validation for up to 2^32 allocations.
+        /// </summary>
         public static bool b2Contact_IsValid(B2ContactId id)
         {
             if (B2_MAX_WORLDS <= id.world0)

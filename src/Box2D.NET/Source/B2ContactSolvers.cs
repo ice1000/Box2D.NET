@@ -24,14 +24,16 @@ namespace Box2D.NET
 {
     public static class B2ContactSolvers
     {
-        // contact separation for sub-stepping
-        // s = s0 + dot(cB + rB - cA - rA, normal)
-        // normal is held constant
-        // body positions c can translation and anchors r can rotate
-        // s(t) = s0 + dot(cB(t) + rB(t) - cA(t) - rA(t), normal)
-        // s(t) = s0 + dot(cB0 + dpB + rot(dqB, rB0) - cA0 - dpA - rot(dqA, rA0), normal)
-        // s(t) = s0 + dot(cB0 - cA0, normal) + dot(dpB - dpA + rot(dqB, rB0) - rot(dqA, rA0), normal)
-        // s_base = s0 + dot(cB0 - cA0, normal)
+        /// <summary>
+        /// contact separation for sub-stepping
+        /// s = s0 + dot(cB + rB - cA - rA, normal)
+        /// normal is held constant
+        /// body positions c can translation and anchors r can rotate
+        /// s(t) = s0 + dot(cB(t) + rB(t) - cA(t) - rA(t), normal)
+        /// s(t) = s0 + dot(cB0 + dpB + rot(dqB, rB0) - cA0 - dpA - rot(dqA, rA0), normal)
+        /// s(t) = s0 + dot(cB0 - cA0, normal) + dot(dpB - dpA + rot(dqB, rB0) - rot(dqA, rA0), normal)
+        /// s_base = s0 + dot(cB0 - cA0, normal)
+        /// </summary>
         internal static void b2PrepareContacts_Overflow(B2StepContext context)
         {
             b2TracyCZoneNC(B2TracyCZone.prepare_overflow_contact, "Prepare Overflow Contact", B2HexColor.b2_colorYellow, true);
@@ -406,7 +408,9 @@ namespace Box2D.NET
             b2TracyCZoneEnd(B2TracyCZone.push_contact);
         }
 
-        // Solve contacts: normal, friction and rolling resistance.
+        /// <summary>
+        /// Solve contacts: normal, friction and rolling resistance.
+        /// </summary>
         internal static void b2SolveContacts_Overflow(B2StepContext context)
         {
             b2TracyCZoneNC(B2TracyCZone.solve_contact, "Solve Overflow Contact", B2HexColor.b2_colorAliceBlue, true);
@@ -808,7 +812,9 @@ namespace Box2D.NET
             return Vector.Max(a, b);
         }
 
-        // a = clamp(a, -b, b)
+        /// <summary>
+        /// a = clamp(a, -b, b)
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector<float> b2SymClampW(Vector<float> a, Vector<float> b)
         {
@@ -829,7 +835,9 @@ namespace Box2D.NET
             return Vector.Equals(a, b).As<int, float>();
         }
 
-        // component-wise returns mask ? b : a
+        /// <summary>
+        /// component-wise returns mask ? b : a
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector<float> b2BlendW(Vector<float> a, Vector<float> b, Vector<float> mask)
         {
@@ -844,9 +852,11 @@ namespace Box2D.NET
         }
 
 
-        // The Vector128 paths below are written to be bit-identical with the scalar fallback,
-        // including signed zero and NaN handling, so results stay deterministic across targets.
-        // Plain IEEE add/sub/mul/div are exact per lane, so they use the Vector4 operators directly.
+        /// <summary>
+        /// The Vector128 paths below are written to be bit-identical with the scalar fallback,
+        /// including signed zero and NaN handling, so results stay deterministic across targets.
+        /// Plain IEEE add/sub/mul/div are exact per lane, so they use the Vector4 operators directly.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2ZeroW()
         {
@@ -895,7 +905,9 @@ namespace Box2D.NET
             return a / b;
         }
 
-        // Separate multiply and add (no FMA) to match the scalar rounding.
+        /// <summary>
+        /// Separate multiply and add (no FMA) to match the scalar rounding.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2MulAddW(in Vector4 a, in Vector4 b, in Vector4 c)
         {
@@ -908,22 +920,28 @@ namespace Box2D.NET
             return a - b * c;
         }
 
-        // a <= b ? a : b per lane. Vector4.Min is not used because its handling of
-        // equal signed zeros and NaN differs between runtimes.
+        /// <summary>
+        /// a &lt;= b ? a : b per lane. Vector4.Min is not used because its handling of
+        /// equal signed zeros and NaN differs between runtimes.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2MinW(in Vector4 a, in Vector4 b)
         {
             return Vector4.ConditionalSelect(Vector4.LessThanOrEqual(a, b), a, b);
         }
 
-        // a >= b ? a : b per lane
+        /// <summary>
+        /// a &gt;= b ? a : b per lane
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2MaxW(in Vector4 a, in Vector4 b)
         {
             return Vector4.ConditionalSelect(Vector4.GreaterThanOrEqual(a, b), a, b);
         }
 
-        // a = clamp(a, -b, b)
+        /// <summary>
+        /// a = clamp(a, -b, b)
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2SymClampW(in Vector4 a, in Vector4 b)
         {
@@ -935,8 +953,10 @@ namespace Box2D.NET
             return Vector4.ConditionalSelect(Vector4.LessThan(a, lower), lower, r);
         }
 
-        // Masks are stored as all bits set (true) or all bits clear (false) per lane, like the C SSE2/NEON paths.
-        // They only feed b2AndW, b2BlendW and b2AnyTrueW, never arithmetic.
+        /// <summary>
+        /// Masks are stored as all bits set (true) or all bits clear (false) per lane, like the C SSE2/NEON paths.
+        /// They only feed b2AndW, b2BlendW and b2AnyTrueW, never arithmetic.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2AndW(in Vector4 a, in Vector4 b)
         {
@@ -973,7 +993,9 @@ namespace Box2D.NET
             return Vector4.EqualsAll(a, Vector4.Zero);
         }
 
-        // component-wise returns mask ? b : a
+        /// <summary>
+        /// component-wise returns mask ? b : a
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 b2BlendW(in Vector4 a, in Vector4 b, in Vector4 mask)
         {
@@ -990,7 +1012,9 @@ namespace Box2D.NET
             return mask.AsSingle().AsVector4();
         }
 
-        // Read one lane straight from memory. A switch or Vector4 indexer with a variable index is much slower.
+        /// <summary>
+        /// Read one lane straight from memory. A switch or Vector4 indexer with a variable index is much slower.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static float b2GetLaneW(in Vector4 v, int laneIndex)
         {
@@ -998,7 +1022,9 @@ namespace Box2D.NET
             return Unsafe.Add(ref Unsafe.As<Vector4, float>(ref Unsafe.AsRef(in v)), laneIndex);
         }
 
-        // a - b
+        /// <summary>
+        /// a - b
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static B2Vec2W b2SubVW(in B2Vec2W a, in B2Vec2W b)
         {
@@ -1030,7 +1056,9 @@ namespace Box2D.NET
         }
 
 
-        // This function allows hiding SIMD intrinsics in the source file to improve compilation performance.
+        /// <summary>
+        /// This function allows hiding SIMD intrinsics in the source file to improve compilation performance.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int b2GetWideContactConstraintByteCount()
         {
@@ -1458,7 +1486,9 @@ static void b2ScatterBodies( b2BodyState* states, int* indices, const b2BodyStat
             return Unsafe.ReadUnaligned<Vector128<float>>(ref Unsafe.Add(ref Unsafe.As<B2BodyState, byte>(ref Unsafe.AsRef(in state)), 16));
         }
 
-        // This is a load and transpose
+        /// <summary>
+        /// This is a load and transpose
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static B2BodyStateW b2GatherBodies(ReadOnlySpan<B2BodyState> states, ReadOnlySpan<int> indices)
         {
@@ -1516,7 +1546,9 @@ static void b2ScatterBodies( b2BodyState* states, int* indices, const b2BodyStat
             return simdBody;
         }
 
-        // This writes only the velocities back to the solver bodies (plus the unchanged flags in the same 16 bytes)
+        /// <summary>
+        /// This writes only the velocities back to the solver bodies (plus the unchanged flags in the same 16 bytes)
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void b2ScatterBodies(Span<B2BodyState> states, ReadOnlySpan<int> indices, ref B2BodyStateW simdBody)
         {
@@ -1559,9 +1591,11 @@ static void b2ScatterBodies( b2BodyState* states, int* indices, const b2BodyStat
 
         private static readonly B2ContactSim b2_zeroContactSim = new B2ContactSim();
 
-        // Prepare wide contact constraints.
-        // Potential optimization: for SSE2 load 4 manifold points and transpose, like the body gather/scatter.
-        // I would need to reorder the manifold point so that constraint data comes first.
+        /// <summary>
+        /// Prepare wide contact constraints.
+        /// Potential optimization: for SSE2 load 4 manifold points and transpose, like the body gather/scatter.
+        /// I would need to reorder the manifold point so that constraint data comes first.
+        /// </summary>
         internal static void b2PrepareContacts_Wide(B2SolverBlock block, B2StepContext context)
         {
             b2TracyCZoneNC(B2TracyCZone.prepare_contact, "Prepare Contact", B2HexColor.b2_colorYellow, true);
@@ -2002,7 +2036,9 @@ static void b2ScatterBodies( b2BodyState* states, int* indices, const b2BodyStat
             b2TracyCZoneEnd(B2TracyCZone.solve_contact);
         }
 
-        // Solve the normal constraint, friction, and rolling resistance.
+        /// <summary>
+        /// Solve the normal constraint, friction, and rolling resistance.
+        /// </summary>
         internal static void b2SolveContacts_Wide(B2SolverBlock block, B2StepContext context)
         {
             b2TracyCZoneNC(B2TracyCZone.solve_contact, "Solve Contact", B2HexColor.b2_colorAliceBlue, true);
@@ -2288,14 +2324,16 @@ static void b2ScatterBodies( b2BodyState* states, int* indices, const b2BodyStat
             b2TracyCZoneEnd(B2TracyCZone.restitution);
         }
 
-        // I tried adding this to the last relax iterations but it was slower.
-        //
-        // Runs as a flat parallel-for over the whole wide constraint range. Per-color
-        // contact sims are looked up through the prepareSpans cursor rather than the
-        // block's colorIndex, matching the layout of b2PrepareContacts_Wide.
-        //
-        // I could store the manifold pointer in the b2ContactConstraintWide to simplify
-        // this. But it is important to keep the constraint small.
+        /// <summary>
+        /// I tried adding this to the last relax iterations but it was slower.
+        ///
+        /// Runs as a flat parallel-for over the whole wide constraint range. Per-color
+        /// contact sims are looked up through the prepareSpans cursor rather than the
+        /// block's colorIndex, matching the layout of b2PrepareContacts_Wide.
+        ///
+        /// I could store the manifold pointer in the b2ContactConstraintWide to simplify
+        /// this. But it is important to keep the constraint small.
+        /// </summary>
         internal static void b2StoreImpulses_Wide(B2SolverBlock block, B2StepContext context, int workerIndex)
         {
             b2TracyCZoneNC(B2TracyCZone.store_impulses, "Store", B2HexColor.b2_colorFireBrick, true);

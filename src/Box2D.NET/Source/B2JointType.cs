@@ -4,11 +4,13 @@
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// Joint type enumeration
     ///
     /// This is useful because all joint types use b2JointId and sometimes you
     /// want to get the type of a joint.
     /// @ingroup joint
+    /// </summary>
     public enum B2JointType
     {
         b2_distanceJoint,

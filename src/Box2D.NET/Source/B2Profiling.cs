@@ -9,8 +9,10 @@ namespace Box2D.NET
     public static class B2Profiling
     {
 #if BOX2D_PROFILE
+        /// <summary>
         /// Tracy profiler instrumentation
         /// https://github.com/wolfpld/tracy
+        /// </summary>
         public static void b2TracyCZoneC( object ctx, object color, object active )
         {
             TracyCZoneC(ctx, color, active);
@@ -57,7 +59,9 @@ namespace Box2D.NET
             TracyCFree( ptr )
         }
 
-        // Managed object allocations do not expose a stable native address to Tracy.
+        /// <summary>
+        /// Managed object allocations do not expose a stable native address to Tracy.
+        /// </summary>
         public static void b2TracyCAlloc<T>(T ptr, int size) where T : class
         {
         }

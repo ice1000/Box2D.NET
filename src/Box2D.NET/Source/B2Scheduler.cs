@@ -11,10 +11,14 @@ namespace Box2D.NET
         public B2Thread[] threads = new B2Thread[B2_MAX_WORKERS];
         public B2SchedulerWorkerContext[] workerContexts = new B2SchedulerWorkerContext[B2_MAX_WORKERS];
 
-        // total workers including main thread
+        /// <summary>
+        /// total workers including main thread
+        /// </summary>
         public int workerCount;
 
-        // threads created = workerCount - 1
+        /// <summary>
+        /// threads created = workerCount - 1
+        /// </summary>
         public int threadCount;
 
         public readonly B2SchedulerTask[] tasks = new B2SchedulerTask[B2_MAX_TASKS];

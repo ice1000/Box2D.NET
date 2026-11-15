@@ -10,7 +10,9 @@ namespace Box2D.NET
 {
     public static class B2AABBs
     {
-        // Get surface area of an AABB (the perimeter length)
+        /// <summary>
+        /// Get surface area of an AABB (the perimeter length)
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float b2Perimeter(in B2AABB a)
         {
@@ -19,8 +21,10 @@ namespace Box2D.NET
             return 2.0f * (wx + wy);
         }
 
+        /// <summary>
         /// Enlarge a to contain b
         /// @return true if the AABB grew
+        /// </summary>
         public static bool b2EnlargeAABB(ref B2AABB a, in B2AABB b)
         {
             bool changed = false;
@@ -52,7 +56,9 @@ namespace Box2D.NET
         }
 
 
-        // Ray cast an AABB
+        /// <summary>
+        /// Ray cast an AABB
+        /// </summary>
         public static B2CastOutput b2AABB_RayCast(in B2AABB a, in Vector2 p1, in Vector2 p2)
         {
             // Radius not handled
@@ -169,9 +175,11 @@ namespace Box2D.NET
             return output;
         }
 
-        // Translate a relative AABB into world space, rounding outward so the float box always contains
-        // the true box far from the origin where a float coordinate cannot resolve the shape extent.
-        // The broadphase pair order rides on the deterministic directed rounding.
+        /// <summary>
+        /// Translate a relative AABB into world space, rounding outward so the float box always contains
+        /// the true box far from the origin where a float coordinate cannot resolve the shape extent.
+        /// The broadphase pair order rides on the deterministic directed rounding.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static B2AABB b2OffsetAABB(in B2AABB box, in B2Pos origin)
         {

@@ -17,7 +17,9 @@ namespace Box2D.NET
 {
     public static class B2PrismaticJoints
     {
+        /// <summary>
         /// Enable/disable the joint spring.
+        /// </summary>
         public static void b2PrismaticJoint_EnableSpring(B2JointId jointId, bool enableSpring)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
@@ -27,15 +29,19 @@ namespace Box2D.NET
                 joint.uj.prismaticJoint.springImpulse = 0.0f;
             }
         }
+        /// <summary>
         /// Is the prismatic joint spring enabled or not?
+        /// </summary>
         public static bool b2PrismaticJoint_IsSpringEnabled(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
             return joint.uj.prismaticJoint.enableSpring;
         }
+        /// <summary>
         /// Set the prismatic joint stiffness in Hertz.
         /// This should usually be less than a quarter of the simulation rate. For example, if the simulation
         /// runs at 60Hz then the joint stiffness should be 15Hz or less.
+        /// </summary>
         public static void b2PrismaticJoint_SetSpringHertz(B2JointId jointId, float hertz)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(hertz)) == false) return;
@@ -43,13 +49,17 @@ namespace Box2D.NET
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
             joint.uj.prismaticJoint.hertz = hertz;
         }
+        /// <summary>
         /// Get the prismatic joint stiffness in Hertz
+        /// </summary>
         public static float b2PrismaticJoint_GetSpringHertz(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
             return joint.uj.prismaticJoint.hertz;
         }
+        /// <summary>
         /// Set the prismatic joint damping ratio (non-dimensional)
+        /// </summary>
         public static void b2PrismaticJoint_SetSpringDampingRatio(B2JointId jointId, float dampingRatio)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(dampingRatio)) == false) return;
@@ -57,14 +67,18 @@ namespace Box2D.NET
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
             joint.uj.prismaticJoint.dampingRatio = dampingRatio;
         }
+        /// <summary>
         /// Get the prismatic spring damping ratio (non-dimensional)
+        /// </summary>
         public static float b2PrismaticJoint_GetSpringDampingRatio(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
             return joint.uj.prismaticJoint.dampingRatio;
         }
 
+        /// <summary>
         /// Set the prismatic joint spring target angle, usually in meters
+        /// </summary>
         public static void b2PrismaticJoint_SetTargetTranslation(B2JointId jointId, float translation)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(translation)) == false) return;
@@ -73,13 +87,17 @@ namespace Box2D.NET
             joint.uj.prismaticJoint.targetTranslation = translation;
         }
 
+        /// <summary>
         /// Get the prismatic joint spring target translation, usually in meters
+        /// </summary>
         public static float b2PrismaticJoint_GetTargetTranslation(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
             return joint.uj.prismaticJoint.targetTranslation;
         }
+        /// <summary>
         /// Enable/disable a prismatic joint limit
+        /// </summary>
         public static void b2PrismaticJoint_EnableLimit(B2JointId jointId, bool enableLimit)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
@@ -90,25 +108,33 @@ namespace Box2D.NET
                 joint.uj.prismaticJoint.upperImpulse = 0.0f;
             }
         }
+        /// <summary>
         /// Is the prismatic joint limit enabled?
+        /// </summary>
         public static bool b2PrismaticJoint_IsLimitEnabled(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
             return joint.uj.prismaticJoint.enableLimit;
         }
+        /// <summary>
         /// Get the prismatic joint lower limit
+        /// </summary>
         public static float b2PrismaticJoint_GetLowerLimit(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
             return joint.uj.prismaticJoint.lowerTranslation;
         }
+        /// <summary>
         /// Get the prismatic joint upper limit
+        /// </summary>
         public static float b2PrismaticJoint_GetUpperLimit(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
             return joint.uj.prismaticJoint.upperTranslation;
         }
+        /// <summary>
         /// Set the prismatic joint limits
+        /// </summary>
         public static void b2PrismaticJoint_SetLimits(B2JointId jointId, float lower, float upper)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(lower)) == false) return;
@@ -120,7 +146,9 @@ namespace Box2D.NET
             joint.uj.prismaticJoint.lowerTranslation = b2MinFloat(lower, upper);
             joint.uj.prismaticJoint.upperTranslation = b2MaxFloat(lower, upper);
         }
+        /// <summary>
         /// Enable/disable a prismatic joint motor
+        /// </summary>
         public static void b2PrismaticJoint_EnableMotor(B2JointId jointId, bool enableMotor)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
@@ -130,13 +158,17 @@ namespace Box2D.NET
                 joint.uj.prismaticJoint.motorImpulse = 0.0f;
             }
         }
+        /// <summary>
         /// Is the prismatic joint motor enabled?
+        /// </summary>
         public static bool b2PrismaticJoint_IsMotorEnabled(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
             return joint.uj.prismaticJoint.enableMotor;
         }
+        /// <summary>
         /// Set the prismatic joint motor speed, usually in meters per second
+        /// </summary>
         public static void b2PrismaticJoint_SetTargetMotorSpeed(B2JointId jointId, float motorSpeed)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(motorSpeed)) == false) return;
@@ -144,20 +176,26 @@ namespace Box2D.NET
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
             joint.uj.prismaticJoint.motorSpeed = motorSpeed;
         }
+        /// <summary>
         /// Get the prismatic joint motor speed, usually in meters per second
+        /// </summary>
         public static float b2PrismaticJoint_GetTargetMotorSpeed(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
             return joint.uj.prismaticJoint.motorSpeed;
         }
+        /// <summary>
         /// Get the prismatic joint current motor force, usually in newtons
+        /// </summary>
         public static float b2PrismaticJoint_GetCurrentMotorForce(B2JointId jointId)
         {
             B2World world = b2GetWorld(jointId.world0);
             B2JointSim @base = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
             return world.inv_h * @base.uj.prismaticJoint.motorImpulse;
         }
+        /// <summary>
         /// Set the prismatic joint maximum motor force, usually in newtons
+        /// </summary>
         public static void b2PrismaticJoint_SetMaxMotorForce(B2JointId jointId, float force)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(force)) == false) return;
@@ -165,13 +203,17 @@ namespace Box2D.NET
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
             joint.uj.prismaticJoint.maxMotorForce = force;
         }
+        /// <summary>
         /// Get the prismatic joint maximum motor force, usually in newtons
+        /// </summary>
         public static float b2PrismaticJoint_GetMaxMotorForce(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_prismaticJoint);
             return joint.uj.prismaticJoint.maxMotorForce;
         }
+        /// <summary>
         /// Get the current joint translation, usually in meters.
+        /// </summary>
         public static float b2PrismaticJoint_GetCurrentTranslation(B2JointId jointId)
         {
             B2World world = b2GetWorld(jointId.world0);
@@ -189,7 +231,9 @@ namespace Box2D.NET
             float translation = b2Dot(d, axisA);
             return translation;
         }
+        /// <summary>
         /// Get the current joint translation speed, usually in meters per second.
+        /// </summary>
         public static float b2PrismaticJoint_GetCurrentSpeed(B2JointId jointId)
         {
             B2World world = b2GetWorld(jointId.world0);
@@ -284,16 +328,18 @@ namespace Box2D.NET
         // So:
         // Cdot + max(C1, 0)/h >= 0
 
-        // Block Solver
-        // We develop a block solver that includes the angular and linear constraints. This makes the limit stiffer.
-        //
-        // The Jacobian has 2 rows:
-        // J = [-uT -s1 uT s2] // linear
-        //     [0   -1   0  1] // angular
-        //
-        // u = perp
-        // s1 = cross(d + r1, u), s2 = cross(r2, u)
-        // a1 = cross(d + r1, v), a2 = cross(r2, v)
+        /// <summary>
+        /// Block Solver
+        /// We develop a block solver that includes the angular and linear constraints. This makes the limit stiffer.
+        ///
+        /// The Jacobian has 2 rows:
+        /// J = [-uT -s1 uT s2] // linear
+        ///     [0   -1   0  1] // angular
+        ///
+        /// u = perp
+        /// s1 = cross(d + r1, u), s2 = cross(r2, u)
+        /// a1 = cross(d + r1, v), a2 = cross(r2, v)
+        /// </summary>
         internal static void b2PreparePrismaticJoint(B2JointSim @base, B2StepContext context)
         {
             B2_ASSERT(@base.type == B2JointType.b2_prismaticJoint);

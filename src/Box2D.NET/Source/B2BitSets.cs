@@ -88,7 +88,9 @@ namespace Box2D.NET
             return bitSet;
         }
 
-        // fix
+        /// <summary>
+        /// fix
+        /// </summary>
         public static void b2CreateBitSet(ref B2BitSet bitSet, int bitCapacity)
         {
             bitSet.blockCapacity = (bitCapacity + B2SizeOf<ulong>.Size * 8 - 1) / (B2SizeOf<ulong>.Size * 8);
@@ -156,8 +158,10 @@ namespace Box2D.NET
             bitSet.blockCount = blockCount;
         }
 
-        // This function is here because ctz.h is included by
-        // this file but not in bitset.c
+        /// <summary>
+        /// This function is here because ctz.h is included by
+        /// this file but not in bitset.c
+        /// </summary>
         public static int b2CountSetBits(ref B2BitSet bitSet)
         {
             int popCount = 0;

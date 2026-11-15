@@ -23,9 +23,11 @@ namespace Box2D.NET
          * @brief Functions for the pogo joint. Used for dynamic character movers.
          * @{
          */
+        /// <summary>
         /// Set the rest length of a pogo joint
         /// @param jointId The id for a pogo joint
         /// @param length The new pogo joint length
+        /// </summary>
         public static void b2PogoJoint_SetRestLength(B2JointId jointId, float length)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(length)) == false) return;
@@ -34,21 +36,27 @@ namespace Box2D.NET
             joint.uj.pogoJoint.restLength = length;
         }
 
+        /// <summary>
         /// Get the rest length of a pogo joint
+        /// </summary>
         public static float b2PogoJoint_GetRestLength(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_pogoJoint);
             return joint.uj.pogoJoint.restLength;
         }
 
+        /// <summary>
         /// Get the spring Hertz
+        /// </summary>
         public static float b2PogoJoint_GetSpringHertz(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_pogoJoint);
             return joint.uj.pogoJoint.hertz;
         }
 
+        /// <summary>
         /// Set the spring stiffness in Hertz
+        /// </summary>
         public static void b2PogoJoint_SetSpringHertz(B2JointId jointId, float hertz)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(hertz)) == false) return;
@@ -57,7 +65,9 @@ namespace Box2D.NET
             joint.uj.pogoJoint.hertz = hertz;
         }
 
+        /// <summary>
         /// Set the spring damping ratio, non-dimensional
+        /// </summary>
         public static void b2PogoJoint_SetSpringDampingRatio(B2JointId jointId, float dampingRatio)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(dampingRatio)) == false) return;
@@ -66,14 +76,18 @@ namespace Box2D.NET
             joint.uj.pogoJoint.dampingRatio = dampingRatio;
         }
 
+        /// <summary>
         /// Get the spring damping ratio
+        /// </summary>
         public static float b2PogoJoint_GetSpringDampingRatio(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_pogoJoint);
             return joint.uj.pogoJoint.dampingRatio;
         }
 
+        /// <summary>
         /// Get the current length of the pogo.
+        /// </summary>
         public static float b2PogoJoint_GetCurrentLength(B2JointId jointId)
         {
             B2World world = b2GetWorld(jointId.world0);
@@ -93,14 +107,18 @@ namespace Box2D.NET
             return length;
         }
 
+        /// <summary>
         /// Get the internal pogo impulse.
+        /// </summary>
         public static float b2PogoJoint_GetImpulse(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_pogoJoint);
             return joint.uj.pogoJoint.impulse;
         }
 
+        /// <summary>
         /// Get the internal pogo velocity.
+        /// </summary>
         public static float b2PogoJoint_GetCurrentSpeed(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_pogoJoint);

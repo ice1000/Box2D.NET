@@ -49,13 +49,17 @@
 
 namespace Box2D.NET
 {
-    // Solver block describes a multithreaded unit of work.
+    /// <summary>
+    /// Solver block describes a multithreaded unit of work.
+    /// </summary>
     public struct B2SolverBlock
     {
         public int startIndex;
         public ushort count;
 
-        // b2SolverBlockType
+        /// <summary>
+        /// b2SolverBlockType
+        /// </summary>
         public byte blockType;
         public byte colorIndex;
     }

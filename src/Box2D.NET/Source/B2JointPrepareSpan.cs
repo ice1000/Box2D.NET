@@ -4,7 +4,9 @@
 
 namespace Box2D.NET
 {
-    // Similar for joints
+    /// <summary>
+    /// Similar for joints
+    /// </summary>
     public struct B2JointPrepareSpan
     {
         public int start;

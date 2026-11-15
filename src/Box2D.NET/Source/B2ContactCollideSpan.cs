@@ -4,7 +4,9 @@
 
 namespace Box2D.NET
 {
-    // Similar for the narrow phase.
+    /// <summary>
+    /// Similar for the narrow phase.
+    /// </summary>
     public struct B2ContactCollideSpan
     {
         public int start;

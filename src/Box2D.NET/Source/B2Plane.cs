@@ -6,7 +6,9 @@ using System.Numerics;
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// separation = dot(normal, point) - offset
+    /// </summary>
     public struct B2Plane(Vector2 normal, float offset)
     {
         public Vector2 normal = normal;

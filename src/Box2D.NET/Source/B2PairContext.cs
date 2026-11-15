@@ -10,7 +10,9 @@ namespace Box2D.NET
     {
         public B2World world;
 
-        // Owns the pairKeys array for this worker.
+        /// <summary>
+        /// Owns the pairKeys array for this worker.
+        /// </summary>
         public B2TaskContext taskContext;
 
         public B2CandidatePair[] batch = new B2CandidatePair[B2_CANDIDATE_BATCH];

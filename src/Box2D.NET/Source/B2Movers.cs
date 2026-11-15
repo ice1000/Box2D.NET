@@ -11,10 +11,12 @@ namespace Box2D.NET
 {
     public static class B2Movers
     {
+        /// <summary>
         /// Solves the position of a mover that satisfies the given collision planes.
         /// @param targetDelta the desired movement from the position used to generate the collision planes
         /// @param planes the collision planes
         /// @param count the number of collision planes
+        /// </summary>
         public static B2PlaneSolverResult b2SolvePlanes(Vector2 targetDelta, Span<B2CollisionPlane> planes, int count)
         {
             for (int i = 0; i < count; ++i)
@@ -61,8 +63,10 @@ namespace Box2D.NET
             return new B2PlaneSolverResult(delta, iteration);
         }
 
+        /// <summary>
         /// Clips the velocity against the given collision planes. Planes with zero push or clipVelocity
         /// set to false are skipped.
+        /// </summary>
         public static Vector2 b2ClipVector(Vector2 vector, Span<B2CollisionPlane> planes, int count)
         {
             Vector2 v = vector;

@@ -4,7 +4,9 @@
 
 namespace Box2D.NET
 {
-    // Array declaration that doesn't need the type T to be defined
+    /// <summary>
+    /// Array declaration that doesn't need the type T to be defined
+    /// </summary>
     public struct B2Array<T>
     {
         public T[] data;

@@ -19,7 +19,9 @@ namespace Box2D.NET
         private static B2AtomicInt b2_findCount;
         private static B2AtomicInt b2_probeCount;
 #endif
-        //#define B2_SHAPE_PAIR_KEY( K1, K2 ) K1 < K2 ? (ulong)K1 << 32 | (ulong)K2 : (ulong)K2 << 32 | (ulong)K1
+        /// <summary>
+        /// #define B2_SHAPE_PAIR_KEY( K1, K2 ) K1 &lt; K2 ? (ulong)K1 &lt;&lt; 32 | (ulong)K2 : (ulong)K2 &lt;&lt; 32 | (ulong)K1
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong B2_SHAPE_PAIR_KEY(long K1, long K2)
         {
@@ -84,9 +86,11 @@ namespace Box2D.NET
         // I compared with verstable across 8 benchmarks and the performance was similar.
 
 #if FALSE
-        // Fast-hash
-        // https://jonkagstrom.com/bit-mixer-construction
-        // https://code.google.com/archive/p/fast-hash
+        /// <summary>
+        /// Fast-hash
+        /// https://jonkagstrom.com/bit-mixer-construction
+        /// https://code.google.com/archive/p/fast-hash
+        /// </summary>
         public static uint64_t b2KeyHash( uint64_t key )
         {
             key ^= key >> 23;
@@ -95,9 +99,11 @@ namespace Box2D.NET
             return key;
         }
 #elif TRUE
-        // Fast-hash
-        // https://jonkagstrom.com/bit-mixer-construction
-        // https://code.google.com/archive/p/fast-hash
+        /// <summary>
+        /// Fast-hash
+        /// https://jonkagstrom.com/bit-mixer-construction
+        /// https://code.google.com/archive/p/fast-hash
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong b2KeyHash(ulong key)
         {
@@ -196,7 +202,9 @@ namespace Box2D.NET
             return set.items[index].key == key;
         }
 
-        // Returns true if key was already in set
+        /// <summary>
+        /// Returns true if key was already in set
+        /// </summary>
         public static bool b2AddKey(ref B2HashSet set, ulong key)
         {
             // key of zero is a sentinel
@@ -240,7 +248,9 @@ namespace Box2D.NET
             return set.capacity;
         }
 
-        // Returns true if the key was found
+        /// <summary>
+        /// Returns true if the key was found
+        /// </summary>
         public static bool b2RemoveKey(ref B2HashSet set, ulong key)
         {
             ulong hash = b2KeyHash(key);

@@ -21,24 +21,26 @@ namespace Box2D.NET
 {
     public static class B2Contacts
     {
-        // Contacts and determinism
-        // A deterministic simulation requires contacts to exist in the same order in b2Island no matter the thread count.
-        // The order must reproduce from run to run. This is necessary because the Gauss-Seidel constraint solver is order dependent.
-        //
-        // Creation:
-        // - Contacts are created using results from b2UpdateBroadPhasePairs
-        // - These results are ordered according to the order of the broad-phase move array
-        // - The move array is ordered according to the shape creation order using a bitset.
-        // - The island/shape/body order is determined by creation order
-        // - Logically contacts are only created for awake bodies, so they are immediately added to the awake contact array (serially)
-        //
-        // Island linking:
-        // - The awake contact array is built from the body-contact graph for all awake bodies in awake islands.
-        // - Awake contacts are solved in parallel and they generate contact state changes.
-        // - These state changes may link islands together using union find.
-        // - The state changes are ordered using a bit array that encompasses all contacts
-        // - As long as contacts are created in deterministic order, island link order is deterministic.
-        // - This keeps the order of contacts in islands deterministic
+        /// <summary>
+        /// Contacts and determinism
+        /// A deterministic simulation requires contacts to exist in the same order in b2Island no matter the thread count.
+        /// The order must reproduce from run to run. This is necessary because the Gauss-Seidel constraint solver is order dependent.
+        ///
+        /// Creation:
+        /// - Contacts are created using results from b2UpdateBroadPhasePairs
+        /// - These results are ordered according to the order of the broad-phase move array
+        /// - The move array is ordered according to the shape creation order using a bitset.
+        /// - The island/shape/body order is determined by creation order
+        /// - Logically contacts are only created for awake bodies, so they are immediately added to the awake contact array (serially)
+        ///
+        /// Island linking:
+        /// - The awake contact array is built from the body-contact graph for all awake bodies in awake islands.
+        /// - Awake contacts are solved in parallel and they generate contact state changes.
+        /// - These state changes may link islands together using union find.
+        /// - The state changes are ordered using a bit array that encompasses all contacts
+        /// - As long as contacts are created in deterministic order, island link order is deterministic.
+        /// - This keeps the order of contacts in islands deterministic
+        /// </summary>
         internal static B2LocalManifold b2CircleManifold(B2Shape shapeA, B2Shape shapeB, in B2Transform xf, ref B2SimplexCache cache)
         {
             B2_UNUSED(cache);
@@ -159,7 +161,9 @@ namespace Box2D.NET
         {
             return b2_contactRegistry[(int)typeA, (int)typeB].fcn != null;
         }
-        // WARNING: this should never fail to create a contact because the pair already exists in the pairSet.
+        /// <summary>
+        /// WARNING: this should never fail to create a contact because the pair already exists in the pairSet.
+        /// </summary>
         public static void b2CreateContact(B2World world, B2Shape shapeA, B2Shape shapeB)
         {
             B2ShapeType type1 = shapeA.type;
@@ -330,13 +334,15 @@ namespace Box2D.NET
             }
         }
 
-        // A contact is destroyed when:
-        // - broad-phase proxies stop overlapping
-        // - a body is destroyed
-        // - a body is disabled
-        // - a body changes type from dynamic to kinematic or static
-        // - a shape is destroyed
-        // - contact filtering is modified
+        /// <summary>
+        /// A contact is destroyed when:
+        /// - broad-phase proxies stop overlapping
+        /// - a body is destroyed
+        /// - a body is disabled
+        /// - a body changes type from dynamic to kinematic or static
+        /// - a shape is destroyed
+        /// - contact filtering is modified
+        /// </summary>
         public static void b2DestroyContact(B2World world, B2Contact contact)
         {
             // Remove pair from set
@@ -482,8 +488,10 @@ namespace Box2D.NET
         }
 
 
-        // Update the contact manifold and touching status.
-        // Note: do not assume the shape AABBs are overlapping or are valid.
+        /// <summary>
+        /// Update the contact manifold and touching status.
+        /// Note: do not assume the shape AABBs are overlapping or are valid.
+        /// </summary>
         internal static bool b2UpdateContact(B2World world, B2ContactSim contactSim, B2Shape shapeA, in B2WorldTransform transformA, Vector2 centerOffsetA,
             B2Shape shapeB, in B2WorldTransform transformB, Vector2 centerOffsetB)
         {
@@ -677,24 +685,26 @@ namespace Box2D.NET
             return b2MaxFloat(restitutionA, restitutionB);
         }
 
-        // Contacts and determinism
-        // A deterministic simulation requires contacts to exist in the same order in b2Island no matter the thread count.
-        // The order must reproduce from run to run. This is necessary because the Gauss-Seidel constraint solver is order dependent.
-        //
-        // Creation:
-        // - Contacts are created using results from b2UpdateBroadPhasePairs
-        // - These results are ordered according to the order of the broad-phase move array
-        // - The move array is ordered according to the shape creation order using a bitset.
-        // - The island/shape/body order is determined by creation order
-        // - Logically contacts are only created for awake bodies, so they are immediately added to the awake contact array (serially)
-        //
-        // Island linking:
-        // - The awake contact array is built from the body-contact graph for all awake bodies in awake islands.
-        // - Awake contacts are solved in parallel and they generate contact state changes.
-        // - These state changes may link islands together using union find.
-        // - The state changes are ordered using a bit array that encompasses all contacts
-        // - As long as contacts are created in deterministic order, island link order is deterministic.
-        // - This keeps the order of contacts in islands deterministic
+        /// <summary>
+        /// Contacts and determinism
+        /// A deterministic simulation requires contacts to exist in the same order in b2Island no matter the thread count.
+        /// The order must reproduce from run to run. This is necessary because the Gauss-Seidel constraint solver is order dependent.
+        ///
+        /// Creation:
+        /// - Contacts are created using results from b2UpdateBroadPhasePairs
+        /// - These results are ordered according to the order of the broad-phase move array
+        /// - The move array is ordered according to the shape creation order using a bitset.
+        /// - The island/shape/body order is determined by creation order
+        /// - Logically contacts are only created for awake bodies, so they are immediately added to the awake contact array (serially)
+        ///
+        /// Island linking:
+        /// - The awake contact array is built from the body-contact graph for all awake bodies in awake islands.
+        /// - Awake contacts are solved in parallel and they generate contact state changes.
+        /// - These state changes may link islands together using union find.
+        /// - The state changes are ordered using a bit array that encompasses all contacts
+        /// - As long as contacts are created in deterministic order, island link order is deterministic.
+        /// - This keeps the order of contacts in islands deterministic
+        /// </summary>
         internal static B2Contact b2GetContactFullId(B2World world, B2ContactId contactId)
         {
             int id = contactId.index1 - 1;
@@ -704,7 +714,9 @@ namespace Box2D.NET
         }
 
 
+        /// <summary>
         /// Get the data for a contact. The manifold may have no points if the contact is not touching.
+        /// </summary>
         public static B2ContactData b2Contact_GetData(B2ContactId contactId)
         {
             B2World world = b2GetWorld(contactId.world0);

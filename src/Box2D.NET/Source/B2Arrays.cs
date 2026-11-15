@@ -33,7 +33,9 @@ namespace Box2D.NET
     // This means the memory freed from previous allocations can never be reused for future expansions
     // of the same array. The allocator must always find fresh memory.
 
-    // todo_erin consider code-gen: https://github.com/IbrahimHindawi/haikal
+    /// <summary>
+    /// todo_erin consider code-gen: https://github.com/IbrahimHindawi/haikal
+    /// </summary>
     public static class B2Arrays
     {
         /* Resize */
@@ -181,7 +183,9 @@ namespace Box2D.NET
             return a;
         }
 
-        // Grow geometrically to hold at least n elements
+        /// <summary>
+        /// Grow geometrically to hold at least n elements
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void b2Array_Grow<T>(ref B2Array<T> a, int n) where T : new()
         {

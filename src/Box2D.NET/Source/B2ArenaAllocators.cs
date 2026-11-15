@@ -95,7 +95,9 @@ namespace Box2D.NET
             b2Array_Pop(ref alloc.entries);
         }
 
-        // Grow the stack based on usage
+        /// <summary>
+        /// Grow the stack based on usage
+        /// </summary>
         public static void b2GrowStack(B2StackAllocator allocator)
         {
             var allocSpan = allocator.AsSpan();

@@ -25,7 +25,9 @@ namespace Box2D.NET
         internal static int b2_toiSeparatedCount;
 #endif
 
+        /// <summary>
         /// Evaluate the transform sweep at a specific time.
+        /// </summary>
         public static B2Transform b2GetSweepTransform(in B2Sweep sweep, float time)
         {
             // https://fgiesen.wordpress.com/2012/08/15/linear-interpolation-past-present-and-future/
@@ -44,7 +46,9 @@ namespace Box2D.NET
             return xf;
         }
 
+        /// <summary>
         /// Compute the distance between two line segments, clamping at the end points if needed.
+        /// </summary>
         public static B2SegmentDistanceResult b2ComputeSegmentDistance(Vector2 p1, Vector2 q1, Vector2 p2, Vector2 q2)
         {
             B2SegmentDistanceResult result = new B2SegmentDistanceResult();
@@ -120,7 +124,9 @@ namespace Box2D.NET
             return result;
         }
 
+        /// <summary>
         /// Make a proxy for use in overlap, shape cast, and related functions. This is a deep copy of the points.
+        /// </summary>
         public static B2ShapeProxy b2MakeProxy(ReadOnlySpan<Vector2> points, int count, float radius)
         {
             count = b2MinInt(count, B2_MAX_POLYGON_VERTICES);
@@ -135,7 +141,9 @@ namespace Box2D.NET
             return proxy;
         }
 
+        /// <summary>
         /// Make a proxy with a transform. This is a deep copy of the points.
+        /// </summary>
         public static B2ShapeProxy b2MakeOffsetProxy(ReadOnlySpan<Vector2> points, int count, float radius, Vector2 position, in B2Rot rotation)
         {
             count = b2MinInt(count, B2_MAX_POLYGON_VERTICES);
@@ -153,8 +161,10 @@ namespace Box2D.NET
         }
 
 
-        // for single
+        /// <summary>
+        /// for single
         /// Make a proxy for use in overlap, shape cast, and related functions. This is a deep copy of the points.
+        /// </summary>
         public static B2ShapeProxy b2MakeProxy(Vector2 v1, int count, float radius)
         {
             B2_ASSERT(count == 1);
@@ -163,7 +173,9 @@ namespace Box2D.NET
             vertices[0] = v1;
             return b2MakeProxy(vertices, count, radius);
         }
+        /// <summary>
         /// Make a proxy for use in overlap, shape cast, and related functions. This is a deep copy of the points.
+        /// </summary>
         public static B2ShapeProxy b2MakeProxy(Vector2 v1, Vector2 v2, int count, float radius)
         {
             B2_ASSERT(count == 2);
@@ -292,31 +304,33 @@ namespace Box2D.NET
             }
         }
 
-        // Solve a line segment using barycentric coordinates.
-        //
-        // p = a1 * w1 + a2 * w2
-        // a1 + a2 = 1
-        //
-        // The vector from the origin to the closest point on the line is
-        // perpendicular to the line.
-        // e12 = w2 - w1
-        // dot(p, e) = 0
-        // a1 * dot(w1, e) + a2 * dot(w2, e) = 0
-        //
-        // 2-by-2 linear system
-        // [1      1     ][a1] = [1]
-        // [w1.e12 w2.e12][a2] = [0]
-        //
-        // Define
-        // d12_1 =  dot(w2, e12)
-        // d12_2 = -dot(w1, e12)
-        // d12 = d12_1 + d12_2
-        //
-        // Solution
-        // a1 = d12_1 / d12
-        // a2 = d12_2 / d12
-        //
-        // returns a vector that points towards the origin
+        /// <summary>
+        /// Solve a line segment using barycentric coordinates.
+        ///
+        /// p = a1 * w1 + a2 * w2
+        /// a1 + a2 = 1
+        ///
+        /// The vector from the origin to the closest point on the line is
+        /// perpendicular to the line.
+        /// e12 = w2 - w1
+        /// dot(p, e) = 0
+        /// a1 * dot(w1, e) + a2 * dot(w2, e) = 0
+        ///
+        /// 2-by-2 linear system
+        /// [1      1     ][a1] = [1]
+        /// [w1.e12 w2.e12][a2] = [0]
+        ///
+        /// Define
+        /// d12_1 =  dot(w2, e12)
+        /// d12_2 = -dot(w1, e12)
+        /// d12 = d12_1 + d12_2
+        ///
+        /// Solution
+        /// a1 = d12_1 / d12
+        /// a2 = d12_2 / d12
+        ///
+        /// returns a vector that points towards the origin
+        /// </summary>
         internal static Vector2 b2SolveSimplex2(ref B2Simplex s)
         {
             Vector2 w1 = s.v1.w;
@@ -464,9 +478,11 @@ namespace Box2D.NET
             return Vector2Zero;
         }
 
+        /// <summary>
         /// Compute the closest points between two shapes represented as point clouds.
         /// b2SimplexCache cache is input/output. On the first call set b2SimplexCache.count to zero.
         /// The underlying GJK algorithm may be debugged by passing in debug simplexes and capacity. You may pass in NULL and 0 for these.
+        /// </summary>
         public static B2DistanceOutput b2ComputeShapeDistance(ref B2DistanceInput input, ref B2SimplexCache cache, Span<B2Simplex> simplexes, int simplexCapacity)
         {
             B2_UNUSED(simplexes, simplexCapacity);
@@ -662,8 +678,10 @@ namespace Box2D.NET
             return output;
         }
 
+        /// <summary>
         /// Perform a linear shape cast of shape B moving and shape A fixed. Determines the hit point, normal, and translation fraction.
         /// Initially touching shapes are treated as a miss.
+        /// </summary>
         public static B2CastOutput b2CastShape(in B2ShapeCastPairInput input)
         {
             // Compute tolerance
@@ -1171,10 +1189,12 @@ namespace Box2D.NET
             }
         }
 
+        /// <summary>
         /// Compute the upper bound on time before two shapes penetrate. Time is represented as
         /// a fraction between [0,tMax]. This uses a swept separating axis and may miss some intermediate,
         /// non-tunneling collisions. If you change the time interval, you should call this function
         /// again.
+        /// </summary>
         public static B2TOIOutput b2ComputeTimeOfImpact(in B2TOIInput input)
         {
 #if B2_SNOOP_TOI_COUNTERS

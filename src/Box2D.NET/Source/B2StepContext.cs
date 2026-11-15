@@ -6,16 +6,24 @@ using System;
 
 namespace Box2D.NET
 {
-    // Context for a time step. Recreated each time step.
+    /// <summary>
+    /// Context for a time step. Recreated each time step.
+    /// </summary>
     public class B2StepContext // TODO: @ikpil, check struct or class
     {
-        // time step
+        /// <summary>
+        /// time step
+        /// </summary>
         public float dt;
 
-        // inverse time step (0 if dt == 0).
+        /// <summary>
+        /// inverse time step (0 if dt == 0).
+        /// </summary>
         public float inv_dt;
 
-        // sub-step
+        /// <summary>
+        /// sub-step
+        /// </summary>
         public float h;
         public float inv_h;
 
@@ -30,29 +38,41 @@ namespace Box2D.NET
         public B2World world;
         public B2ConstraintGraph graph;
 
-        // shortcut to body states from awake set
+        /// <summary>
+        /// shortcut to body states from awake set
+        /// </summary>
         public B2BodyState[] states;
 
-        // shortcut to body sims from awake set
+        /// <summary>
+        /// shortcut to body sims from awake set
+        /// </summary>
         public B2BodySim[] sims;
 
-        // array of all shape ids for shapes that have enlarged AABBs
+        /// <summary>
+        /// array of all shape ids for shapes that have enlarged AABBs
+        /// </summary>
         public int[] enlargedShapes;
         public int enlargedShapeCount;
 
-        // Array of bullet bodies that need continuous collision handling
+        /// <summary>
+        /// Array of bullet bodies that need continuous collision handling
+        /// </summary>
         public ArraySegment<int> bulletBodies;
         public B2AtomicInt bulletBodyCount;
 
         public B2AtomicInt anyRestitution;
 
-        // Graph color spans for the narrow-phase, includes non-touching contacts as well.
+        /// <summary>
+        /// Graph color spans for the narrow-phase, includes non-touching contacts as well.
+        /// </summary>
         public B2ContactCollideSpan[] collideSpans;
 
-        // Flat view of the wide contact constraint array used by prepare and store.
-        // prepareSpans has activeColorCount + 1 entries, the last being a sentinel
-        // at wideContactCount. wideContactConstraints is the contiguous base
-        // pointer; per-color slices live at colors[i].wideConstraints.
+        /// <summary>
+        /// Flat view of the wide contact constraint array used by prepare and store.
+        /// prepareSpans has activeColorCount + 1 entries, the last being a sentinel
+        /// at wideContactCount. wideContactConstraints is the contiguous base
+        /// pointer; per-color slices live at colors[i].wideConstraints.
+        /// </summary>
         public ArraySegment<B2ContactConstraintWide> wideContactConstraints;
         public B2ContactPrepareSpan[] contactPrepareSpans;
         public int wideContactCount;
@@ -67,27 +87,37 @@ namespace Box2D.NET
         public int stageCount;
         public bool enableWarmStarting;
 
-        // padding to prevent false sharing
+        /// <summary>
+        /// padding to prevent false sharing
+        /// </summary>
         public B2FixedArray64<byte> padding1;
 
-        // This atomic is central to multi-threaded solver task synchronization.
-        // It prevents ABA problems by monotonically growing as the solver advances.
-        // This means a delayed worker thread will catch up without repeating already completed
-        // work (causing a race condition).
-        // sync index (16-bits) | stage type (16-bits)
+        /// <summary>
+        /// This atomic is central to multi-threaded solver task synchronization.
+        /// It prevents ABA problems by monotonically growing as the solver advances.
+        /// This means a delayed worker thread will catch up without repeating already completed
+        /// work (causing a race condition).
+        /// sync index (16-bits) | stage type (16-bits)
+        /// </summary>
         public B2AtomicU32 atomicSyncBits;
 
-        // padding to prevent false sharing
+        /// <summary>
+        /// padding to prevent false sharing
+        /// </summary>
         public B2FixedArray64<byte> padding2;
 
-        // Race flag claimed by whichever runner reaches b2SolverTask with workerIndex 0 first.
-        // The calling thread of b2World_Step also races for this slot so the orchestrator can
-        // always make progress, regardless of how the user's task system schedules tasks (out
-        // of order, fewer threads than workers, or synchronously inside enqueueTaskFcn). The
-        // loser of the race no-ops as workerIndex 0.
+        /// <summary>
+        /// Race flag claimed by whichever runner reaches b2SolverTask with workerIndex 0 first.
+        /// The calling thread of b2World_Step also races for this slot so the orchestrator can
+        /// always make progress, regardless of how the user's task system schedules tasks (out
+        /// of order, fewer threads than workers, or synchronously inside enqueueTaskFcn). The
+        /// loser of the race no-ops as workerIndex 0.
+        /// </summary>
         public B2AtomicInt mainClaimed;
 
-        // padding to prevent false sharing
+        /// <summary>
+        /// padding to prevent false sharing
+        /// </summary>
         public B2FixedArray64<byte> padding3;
     }
 }

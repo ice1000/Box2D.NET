@@ -6,9 +6,11 @@ using System.Numerics;
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// This describes the motion of a body/shape for TOI computation. Shapes are defined with respect to the body origin,
     /// which may not coincide with the center of mass. However, to support dynamics we must interpolate the center of mass
     /// position.
+    /// </summary>
     public struct B2Sweep(Vector2 localCenter, Vector2 c1, Vector2 c2, B2Rot q1, B2Rot q2)
     {
         public Vector2 localCenter = localCenter; // Local center of mass position

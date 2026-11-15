@@ -4,9 +4,11 @@
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// The contact data for two shapes. By convention the manifold normal points
     /// from shape A to shape B.
     /// @see b2Shape_GetContactData() and b2Body_GetContactData()
+    /// </summary>
     public struct B2ContactData(B2ContactId contactId, B2ShapeId shapeIdA, B2ShapeId shapeIdB, in B2Manifold manifold)
     {
         public B2ContactId contactId = contactId;

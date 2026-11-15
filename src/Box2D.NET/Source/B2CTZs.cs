@@ -8,7 +8,9 @@ namespace Box2D.NET
 {
     public static class B2CTZs
     {
-        // https://en.wikipedia.org/wiki/Find_first_set
+        /// <summary>
+        /// https://en.wikipedia.org/wiki/Find_first_set
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint b2CTZ32(uint block)
         {
@@ -23,7 +25,9 @@ namespace Box2D.NET
             return count;
         }
 
-        // This function doesn't need to be fast, so using the Ivy Bridge fallback.
+        /// <summary>
+        /// This function doesn't need to be fast, so using the Ivy Bridge fallback.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint b2CLZ32(uint value)
         {
@@ -39,7 +43,9 @@ namespace Box2D.NET
             return count;
         }
 
-        // ulong에 대해 trailing zero count (CTZ)
+        /// <summary>
+        /// ulong에 대해 trailing zero count (CTZ)
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint b2CTZ64(ulong block)
         {

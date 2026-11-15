@@ -14,8 +14,10 @@ using static Box2D.NET.B2MathFunction;
 
 namespace Box2D.NET
 {
-    // The hash maps here are only used for lookups and never iterated, so Dictionary keeps the
-    // output deterministic. It stands in for the verstable map used upstream.
+    /// <summary>
+    /// The hash maps here are only used for lookups and never iterated, so Dictionary keeps the
+    /// output deterministic. It stands in for the verstable map used upstream.
+    /// </summary>
     public static class B2ChainBuilders
     {
         private static ulong b2CellKey(int x, int y)
@@ -453,7 +455,9 @@ namespace Box2D.NET
             return outputCount;
         }
 
+        /// <summary>
         /// Merge polygons into multiple chain loops.
+        /// </summary>
         public static B2ChainResult b2ComputeChains(ReadOnlySpan<B2Polygon> polygons, int polygonCount, float weldTolerance)
         {
             B2ChainResult result = new B2ChainResult
@@ -699,7 +703,9 @@ namespace Box2D.NET
             return result;
         }
 
+        /// <summary>
         /// Free the chains.
+        /// </summary>
         public static void b2FreeChains(ref B2ChainResult result)
         {
             if (result.chains == null)

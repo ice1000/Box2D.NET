@@ -25,7 +25,9 @@ namespace Box2D.NET
         public B2Filter filter;
         public B2UserData userData;
 
-        // TODO: @ikpil, check union
+        /// <summary>
+        /// TODO: @ikpil, check union
+        /// </summary>
         public B2ShapeUnion us;
 
         public ushort generation;

@@ -4,20 +4,26 @@
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// An end touch event is generated when a shape stops overlapping a sensor shape.
     /// These include things like setting the transform, destroying a body or shape, or changing
     /// a filter. You will also get an end event if the sensor or visitor are destroyed.
     /// Therefore you should always confirm the shape id is valid using b2Shape_IsValid.
+    /// </summary>
     public struct B2SensorEndTouchEvent(B2ShapeId sensorShapeId, B2ShapeId visitorShapeId)
     {
+        /// <summary>
         /// The id of the sensor shape
         /// @warning this shape may have been destroyed
         /// @see b2Shape_IsValid
+        /// </summary>
         public B2ShapeId sensorShapeId = sensorShapeId;
 
+        /// <summary>
         /// The id of the shape that stopped touching the sensor shape
         /// @warning this shape may have been destroyed
         /// @see b2Shape_IsValid
+        /// </summary>
         public B2ShapeId visitorShapeId = visitorShapeId;
     }
 }

@@ -6,11 +6,13 @@ using System;
 
 namespace Box2D.NET
 {
-    // This is a stack-like arena allocator used for fast per step allocations.
-    // You must nest allocate/free pairs. The code will B2_ASSERT
-    // if you try to interleave multiple allocate/free pairs.
-    // This allocator uses the heap if space is insufficient.
-    // I could remove the need to free entries individually.
+    /// <summary>
+    /// This is a stack-like arena allocator used for fast per step allocations.
+    /// You must nest allocate/free pairs. The code will B2_ASSERT
+    /// if you try to interleave multiple allocate/free pairs.
+    /// This allocator uses the heap if space is insufficient.
+    /// I could remove the need to free entries individually.
+    /// </summary>
     public class B2StackAllocator(int capacity)
     {
         private readonly object _lock = new();

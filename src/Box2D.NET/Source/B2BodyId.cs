@@ -8,7 +8,9 @@ using static Box2D.NET.B2Ids;
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// Body id references a body instance. This should be treated as an opaque handle.
+    /// </summary>
     public readonly struct B2BodyId(int index1, ushort world0, ushort generation) : IEquatable<B2BodyId>
     {
         public readonly int index1 = index1;
@@ -60,7 +62,9 @@ namespace Box2D.NET
             return false;
         }
 
-        // GetHashCode 메서드 구현
+        /// <summary>
+        /// GetHashCode 메서드 구현
+        /// </summary>
         public override int GetHashCode()
         {
             ulong ua = b2StoreBodyId(this);

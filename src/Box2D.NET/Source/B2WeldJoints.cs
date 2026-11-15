@@ -32,7 +32,9 @@ namespace Box2D.NET
             }
         }
 
-        // A 3-by-3 matrix. Stored in column-major order.
+        /// <summary>
+        /// A 3-by-3 matrix. Stored in column-major order.
+        /// </summary>
         public struct B2Mat33
         {
             public B2Vec3 cx;
@@ -80,7 +82,9 @@ namespace Box2D.NET
             return x;
         }
 #endif
+        /// <summary>
         /// Set the weld joint linear stiffness in Hertz. 0 is rigid.
+        /// </summary>
         public static void b2WeldJoint_SetLinearHertz(B2JointId jointId, float hertz)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(hertz)) == false) return;
@@ -89,13 +93,17 @@ namespace Box2D.NET
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_weldJoint);
             joint.uj.weldJoint.linearHertz = hertz;
         }
+        /// <summary>
         /// Get the weld joint linear stiffness in Hertz
+        /// </summary>
         public static float b2WeldJoint_GetLinearHertz(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_weldJoint);
             return joint.uj.weldJoint.linearHertz;
         }
+        /// <summary>
         /// Set the weld joint linear damping ratio (non-dimensional)
+        /// </summary>
         public static void b2WeldJoint_SetLinearDampingRatio(B2JointId jointId, float dampingRatio)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(dampingRatio)) == false) return;
@@ -104,13 +112,17 @@ namespace Box2D.NET
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_weldJoint);
             joint.uj.weldJoint.linearDampingRatio = dampingRatio;
         }
+        /// <summary>
         /// Get the weld joint linear damping ratio (non-dimensional)
+        /// </summary>
         public static float b2WeldJoint_GetLinearDampingRatio(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_weldJoint);
             return joint.uj.weldJoint.linearDampingRatio;
         }
+        /// <summary>
         /// Set the weld joint angular stiffness in Hertz. 0 is rigid.
+        /// </summary>
         public static void b2WeldJoint_SetAngularHertz(B2JointId jointId, float hertz)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(hertz)) == false) return;
@@ -119,13 +131,17 @@ namespace Box2D.NET
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_weldJoint);
             joint.uj.weldJoint.angularHertz = hertz;
         }
+        /// <summary>
         /// Get the weld joint angular stiffness in Hertz
+        /// </summary>
         public static float b2WeldJoint_GetAngularHertz(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_weldJoint);
             return joint.uj.weldJoint.angularHertz;
         }
+        /// <summary>
         /// Set weld joint angular damping ratio, non-dimensional
+        /// </summary>
         public static void b2WeldJoint_SetAngularDampingRatio(B2JointId jointId, float dampingRatio)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(dampingRatio)) == false) return;
@@ -134,7 +150,9 @@ namespace Box2D.NET
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_weldJoint);
             joint.uj.weldJoint.angularDampingRatio = dampingRatio;
         }
+        /// <summary>
         /// Get the weld joint angular damping ratio, non-dimensional
+        /// </summary>
         public static float b2WeldJoint_GetAngularDampingRatio(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_weldJoint);
@@ -166,13 +184,15 @@ namespace Box2D.NET
         // J = [0 0 -1 0 0 1]
         // K = invI1 + invI2
 
-        // 3x3 Block
-        // K = [J1] * invM * [J1T J2T]
-        //     [J2]
-        //   = [J1] * [invM * J1T invM * J2T]
-        //     [J2]
-        //   = [J1 * invM * J1T J1 * invM * J2T]
-        //     [J2 * invM * J1T J2 * invM * J2T]
+        /// <summary>
+        /// 3x3 Block
+        /// K = [J1] * invM * [J1T J2T]
+        ///     [J2]
+        ///   = [J1] * [invM * J1T invM * J2T]
+        ///     [J2]
+        ///   = [J1 * invM * J1T J1 * invM * J2T]
+        ///     [J2 * invM * J1T J2 * invM * J2T]
+        /// </summary>
         internal static void b2PrepareWeldJoint(B2JointSim @base, B2StepContext context)
         {
             B2_ASSERT(@base.type == B2JointType.b2_weldJoint);

@@ -4,15 +4,21 @@
 
 namespace Box2D.NET
 {
-    // Temporary data used to track the rebuild of a tree node.
+    /// <summary>
+    /// Temporary data used to track the rebuild of a tree node.
+    /// </summary>
     public struct B2RebuildItem
     {
-        // Where this node is written and the pair its children go in.
+        /// <summary>
+        /// Where this node is written and the pair its children go in.
+        /// </summary>
         public int nodeIndex;
         public int pair;
         public int childCount;
 
-        // Leaf indices
+        /// <summary>
+        /// Leaf indices
+        /// </summary>
         public int startIndex;
         public int splitIndex;
         public int endIndex;

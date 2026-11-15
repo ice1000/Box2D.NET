@@ -6,10 +6,14 @@ namespace Box2D.NET
 {
     public struct B2BlockDim
     {
-        // number of items per block (except last block)
+        /// <summary>
+        /// number of items per block (except last block)
+        /// </summary>
         public int size;
 
-        // total number of blocks
+        /// <summary>
+        /// total number of blocks
+        /// </summary>
         public int count;
     }
 }

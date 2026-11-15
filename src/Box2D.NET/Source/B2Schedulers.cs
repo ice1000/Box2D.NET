@@ -94,7 +94,9 @@ namespace Box2D.NET
             return false;
         }
 
-        // Background worker thread entry point.
+        /// <summary>
+        /// Background worker thread entry point.
+        /// </summary>
         internal static void b2SchedulerWorkerMain(object context)
         {
             B2SchedulerWorkerContext workerContext = (B2SchedulerWorkerContext)context;
@@ -191,7 +193,9 @@ namespace Box2D.NET
             b2AtomicStoreInt(ref scheduler.nextSlot, 0);
         }
 
-        // See b2EnqueueTaskCallback and b2FinishTaskCallback
+        /// <summary>
+        /// See b2EnqueueTaskCallback and b2FinishTaskCallback
+        /// </summary>
         internal static object b2SchedulerEnqueueTask(b2TaskCallbackFcn task, object taskContext, object userContext)
         {
             B2Scheduler scheduler = (B2Scheduler)userContext;

@@ -6,13 +6,17 @@ using System.Numerics;
 
 namespace Box2D.NET
 {
-    // Soft contact constraints with sub-stepping support
-    // Uses fixed anchors for Jacobians for better behavior on rolling shapes (circles & capsules)
-    // http://mmacklin.com/smallsteps.pdf
-    // https://box2d.org/files/ErinCatto_SoftConstraints_GDC2011.pdf
+    /// <summary>
+    /// Soft contact constraints with sub-stepping support
+    /// Uses fixed anchors for Jacobians for better behavior on rolling shapes (circles &amp; capsules)
+    /// http://mmacklin.com/smallsteps.pdf
+    /// https://box2d.org/files/ErinCatto_SoftConstraints_GDC2011.pdf
+    /// </summary>
     public struct B2ContactConstraintWide
     {
-        // Read common
+        /// <summary>
+        /// Read common
+        /// </summary>
         public B2FixedArray4<int> indexA; // = new int[B2_SIMD_WIDTH];
         public B2FixedArray4<int> indexB; // = new int[B2_SIMD_WIDTH];
 
@@ -25,15 +29,21 @@ namespace Box2D.NET
         public Vector4 baseSeparation1;
         public Vector4 baseSeparation2;
 
-        // Write in push and solve
+        /// <summary>
+        /// Write in push and solve
+        /// </summary>
         public Vector4 normalImpulse1, normalImpulse2;
         public Vector4 totalNormalImpulse1, totalNormalImpulse2;
 
-        // Write in solve
+        /// <summary>
+        /// Write in solve
+        /// </summary>
         public Vector4 tangentImpulse1, tangentImpulse2;
         public Vector4 rollingImpulse;
 
-        // Read in solve
+        /// <summary>
+        /// Read in solve
+        /// </summary>
         public Vector4 friction;
         public Vector4 tangentSpeed;
         public Vector4 rollingResistance;

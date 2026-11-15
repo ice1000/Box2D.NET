@@ -1041,8 +1041,10 @@ namespace Box2D.NET
 
         public int Length => Size;
 
-        // readonly so an "in" or "ref readonly" receiver does not force a defensive
-        // copy. This matches Span<T>.this[int], which is also a readonly ref T indexer.
+        /// <summary>
+        /// readonly so an "in" or "ref readonly" receiver does not force a defensive
+        /// copy. This matches Span&lt;T&gt;.this[int], which is also a readonly ref T indexer.
+        /// </summary>
         public readonly ref T this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

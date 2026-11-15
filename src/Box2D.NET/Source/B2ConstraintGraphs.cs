@@ -28,12 +28,16 @@ namespace Box2D.NET
 {
     public static class B2ConstraintGraphs
     {
-        // This holds constraints that cannot fit the graph color limit. This happens when a single dynamic body
-        // is touching many other bodies.
+        /// <summary>
+        /// This holds constraints that cannot fit the graph color limit. This happens when a single dynamic body
+        /// is touching many other bodies.
+        /// </summary>
         public const int B2_OVERFLOW_INDEX = B2_GRAPH_COLOR_COUNT - 1;
 
-        // This keeps constraints involving two dynamic bodies at a lower solver priority than constraints
-        // involving a dynamic and static bodies. This reduces tunneling due to push through.
+        /// <summary>
+        /// This keeps constraints involving two dynamic bodies at a lower solver priority than constraints
+        /// involving a dynamic and static bodies. This reduces tunneling due to push through.
+        /// </summary>
         public const int B2_DYNAMIC_COLOR_COUNT = (B2_GRAPH_COLOR_COUNT - 4);
 
 
@@ -102,8 +106,10 @@ namespace Box2D.NET
             }
         }
 
-        // Contacts are always created as non-touching. They get moved into the constraint
-        // graph once they are found to be touching.
+        /// <summary>
+        /// Contacts are always created as non-touching. They get moved into the constraint
+        /// graph once they are found to be touching.
+        /// </summary>
         internal static void b2AddContactToGraph(B2World world, B2ContactSim contactSim, B2Contact contact)
         {
             B2_ASSERT(contactSim.manifold.pointCount > 0);
@@ -378,8 +384,10 @@ namespace Box2D.NET
             B2HexColor.b2_colorHotPink, B2HexColor.b2_colorTomato, B2HexColor.b2_colorKhaki, B2HexColor.b2_colorSilver,
         };
 
+        /// <summary>
         /// Get the visualization color assigned to a constraint graph color slot. The last index
         /// (B2_GRAPH_COLOR_COUNT - 1) is the overflow color.
+        /// </summary>
         public static B2HexColor b2GetGraphColor(int index)
         {
             B2_ASSERT(0 <= index && index < B2_GRAPH_COLOR_COUNT);

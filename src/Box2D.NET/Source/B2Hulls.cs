@@ -12,7 +12,9 @@ namespace Box2D.NET
 {
     public static class B2Hulls
     {
-        // quickhull recursion
+        /// <summary>
+        /// quickhull recursion
+        /// </summary>
         internal static B2Hull b2RecurseHull(Vector2 p1, Vector2 p2, Span<Vector2> ps, int count)
         {
             B2Hull hull = new B2Hull();
@@ -83,6 +85,7 @@ namespace Box2D.NET
             return hull;
         }
 
+        /// <summary>
         /// Compute the convex hull of a set of points. Returns an empty hull if it fails.
         /// Some failure cases:
         /// - all points very close together
@@ -91,6 +94,7 @@ namespace Box2D.NET
         /// - more than B2_MAX_POLYGON_VERTICES points
         /// This welds close points and removes collinear points.
         /// @warning Do not modify a hull once it has been computed
+        /// </summary>
         public static B2Hull b2ComputeHull(ReadOnlySpan<Vector2> points, int count)
         {
             B2Hull hull = new B2Hull();
@@ -278,10 +282,12 @@ namespace Box2D.NET
             return hull;
         }
 
+        /// <summary>
         /// This determines if a hull is valid. Checks for:
         /// - convexity
         /// - collinear points
         /// This is expensive and should not be called at runtime.
+        /// </summary>
         public static bool b2ValidateHull(in B2Hull hull)
         {
             if (hull.count < 3 || B2_MAX_POLYGON_VERTICES < hull.count)

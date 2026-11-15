@@ -6,7 +6,9 @@ using System.Numerics;
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// Chain data created by merging polygons.
+    /// </summary>
     public struct B2ChainData
     {
         public Vector2[] points;

@@ -6,7 +6,9 @@ using System.Numerics;
 
 namespace Box2D.NET
 {
-    // wide version of b2BodyState
+    /// <summary>
+    /// wide version of b2BodyState
+    /// </summary>
     public struct B2BodyStateW
     {
         public B2Vec2W v;

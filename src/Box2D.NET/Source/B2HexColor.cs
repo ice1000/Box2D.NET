@@ -4,10 +4,12 @@
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// These colors are used for debug draw and mostly match the named SVG colors.
     /// See https://www.rapidtables.com/web/color/index.html
     /// https://johndecember.com/html/spec/colorsvg.html
     /// https://upload.wikimedia.org/wikipedia/commons/2/2b/SVG_Recognized_color_keyword_names.svg
+    /// </summary>
     public enum B2HexColor
     {
         b2_colorAliceBlue = 0xF0F8FF,

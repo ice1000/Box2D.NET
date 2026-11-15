@@ -41,12 +41,14 @@ namespace Box2D.NET
             set.setIndex = B2_NULL_INDEX;
         }
 
-        // Wake a solver set. Does not merge islands.
-        // Contacts can be in several places:
-        // 1. non-touching contacts in the disabled set
-        // 2. non-touching contacts already in the awake set
-        // 3. touching contacts in the sleeping set
-        // This handles contact types 1 and 3. Type 2 doesn't need any action.
+        /// <summary>
+        /// Wake a solver set. Does not merge islands.
+        /// Contacts can be in several places:
+        /// 1. non-touching contacts in the disabled set
+        /// 2. non-touching contacts already in the awake set
+        /// 3. touching contacts in the sleeping set
+        /// This handles contact types 1 and 3. Type 2 doesn't need any action.
+        /// </summary>
         internal static void b2WakeSolverSet(B2World world, int setIndex)
         {
             B2_ASSERT(setIndex >= (int)B2SolverSetType.b2_firstSleepingSet);
@@ -195,8 +197,10 @@ namespace Box2D.NET
             b2DestroySolverSet(world, setIndex);
         }
 
-        // Islands need to have a deterministic order because data is moved to a sleeping set according
-        // to island order.
+        /// <summary>
+        /// Islands need to have a deterministic order because data is moved to a sleeping set according
+        /// to island order.
+        /// </summary>
         internal static void b2TrySleepIsland(B2World world, int islandId)
         {
             B2Island island = b2Array_Get(ref world.islands, islandId);
@@ -478,9 +482,11 @@ namespace Box2D.NET
             b2ValidateSolverSets(world);
         }
 
-        // This is called when joints are created between sets. I want to allow the sets
-        // to continue sleeping if both are asleep. Otherwise one set is waked.
-        // Islands will get merge when the set is waked.
+        /// <summary>
+        /// This is called when joints are created between sets. I want to allow the sets
+        /// to continue sleeping if both are asleep. Otherwise one set is waked.
+        /// Islands will get merge when the set is waked.
+        /// </summary>
         internal static void b2MergeSolverSets(B2World world, int setId1, int setId2)
         {
             B2_ASSERT(setId1 >= (int)B2SolverSetType.b2_firstSleepingSet);
@@ -579,7 +585,9 @@ namespace Box2D.NET
             b2ValidateSolverSets(world);
         }
 
-        // Remove a body from a solver set and return the body swapped into the slot.
+        /// <summary>
+        /// Remove a body from a solver set and return the body swapped into the slot.
+        /// </summary>
         internal static B2Body b2RemoveBodySim(B2World world, B2SolverSet set, int localIndex)
         {
             ref B2Array<B2BodySim> bodySims = ref set.bodySims;

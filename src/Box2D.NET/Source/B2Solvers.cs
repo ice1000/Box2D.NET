@@ -38,13 +38,17 @@ namespace Box2D.NET
 {
     public static class B2Solvers
     {
-        // these are useful for solver testing
+        /// <summary>
+        /// these are useful for solver testing
+        /// </summary>
         public const int ITERATIONS = 1;
         public const int RELAX_ITERATIONS = 1;
 
         public const float B2_CORE_FRACTION = 0.25f;
 
-        // TODO: @ikpil. check SIMD
+        /// <summary>
+        /// TODO: @ikpil. check SIMD
+        /// </summary>
         internal static readonly int B2_SIMD_SHIFT = b2SIMDShift();
 
         internal static int b2SIMDShift()
@@ -101,7 +105,9 @@ namespace Box2D.NET
         }
 
 
-        // Integrate velocities and apply damping
+        /// <summary>
+        /// Integrate velocities and apply damping
+        /// </summary>
         internal static void b2IntegrateVelocitiesTask(B2SolverBlock block, B2StepContext context)
         {
             b2TracyCZoneNC(B2TracyCZone.integrate_velocity, "IntVel", B2HexColor.b2_colorDeepPink, true);
@@ -201,7 +207,9 @@ namespace Box2D.NET
         }
 
 
-        // This is called from b2DynamicTree_Query for continuous collision
+        /// <summary>
+        /// This is called from b2DynamicTree_Query for continuous collision
+        /// </summary>
         internal static bool b2ContinuousQueryCallback(int proxyId, ulong userData, ref B2ContinuousContext context)
         {
             B2_UNUSED(proxyId);
@@ -406,7 +414,9 @@ namespace Box2D.NET
             return true;
         }
 
-        // Continuous collision of dynamic versus static
+        /// <summary>
+        /// Continuous collision of dynamic versus static
+        /// </summary>
         internal static void b2SolveContinuous(B2World world, int bodySimIndex, B2TaskContext taskContext, float dt)
         {
             b2TracyCZoneNC(B2TracyCZone.ccd, "CCD", B2HexColor.b2_colorDarkGoldenRod, true);
@@ -602,7 +612,9 @@ namespace Box2D.NET
             b2TracyCZoneEnd(B2TracyCZone.ccd);
         }
 
-        // Implements b2ParallelForCallback
+        /// <summary>
+        /// Implements b2ParallelForCallback
+        /// </summary>
         internal static void b2FinalizeBodiesTask(int startIndex, int endIndex, int workerIndex, object context)
         {
             b2TracyCZoneNC(B2TracyCZone.finalize_transforms, "Finalize", B2HexColor.b2_colorMediumSeaGreen, true);
@@ -800,14 +812,16 @@ namespace Box2D.NET
             b2TracyCZoneEnd(B2TracyCZone.finalize_transforms);
         }
 
-        // A block is a range of tasks, a start index and count as a sub-array. Each worker receives at
-        // most M blocks of work. The workers may receive less blocks if there is not sufficient work.
-        // Each block of work has a minimum number of elements (block size). This in turn may limit the
-        // number of blocks. If there are many elements then the block size is increased so there are
-        // still at most M blocks of work per worker. M is a tunable number that has two goals:
-        // 1. keep M small to reduce overhead
-        // 2. keep M large enough for other workers to be able to steal work
-        // The block size is a power of two to make math efficient.
+        /// <summary>
+        /// A block is a range of tasks, a start index and count as a sub-array. Each worker receives at
+        /// most M blocks of work. The workers may receive less blocks if there is not sufficient work.
+        /// Each block of work has a minimum number of elements (block size). This in turn may limit the
+        /// number of blocks. If there are many elements then the block size is increased so there are
+        /// still at most M blocks of work per worker. M is a tunable number that has two goals:
+        /// 1. keep M small to reduce overhead
+        /// 2. keep M large enough for other workers to be able to steal work
+        /// The block size is a power of two to make math efficient.
+        /// </summary>
         internal static B2BlockDim b2ComputeBlockCount(int itemCount, int minSize, int maxBlockCount)
         {
             B2BlockDim dim = new B2BlockDim();
@@ -833,9 +847,11 @@ namespace Box2D.NET
             return dim;
         }
 
-        // Initialize solver blocks for a contiguous range of items. Computes block size internally
-        // from the same parameters used by b2ComputeBlockCount. The atomic claim counter is zeroed
-        // so workers can CAS (0, 1) on the first stage that owns these blocks.
+        /// <summary>
+        /// Initialize solver blocks for a contiguous range of items. Computes block size internally
+        /// from the same parameters used by b2ComputeBlockCount. The atomic claim counter is zeroed
+        /// so workers can CAS (0, 1) on the first stage that owns these blocks.
+        /// </summary>
         internal static void b2InitBlocks(ArraySegment<B2SyncBlock> blocks, B2BlockDim dim, int itemCount, B2SolverBlockType blockType, byte colorIndex)
         {
             if (dim.count == 0)
@@ -878,9 +894,11 @@ namespace Box2D.NET
             return stageIndex + 1;
         }
 
-        // Initialize one stage per color for each iteration. Used for warm start, solve, relax, and restitution.
-        // All iterations of a given color share the same b2SyncBlock array so the per-block syncIndex
-        // grows monotonically across stages within that color.
+        /// <summary>
+        /// Initialize one stage per color for each iteration. Used for warm start, solve, relax, and restitution.
+        /// All iterations of a given color share the same b2SyncBlock array so the per-block syncIndex
+        /// grows monotonically across stages within that color.
+        /// </summary>
         internal static int b2InitColorStages(int stageIndex, ArraySegment<B2SolverStage> stages, B2SolverStageType type, int iterations,
             int activeColorCount, ArraySegment<B2SyncBlock>[] colorBlocks, ReadOnlySpan<int> colorBlockCounts,
             ReadOnlySpan<int> activeColorIndices)
@@ -971,7 +989,9 @@ namespace Box2D.NET
             }
         }
 
-        // This staggers the worker start indices so they avoid touching the same solver blocks
+        /// <summary>
+        /// This staggers the worker start indices so they avoid touching the same solver blocks
+        /// </summary>
         internal static int GetWorkerStartIndex(int workerIndex, int blockCount, int workerCount)
         {
             if (blockCount <= workerCount)
@@ -984,8 +1004,10 @@ namespace Box2D.NET
             return blocksPerWorker * workerIndex + b2MinInt(remainder, workerIndex);
         }
 
-        // Execute a stage, which is an array of solver blocks, each controlled with an atomic sync index.
-        // Each worker starts at its home index and sweeps the ring, CAS-claiming any unclaimed blocks.
+        /// <summary>
+        /// Execute a stage, which is an array of solver blocks, each controlled with an atomic sync index.
+        /// Each worker starts at its home index and sweeps the ring, CAS-claiming any unclaimed blocks.
+        /// </summary>
         internal static void b2ExecuteStage(B2SolverStage stage, B2StepContext context, int previousSyncIndex, int syncIndex, int workerIndex)
         {
             int completedCount = 0;
@@ -1026,7 +1048,9 @@ namespace Box2D.NET
             b2AtomicFetchAddInt(ref stage.completionCount, completedCount);
         }
 
-        // Execute a stage on worker 0 (main thread).
+        /// <summary>
+        /// Execute a stage on worker 0 (main thread).
+        /// </summary>
         internal static void b2ExecuteMainStage(B2SolverStage stage, B2StepContext context, uint syncBits)
         {
             int blockCount = stage.blockCount;
@@ -1061,7 +1085,9 @@ namespace Box2D.NET
             }
         }
 
-        // Parallel solver task
+        /// <summary>
+        /// Parallel solver task
+        /// </summary>
         internal static void b2SolverTask(object taskContext)
         {
             B2WorkerContext workerContext = taskContext as B2WorkerContext;
@@ -1336,7 +1362,9 @@ namespace Box2D.NET
         }
 
 
-        // Solve with graph coloring
+        /// <summary>
+        /// Solve with graph coloring
+        /// </summary>
         internal static void b2Solve(B2World world, B2StepContext stepContext)
         {
             // Only count steps that advance the simulation

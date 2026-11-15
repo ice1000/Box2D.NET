@@ -4,7 +4,9 @@
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// Joint id references a joint instance. This should be treated as an opaque handle.
+    /// </summary>
     public readonly struct B2JointId(int index1, ushort world0, ushort generation)
     {
         public readonly int index1 = index1;

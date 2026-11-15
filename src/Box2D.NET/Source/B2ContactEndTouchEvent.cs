@@ -4,25 +4,33 @@
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// An end touch event is generated when two shapes stop touching.
     /// You will get an end event if you do anything that destroys contacts previous to the last
     /// world step. These include things like setting the transform, destroying a body
     /// or shape, or changing a filter or body type.
+    /// </summary>
     public struct B2ContactEndTouchEvent(B2ShapeId shapeIdA, B2ShapeId shapeIdB, B2ContactId contactId)
     {
+        /// <summary>
         /// Id of the first shape
         /// @warning this shape may have been destroyed
         /// @see b2Shape_IsValid
+        /// </summary>
         public B2ShapeId shapeIdA = shapeIdA;
 
+        /// <summary>
         /// Id of the second shape
         /// @warning this shape may have been destroyed
         /// @see b2Shape_IsValid
+        /// </summary>
         public B2ShapeId shapeIdB = shapeIdB;
         
+        /// <summary>
         /// Id of the contact.
         /// @warning this contact may have been destroyed
         /// @see b2Contact_IsValid
+        /// </summary>
         public B2ContactId contactId = contactId;
     }
 }

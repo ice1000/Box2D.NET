@@ -4,6 +4,7 @@
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// Body move events triggered when a body moves.
     /// Triggered when a body moves due to simulation. Not reported for bodies moved by the user.
     /// This also has a flag to indicate that the body went to sleep so the application can also
@@ -14,6 +15,7 @@ namespace Box2D.NET
     /// calling functions such as b2Body_GetTransform() because this data is delivered as a contiguous array
     /// and it is only populated with bodies that have moved.
     /// @note If sleeping is disabled all dynamic and kinematic bodies will trigger move events.
+    /// </summary>
     public struct B2BodyMoveEvent
     {
         public B2UserData userData;

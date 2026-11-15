@@ -38,7 +38,9 @@ namespace Box2D.NET
             return shape;
         }
 
+        /// <summary>
         /// Compute the contact manifold between two circles
+        /// </summary>
         public static B2LocalManifold b2CollideCircles(in B2Circle circleA, in B2Circle circleB, in B2Transform xf)
         {
             B2LocalManifold manifold = new B2LocalManifold();
@@ -71,7 +73,9 @@ namespace Box2D.NET
             return manifold;
         }
 
+        /// <summary>
         /// Compute the contact manifold between a capsule and circle
+        /// </summary>
         public static B2LocalManifold b2CollideCapsuleAndCircle(in B2Capsule capsuleA, in B2Circle circleB, in B2Transform xf)
         {
             B2LocalManifold manifold = new B2LocalManifold();
@@ -132,7 +136,9 @@ namespace Box2D.NET
             return manifold;
         }
 
+        /// <summary>
         /// Compute the contact manifold between a polygon and a circle
+        /// </summary>
         public static B2LocalManifold b2CollidePolygonAndCircle(in B2Polygon polygonA, in B2Circle circleB, in B2Transform xf)
         {
             B2LocalManifold manifold = new B2LocalManifold();
@@ -243,7 +249,9 @@ namespace Box2D.NET
             return manifold;
         }
 
+        /// <summary>
         /// Compute the contact manifold between a capsule and circle
+        /// </summary>
         public static B2LocalManifold b2CollideCapsules(in B2Capsule capsuleA, in B2Capsule capsuleB, in B2Transform xf)
         {
             Vector2 origin = capsuleA.center1;
@@ -504,21 +512,27 @@ namespace Box2D.NET
             return manifold;
         }
 
+        /// <summary>
         /// Compute the contact manifold between an segment and a capsule
+        /// </summary>
         public static B2LocalManifold b2CollideSegmentAndCapsule(in B2Segment segmentA, in B2Capsule capsuleB, in B2Transform xf)
         {
             B2Capsule capsuleA = new B2Capsule(segmentA.point1, segmentA.point2, 0.0f);
             return b2CollideCapsules(capsuleA, capsuleB, xf);
         }
 
+        /// <summary>
         /// Compute the contact manifold between a polygon and capsule
+        /// </summary>
         public static B2LocalManifold b2CollidePolygonAndCapsule(in B2Polygon polygonA, in B2Capsule capsuleB, in B2Transform xf)
         {
             B2Polygon polyB = b2MakeCapsule(capsuleB.center1, capsuleB.center2, capsuleB.radius);
             return b2CollidePolygons(polygonA, polyB, xf);
         }
 
-        // Polygon clipper used to compute contact points when there are potentially two contact points.
+        /// <summary>
+        /// Polygon clipper used to compute contact points when there are potentially two contact points.
+        /// </summary>
         internal static B2LocalManifold b2ClipPolygons(ref B2Polygon polyA, ref B2Polygon polyB, int edgeA, int edgeB, bool flip)
         {
             B2LocalManifold manifold = new B2LocalManifold();
@@ -653,7 +667,9 @@ namespace Box2D.NET
             return manifold;
         }
 
-        // Find the max separation between poly1 and poly2 using edge normals from poly1.
+        /// <summary>
+        /// Find the max separation between poly1 and poly2 using edge normals from poly1.
+        /// </summary>
         internal static float b2FindMaxSeparation(ref int edgeIndex, ref B2Polygon poly1, B2Polygon poly2)
         {
             int count1 = poly1.count;
@@ -692,24 +708,26 @@ namespace Box2D.NET
             return maxSeparation;
         }
 
+        /// <summary>
         /// Compute the contact manifold between two polygons
-        // Due to speculation, every polygon is rounded
-        // Algorithm:
-        //
-        // compute edge separation using the separating axis test (SAT)
-        // if (separation > speculation_distance)
-        //   return
-        // find reference and incident edge
-        // if separation >= 0.1f * B2_LINEAR_SLOP
-        //   compute closest points between reference and incident edge
-        //   if vertices are closest
-        //      single vertex-vertex contact
-        //   else
-        //      clip edges
-        //   end
-        // else
-        //   clip edges
-        // end
+        /// Due to speculation, every polygon is rounded
+        /// Algorithm:
+        ///
+        /// compute edge separation using the separating axis test (SAT)
+        /// if (separation &gt; speculation_distance)
+        ///   return
+        /// find reference and incident edge
+        /// if separation &gt;= 0.1f * B2_LINEAR_SLOP
+        ///   compute closest points between reference and incident edge
+        ///   if vertices are closest
+        ///      single vertex-vertex contact
+        ///   else
+        ///      clip edges
+        ///   end
+        /// else
+        ///   clip edges
+        /// end
+        /// </summary>
         public static B2LocalManifold b2CollidePolygons(in B2Polygon polygonA, in B2Polygon polygonB, in B2Transform xf)
         {
             Vector2 origin = polygonA.vertices[0];
@@ -1045,21 +1063,27 @@ namespace Box2D.NET
             return manifold;
         }
 
+        /// <summary>
         /// Compute the contact manifold between an segment and a circle
+        /// </summary>
         public static B2LocalManifold b2CollideSegmentAndCircle(in B2Segment segmentA, in B2Circle circleB, in B2Transform xf)
         {
             B2Capsule capsuleA = new B2Capsule(segmentA.point1, segmentA.point2, 0.0f);
             return b2CollideCapsuleAndCircle(capsuleA, circleB, xf);
         }
 
+        /// <summary>
         /// Compute the contact manifold between an segment and a polygon
+        /// </summary>
         public static B2LocalManifold b2CollideSegmentAndPolygon(in B2Segment segmentA, in B2Polygon polygonB, in B2Transform xf)
         {
             B2Polygon polygonA = b2MakeCapsule(segmentA.point1, segmentA.point2, 0.0f);
             return b2CollidePolygons(polygonA, polygonB, xf);
         }
 
+        /// <summary>
         /// Compute the contact manifold between a chain segment and a circle
+        /// </summary>
         public static B2LocalManifold b2CollideChainSegmentAndCircle(in B2ChainSegment segmentA, in B2Circle circleB, in B2Transform xf)
         {
             B2LocalManifold manifold = new B2LocalManifold();
@@ -1143,7 +1167,9 @@ namespace Box2D.NET
             return manifold;
         }
 
+        /// <summary>
         /// Compute the contact manifold between a chain segment and a capsule
+        /// </summary>
         public static B2LocalManifold b2CollideChainSegmentAndCapsule(in B2ChainSegment segmentA, in B2Capsule capsuleB, in B2Transform xf, ref B2SimplexCache cache)
         {
             B2Polygon polyB = b2MakeCapsule(capsuleB.center1, capsuleB.center2, capsuleB.radius);
@@ -1222,8 +1248,10 @@ namespace Box2D.NET
         }
 
 
-        // Evaluate Gauss map
-        // See https://box2d.org/posts/2020/06/ghost-collisions/
+        /// <summary>
+        /// Evaluate Gauss map
+        /// See https://box2d.org/posts/2020/06/ghost-collisions/
+        /// </summary>
         internal static B2NormalType b2ClassifyNormal(B2ChainSegmentParams param, Vector2 normal)
         {
             const float sinTol = 0.01f;
@@ -1264,7 +1292,9 @@ namespace Box2D.NET
             }
         }
 
+        /// <summary>
         /// Compute the contact manifold between a chain segment and a rounded polygon
+        /// </summary>
         public static B2LocalManifold b2CollideChainSegmentAndPolygon(in B2ChainSegment segmentA, in B2Polygon polygonB, in B2Transform xf, ref B2SimplexCache cache)
         {
             B2LocalManifold manifold = new B2LocalManifold();

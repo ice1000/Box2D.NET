@@ -4,8 +4,10 @@
 
 namespace Box2D.NET
 {
-    // Shared state for one b2ParallelFor invocation. Workers race on nextBlock to
-    // claim work, so a slow chunk can't strand the other threads.
+    /// <summary>
+    /// Shared state for one b2ParallelFor invocation. Workers race on nextBlock to
+    /// claim work, so a slow chunk can't strand the other threads.
+    /// </summary>
     internal class B2ParallelForShared
     {
         public B2AtomicInt nextBlock;

@@ -18,18 +18,22 @@ namespace Box2D.NET
     {
         public const int B2_TREE_STACK_SIZE = 512;
 
-        // Used to mark a node as being moved such that pairs need to be generated and the tree
-        // may need to be rebuilt. This mark comes from a few sources:
-        // - updating the transform and AABB in the solver from movement
-        // - a joint disabling collision
-        // - creating a proxy
-        // - setting the transform on a body
+        /// <summary>
+        /// Used to mark a node as being moved such that pairs need to be generated and the tree
+        /// may need to be rebuilt. This mark comes from a few sources:
+        /// - updating the transform and AABB in the solver from movement
+        /// - a joint disabling collision
+        /// - creating a proxy
+        /// - setting the transform on a body
+        /// </summary>
         public const uint B2_MOVED_NODE = 1u << 30;
         public const uint B2_LEAF_NODE = 1u << 31;
         public const uint B2_NODE_INDEX_MASK = 0xFFFFFFFFu & ~(B2_MOVED_NODE | B2_LEAF_NODE);
 
-        // Used to indicate empty nodes. It also passes as a leaf so that internal node
-        // processing will naturally skip it.
+        /// <summary>
+        /// Used to indicate empty nodes. It also passes as a leaf so that internal node
+        /// processing will naturally skip it.
+        /// </summary>
         public const uint B2_EMPTY_NODE = B2_NODE_INDEX_MASK | B2_LEAF_NODE;
 
         public const int B2_ROOT_NODE = 0;
@@ -97,7 +101,9 @@ namespace Box2D.NET
             return b2IsNodeMoved(tree.nodes[B2_ROOT_NODE]) || tree.dfsOrdered == false;
         }
 
-        // Scalar versions of the AABB SIMD helpers.
+        /// <summary>
+        /// Scalar versions of the AABB SIMD helpers.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool b2OverlapNode(in B2AABB av, in B2TreeNode node)
         {
@@ -113,7 +119,9 @@ namespace Box2D.NET
                    b.lowerBound.Y <= a.upperBound.Y;
         }
 
-        // Bit (2 * i + j) is set when pairA[i] overlaps pairB[j]
+        /// <summary>
+        /// Bit (2 * i + j) is set when pairA[i] overlaps pairB[j]
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int b2OverlapPairMask(B2TreeNode[] arrayA, int pairA, B2TreeNode[] arrayB, int pairB)
         {
@@ -125,7 +133,9 @@ namespace Box2D.NET
             return mask;
         }
 
-        // Bit i is set when av overlaps nodes[pair + i]
+        /// <summary>
+        /// Bit i is set when av overlaps nodes[pair + i]
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int b2OverlapNodePairMask(in B2AABB av, B2TreeNode[] nodes, int pair)
         {
@@ -199,7 +209,9 @@ namespace Box2D.NET
             tree.pairFreeList = pair;
         }
 
+        /// <summary>
         /// Initialize a tree in place. Used for trees embedded in other structures.
+        /// </summary>
         public static void b2CreateDynamicTreeInternal(B2DynamicTree tree, int proxyCapacity)
         {
             int capacity = b2MaxInt(proxyCapacity, 16);
@@ -245,7 +257,9 @@ namespace Box2D.NET
             tree.rebuildCapacity = 0;
         }
 
+        /// <summary>
         /// Destroy a tree initialized in place, freeing the node pool.
+        /// </summary>
         public static void b2DestroyDynamicTreeInternal(B2DynamicTree tree)
         {
             b2Free(tree.nodes, tree.nodeCapacity);
@@ -261,7 +275,9 @@ namespace Box2D.NET
             tree.Clear();
         }
 
+        /// <summary>
         /// Constructing the tree initializes the node pool.
+        /// </summary>
         public static B2DynamicTree b2CreateDynamicTree(int proxyCapacity = 16)
         {
             B2DynamicTree tree = new B2DynamicTree();
@@ -269,7 +285,9 @@ namespace Box2D.NET
             return tree;
         }
 
+        /// <summary>
         /// Destroy the tree, freeing the node pool.
+        /// </summary>
         public static void b2DestroyDynamicTree(B2DynamicTree tree)
         {
             if (tree == null)
@@ -718,8 +736,10 @@ namespace Box2D.NET
             }
         }
 
-        // Create a proxy in the tree as a leaf node. We return the index of the node instead of a pointer so that we can grow
-        // the node pool.
+        /// <summary>
+        /// Create a proxy in the tree as a leaf node. We return the index of the node instead of a pointer so that we can grow
+        /// the node pool.
+        /// </summary>
         public static int b2CreateTreeProxyInternal(B2DynamicTree tree, in B2AABB aabb, ulong categoryBits, ulong userData, bool markMoved)
         {
             B2_VALIDATE(b2IsValidAABB(aabb));
@@ -735,13 +755,17 @@ namespace Box2D.NET
             return proxyId;
         }
 
+        /// <summary>
         /// Create a proxy. Provide an AABB and a userData value.
+        /// </summary>
         public static int b2CreateTreeProxy(B2DynamicTree tree, in B2AABB aabb, ulong categoryBits, ulong userData)
         {
             return b2CreateTreeProxyInternal(tree, aabb, categoryBits, userData, false);
         }
 
+        /// <summary>
         /// Destroy a proxy. This asserts if the id is invalid.
+        /// </summary>
         public static void b2DestroyTreeProxy(B2DynamicTree tree, int proxyId)
         {
             B2_ASSERT(0 <= proxyId && proxyId < tree.proxyCapacity);
@@ -750,7 +774,9 @@ namespace Box2D.NET
             b2FreeProxy(tree, proxyId);
         }
 
+        /// <summary>
         /// Get the number of proxies created
+        /// </summary>
         public static int b2DynamicTree_GetProxyCount(B2DynamicTree tree)
         {
             return tree.proxyCount;
@@ -769,7 +795,9 @@ namespace Box2D.NET
             b2InsertLeaf(tree, aabb, proxyId, markMoved, shouldRotate);
         }
 
+        /// <summary>
         /// Move a proxy to a new AABB by removing and reinserting into the tree.
+        /// </summary>
         public static void b2DynamicTree_MoveProxy(B2DynamicTree tree, int proxyId, in B2AABB aabb)
         {
             b2DynamicTree_MoveProxyInternal(tree, proxyId, aabb, false);
@@ -824,32 +852,40 @@ namespace Box2D.NET
             }
         }
 
+        /// <summary>
         /// Modify the category bits on a proxy.
+        /// </summary>
         public static void b2DynamicTree_SetCategoryBits(B2DynamicTree tree, int proxyId, ulong categoryBits)
         {
             B2_ASSERT(0 <= proxyId && proxyId < tree.proxyCapacity);
             tree.proxies[proxyId].categoryBits = categoryBits;
         }
 
+        /// <summary>
         /// Get the category bits on a proxy.
+        /// </summary>
         public static ulong b2DynamicTree_GetCategoryBits(B2DynamicTree tree, int proxyId)
         {
             B2_ASSERT(0 <= proxyId && proxyId < tree.proxyCapacity);
             return tree.proxies[proxyId].categoryBits;
         }
 
+        /// <summary>
         /// Get the height of the binary tree.
+        /// </summary>
         public static int b2DynamicTree_GetHeight(B2DynamicTree tree)
         {
             return b2GetNodeHeight(tree.nodes[B2_ROOT_NODE]);
         }
 
+        /// <summary>
         /// Get the ratio of the sum of the internal node areas to the root area.
-        // The area ratio is the thing that SAH seeks to minimize. SAH
-        // cannot do anything about leaf boxes or the root box. It seeks
-        // to minimize the area of all non-root internal nodes. Divide this
-        // by the root area to make the metric non-dimensional.
-        // So this becomes a meaningful measure of tree quality.
+        /// The area ratio is the thing that SAH seeks to minimize. SAH
+        /// cannot do anything about leaf boxes or the root box. It seeks
+        /// to minimize the area of all non-root internal nodes. Divide this
+        /// by the root area to make the metric non-dimensional.
+        /// So this becomes a meaningful measure of tree quality.
+        /// </summary>
         public static float b2DynamicTree_GetAreaRatio(B2DynamicTree tree)
         {
             if (tree.proxyCount == 0)
@@ -878,7 +914,9 @@ namespace Box2D.NET
             return internalArea / rootArea;
         }
 
+        /// <summary>
         /// Get the bounding box that contains the entire tree
+        /// </summary>
         public static B2AABB b2DynamicTree_GetRootBounds(B2DynamicTree tree)
         {
             if (tree.proxyCount == 0)
@@ -927,7 +965,9 @@ namespace Box2D.NET
         }
 #endif
 
+        /// <summary>
         /// Validate the tree.
+        /// </summary>
         public static void b2DynamicTree_Validate(B2DynamicTree tree)
         {
 #if DEBUG
@@ -991,7 +1031,9 @@ namespace Box2D.NET
 #endif
         }
 
+        /// <summary>
         /// Get the number of bytes used by this tree
+        /// </summary>
         public static int b2DynamicTree_GetByteCount(B2DynamicTree tree)
         {
             // Upstream-compatible logical payload size, not a CLR heap-size estimate.
@@ -1016,14 +1058,18 @@ namespace Box2D.NET
             return size;
         }
 
+        /// <summary>
         /// Get proxy user data
+        /// </summary>
         public static ulong b2DynamicTree_GetUserData(B2DynamicTree tree, int proxyId)
         {
             B2_ASSERT(0 <= proxyId && proxyId < tree.proxyCapacity);
             return tree.proxies[proxyId].userData;
         }
 
+        /// <summary>
         /// Get the AABB of a proxy
+        /// </summary>
         public static B2AABB b2DynamicTree_GetProxyBounds(B2DynamicTree tree, int proxyId)
         {
             B2_ASSERT(0 <= proxyId && proxyId < tree.proxyCapacity);
@@ -1032,8 +1078,10 @@ namespace Box2D.NET
             return tree.nodes[nodeIndex].aabb;
         }
 
+        /// <summary>
         /// Query an AABB for overlapping proxies. The callback class is called for each proxy that overlaps the supplied AABB.
-        ///	@return performance data
+        /// 	@return performance data
+        /// </summary>
         public static B2TreeStats b2DynamicTree_OverlapAABB<T>(B2DynamicTree tree, in B2AABB aabb, ulong maskBits, b2TreeQueryCallbackFcn<T> callback, ref T context)
         {
             B2TreeStats result = new B2TreeStats();
@@ -1095,10 +1143,12 @@ namespace Box2D.NET
             return result;
         }
 
+        /// <summary>
         /// Query an AABB for overlapping proxies. The callback class is called for each proxy that overlaps the supplied AABB.
         /// No filtering is performed.
-        ///	@return performance data
-        // This ignores the category bits. Useful for debug draw.
+        /// 	@return performance data
+        /// This ignores the category bits. Useful for debug draw.
+        /// </summary>
         public static B2TreeStats b2DynamicTree_OverlapAABBAll<T>(B2DynamicTree tree, in B2AABB aabb, b2TreeQueryCallbackFcn<T> callback, ref T context)
         {
             B2TreeStats result = new B2TreeStats();
@@ -1157,22 +1207,24 @@ namespace Box2D.NET
             return result;
         }
 
+        /// <summary>
         /// Ray cast against the proxies in the tree. This relies on the callback
         /// to perform a exact ray cast in the case were the proxy contains a shape.
         /// The callback also performs the any collision filtering. This has performance
         /// roughly equal to k * log(n), where k is the number of collisions and n is the
         /// number of proxies in the tree.
         /// Bit-wise filtering using mask bits can greatly improve performance in some scenarios.
-        ///	However, this filtering may be approximate, so the user should still apply filtering to results.
+        /// 	However, this filtering may be approximate, so the user should still apply filtering to results.
         /// @param tree the dynamic tree to ray cast
         /// @param input the ray cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1)
-        /// @param maskBits mask bit hint: `bool accept = (maskBits & node->categoryBits) != 0;`
+        /// @param maskBits mask bit hint: `bool accept = (maskBits &amp; node-&gt;categoryBits) != 0;`
         /// @param callback a callback class that is called for each proxy that is hit by the ray
         /// @param context user context that is passed to the callback
-        ///	@return performance data
-        // A lot of optimization work went into this. It beats the slab test by a significant margin.
-        // It is faster than having category bits in the nodes because of the cache line friendly node
-        // size (64 bytes).
+        /// 	@return performance data
+        /// A lot of optimization work went into this. It beats the slab test by a significant margin.
+        /// It is faster than having category bits in the nodes because of the cache line friendly node
+        /// size (64 bytes).
+        /// </summary>
         public static B2TreeStats b2DynamicTree_CastRay<T>(B2DynamicTree tree, in B2RayCastInput input, ulong maskBits, b2TreeRayCastCallbackFcn<T> callback, ref T context)
         {
             B2TreeStats result = new B2TreeStats();
@@ -1312,6 +1364,7 @@ namespace Box2D.NET
             return result;
         }
 
+        /// <summary>
         /// Cast a box through the tree. This relies on the callback
         /// to perform an exact cast in the case were the proxy contains a shape.
         /// The callback also performs the any collision filtering. This has performance
@@ -1319,11 +1372,12 @@ namespace Box2D.NET
         /// number of proxies in the tree.
         /// @param tree the dynamic tree to ray cast
         /// @param input the box cast input data
-        /// @param maskBits filter bits: `bool accept = (maskBits & node->categoryBits) != 0;`
+        /// @param maskBits filter bits: `bool accept = (maskBits &amp; node-&gt;categoryBits) != 0;`
         /// @param callback a callback that is called for each proxy the swept box may hit
         /// @param context user context that is passed to the callback
-        ///	@return performance data
-        // Follows structure of ray cast with small tweaks to handle a swept box.
+        /// 	@return performance data
+        /// Follows structure of ray cast with small tweaks to handle a swept box.
+        /// </summary>
         public static B2TreeStats b2DynamicTree_CastBox<T>(B2DynamicTree tree, in B2BoxCastInput input, ulong maskBits, b2TreeBoxCastCallbackFcn<T> callback, ref T context)
         {
             B2TreeStats result = new B2TreeStats();
@@ -1472,7 +1526,9 @@ namespace Box2D.NET
         //
         // #if B2_TREE_HEURISTIC == 0
 
-        // Median split heuristic
+        /// <summary>
+        /// Median split heuristic
+        /// </summary>
         internal static int b2PartitionMid(Span<int> indices, Span<Vector2> centers, int count)
         {
             // Handle trivial case
@@ -1590,12 +1646,16 @@ namespace Box2D.NET
             return count / 2;
         }
 
-        //#else
+        /// <summary>
+        /// #else
+        /// </summary>
         public const int B2_BIN_COUNT = 8;
 
 
-        // "On Fast Construction of SAH-based Bounding Volume Hierarchies" by Ingo Wald
-        // Returns the left child count
+        /// <summary>
+        /// "On Fast Construction of SAH-based Bounding Volume Hierarchies" by Ingo Wald
+        /// Returns the left child count
+        /// </summary>
         internal static int b2PartitionSAH(Span<int> indices, Span<int> binIndices, Span<B2AABB> boxes, int count)
         {
             B2_ASSERT(count > 0);
@@ -1940,10 +2000,12 @@ namespace Box2D.NET
             }
         }
 
+        /// <summary>
         /// Rebuild the tree while retaining subtrees that haven't changed. Returns the number of boxes sorted.
-        // Rebuild the stale parts of the tree. The entire tree is put into DFS order. This makes
-        // refitting much faster. This is done async with threading, so the cost is hidden.
-        // Not safe to access tree during this operation.
+        /// Rebuild the stale parts of the tree. The entire tree is put into DFS order. This makes
+        /// refitting much faster. This is done async with threading, so the cost is hidden.
+        /// Not safe to access tree during this operation.
+        /// </summary>
         public static int b2DynamicTree_Rebuild(B2DynamicTree tree, bool fullBuild)
         {
             int proxyCount = tree.proxyCount;
@@ -2055,7 +2117,9 @@ namespace Box2D.NET
             return leafCount;
         }
 
-        // Set the moved flag on the ancestors of the proxy. Serial use case.
+        /// <summary>
+        /// Set the moved flag on the ancestors of the proxy. Serial use case.
+        /// </summary>
         public static void b2DynamicTree_MarkProxyMovedSerial(B2DynamicTree tree, int proxyId)
         {
             B2_VALIDATE(0 <= proxyId && proxyId < tree.proxyCapacity);
@@ -2074,7 +2138,9 @@ namespace Box2D.NET
             }
         }
 
-        // Update a proxy AABB and flag the ancestors as moved. Thread-safe using atomics.
+        /// <summary>
+        /// Update a proxy AABB and flag the ancestors as moved. Thread-safe using atomics.
+        /// </summary>
         public static void b2DynamicTree_MarkProxyMoved(B2DynamicTree tree, int proxyId, in B2AABB aabb)
         {
             B2_VALIDATE(0 <= proxyId && proxyId < tree.proxyCapacity);
@@ -2115,7 +2181,9 @@ namespace Box2D.NET
             }
         }
 
-        // Clear the moved flags from the entire tree.
+        /// <summary>
+        /// Clear the moved flags from the entire tree.
+        /// </summary>
         public static void b2DynamicTree_ClearMoved(B2DynamicTree tree)
         {
             B2TreeNode[] nodes = tree.nodes;

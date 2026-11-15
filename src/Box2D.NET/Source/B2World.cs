@@ -8,66 +8,96 @@ using static Box2D.NET.B2Constants;
 
 namespace Box2D.NET
 {
-    // The world struct manages all physics entities, dynamic simulation,  and asynchronous queries.
-    // The world also contains efficient memory management facilities.
+    /// <summary>
+    /// The world struct manages all physics entities, dynamic simulation,  and asynchronous queries.
+    /// The world also contains efficient memory management facilities.
+    /// </summary>
     public class B2World
     {
         public B2StackAllocator stack;
         public B2BroadPhase broadPhase;
         public B2ConstraintGraph constraintGraph;
 
-        // The body id pool is used to allocate and recycle body ids. Body ids
-        // provide a stable identifier for users, but incur caches misses when used
-        // to access body data. Aligns with b2Body.
+        /// <summary>
+        /// The body id pool is used to allocate and recycle body ids. Body ids
+        /// provide a stable identifier for users, but incur caches misses when used
+        /// to access body data. Aligns with b2Body.
+        /// </summary>
         public B2IdPool bodyIdPool;
 
-        // This is a sparse array that maps body ids to the body data
-        // stored in solver sets. As sims move within a set or across set.
-        // Indices come from id pool.
+        /// <summary>
+        /// This is a sparse array that maps body ids to the body data
+        /// stored in solver sets. As sims move within a set or across set.
+        /// Indices come from id pool.
+        /// </summary>
         public B2Array<B2Body> bodies;
 
-        // Provides free list for solver sets.
+        /// <summary>
+        /// Provides free list for solver sets.
+        /// </summary>
         public B2IdPool solverSetIdPool;
 
-        // Solvers sets allow sims to be stored in contiguous arrays. The first
-        // set is all static sims. The second set is active sims. The third set is disabled
-        // sims. The remaining sets are sleeping islands.
+        /// <summary>
+        /// Solvers sets allow sims to be stored in contiguous arrays. The first
+        /// set is all static sims. The second set is active sims. The third set is disabled
+        /// sims. The remaining sets are sleeping islands.
+        /// </summary>
         public B2Array<B2SolverSet> solverSets;
 
-        // Used to create stable ids for joints
+        /// <summary>
+        /// Used to create stable ids for joints
+        /// </summary>
         public B2IdPool jointIdPool;
 
-        // This is a sparse array that maps joint ids to the joint data stored in the constraint graph
-        // or in the solver sets.
+        /// <summary>
+        /// This is a sparse array that maps joint ids to the joint data stored in the constraint graph
+        /// or in the solver sets.
+        /// </summary>
         public B2Array<B2Joint> joints;
 
-        // Used to create stable ids for contacts
+        /// <summary>
+        /// Used to create stable ids for contacts
+        /// </summary>
         public B2IdPool contactIdPool;
 
-        // This is a sparse array that maps contact ids to the contact data stored in the constraint graph
-        // or in the solver sets.
+        /// <summary>
+        /// This is a sparse array that maps contact ids to the contact data stored in the constraint graph
+        /// or in the solver sets.
+        /// </summary>
         public B2Array<B2Contact> contacts;
 
-        // Used to create stable ids for islands
+        /// <summary>
+        /// Used to create stable ids for islands
+        /// </summary>
         public B2IdPool islandIdPool;
 
-        // Persistent islands
+        /// <summary>
+        /// Persistent islands
+        /// </summary>
         public B2Array<B2Island> islands;
 
         public B2IdPool shapeIdPool;
         public B2IdPool chainIdPool;
 
-        // These are sparse arrays that point into the pools above
+        /// <summary>
+        /// These are sparse arrays that point into the pools above
+        /// </summary>
         public B2Array<B2Shape> shapes;
         public B2Array<B2ChainShape> chainShapes;
 
-        // Shape enlarged bounds (hot data split).
+        /// <summary>
+        /// Shape enlarged bounds (hot data split).
+        /// </summary>
         public B2Array<B2AABB> fatAABBs;
 
-        // This is a dense array of sensor data.
+        /// <summary>
+        /// This is a dense array of sensor data.
+        /// </summary>
         public B2Array<B2Sensor> sensors;
 
-        // Per thread storage
+        /// <summary>
+        /// Per thread storage
+        /// </summary>
         public B2Array<B2TaskContext> taskContexts;
         public B2Array<B2SensorTaskContext> sensorTaskContexts;
 
@@ -75,7 +105,9 @@ namespace Box2D.NET
         public B2Array<B2SensorBeginTouchEvent> sensorBeginEvents;
         public B2Array<B2ContactBeginTouchEvent> contactBeginEvents;
 
-        // End events are double buffered so that the user doesn't need to flush events
+        /// <summary>
+        /// End events are double buffered so that the user doesn't need to flush events
+        /// </summary>
         public B2Array<B2SensorEndTouchEvent>[] sensorEndEvents = new B2Array<B2SensorEndTouchEvent>[2];
         public B2Array<B2ContactEndTouchEvent>[] contactEndEvents = new B2Array<B2ContactEndTouchEvent>[2];
         public int endEventArrayIndex;
@@ -92,22 +124,28 @@ namespace Box2D.NET
         //b2BitSet bodyWakeSet;
         //b2ImpulseArray deferredImpulses;
 
-        // Used to track debug draw
+        /// <summary>
+        /// Used to track debug draw
+        /// </summary>
         public B2BitSet debugBodySet;
         public B2BitSet debugJointSet;
         public B2BitSet debugContactSet;
         public B2BitSet debugIslandSet;
 
-        // Id that is incremented every time step
+        /// <summary>
+        /// Id that is incremented every time step
+        /// </summary>
         public ulong stepIndex;
 
-        // Identify islands for splitting as follows:
-        // - I want to split islands so smaller islands can sleep
-        // - when a body comes to rest and its sleep timer trips, I can look at the island and flag it for splitting
-        //   if it has removed constraints
-        // - islands that have removed constraints must be put split first because I don't want to wake bodies incorrectly
-        // - otherwise I can use the awake islands that have bodies wanting to sleep as the splitting candidates
-        // - if no bodies want to sleep then there is no reason to perform island splitting
+        /// <summary>
+        /// Identify islands for splitting as follows:
+        /// - I want to split islands so smaller islands can sleep
+        /// - when a body comes to rest and its sleep timer trips, I can look at the island and flag it for splitting
+        ///   if it has removed constraints
+        /// - islands that have removed constraints must be put split first because I don't want to wake bodies incorrectly
+        /// - otherwise I can use the awake islands that have bodies wanting to sleep as the splitting candidates
+        /// - if no bodies want to sleep then there is no reason to perform island splitting
+        /// </summary>
         public int splitIslandId;
 
         public Vector2 gravity;
@@ -147,11 +185,15 @@ namespace Box2D.NET
 
         public B2UserData userData;
 
-        // Remember type step used for reporting forces and torques
-        // inverse sub-step
+        /// <summary>
+        /// Remember type step used for reporting forces and torques
+        /// inverse sub-step
+        /// </summary>
         public float inv_h;
 
-        // inverse full-step
+        /// <summary>
+        /// inverse full-step
+        /// </summary>
         public float inv_dt;
 
         public int activeTaskCount;
@@ -165,7 +207,9 @@ namespace Box2D.NET
         public bool enableContinuous;
         public bool inUse;
 
-        // TODO: @ikpil for b2Solve 
+        /// <summary>
+        /// TODO: @ikpil for b2Solve
+        /// </summary>
         public readonly B2WorkerContext[] tempWorkerContext = b2Alloc<B2WorkerContext>(B2_MAX_WORKERS);
 
         public void Clear()

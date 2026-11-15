@@ -8,17 +8,21 @@ namespace Box2D.NET
 {
     public struct B2GraphColor
     {
-        // This bitset is indexed by bodyId so this is over-sized to encompass static bodies
-        // however I never traverse these bits or use the bit count for anything
-        // This bitset is unused on the overflow color.
-        //
-        // Dirk suggested having a uint64_t per body that tracks the graph color membership
-        // but I think this would make debugging harder and be less flexible. With the bitset
-        // I can trivially increase the number of graph colors beyond 64. See usage of b2CountSetBits
-        // for validation.
+        /// <summary>
+        /// This bitset is indexed by bodyId so this is over-sized to encompass static bodies
+        /// however I never traverse these bits or use the bit count for anything
+        /// This bitset is unused on the overflow color.
+        ///
+        /// Dirk suggested having a uint64_t per body that tracks the graph color membership
+        /// but I think this would make debugging harder and be less flexible. With the bitset
+        /// I can trivially increase the number of graph colors beyond 64. See usage of b2CountSetBits
+        /// for validation.
+        /// </summary>
         public B2BitSet bodySet;
 
-        // cache friendly arrays
+        /// <summary>
+        /// cache friendly arrays
+        /// </summary>
         public B2Array<B2ContactSim> contactSims;
         public B2Array<B2JointSim> jointSims;
 

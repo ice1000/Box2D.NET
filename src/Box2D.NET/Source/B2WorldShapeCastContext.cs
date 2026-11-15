@@ -12,7 +12,9 @@ namespace Box2D.NET
         public float fraction;
         public B2Pos origin;
 
-        // origin relative input
+        /// <summary>
+        /// origin relative input
+        /// </summary>
         public B2ShapeCastInput input;
         public T userContext;
     }

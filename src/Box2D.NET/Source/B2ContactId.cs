@@ -4,7 +4,9 @@
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// Contact id references a contact instance. This should be treated as an opaque handled.
+    /// </summary>
     public readonly struct B2ContactId(int index1, ushort world0, short padding, uint generation)
     {
         public readonly int index1 = index1;

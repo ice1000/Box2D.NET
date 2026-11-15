@@ -6,10 +6,14 @@ using System.Numerics;
 
 namespace Box2D.NET
 {
-    // The pogo joint is a hybrid between a contact and a joint
+    /// <summary>
+    /// The pogo joint is a hybrid between a contact and a joint
+    /// </summary>
     public struct B2PogoJoint
     {
-        // Settings
+        /// <summary>
+        /// Settings
+        /// </summary>
         public Vector2 normal;
         public float restLength;
         public float hertz;
@@ -17,7 +21,9 @@ namespace Box2D.NET
         public float maxTensionForce;
         public float maxCompressionForce;
 
-        // Runtime
+        /// <summary>
+        /// Runtime
+        /// </summary>
         public float impulse;
         public int indexA;
         public int indexB;

@@ -13,7 +13,9 @@ namespace Box2D.NET
     {
         public const int B2_SIMD_WIDTH = 4;
 
+        /// <summary>
         /// Get the current version of Box2D
+        /// </summary>
         public const int B2_VERSION_MAJOR = 3;
         public const int B2_VERSION_MINOR = 2;
         public const int B2_VERSION_REVISION = 0;
@@ -27,23 +29,30 @@ namespace Box2D.NET
             );
         }
 
+        /// <summary>
         /// @return true if the library was built with BOX2D_DOUBLE_PRECISION (large world mode).
         /// Box2D.NET is always single precision.
+        /// </summary>
         public static bool b2IsDoublePrecision()
         {
             return false;
         }
 
+        /// <summary>
         /// @return true if the current CPU has the AVX2 instruction set.
         /// Box2D.NET always solves contacts 4 wide, so the 8 wide AVX2 path is never available.
+        /// </summary>
         public static bool b2IsAVX2Available()
         {
             return false;
         }
 
-        // This allows the user to change the length units at runtime
+        /// <summary>
+        /// This allows the user to change the length units at runtime
+        /// </summary>
         internal static float b2_lengthUnitsPerMeter = 1.0f;
 
+        /// <summary>
         /// Box2D bases all length units on meters, but you may need different units for your game.
         /// You can set this value to use different units. This should be done at application startup
         /// and only modified once. Default value is 1.
@@ -58,6 +67,7 @@ namespace Box2D.NET
         /// However, you are now on the hook for coming up with good values for gravity, density, and
         /// forces.
         /// @warning This must be modified before any calls to Box2D
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void b2SetLengthUnitsPerMeter(float lengthUnits)
         {
@@ -65,7 +75,9 @@ namespace Box2D.NET
             b2_lengthUnitsPerMeter = lengthUnits;
         }
 
+        /// <summary>
         /// Get the current length units per meter.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float b2GetLengthUnitsPerMeter()
         {

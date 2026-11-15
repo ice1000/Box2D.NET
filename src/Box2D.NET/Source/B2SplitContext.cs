@@ -15,7 +15,9 @@ namespace Box2D.NET
         public int vertex2;
         public float toleranceSquared;
 
-        // T-junction splits.
+        /// <summary>
+        /// T-junction splits.
+        /// </summary>
         public B2Array<B2EdgeSplit> splits;
     }
 }

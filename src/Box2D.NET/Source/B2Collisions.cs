@@ -6,7 +6,9 @@ namespace Box2D.NET
 {
     public static class B2Collisions
     {
-        // TODO: @ikpil, check empty or class
+        /// <summary>
+        /// TODO: @ikpil, check empty or class
+        /// </summary>
         public static readonly B2SimplexCache b2_emptySimplexCache = new B2SimplexCache();
     }
 }

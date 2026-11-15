@@ -10,7 +10,9 @@ namespace Box2D.NET
 {
     public static class B2Diagnostics
     {
-        // Used to prevent the compiler from warning about unused variables
+        /// <summary>
+        /// Used to prevent the compiler from warning about unused variables
+        /// </summary>
         [Conditional("DEBUG")]
         public static void B2_UNUSED<T1>(in T1 a)
         {
@@ -69,7 +71,9 @@ namespace Box2D.NET
             }
         }
 
-        // Used to validate API inputs. Returns false if the input is rejected, so the caller can return.
+        /// <summary>
+        /// Used to validate API inputs. Returns false if the input is rejected, so the caller can return.
+        /// </summary>
         public static bool B2_CHECK_INPUT(bool condition, [CallerArgumentExpression("condition")] string message = "", [CallerFilePath] string fileName = "", [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string memberName = "")
         {
             if (condition)
@@ -102,8 +106,10 @@ namespace Box2D.NET
 
         private static b2AssertCallbackFcn _b2AssertCallbackHandler = b2DefaultAssertFcn;
 
+        /// <summary>
         /// Override the default assert function
         /// @param assertFcn a non-null assert callback
+        /// </summary>
         public static void b2SetAssertCallback(b2AssertCallbackFcn assertCallbackFcn)
         {
             B2_ASSERT(assertCallbackFcn != null);
@@ -122,8 +128,10 @@ namespace Box2D.NET
 
         private static b2LogCallbackFcn _b2LogCallbackHandler = b2DefaultLogFcn;
 
+        /// <summary>
         /// Override the default log function
         /// @param logFcn a non-null log callback
+        /// </summary>
         public static void b2SetLogCallback(b2LogCallbackFcn logCallbackFcn)
         {
             B2_ASSERT(logCallbackFcn != null);

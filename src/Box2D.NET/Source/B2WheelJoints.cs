@@ -16,7 +16,9 @@ namespace Box2D.NET
 {
     public static class B2WheelJoints
     {
+        /// <summary>
         /// Enable/disable the wheel joint spring
+        /// </summary>
         public static void b2WheelJoint_EnableSpring(B2JointId jointId, bool enableSpring)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_wheelJoint);
@@ -27,13 +29,17 @@ namespace Box2D.NET
                 joint.uj.wheelJoint.springImpulse = 0.0f;
             }
         }
+        /// <summary>
         /// Is the wheel joint spring enabled?
+        /// </summary>
         public static bool b2WheelJoint_IsSpringEnabled(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_wheelJoint);
             return joint.uj.wheelJoint.enableSpring;
         }
+        /// <summary>
         /// Set the wheel joint stiffness in Hertz
+        /// </summary>
         public static void b2WheelJoint_SetSpringHertz(B2JointId jointId, float hertz)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(hertz)) == false) return;
@@ -41,13 +47,17 @@ namespace Box2D.NET
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_wheelJoint);
             joint.uj.wheelJoint.hertz = hertz;
         }
+        /// <summary>
         /// Get the wheel joint stiffness in Hertz
+        /// </summary>
         public static float b2WheelJoint_GetSpringHertz(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_wheelJoint);
             return joint.uj.wheelJoint.hertz;
         }
+        /// <summary>
         /// Set the wheel joint damping ratio, non-dimensional
+        /// </summary>
         public static void b2WheelJoint_SetSpringDampingRatio(B2JointId jointId, float dampingRatio)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(dampingRatio)) == false) return;
@@ -55,13 +65,17 @@ namespace Box2D.NET
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_wheelJoint);
             joint.uj.wheelJoint.dampingRatio = dampingRatio;
         }
+        /// <summary>
         /// Get the wheel joint damping ratio, non-dimensional
+        /// </summary>
         public static float b2WheelJoint_GetSpringDampingRatio(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_wheelJoint);
             return joint.uj.wheelJoint.dampingRatio;
         }
+        /// <summary>
         /// Enable/disable the wheel joint limit
+        /// </summary>
         public static void b2WheelJoint_EnableLimit(B2JointId jointId, bool enableLimit)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_wheelJoint);
@@ -72,25 +86,33 @@ namespace Box2D.NET
                 joint.uj.wheelJoint.enableLimit = enableLimit;
             }
         }
+        /// <summary>
         /// Is the wheel joint limit enabled?
+        /// </summary>
         public static bool b2WheelJoint_IsLimitEnabled(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_wheelJoint);
             return joint.uj.wheelJoint.enableLimit;
         }
+        /// <summary>
         /// Get the wheel joint lower limit
+        /// </summary>
         public static float b2WheelJoint_GetLowerLimit(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_wheelJoint);
             return joint.uj.wheelJoint.lowerTranslation;
         }
+        /// <summary>
         /// Get the wheel joint upper limit
+        /// </summary>
         public static float b2WheelJoint_GetUpperLimit(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_wheelJoint);
             return joint.uj.wheelJoint.upperTranslation;
         }
+        /// <summary>
         /// Set the wheel joint limits
+        /// </summary>
         public static void b2WheelJoint_SetLimits(B2JointId jointId, float lower, float upper)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(lower)) == false) return;
@@ -102,7 +124,9 @@ namespace Box2D.NET
             joint.uj.wheelJoint.lowerTranslation = b2MinFloat(lower, upper);
             joint.uj.wheelJoint.upperTranslation = b2MaxFloat(lower, upper);
         }
+        /// <summary>
         /// Enable/disable the wheel joint motor
+        /// </summary>
         public static void b2WheelJoint_EnableMotor(B2JointId jointId, bool enableMotor)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_wheelJoint);
@@ -112,13 +136,17 @@ namespace Box2D.NET
                 joint.uj.wheelJoint.enableMotor = enableMotor;
             }
         }
+        /// <summary>
         /// Is the wheel joint motor enabled?
+        /// </summary>
         public static bool b2WheelJoint_IsMotorEnabled(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_wheelJoint);
             return joint.uj.wheelJoint.enableMotor;
         }
+        /// <summary>
         /// Set the wheel joint motor speed in radians per second
+        /// </summary>
         public static void b2WheelJoint_SetTargetMotorSpeed(B2JointId jointId, float motorSpeed)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(motorSpeed)) == false) return;
@@ -126,20 +154,26 @@ namespace Box2D.NET
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_wheelJoint);
             joint.uj.wheelJoint.motorSpeed = motorSpeed;
         }
+        /// <summary>
         /// Get the wheel joint motor speed in radians per second
+        /// </summary>
         public static float b2WheelJoint_GetTargetMotorSpeed(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_wheelJoint);
             return joint.uj.wheelJoint.motorSpeed;
         }
+        /// <summary>
         /// Get the wheel joint current motor torque, usually in newton-meters
+        /// </summary>
         public static float b2WheelJoint_GetCurrentMotorTorque(B2JointId jointId)
         {
             B2World world = b2GetWorld(jointId.world0);
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_wheelJoint);
             return world.inv_h * joint.uj.wheelJoint.motorImpulse;
         }
+        /// <summary>
         /// Set the wheel joint maximum motor torque, usually in newton-meters
+        /// </summary>
         public static void b2WheelJoint_SetMaxMotorTorque(B2JointId jointId, float torque)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(torque)) == false) return;
@@ -147,7 +181,9 @@ namespace Box2D.NET
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_wheelJoint);
             joint.uj.wheelJoint.maxMotorTorque = torque;
         }
+        /// <summary>
         /// Get the wheel joint maximum motor torque, usually in newton-meters
+        /// </summary>
         public static float b2WheelJoint_GetMaxMotorTorque(B2JointId jointId)
         {
             B2JointSim joint = b2GetJointSimCheckType(jointId, B2JointType.b2_wheelJoint);
@@ -188,9 +224,11 @@ namespace Box2D.NET
         // Cdot = = -dot(ax, vA) - dot(cross(d + rA, ax), wA) + dot(ax, vB) + dot(cross(rB, ax), vB)
         // J = [-ax -cross(d+rA, ax) ax cross(rB, ax)]
 
-        // Motor rotational constraint
-        // Cdot = wB - wA
-        // J = [0 0 -1 0 0 1]
+        /// <summary>
+        /// Motor rotational constraint
+        /// Cdot = wB - wA
+        /// J = [0 0 -1 0 0 1]
+        /// </summary>
         internal static void b2PrepareWheelJoint(B2JointSim @base, B2StepContext context)
         {
             B2_ASSERT(@base.type == B2JointType.b2_wheelJoint);

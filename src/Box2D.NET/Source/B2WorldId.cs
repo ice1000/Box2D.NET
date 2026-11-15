@@ -4,7 +4,9 @@
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// World id references a world instance. This should be treated as an opaque handle.
+    /// </summary>
     public readonly struct B2WorldId(ushort index1, ushort generation)
     {
         public readonly ushort index1 = index1;

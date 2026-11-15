@@ -74,8 +74,10 @@ namespace Box2D.NET
             deltaRotation = new B2Rot(1.0f, 0.0f),
         };
 
-        // Build a sweep relative to a base position so continuous collision keeps float precision far
-        // from the origin. The base cancels out of the relative motion the TOI actually solves.
+        /// <summary>
+        /// Build a sweep relative to a base position so continuous collision keeps float precision far
+        /// from the origin. The base cancels out of the relative motion the TOI actually solves.
+        /// </summary>
         public static B2Sweep b2MakeRelativeSweep(B2BodySim bodySim, in B2Pos @base)
         {
             B2Sweep s = new B2Sweep();
@@ -96,7 +98,9 @@ namespace Box2D.NET
             }
         }
 
-        // Refresh the body sim index on associated contact sims.
+        /// <summary>
+        /// Refresh the body sim index on associated contact sims.
+        /// </summary>
         public static void b2RefreshBodyContactIndices(B2World world, B2Body body)
         {
             int encodedIndex = b2EncodeBodySimIndex(body);
@@ -123,7 +127,9 @@ namespace Box2D.NET
             }
         }
 
-        // Get a validated body from a world using an id.
+        /// <summary>
+        /// Get a validated body from a world using an id.
+        /// </summary>
         public static B2Body b2GetBodyFullId(B2World world, B2BodyId bodyId)
         {
             B2_ASSERT(b2Body_IsValid(bodyId));
@@ -145,7 +151,9 @@ namespace Box2D.NET
             return b2GetBodyTransformQuick(world, body);
         }
 
-        // Create a b2BodyId from a raw id.
+        /// <summary>
+        /// Create a b2BodyId from a raw id.
+        /// </summary>
         public static B2BodyId b2MakeBodyId(B2World world, int bodyId)
         {
             B2Body body = b2Array_Get(ref world.bodies, bodyId);
@@ -159,6 +167,7 @@ namespace Box2D.NET
             return bodySim;
         }
 
+        /// <summary>
         /// Get the solver state of a body, for reading or writing its velocity and flags in place.
         /// Only bodies in the awake set have a body state. Sleeping, disabled and static bodies keep
         /// their velocity in the body sim instead.
@@ -167,6 +176,7 @@ namespace Box2D.NET
         /// false it is a null reference: do not read or write through it (that throws NullReferenceException).
         /// The reference is invalidated by anything that adds or removes awake bodies (creating, destroying,
         /// waking or sleeping bodies), because the array may grow or be compacted. Do not keep it across such calls.
+        /// </summary>
         public static ref B2BodyState b2GetBodyState(B2World world, B2Body body, out bool awake)
         {
             if (body.setIndex == (int)B2SolverSetType.b2_awakeSet)
@@ -180,8 +190,10 @@ namespace Box2D.NET
             return ref Unsafe.NullRef<B2BodyState>();
         }
 
-        // Sync the body flags when something external changes them,
-        // such as the user changing the motion locks.
+        /// <summary>
+        /// Sync the body flags when something external changes them,
+        /// such as the user changing the motion locks.
+        /// </summary>
         public static void b2SyncBodyFlags(B2World world, B2Body body)
         {
             B2BodySim bodySim = b2GetBodySim(world, body);
@@ -196,8 +208,10 @@ namespace Box2D.NET
             }
         }
 
-        // This encodes the body sim index for storage in the contact sim. This helps
-        // avoid a lookup and cache miss in the narrow phase.
+        /// <summary>
+        /// This encodes the body sim index for storage in the contact sim. This helps
+        /// avoid a lookup and cache miss in the narrow phase.
+        /// </summary>
         public static int b2EncodeBodySimIndex(B2Body body)
         {
             if (body.setIndex == (int)B2SolverSetType.b2_awakeSet)
@@ -218,15 +232,19 @@ namespace Box2D.NET
             return encodedBodySimIndex < B2_NULL_INDEX;
         }
 
-        // In the contact solver a static body sim is expected to have null index.
+        /// <summary>
+        /// In the contact solver a static body sim is expected to have null index.
+        /// </summary>
         public static int b2DecodeAwakeIndex(int encodedBodySimIndex)
         {
             return encodedBodySimIndex >= 0 ? encodedBodySimIndex : B2_NULL_INDEX;
         }
 
-        // When a body goes to sleep the contact sim has a null index for it. This
-        // also handles the case where the body is static and has an encoded
-        // sim index of -2 or less.
+        /// <summary>
+        /// When a body goes to sleep the contact sim has a null index for it. This
+        /// also handles the case where the body is static and has an encoded
+        /// sim index of -2 or less.
+        /// </summary>
         public static int b2SleepBodySimIndex(int encodedIndex)
         {
             return encodedIndex >= 0 ? B2_NULL_INDEX : encodedIndex;
@@ -298,13 +316,15 @@ namespace Box2D.NET
 
             b2ValidateSolverSets(world);
         }
+        /// <summary>
         /// Create a rigid body given a definition. No reference to the definition is retained. So you can create the definition
         /// on the stack and pass it as a pointer.
         /// @code{.c}
         /// b2BodyDef bodyDef = b2DefaultBodyDef();
-        /// b2BodyId myBodyId = b2CreateBody(myWorldId, &bodyDef);
+        /// b2BodyId myBodyId = b2CreateBody(myWorldId, &amp;bodyDef);
         /// @endcode
         /// @warning This function is locked during callbacks.
+        /// </summary>
         public static B2BodyId b2CreateBody(B2WorldId worldId, in B2BodyDef def)
         {
             B2_CHECK_DEF(def);
@@ -453,7 +473,9 @@ namespace Box2D.NET
             return id;
         }
 
-        // careful calling this because it can invalidate body, state, joint, and contact pointers
+        /// <summary>
+        /// careful calling this because it can invalidate body, state, joint, and contact pointers
+        /// </summary>
         internal static bool b2WakeBody(B2World world, B2Body body)
         {
             if (body.setIndex >= (int)B2SolverSetType.b2_firstSleepingSet)
@@ -465,8 +487,10 @@ namespace Box2D.NET
 
             return false;
         }
+        /// <summary>
         /// Destroy a rigid body given an id. This destroys all shapes and joints attached to the body.
         /// Do not keep references to the associated shapes and joints.
+        /// </summary>
         public static void b2DestroyBody(B2BodyId bodyId)
         {
             B2World world = b2GetWorldLocked(bodyId.world0);
@@ -560,7 +584,9 @@ namespace Box2D.NET
 
             b2ValidateSolverSets(world);
         }
+        /// <summary>
         /// Get the maximum capacity required for retrieving all the touching contacts on a body
+        /// </summary>
         public static int b2Body_GetContactCapacity(B2BodyId bodyId)
         {
             B2World world = b2GetWorldLocked(bodyId.world0);
@@ -574,10 +600,12 @@ namespace Box2D.NET
             // Conservative and fast
             return body.contactCount;
         }
+        /// <summary>
         /// Get the touching contact data for a body.
         /// @note Box2D uses speculative collision so some contact points may be separated.
         /// @returns the number of elements filled in the provided array
         /// @warning do not ignore the return value, it specifies the valid number of elements
+        /// </summary>
         public static int b2Body_GetContactData(B2BodyId bodyId, Span<B2ContactData> contactData, int capacity)
         {
             B2World world = b2GetWorldLocked(bodyId.world0);
@@ -620,8 +648,10 @@ namespace Box2D.NET
 
             return index;
         }
+        /// <summary>
         /// Get the current world AABB that contains all the attached shapes. Note that this may not encompass the body origin.
         /// If there are no shapes attached then the returned AABB is empty and centered on the body origin.
+        /// </summary>
         public static B2AABB b2Body_ComputeBounds(B2BodyId bodyId)
         {
             B2World world = b2GetWorldLocked(bodyId.world0);
@@ -800,7 +830,9 @@ namespace Box2D.NET
                 }
             }
         }
+        /// <summary>
         /// Get the world position of a body. This is the location of the body origin.
+        /// </summary>
         public static B2Pos b2Body_GetPosition(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -808,7 +840,9 @@ namespace Box2D.NET
             B2WorldTransform transform = b2GetBodyTransformQuick(world, body);
             return transform.p;
         }
+        /// <summary>
         /// Get the world rotation of a body as a cosine/sine pair (complex number)
+        /// </summary>
         public static B2Rot b2Body_GetRotation(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -816,14 +850,18 @@ namespace Box2D.NET
             B2WorldTransform transform = b2GetBodyTransformQuick(world, body);
             return transform.q;
         }
+        /// <summary>
         /// Get the world transform of a body.
+        /// </summary>
         public static B2WorldTransform b2Body_GetTransform(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
             return b2GetBodyTransformQuick(world, body);
         }
+        /// <summary>
         /// Get a local point on a body given a world point
+        /// </summary>
         public static Vector2 b2Body_GetLocalPoint(B2BodyId bodyId, B2Pos worldPoint)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -831,7 +869,9 @@ namespace Box2D.NET
             B2WorldTransform transform = b2GetBodyTransformQuick(world, body);
             return b2InvTransformWorldPoint(transform, worldPoint);
         }
+        /// <summary>
         /// Get a world point on a body given a local point
+        /// </summary>
         public static B2Pos b2Body_GetWorldPoint(B2BodyId bodyId, Vector2 localPoint)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -840,7 +880,9 @@ namespace Box2D.NET
             return b2TransformWorldPoint(transform, localPoint);
         }
 
+        /// <summary>
         /// Get a local vector on a body given a world vector
+        /// </summary>
         public static Vector2 b2Body_GetLocalVector(B2BodyId bodyId, Vector2 worldVector)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -849,7 +891,9 @@ namespace Box2D.NET
             return b2InvRotateVector(transform.q, worldVector);
         }
 
+        /// <summary>
         /// Get a world vector on a body given a local vector
+        /// </summary>
         public static Vector2 b2Body_GetWorldVector(B2BodyId bodyId, Vector2 localVector)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -858,9 +902,11 @@ namespace Box2D.NET
             return b2RotateVector(transform.q, localVector);
         }
 
+        /// <summary>
         /// Set the world transform of a body. This acts as a teleport and is fairly expensive.
         /// @note Generally you should create a body with then intended transform.
         /// @see b2BodyDef::position and b2BodyDef::rotation
+        /// </summary>
         public static void b2Body_SetTransform(B2BodyId bodyId, B2Pos position, B2Rot rotation)
         {
             if (B2_CHECK_INPUT(b2IsValidPos(position)) == false) return;
@@ -912,7 +958,9 @@ namespace Box2D.NET
                 shapeId = shape.nextShapeId;
             }
         }
+        /// <summary>
         /// Get the linear velocity of a body's center of mass. Usually in meters per second.
+        /// </summary>
         public static Vector2 b2Body_GetLinearVelocity(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -925,7 +973,9 @@ namespace Box2D.NET
 
             return Vector2Zero;
         }
+        /// <summary>
         /// Get the angular velocity of a body in radians per second
+        /// </summary>
         public static float b2Body_GetAngularVelocity(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -938,7 +988,9 @@ namespace Box2D.NET
 
             return 0.0f;
         }
+        /// <summary>
         /// Set the linear velocity of a body. Usually in meters per second.
+        /// </summary>
         public static void b2Body_SetLinearVelocity(B2BodyId bodyId, Vector2 linearVelocity)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(linearVelocity)) == false) return;
@@ -965,7 +1017,9 @@ namespace Box2D.NET
             state.linearVelocity = linearVelocity;
         }
 
+        /// <summary>
         /// Set the angular velocity of a body in radians per second
+        /// </summary>
         public static void b2Body_SetAngularVelocity(B2BodyId bodyId, float angularVelocity)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(angularVelocity)) == false) return;
@@ -992,6 +1046,7 @@ namespace Box2D.NET
             state.angularVelocity = angularVelocity;
         }
 
+        /// <summary>
         /// Set the velocity to reach the given transform after a given time step.
         /// The result will be close but maybe not exact. This is meant for kinematic bodies.
         /// The target is not applied if the velocity would be below the sleep threshold and
@@ -1000,6 +1055,7 @@ namespace Box2D.NET
         /// @param target The target transform for the body
         /// @param timeStep The time step of the next call to b2World_Step
         /// @param wake Option to wake the body or not
+        /// </summary>
         public static void b2Body_SetTargetTransform(B2BodyId bodyId, in B2WorldTransform target, float timeStep, bool wake)
         {
             if (B2_CHECK_INPUT(b2IsValidWorldTransform(target)) == false) return;
@@ -1058,7 +1114,9 @@ namespace Box2D.NET
             state.angularVelocity = angularVelocity;
         }
 
+        /// <summary>
         /// Get the linear velocity of a local point attached to a body. Usually in meters per second.
+        /// </summary>
         public static Vector2 b2Body_GetLocalPointVelocity(B2BodyId bodyId, Vector2 localPoint)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -1077,7 +1135,9 @@ namespace Box2D.NET
             return v;
         }
 
+        /// <summary>
         /// Get the linear velocity of a world point attached to a body. Usually in meters per second.
+        /// </summary>
         public static Vector2 b2Body_GetWorldPointVelocity(B2BodyId bodyId, B2Pos worldPoint)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -1096,6 +1156,7 @@ namespace Box2D.NET
             return v;
         }
 
+        /// <summary>
         /// Apply a force at a world point. If the force is not applied at the center of mass,
         /// it will generate a torque and affect the angular velocity. This optionally wakes up the body.
         /// The force is ignored if the body is not awake.
@@ -1103,6 +1164,7 @@ namespace Box2D.NET
         /// @param force The world force vector, usually in newtons (N)
         /// @param point The world position of the point of application
         /// @param wake Option to wake up the body
+        /// </summary>
         public static void b2Body_ApplyForce(B2BodyId bodyId, Vector2 force, B2Pos point, bool wake)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(force)) == false) return;
@@ -1129,11 +1191,13 @@ namespace Box2D.NET
             }
         }
 
+        /// <summary>
         /// Apply a force to the center of mass. This optionally wakes up the body.
         /// The force is ignored if the body is not awake.
         /// @param bodyId The body id
         /// @param force the world force vector, usually in newtons (N).
         /// @param wake also wake up the body
+        /// </summary>
         public static void b2Body_ApplyForceToCenter(B2BodyId bodyId, Vector2 force, bool wake)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(force)) == false) return;
@@ -1158,11 +1222,13 @@ namespace Box2D.NET
             }
         }
 
+        /// <summary>
         /// Apply a torque. This affects the angular velocity without affecting the linear velocity.
         /// This optionally wakes the body. The torque is ignored if the body is not awake.
         /// @param bodyId The body id
         /// @param torque about the z-axis (out of the screen), usually in N*m.
         /// @param wake also wake up the body
+        /// </summary>
         public static void b2Body_ApplyTorque(B2BodyId bodyId, float torque, bool wake)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(torque)) == false) return;
@@ -1187,10 +1253,12 @@ namespace Box2D.NET
             }
         }
 
+        /// <summary>
         /// Clear the force and torque on this body. Forces and torques are automatically cleared after each world
         /// step. So this only needs to be called if the application wants to remove the effect of previous
         /// calls to apply forces and torques before the world step is called.
         /// @param bodyId The body id
+        /// </summary>
         public static void b2Body_ClearForces(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -1201,6 +1269,7 @@ namespace Box2D.NET
         }
 
 
+        /// <summary>
         /// Apply an impulse at a point. This immediately modifies the velocity.
         /// It also modifies the angular velocity if the point of application
         /// is not at the center of mass. This optionally wakes the body.
@@ -1211,6 +1280,7 @@ namespace Box2D.NET
         /// @param wake also wake up the body
         /// @warning This should be used for one-shot impulses. If you need a steady force,
         /// use a force instead, which will work better with the sub-stepping solver.
+        /// </summary>
         public static void b2Body_ApplyLinearImpulse(B2BodyId bodyId, Vector2 impulse, B2Pos point, bool wake)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(impulse)) == false) return;
@@ -1242,6 +1312,7 @@ namespace Box2D.NET
             }
         }
 
+        /// <summary>
         /// Apply an impulse to the center of mass. This immediately modifies the velocity.
         /// The impulse is ignored if the body is not awake. This optionally wakes the body.
         /// @param bodyId The body id
@@ -1249,6 +1320,7 @@ namespace Box2D.NET
         /// @param wake also wake up the body
         /// @warning This should be used for one-shot impulses. If you need a steady force,
         /// use a force instead, which will work better with the sub-stepping solver.
+        /// </summary>
         public static void b2Body_ApplyLinearImpulseToCenter(B2BodyId bodyId, Vector2 impulse, bool wake)
         {
             if (B2_CHECK_INPUT(b2IsValidVec2(impulse)) == false) return;
@@ -1278,6 +1350,7 @@ namespace Box2D.NET
             }
         }
 
+        /// <summary>
         /// Apply an angular impulse. The impulse is ignored if the body is not awake.
         /// This optionally wakes the body.
         /// @param bodyId The body id
@@ -1285,6 +1358,7 @@ namespace Box2D.NET
         /// @param wake also wake up the body
         /// @warning This should be used for one-shot impulses. If you need a steady torque,
         /// use a torque instead, which will work better with the sub-stepping solver.
+        /// </summary>
         public static void b2Body_ApplyAngularImpulse(B2BodyId bodyId, float impulse, bool wake)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(impulse)) == false) return;
@@ -1313,7 +1387,9 @@ namespace Box2D.NET
                 state.angularVelocity += bodySim.invInertia * impulse;
             }
         }
+        /// <summary>
         /// Get the body type: static, kinematic, or dynamic
+        /// </summary>
         public static B2BodyType b2Body_GetType(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -1321,35 +1397,37 @@ namespace Box2D.NET
             return body.type;
         }
 
-        // This should follow similar steps as you would get destroying and recreating the body, shapes, and joints.
-        // Contacts are difficult to preserve because the broad-phase pairs change, so I just destroy them.
-        // todo with a bit more effort I could support an option to let the body sleep
-        //
-        // Revised steps:
-        // 1 Skip disabled bodies
-        // 2 Destroy all contacts on the body
-        // 3 Wake the body
-        // 4 For all joints attached to the body
-        //  - wake attached bodies
-        //  - remove from island
-        //  - move to static set temporarily
-        // 5 Change the body type and transfer the body
-        // 6 If the body was static
-        //   - create an island for the body
-        //   Else if the body is becoming static
-        //   - remove it from the island
-        // 7 For all joints
-        //  - if either body is non-static
-        //    - link into island
-        //    - transfer to constraint graph
-        // 8 For all shapes
-        //  - Destroy proxy in old tree
-        //  - Create proxy in new tree
-        // Notes:
-        // - the implementation below tries to minimize the number of predicates, so some
-        //   operations may have no effect, such as transferring a joint to the same set
+        /// <summary>
+        /// This should follow similar steps as you would get destroying and recreating the body, shapes, and joints.
+        /// Contacts are difficult to preserve because the broad-phase pairs change, so I just destroy them.
+        /// todo with a bit more effort I could support an option to let the body sleep
+        ///
+        /// Revised steps:
+        /// 1 Skip disabled bodies
+        /// 2 Destroy all contacts on the body
+        /// 3 Wake the body
+        /// 4 For all joints attached to the body
+        ///  - wake attached bodies
+        ///  - remove from island
+        ///  - move to static set temporarily
+        /// 5 Change the body type and transfer the body
+        /// 6 If the body was static
+        ///   - create an island for the body
+        ///   Else if the body is becoming static
+        ///   - remove it from the island
+        /// 7 For all joints
+        ///  - if either body is non-static
+        ///    - link into island
+        ///    - transfer to constraint graph
+        /// 8 For all shapes
+        ///  - Destroy proxy in old tree
+        ///  - Create proxy in new tree
+        /// Notes:
+        /// - the implementation below tries to minimize the number of predicates, so some
+        ///   operations may have no effect, such as transferring a joint to the same set
         /// Change the body type. This is an expensive operation. This automatically updates the mass
         /// properties regardless of the automatic mass setting.
+        /// </summary>
         public static void b2Body_SetType(B2BodyId bodyId, B2BodyType type)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -1535,7 +1613,9 @@ namespace Box2D.NET
             b2ValidateIsland(world, body.islandId);
         }
 
+        /// <summary>
         /// Set the body name. Up to 31 characters excluding 0 termination.
+        /// </summary>
         public static void b2Body_SetName(B2BodyId bodyId, string name)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -1544,7 +1624,9 @@ namespace Box2D.NET
             body.name = b2TruncateBodyName(name);
         }
 
+        /// <summary>
         /// Get the body name.
+        /// </summary>
         public static string b2Body_GetName(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -1552,7 +1634,9 @@ namespace Box2D.NET
             return body.name;
         }
 
+        /// <summary>
         /// Set the user data for a body
+        /// </summary>
         public static void b2Body_SetUserData(B2BodyId bodyId, B2UserData userData)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -1560,28 +1644,36 @@ namespace Box2D.NET
             body.userData = userData;
         }
 
+        /// <summary>
         /// Get the user data stored in a body
+        /// </summary>
         public static B2UserData b2Body_GetUserData(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
             return body.userData;
         }
+        /// <summary>
         /// Get the mass of the body, usually in kilograms
+        /// </summary>
         public static float b2Body_GetMass(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
             return body.mass;
         }
+        /// <summary>
         /// Get the rotational inertia of the body, usually in kg*m^2
+        /// </summary>
         public static float b2Body_GetRotationalInertia(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
             return body.inertia;
         }
+        /// <summary>
         /// Get the center of mass position of the body in local space
+        /// </summary>
         public static Vector2 b2Body_GetLocalCenter(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -1589,7 +1681,9 @@ namespace Box2D.NET
             B2BodySim bodySim = b2GetBodySim(world, body);
             return bodySim.localCenter;
         }
+        /// <summary>
         /// Get the center of mass position of the body in world space
+        /// </summary>
         public static B2Pos b2Body_GetWorldCenter(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -1597,11 +1691,13 @@ namespace Box2D.NET
             B2BodySim bodySim = b2GetBodySim(world, body);
             return bodySim.center;
         }
+        /// <summary>
         /// Override the body's mass properties. Normally this is computed automatically using the
         /// shape geometry and density. This information is lost if a shape is added or removed or if the
         /// body type changes.
         /// If motion locks are used to fix rotation then the rotational inertia value is ignored and
         /// rotational inertia remains fixed at zero.
+        /// </summary>
         public static void b2Body_SetMassData(B2BodyId bodyId, B2MassData massData)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(massData.mass) && massData.mass >= 0.0f) == false) return;
@@ -1675,7 +1771,9 @@ namespace Box2D.NET
 
             body.flags &= ~(uint)B2BodyFlags.b2_dirtyMass;
         }
+        /// <summary>
         /// Get the mass data for a body
+        /// </summary>
         public static B2MassData b2Body_GetMassData(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -1685,12 +1783,14 @@ namespace Box2D.NET
             return massData;
         }
 
+        /// <summary>
         /// This updates the mass properties to the sum of the mass properties of the shapes.
         /// This normally does not need to be called unless you called SetMassData to override
         /// the mass and you later want to reset the mass.
         /// You may also use this when automatic mass computation has been disabled.
         /// You should call this regardless of body type.
         /// Note that sensor shapes may have mass.
+        /// </summary>
         public static void b2Body_UpdateMassFromShapes(B2BodyId bodyId)
         {
             B2World world = b2GetWorldLocked(bodyId.world0);
@@ -1702,7 +1802,9 @@ namespace Box2D.NET
             B2Body body = b2GetBodyFullId(world, bodyId);
             b2UpdateBodyMassData(world, body);
         }
+        /// <summary>
         /// Adjust the linear damping. Normally this is set in b2BodyDef before creation.
+        /// </summary>
         public static void b2Body_SetLinearDamping(B2BodyId bodyId, float linearDamping)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(linearDamping) && linearDamping >= 0.0f) == false) return;
@@ -1717,7 +1819,9 @@ namespace Box2D.NET
             B2BodySim bodySim = b2GetBodySim(world, body);
             bodySim.linearDamping = linearDamping;
         }
+        /// <summary>
         /// Get the current linear damping.
+        /// </summary>
         public static float b2Body_GetLinearDamping(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -1725,7 +1829,9 @@ namespace Box2D.NET
             B2BodySim bodySim = b2GetBodySim(world, body);
             return bodySim.linearDamping;
         }
+        /// <summary>
         /// Adjust the angular damping. Normally this is set in b2BodyDef before creation.
+        /// </summary>
         public static void b2Body_SetAngularDamping(B2BodyId bodyId, float angularDamping)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(angularDamping) && angularDamping >= 0.0f) == false) return;
@@ -1740,7 +1846,9 @@ namespace Box2D.NET
             B2BodySim bodySim = b2GetBodySim(world, body);
             bodySim.angularDamping = angularDamping;
         }
+        /// <summary>
         /// Get the current angular damping.
+        /// </summary>
         public static float b2Body_GetAngularDamping(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -1748,8 +1856,10 @@ namespace Box2D.NET
             B2BodySim bodySim = b2GetBodySim(world, body);
             return bodySim.angularDamping;
         }
+        /// <summary>
         /// Adjust the gravity scale. Normally this is set in b2BodyDef before creation.
         /// @see b2BodyDef::gravityScale
+        /// </summary>
         public static void b2Body_SetGravityScale(B2BodyId bodyId, float gravityScale)
         {
             B2_ASSERT(b2Body_IsValid(bodyId));
@@ -1765,7 +1875,9 @@ namespace Box2D.NET
             B2BodySim bodySim = b2GetBodySim(world, body);
             bodySim.gravityScale = gravityScale;
         }
+        /// <summary>
         /// Get the current gravity scale
+        /// </summary>
         public static float b2Body_GetGravityScale(B2BodyId bodyId)
         {
             B2_ASSERT(b2Body_IsValid(bodyId));
@@ -1774,16 +1886,20 @@ namespace Box2D.NET
             B2BodySim bodySim = b2GetBodySim(world, body);
             return bodySim.gravityScale;
         }
+        /// <summary>
         /// @return true if this body is awake
+        /// </summary>
         public static bool b2Body_IsAwake(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
             return body.setIndex == (int)B2SolverSetType.b2_awakeSet;
         }
+        /// <summary>
         /// Wake a body from sleep. This wakes the entire island the body is touching.
         /// @warning Putting a body to sleep will put the entire island of bodies touching this body to sleep,
         /// which can be expensive and possibly unintuitive.
+        /// </summary>
         public static void b2Body_SetAwake(B2BodyId bodyId, bool awake)
         {
             B2World world = b2GetWorldLocked(bodyId.world0);
@@ -1810,7 +1926,9 @@ namespace Box2D.NET
                 b2TrySleepIsland(world, body.islandId);
             }
         }
+        /// <summary>
         /// Wake bodies touching this body. Works for static bodies.
+        /// </summary>
         public static void b2Body_WakeTouching(B2BodyId bodyId)
         {
             B2World world = b2GetWorldLocked(bodyId.world0);
@@ -1845,21 +1963,27 @@ namespace Box2D.NET
                 contactKey = contact.edges[edgeIndex].nextKey;
             }
         }
+        /// <summary>
         /// Returns true if this body is enabled
+        /// </summary>
         public static bool b2Body_IsEnabled(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
             return body.setIndex != (int)B2SolverSetType.b2_disabledSet;
         }
+        /// <summary>
         /// Returns true if sleeping is enabled for this body
+        /// </summary>
         public static bool b2Body_IsSleepingEnabled(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
             return (body.flags & (uint)B2BodyFlags.b2_enableSleep) == (uint)B2BodyFlags.b2_enableSleep;
         }
+        /// <summary>
         /// Set the sleep threshold, usually in meters per second
+        /// </summary>
         public static void b2Body_SetSleepThreshold(B2BodyId bodyId, float sleepThreshold)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(sleepThreshold) && sleepThreshold >= 0.0f) == false) return;
@@ -1873,7 +1997,9 @@ namespace Box2D.NET
             B2Body body = b2GetBodyFullId(world, bodyId);
             body.sleepThreshold = sleepThreshold;
         }
+        /// <summary>
         /// Get the sleep threshold, usually in meters per second.
+        /// </summary>
         public static float b2Body_GetSleepThreshold(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -1881,7 +2007,9 @@ namespace Box2D.NET
             return body.sleepThreshold;
         }
 
+        /// <summary>
         /// Set the continuous collision safety factor. Smaller is safer but can lead to hitching. Recommended range [0.01, 0.5]. Non-dimensional.
+        /// </summary>
         public static void b2Body_SetSafetyFactor(B2BodyId bodyId, float safetyFactor)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(safetyFactor) && safetyFactor >= 0.0f) == false) return;
@@ -1895,14 +2023,18 @@ namespace Box2D.NET
             body.safetyFactor = safetyFactor;
         }
 
+        /// <summary>
         /// Get the continuous collision safety factor. Non-dimensional.
+        /// </summary>
         public static float b2Body_GetSafetyFactor(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
             return body.safetyFactor;
         }
+        /// <summary>
         /// Enable or disable sleeping for this body. If sleeping is disabled the body will wake (and the entire island).
+        /// </summary>
         public static void b2Body_EnableSleeping(B2BodyId bodyId, bool enableSleep)
         {
             B2World world = b2GetWorldLocked(bodyId.world0);
@@ -1928,9 +2060,11 @@ namespace Box2D.NET
             }
         }
 
-        // Disabling a body requires a lot of detailed bookkeeping, but it is a valuable feature.
-        // The most challenging aspect is that joints may connect to bodies that are not disabled.
+        /// <summary>
+        /// Disabling a body requires a lot of detailed bookkeeping, but it is a valuable feature.
+        /// The most challenging aspect is that joints may connect to bodies that are not disabled.
         /// Disable a body by removing it completely from the simulation. This is expensive.
+        /// </summary>
         public static void b2Body_Disable(B2BodyId bodyId)
         {
             B2World world = b2GetWorldLocked(bodyId.world0);
@@ -1999,7 +2133,9 @@ namespace Box2D.NET
             b2ValidateConnectivity(world);
             b2ValidateSolverSets(world);
         }
+        /// <summary>
         /// Enable a body by adding it to the simulation. This is expensive.
+        /// </summary>
         public static void b2Body_Enable(B2BodyId bodyId)
         {
             B2World world = b2GetWorldLocked(bodyId.world0);
@@ -2090,8 +2226,10 @@ namespace Box2D.NET
             b2ValidateSolverSets(world);
         }
 
+        /// <summary>
         /// Set the motion locks on this body. This causes mass properties to be recomputed because
         /// fixed rotation sets the rotational inertia to zero.
+        /// </summary>
         public static void b2Body_SetMotionLocks(B2BodyId bodyId, B2MotionLocks locks)
         {
             B2World world = b2GetWorldLocked(bodyId.world0);
@@ -2138,7 +2276,9 @@ namespace Box2D.NET
             }
         }
 
+        /// <summary>
         /// Get the motion locks for this body.
+        /// </summary>
         public static B2MotionLocks b2Body_GetMotionLocks(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -2150,8 +2290,10 @@ namespace Box2D.NET
             locks.angularZ = 0 != (body.flags & (uint)B2BodyFlags.b2_lockAngularZ);
             return locks;
         }
+        /// <summary>
         /// Set this body to be a bullet. A bullet does continuous collision detection
         /// against dynamic bodies (but not other bullets).
+        /// </summary>
         public static void b2Body_SetBullet(B2BodyId bodyId, bool flag)
         {
             B2World world = b2GetWorldLocked(bodyId.world0);
@@ -2173,7 +2315,9 @@ namespace Box2D.NET
 
             b2SyncBodyFlags(world, body);
         }
+        /// <summary>
         /// Is this body a bullet?
+        /// </summary>
         public static bool b2Body_IsBullet(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -2182,11 +2326,13 @@ namespace Box2D.NET
             return (bodySim.flags & (uint)B2BodyFlags.b2_isBullet) != 0;
         }
 
+        /// <summary>
         /// Enable or disable contact recycling for this body. Contact recycling is a performance optimization
         /// that reuses contact manifolds when bodies move slightly. Disabling it can avoid ghost collisions
         /// on characters at the cost of higher per-step work. Existing contacts retain their prior setting;
         /// only contacts created after this call see the new value.
         /// @see b2BodyDef::enableContactRecycling
+        /// </summary>
         public static void b2Body_EnableContactRecycling(B2BodyId bodyId, bool flag)
         {
             B2World world = b2GetWorldLocked(bodyId.world0);
@@ -2209,16 +2355,20 @@ namespace Box2D.NET
             b2SyncBodyFlags(world, body);
         }
 
+        /// <summary>
         /// Is contact recycling enabled on this body?
+        /// </summary>
         public static bool b2Body_IsContactRecyclingEnabled(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
             return (body.flags & (uint)B2BodyFlags.b2_bodyEnableContactRecycling) != 0;
         }
+        /// <summary>
         /// Enable/disable contact events on all shapes.
         /// @see b2ShapeDef::enableContactEvents
         /// @warning changing this at runtime may cause mismatched begin/end touch events
+        /// </summary>
         public static void b2Body_EnableContactEvents(B2BodyId bodyId, bool flag)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -2231,8 +2381,10 @@ namespace Box2D.NET
                 shapeId = shape.nextShapeId;
             }
         }
+        /// <summary>
         /// Enable/disable hit events on all shapes
         /// @see b2ShapeDef::enableHitEvents
+        /// </summary>
         public static void b2Body_EnableHitEvents(B2BodyId bodyId, bool flag)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -2245,21 +2397,27 @@ namespace Box2D.NET
                 shapeId = shape.nextShapeId;
             }
         }
+        /// <summary>
         /// Get the world that owns this body
+        /// </summary>
         public static B2WorldId b2Body_GetWorld(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
             return new B2WorldId((ushort)(bodyId.world0 + 1), world.generation);
         }
+        /// <summary>
         /// Get the number of shapes on this body
+        /// </summary>
         public static int b2Body_GetShapeCount(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
             return body.shapeCount;
         }
+        /// <summary>
         /// Get the shape ids for all shapes on this body, up to the provided capacity.
         /// @returns the number of shape ids stored in the user array
+        /// </summary>
         public static int b2Body_GetShapes(B2BodyId bodyId, Span<B2ShapeId> shapeArray, int capacity)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -2278,15 +2436,19 @@ namespace Box2D.NET
 
             return shapeCount;
         }
+        /// <summary>
         /// Get the number of joints on this body
+        /// </summary>
         public static int b2Body_GetJointCount(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
             return body.jointCount;
         }
+        /// <summary>
         /// Get the joint ids for all joints on this body, up to the provided capacity
         /// @returns the number of joint ids stored in the user array
+        /// </summary>
         public static int b2Body_GetJoints(B2BodyId bodyId, Span<B2JointId> jointArray, int capacity)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -2350,7 +2512,9 @@ namespace Box2D.NET
             return true;
         }
 
+        /// <summary>
         /// The minimum distance from any point on the body shapes to the center of mass.
+        /// </summary>
         public static float b2Body_GetMinExtent(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -2359,7 +2523,9 @@ namespace Box2D.NET
             return bodySim.minExtent;
         }
 
+        /// <summary>
         /// The maximum distance from any point on the body shapes to the center of mass.
+        /// </summary>
         public static float b2Body_GetMaxExtent(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
@@ -2368,7 +2534,9 @@ namespace Box2D.NET
             return bodySim.maxExtent;
         }
 
+        /// <summary>
         /// The maximum distance from any point on the body shapes to the body origin. Conservative.
+        /// </summary>
         public static float b2Body_GetMaxExtentFromOrigin(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);

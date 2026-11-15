@@ -4,39 +4,61 @@
 
 namespace Box2D.NET
 {
-    // Per thread task storage
+    /// <summary>
+    /// Per thread task storage
+    /// </summary>
     public class B2TaskContext
     {
-        // Collect per thread sensor continuous hit events.
+        /// <summary>
+        /// Collect per thread sensor continuous hit events.
+        /// </summary>
         public B2Array<B2SensorHit> sensorHits;
 
-        // Broad-phase pairs.
+        /// <summary>
+        /// Broad-phase pairs.
+        /// </summary>
         public B2Array<ulong> pairKeys;
         
-        // These bits align with the contact id capacity and signal a change in contact status
+        /// <summary>
+        /// These bits align with the contact id capacity and signal a change in contact status
+        /// </summary>
         public B2BitSet contactStateBitSet;
 
-        // These bits align with the contact id capacity and signal a hit event.
+        /// <summary>
+        /// These bits align with the contact id capacity and signal a hit event.
+        /// </summary>
         public B2BitSet hitEventBitSet;
 
-        // Fast-path flag: true when this worker set at least one bit in hitEventBitSet this step.
+        /// <summary>
+        /// Fast-path flag: true when this worker set at least one bit in hitEventBitSet this step.
+        /// </summary>
         public bool hasHitEvents;
 
-        // These bits align with the joint id capacity and signal a change in contact status
+        /// <summary>
+        /// These bits align with the joint id capacity and signal a change in contact status
+        /// </summary>
         public B2BitSet jointStateBitSet;
 
-        // Used to track bodies with shapes that have enlarged AABBs. This avoids having a bit array
-        // that is very large when there are many static shapes.
+        /// <summary>
+        /// Used to track bodies with shapes that have enlarged AABBs. This avoids having a bit array
+        /// that is very large when there are many static shapes.
+        /// </summary>
         public B2BitSet enlargedSimBitSet;
 
-        // Used to put islands to sleep
+        /// <summary>
+        /// Used to put islands to sleep
+        /// </summary>
         public B2BitSet awakeIslandBitSet;
 
-        // Per worker split island candidate
+        /// <summary>
+        /// Per worker split island candidate
+        /// </summary>
         public float splitSleepTime;
         public int splitIslandId;
 
-        // Number of contacts recycled this step (collide pass).
+        /// <summary>
+        /// Number of contacts recycled this step (collide pass).
+        /// </summary>
         public int recycledContactCount;
     }
 }

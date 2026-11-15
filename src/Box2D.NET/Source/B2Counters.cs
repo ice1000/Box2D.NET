@@ -4,7 +4,9 @@
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// Counters that give details of the simulation size.
+    /// </summary>
     public struct B2Counters
     {
         public int bodyCount;
@@ -19,10 +21,14 @@ namespace Box2D.NET
         public int taskCount;
         public B2FixedArray24<int> colorCounts;
 
-        // Number of contacts touched by the collide pass (graph contacts + awake-set non-touching).
+        /// <summary>
+        /// Number of contacts touched by the collide pass (graph contacts + awake-set non-touching).
+        /// </summary>
         public int awakeContactCount;
 
-        // Number of contacts recycled in the most recent step.
+        /// <summary>
+        /// Number of contacts recycled in the most recent step.
+        /// </summary>
         public int recycledContactCount;
     }
 }

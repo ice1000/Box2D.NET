@@ -6,27 +6,39 @@ using System.Numerics;
 
 namespace Box2D.NET
 {
-    // Body simulation data used for integration of position and velocity
-    // Transform data used for collision and solver preparation.
+    /// <summary>
+    /// Body simulation data used for integration of position and velocity
+    /// Transform data used for collision and solver preparation.
+    /// </summary>
     public class B2BodySim
     {
-        // transform for body origin, double translation in large world mode
+        /// <summary>
+        /// transform for body origin, double translation in large world mode
+        /// </summary>
         public B2WorldTransform transform;
 
-        // center of mass position in world space
+        /// <summary>
+        /// center of mass position in world space
+        /// </summary>
         public B2Pos center;
 
-        // previous rotation and COM for TOI
+        /// <summary>
+        /// previous rotation and COM for TOI
+        /// </summary>
         public B2Rot rotation0;
         public B2Pos center0;
 
-        // location of center of mass relative to the body origin
+        /// <summary>
+        /// location of center of mass relative to the body origin
+        /// </summary>
         public Vector2 localCenter;
 
         public Vector2 force;
         public float torque;
 
-        // inverse inertia
+        /// <summary>
+        /// inverse inertia
+        /// </summary>
         public float invMass;
         public float invInertia;
 
@@ -36,10 +48,14 @@ namespace Box2D.NET
         public float angularDamping;
         public float gravityScale;
 
-        // Index of b2Body
+        /// <summary>
+        /// Index of b2Body
+        /// </summary>
         public int bodyId;
 
-        // b2BodyFlags
+        /// <summary>
+        /// b2BodyFlags
+        /// </summary>
         public uint flags;
 
         public void Clear()

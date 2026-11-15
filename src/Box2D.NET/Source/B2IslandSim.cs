@@ -4,7 +4,9 @@
 
 namespace Box2D.NET
 {
-    // This is used to move islands across solver sets
+    /// <summary>
+    /// This is used to move islands across solver sets
+    /// </summary>
     public class B2IslandSim
     {
         public int islandId;

@@ -4,8 +4,10 @@
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// The base joint class. Joints are used to constraint two bodies together in
     /// various fashions. Some joints also feature limits and motors.
+    /// </summary>
     public class B2JointSim
     {
         public int jointId;
@@ -29,7 +31,9 @@ namespace Box2D.NET
         public float forceThreshold;
         public float torqueThreshold;
         
-        // TODO: @ikpil, check union
+        /// <summary>
+        /// TODO: @ikpil, check union
+        /// </summary>
         public B2JointUnion uj;
 
         public void Clear()

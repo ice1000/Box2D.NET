@@ -6,7 +6,9 @@ using System.Numerics;
 
 namespace Box2D.NET
 {
-    // Wide rotation
+    /// <summary>
+    /// Wide rotation
+    /// </summary>
     public struct B2RotW
     {
         public Vector4 C;

@@ -6,8 +6,10 @@ using System;
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// A world transform with a world position translation and a float rotation.
     /// Upstream uses double precision translation in large world mode.
+    /// </summary>
     public struct B2WorldTransform(B2Pos p, B2Rot q)
     {
         public B2Pos p = p;

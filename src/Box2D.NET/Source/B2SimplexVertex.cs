@@ -6,7 +6,9 @@ using System.Numerics;
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// Simplex vertex for debugging the GJK algorithm
+    /// </summary>
     public struct B2SimplexVertex
     {
         public Vector2 wA; // support point in proxyA

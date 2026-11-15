@@ -7,7 +7,9 @@ using System.Numerics;
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// A 2D rigid transform
+    /// </summary>
     public struct B2Transform(Vector2 p, B2Rot q)
     {
         public Vector2 p = p;

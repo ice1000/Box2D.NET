@@ -4,7 +4,9 @@
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// Shape id references a shape instance. This should be treated as an opaque handle.
+    /// </summary>
     public readonly struct B2ShapeId(int index1, ushort world0, ushort generation)
     {
         public readonly int index1 = index1;

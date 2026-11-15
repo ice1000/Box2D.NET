@@ -67,14 +67,18 @@ namespace Box2D.NET
         // }
 
 
+        /// <summary>
         /// @return the total bytes allocated by Box2D
+        /// </summary>
         public static int b2GetByteCount()
         {
             return b2AtomicLoadInt(ref b2_byteCount);
         }
 
+        /// <summary>
         /// This allows the user to override the allocation functions. These should be
         /// set during application startup.
+        /// </summary>
         public static void b2SetAllocator(b2AllocCallbackFcn allocCallbackFcn, b2FreeCallbackFcn freeCallbackFcn)
         {
             _b2AllocCallbackFcn = allocCallbackFcn;

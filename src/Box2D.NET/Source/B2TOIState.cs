@@ -4,7 +4,9 @@
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// Describes the TOI output
+    /// </summary>
     public enum B2TOIState
     {
         b2_toiStateUnknown,

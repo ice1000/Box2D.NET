@@ -13,8 +13,10 @@ namespace Box2D.NET
 {
     public static class B2Types
     {
+        /// <summary>
         /// Use this to initialize your world definition
         /// @ingroup world
+        /// </summary>
         public static B2WorldDef b2DefaultWorldDef()
         {
             float lengthUnits = b2GetLengthUnitsPerMeter();
@@ -37,8 +39,10 @@ namespace Box2D.NET
             return def;
         }
 
+        /// <summary>
         /// Use this to initialize your body definition
         /// @ingroup body
+        /// </summary>
         public static B2BodyDef b2DefaultBodyDef()
         {
             B2BodyDef def = new B2BodyDef();
@@ -55,24 +59,30 @@ namespace Box2D.NET
             return def;
         }
 
+        /// <summary>
         /// Use this to initialize your filter
         /// @ingroup shape
+        /// </summary>
         public static B2Filter b2DefaultFilter()
         {
             B2Filter filter = new B2Filter(B2_DEFAULT_CATEGORY_BITS, B2_DEFAULT_MASK_BITS, 0);
             return filter;
         }
 
+        /// <summary>
         /// Use this to initialize your query filter
         /// @ingroup shape
+        /// </summary>
         public static B2QueryFilter b2DefaultQueryFilter()
         {
             B2QueryFilter filter = new B2QueryFilter(B2_DEFAULT_CATEGORY_BITS, B2_DEFAULT_MASK_BITS);
             return filter;
         }
 
+        /// <summary>
         /// Use this to initialize your shape definition
         /// @ingroup shape
+        /// </summary>
         public static B2ShapeDef b2DefaultShapeDef()
         {
             B2ShapeDef def = new B2ShapeDef();
@@ -85,8 +95,10 @@ namespace Box2D.NET
             return def;
         }
 
+        /// <summary>
         /// Use this to initialize your surface material
         /// @ingroup shape
+        /// </summary>
         public static B2SurfaceMaterial b2DefaultSurfaceMaterial()
         {
             B2SurfaceMaterial material = new B2SurfaceMaterial();
@@ -95,8 +107,10 @@ namespace Box2D.NET
             return material;
         }
 
+        /// <summary>
         /// Use this to initialize your chain definition
         /// @ingroup shape
+        /// </summary>
         public static B2ChainDef b2DefaultChainDef()
         {
             B2SurfaceMaterial defaultMaterial = new B2SurfaceMaterial();
@@ -165,8 +179,10 @@ namespace Box2D.NET
             B2_UNUSED(aabb, color, context);
         }
 
+        /// <summary>
         /// Use this to initialize your drawing interface. This allows you to implement a sub-set
         /// of the drawing functions.
+        /// </summary>
         public static B2DebugDraw b2DefaultDebugDraw()
         {
             B2DebugDraw draw = new B2DebugDraw();

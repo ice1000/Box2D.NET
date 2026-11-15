@@ -4,8 +4,10 @@
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// ! @cond
     /// Profiling data. Times are in milliseconds.
+    /// </summary>
     public struct B2Profile
     {
         public float step;

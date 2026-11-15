@@ -26,7 +26,9 @@ namespace Box2D.NET
         public const int B2_CANDIDATE_BATCH = 32;
         public const int B2_CROSS_SEED_COUNT = 64;
 
-        // Store the proxy type in the lower 2 bits of the proxy key. This leaves 30 bits for the id.
+        /// <summary>
+        /// Store the proxy type in the lower 2 bits of the proxy key. This leaves 30 bits for the id.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static B2BodyType B2_PROXY_TYPE(int KEY)
         {
@@ -515,8 +517,10 @@ namespace Box2D.NET
             b2TracyCZoneEnd(B2TracyCZone.cross_pairs);
         }
 
-        // LSD radix sort. Faster than qsort when count is large and fast enough otherwise.
-        // https://en.wikipedia.org/wiki/Radix_sort
+        /// <summary>
+        /// LSD radix sort. Faster than qsort when count is large and fast enough otherwise.
+        /// https://en.wikipedia.org/wiki/Radix_sort
+        /// </summary>
         public static void b2RadixSortKeys(Span<ulong> keys, Span<ulong> tempKeys, int count)
         {
             Span<int> digitCounts = stackalloc int[8 * 256];

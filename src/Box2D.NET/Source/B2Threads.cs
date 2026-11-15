@@ -10,8 +10,10 @@ namespace Box2D.NET
 
     public static class B2Threads
     {
-        // SetThreadDescription exists on Windows 10 1607+. Resolve it dynamically so
-        // older Windows versions still link. Resolved once, cached for subsequent calls.
+        /// <summary>
+        /// SetThreadDescription exists on Windows 10 1607+. Resolve it dynamically so
+        /// older Windows versions still link. Resolved once, cached for subsequent calls.
+        /// </summary>
         public static void b2SetCurrentThreadName(string name)
         {
             if (string.IsNullOrEmpty(name))
@@ -29,7 +31,9 @@ namespace Box2D.NET
             t.function(t.context);
         }
 
-        // Name may be NULL, otherwise it is copied.
+        /// <summary>
+        /// Name may be NULL, otherwise it is copied.
+        /// </summary>
         public static B2Thread b2CreateThread(b2ThreadFunction function, object context, string name)
         {
             var t = new B2Thread();

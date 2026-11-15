@@ -4,7 +4,9 @@
 
 namespace Box2D.NET
 {
-    // Bit set provides fast operations on large arrays of bits.
+    /// <summary>
+    /// Bit set provides fast operations on large arrays of bits.
+    /// </summary>
     public struct B2BitSet
     {
         public ulong[] bits;

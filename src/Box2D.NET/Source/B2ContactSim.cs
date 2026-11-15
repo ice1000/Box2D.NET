@@ -4,14 +4,18 @@
 
 namespace Box2D.NET
 {
+    /// <summary>
     /// The class manages contact between two shapes. A contact exists for each overlapping
     /// AABB in the broad-phase (except if filtered). Therefore a contact object may exist
     /// that has no contact points.
+    /// </summary>
     public class B2ContactSim
     {
         public int contactId;
 
-        // Cache for contact recycling.
+        /// <summary>
+        /// Cache for contact recycling.
+        /// </summary>
         public B2Rot cachedRotationA;
         public B2Rot cachedRotationB;
         public B2Transform cachedRelativePose;
@@ -21,7 +25,9 @@ namespace Box2D.NET
         public int bodyIdB;
 #endif
 
-        // Transient body indices
+        /// <summary>
+        /// Transient body indices
+        /// </summary>
         public int encodedBodySimA;
         public int encodedBodySimB;
 
@@ -36,13 +42,17 @@ namespace Box2D.NET
 
         public B2Manifold manifold;
 
-        // Mixed friction and restitution
+        /// <summary>
+        /// Mixed friction and restitution
+        /// </summary>
         public float friction;
         public float restitution;
         public float rollingResistance;
         public float tangentSpeed;
 
-        // b2ContactFlags
+        /// <summary>
+        /// b2ContactFlags
+        /// </summary>
         public uint simFlags;
 
         public B2SimplexCache cache;

@@ -4,6 +4,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 using static Box2D.NET.B2ArenaAllocators;
@@ -19,11 +20,11 @@ using static Box2D.NET.B2BitSets;
 namespace Box2D.NET
 {
     /// <summary>
-    /// 8-wide contact solver on AVX (Vector256). Mirrors the C B2_SIMD_AVX2 build.
+    /// 8-wide contact solver on AVX2 (Vector256). Mirrors the C B2_SIMD_AVX2 build.
     /// The solver loops are the same as B2ContactSolverWide4 with the float vector type swapped.
     /// Within a graph color no two constraints share a dynamic body, so grouping contacts
     /// 8 at a time instead of 4 does not change any result.
-    /// Only created when Avx.IsSupported, so the gather/scatter transpose uses AVX directly.
+    /// Only created when Avx2.IsSupported, so the gather/scatter uses AVX/AVX2 intrinsics directly.
     /// </summary>
     internal sealed class B2ContactSolverWide8 : B2ContactSolverWide
     {
@@ -304,13 +305,15 @@ namespace Box2D.NET
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void b2StoreBody(Span<B2BodyState> states, int index, Vector128<float> value)
+        private static void b2StoreBody(ref B2BodyState s0, int count, uint dynamicMask, int lane, ReadOnlySpan<int> indices, Vector128<float> value)
         {
-            // zero means null
-            int i = index - 1;
-            if (i != B2_NULL_INDEX && (states[i].flags & (uint)B2BodyFlags.b2_dynamicFlag) != 0)
+            // Null lanes gathered the identity body, whose flags are zero, so they are never stored
+            if ((dynamicMask & (1u << lane)) != 0)
             {
-                Unsafe.WriteUnaligned(ref Unsafe.As<B2BodyState, byte>(ref states[i]), value);
+                // zero means null
+                int i = indices[lane] - 1;
+                B2_ASSERT(0 <= i && i < count);
+                Unsafe.WriteUnaligned(ref Unsafe.As<B2BodyState, byte>(ref Unsafe.Add(ref s0, i)), value);
             }
         }
 
@@ -334,14 +337,21 @@ namespace Box2D.NET
 
             // I don't use any dummy body in the body array because this will lead to multithreaded sharing and the
             // associated cache flushing.
-            b2StoreBody(states, indices[0], tt0.GetLower());
-            b2StoreBody(states, indices[1], tt1.GetLower());
-            b2StoreBody(states, indices[2], tt2.GetLower());
-            b2StoreBody(states, indices[3], tt3.GetLower());
-            b2StoreBody(states, indices[4], tt0.GetUpper());
-            b2StoreBody(states, indices[5], tt1.GetUpper());
-            b2StoreBody(states, indices[6], tt2.GetUpper());
-            b2StoreBody(states, indices[7], tt3.GetUpper());
+            // Dynamic flag of each lane from the gathered flags, so the flags are not reloaded from memory
+            const int dynamicBit = 9;
+            B2_ASSERT((uint)B2BodyFlags.b2_dynamicFlag == 1u << dynamicBit);
+            uint dynamicMask = Vector256.ExtractMostSignificantBits(Vector256.ShiftLeft(simdBody.flags.AsInt32(), 31 - dynamicBit));
+
+            ref B2BodyState s0 = ref MemoryMarshal.GetReference(states);
+            int count = states.Length;
+            b2StoreBody(ref s0, count, dynamicMask, 0, indices, tt0.GetLower());
+            b2StoreBody(ref s0, count, dynamicMask, 1, indices, tt1.GetLower());
+            b2StoreBody(ref s0, count, dynamicMask, 2, indices, tt2.GetLower());
+            b2StoreBody(ref s0, count, dynamicMask, 3, indices, tt3.GetLower());
+            b2StoreBody(ref s0, count, dynamicMask, 4, indices, tt0.GetUpper());
+            b2StoreBody(ref s0, count, dynamicMask, 5, indices, tt1.GetUpper());
+            b2StoreBody(ref s0, count, dynamicMask, 6, indices, tt2.GetUpper());
+            b2StoreBody(ref s0, count, dynamicMask, 7, indices, tt3.GetUpper());
         }
 
         private static readonly B2ContactSim b2_zeroContactSim = new B2ContactSim();

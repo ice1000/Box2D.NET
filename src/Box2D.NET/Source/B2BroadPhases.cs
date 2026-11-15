@@ -156,6 +156,7 @@ namespace Box2D.NET
             return count;
         }
 
+        [SkipLocalsInit]
         private static void b2FlushCandidatePairs(B2PairContext context)
         {
             B2World world = context.world;
@@ -281,6 +282,7 @@ namespace Box2D.NET
             return b2AABB_Overlaps(a.aabb, b.aabb);
         }
 
+        [SkipLocalsInit]
         private static void b2CollideProxyAndSubtree(in B2TreeNode proxy, B2TreeNode[] nodes, int pair, B2PairContext context)
         {
             uint proxyMark = proxy.flagIndex & B2_MOVED_NODE;
@@ -371,6 +373,7 @@ namespace Box2D.NET
         // See Real-time collision detection section 6.3.2. This is faster than querying every moved
         // proxy against the whole tree. Scaling is linear instead of linear * log.
         // Many other physics engines do this (Bepu, Rapier, etc). So nothing new here.
+        [SkipLocalsInit]
         private static void b2CollideCrossPairs(B2TreeNode[] arrayA, B2TreeNode[] arrayB, in B2TreeNode subtreeA, in B2TreeNode subtreeB, B2PairContext context)
         {
             Span<B2IndexPair> stack = stackalloc B2IndexPair[B2_TREE_STACK_SIZE];

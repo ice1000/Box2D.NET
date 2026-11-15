@@ -1082,6 +1082,7 @@ namespace Box2D.NET
         /// Query an AABB for overlapping proxies. The callback class is called for each proxy that overlaps the supplied AABB.
         /// 	@return performance data
         /// </summary>
+        [SkipLocalsInit]
         public static B2TreeStats b2DynamicTree_OverlapAABB<T>(B2DynamicTree tree, in B2AABB aabb, ulong maskBits, b2TreeQueryCallbackFcn<T> callback, ref T context)
         {
             B2TreeStats result = new B2TreeStats();
@@ -1149,6 +1150,7 @@ namespace Box2D.NET
         /// 	@return performance data
         /// This ignores the category bits. Useful for debug draw.
         /// </summary>
+        [SkipLocalsInit]
         public static B2TreeStats b2DynamicTree_OverlapAABBAll<T>(B2DynamicTree tree, in B2AABB aabb, b2TreeQueryCallbackFcn<T> callback, ref T context)
         {
             B2TreeStats result = new B2TreeStats();
@@ -1225,6 +1227,7 @@ namespace Box2D.NET
         /// It is faster than having category bits in the nodes because of the cache line friendly node
         /// size (64 bytes).
         /// </summary>
+        [SkipLocalsInit]
         public static B2TreeStats b2DynamicTree_CastRay<T>(B2DynamicTree tree, in B2RayCastInput input, ulong maskBits, b2TreeRayCastCallbackFcn<T> callback, ref T context)
         {
             B2TreeStats result = new B2TreeStats();
@@ -1378,6 +1381,7 @@ namespace Box2D.NET
         /// 	@return performance data
         /// Follows structure of ray cast with small tweaks to handle a swept box.
         /// </summary>
+        [SkipLocalsInit]
         public static B2TreeStats b2DynamicTree_CastBox<T>(B2DynamicTree tree, in B2BoxCastInput input, ulong maskBits, b2TreeBoxCastCallbackFcn<T> callback, ref T context)
         {
             B2TreeStats result = new B2TreeStats();
@@ -1829,6 +1833,7 @@ namespace Box2D.NET
 
         // Copy a retained subtree from the old array into the rebuilt DFS array using
         // a bump allocator.
+        [SkipLocalsInit]
         private static void b2CopySubtree(B2DynamicTree tree, B2TreeNode node, int newIndex)
         {
             B2TreeNode[] oldNodes = tree.nodes;
@@ -1911,6 +1916,7 @@ namespace Box2D.NET
             }
         }
 
+        [SkipLocalsInit]
         private static void b2BuildTree(B2DynamicTree tree, int leafCount)
         {
             B2TreeNode[] nodes = tree.swapNodes;
@@ -2006,6 +2012,7 @@ namespace Box2D.NET
         /// refitting much faster. This is done async with threading, so the cost is hidden.
         /// Not safe to access tree during this operation.
         /// </summary>
+        [SkipLocalsInit]
         public static int b2DynamicTree_Rebuild(B2DynamicTree tree, bool fullBuild)
         {
             int proxyCount = tree.proxyCount;
@@ -2184,6 +2191,7 @@ namespace Box2D.NET
         /// <summary>
         /// Clear the moved flags from the entire tree.
         /// </summary>
+        [SkipLocalsInit]
         public static void b2DynamicTree_ClearMoved(B2DynamicTree tree)
         {
             B2TreeNode[] nodes = tree.nodes;
@@ -2230,6 +2238,7 @@ namespace Box2D.NET
             }
         }
 
+        [SkipLocalsInit]
         public static int b2DynamicTree_GatherMovedProxies(B2DynamicTree tree, Span<int> proxyIds)
         {
             B2TreeNode[] nodes = tree.nodes;
@@ -2283,6 +2292,7 @@ namespace Box2D.NET
         }
 
         // Slow refit for unit tests.
+        [SkipLocalsInit]
         private static void b2RefitSubtree(B2TreeNode[] nodes, int rootIndex)
         {
             ref B2TreeNode root = ref nodes[rootIndex];

@@ -18,6 +18,11 @@ namespace Box2D.NET
         /// Broad-phase pairs.
         /// </summary>
         public B2Array<ulong> pairKeys;
+
+        /// <summary>
+        /// Broad-phase candidate pair batch, reused by every pair task this worker runs.
+        /// </summary>
+        public readonly B2PairContext pairContext = new B2PairContext();
         
         /// <summary>
         /// These bits align with the contact id capacity and signal a change in contact status

@@ -7,7 +7,7 @@ using System;
 namespace Box2D.NET
 {
     /// <summary>
-    /// Context for a time step. Recreated each time step.
+    /// Context for a time step. Owned by the world and reset with Clear() each time step.
     /// </summary>
     public class B2StepContext // TODO: @ikpil, check struct or class
     {
@@ -118,5 +118,39 @@ namespace Box2D.NET
         /// padding to prevent false sharing
         /// </summary>
         public B2FixedArray64<byte> padding3;
+
+        public void Clear()
+        {
+            dt = 0.0f;
+            inv_dt = 0.0f;
+            h = 0.0f;
+            inv_h = 0.0f;
+            subStepCount = 0;
+            contactSoftness = default;
+            staticSoftness = default;
+            restitutionThreshold = 0.0f;
+            maxLinearVelocity = 0.0f;
+            world = null;
+            graph = default;
+            states = null;
+            sims = null;
+            enlargedShapes = null;
+            enlargedShapeCount = 0;
+            bulletBodies = default;
+            bulletBodyCount = default;
+            anyRestitution = default;
+            collideSpans = null;
+            contactPrepareSpans = null;
+            wideContactCount = 0;
+            jointPrepareSpans = null;
+            jointCount = 0;
+            activeColorCount = 0;
+            workerCount = 0;
+            stages = default;
+            stageCount = 0;
+            enableWarmStarting = false;
+            atomicSyncBits = default;
+            mainClaimed = default;
+        }
     }
 }

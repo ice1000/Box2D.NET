@@ -218,6 +218,20 @@ namespace Box2D.NET
         /// </summary>
         public readonly B2WorkerContext[] tempWorkerContext = b2Alloc<B2WorkerContext>(B2_MAX_WORKERS);
 
+        // Per-step scratch objects reused across steps so b2World_Step does not allocate.
+        internal readonly B2StepContext stepContext = new B2StepContext();
+        internal readonly B2WorkerContext callerWorkerContext = new B2WorkerContext();
+        internal readonly B2ContactCollideSpan[] collideSpans = new B2ContactCollideSpan[B2_GRAPH_COLOR_COUNT + 2];
+        internal readonly B2ContactPrepareSpan[] contactPrepareSpans = new B2ContactPrepareSpan[B2_GRAPH_COLOR_COUNT + 1];
+        internal readonly B2JointPrepareSpan[] jointPrepareSpans = new B2JointPrepareSpan[B2_GRAPH_COLOR_COUNT + 1];
+        internal readonly System.ArraySegment<B2SyncBlock>[] graphColorBlocks = new System.ArraySegment<B2SyncBlock>[B2_GRAPH_COLOR_COUNT];
+        internal readonly B2CrossContext crossContext = new B2CrossContext();
+
+        // Reusable b2ParallelFor state. parallelForInUse is claimed with a CAS so a nested
+        // b2ParallelFor (from inside a callback) falls back to a fresh instance.
+        internal readonly B2ParallelForShared parallelForShared = new B2ParallelForShared();
+        internal int parallelForInUse;
+
         public void Clear()
         {
             stack = null;
@@ -331,6 +345,19 @@ namespace Box2D.NET
             {
                 workerContext.Clear();
             }
+
+            stepContext.Clear();
+            callerWorkerContext.Clear();
+            System.Array.Clear(collideSpans, 0, collideSpans.Length);
+            System.Array.Clear(contactPrepareSpans, 0, contactPrepareSpans.Length);
+            System.Array.Clear(jointPrepareSpans, 0, jointPrepareSpans.Length);
+            System.Array.Clear(graphColorBlocks, 0, graphColorBlocks.Length);
+            crossContext.world = null;
+            crossContext.seeds = null;
+            crossContext.staticSeedCount = 0;
+            parallelForShared.callback = null;
+            parallelForShared.context = null;
+            parallelForInUse = 0;
         }
     }
 }

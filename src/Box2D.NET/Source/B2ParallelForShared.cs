@@ -16,5 +16,24 @@ namespace Box2D.NET
         public int itemCount;
         public b2ParallelForCallback callback;
         public object context;
+
+        // Preallocated per-worker task objects (task i has workerIndex i) and task handles,
+        // so a b2ParallelFor call does not allocate.
+        public readonly B2ParallelForTask[] tasks;
+        public readonly object[] handles;
+
+        public B2ParallelForShared()
+        {
+            tasks = new B2ParallelForTask[B2Constants.B2_MAX_WORKERS];
+            handles = new object[B2Constants.B2_MAX_WORKERS];
+            for (int i = 0; i < tasks.Length; ++i)
+            {
+                tasks[i] = new B2ParallelForTask
+                {
+                    shared = this,
+                    workerIndex = i,
+                };
+            }
+        }
     }
 }

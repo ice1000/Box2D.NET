@@ -737,7 +737,8 @@ namespace Box2D.NET
                 return;
             }
 
-            B2ContactCollideSpan[] collideSpans = new B2ContactCollideSpan[B2_GRAPH_COLOR_COUNT + 2];
+            B2ContactCollideSpan[] collideSpans = world.collideSpans;
+            Array.Clear(collideSpans, 0, collideSpans.Length);
             int spanCount = 0;
             int contactIndex = 0;
             for (int i = 0; i < B2_GRAPH_COLOR_COUNT; ++i)
@@ -996,7 +997,8 @@ namespace Box2D.NET
                 world.profile.pairs = b2GetMilliseconds(pairTicks);
             }
 
-            B2StepContext context = new B2StepContext();
+            B2StepContext context = world.stepContext;
+            context.Clear();
             context.world = world;
             context.dt = timeStep;
             context.subStepCount = b2MaxInt(1, subStepCount);

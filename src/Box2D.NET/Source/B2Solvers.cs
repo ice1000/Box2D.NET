@@ -1468,8 +1468,10 @@ namespace Box2D.NET
                 // Build the span table for the flat prepare/store parallel-for while I slice the
                 // wide constraint buffer across colors. One entry per active color plus a sentinel
                 // at wideContactCount.
-                B2ContactPrepareSpan[] contactPrepareSpans = new B2ContactPrepareSpan[B2_GRAPH_COLOR_COUNT + 1];
-                B2JointPrepareSpan[] jointPrepareSpans = new B2JointPrepareSpan[B2_GRAPH_COLOR_COUNT + 1];
+                B2ContactPrepareSpan[] contactPrepareSpans = world.contactPrepareSpans;
+                Array.Clear(contactPrepareSpans, 0, contactPrepareSpans.Length);
+                B2JointPrepareSpan[] jointPrepareSpans = world.jointPrepareSpans;
+                Array.Clear(jointPrepareSpans, 0, jointPrepareSpans.Length);
 
                 // Distribute transient constraints to each graph color and prepare spans
                 {
@@ -1582,7 +1584,8 @@ namespace Box2D.NET
                 b2InitBlocks(jointBlocks, jointPrepareDim, jointCount, B2SolverBlockType.b2_jointBlock, byte.MaxValue);
 
                 // Prepare graph work blocks. Each color gets joint blocks followed by contact blocks.
-                ArraySegment<B2SyncBlock>[] graphColorBlocks = new ArraySegment<B2SyncBlock>[B2_GRAPH_COLOR_COUNT];
+                ArraySegment<B2SyncBlock>[] graphColorBlocks = world.graphColorBlocks;
+                Array.Clear(graphColorBlocks, 0, graphColorBlocks.Length);
                 ArraySegment<B2SyncBlock> baseGraphBlock = graphBlocks;
                 B2FixedArray24<int> arrayGraphBlockCounts = new B2FixedArray24<int>();
                 Span<int> graphBlockCounts = arrayGraphBlockCounts.AsSpan();
@@ -1676,10 +1679,12 @@ namespace Box2D.NET
                 // threads than workerCount, or invert priority by parking the calling thread in finishTaskFcn.
                 // Whoever wins the CAS becomes the orchestrator; the loser returns and lets the spinner-only
                 // path handle workers >0.
-                B2WorkerContext callerContext = new B2WorkerContext();
+                B2WorkerContext callerContext = world.callerWorkerContext;
                 callerContext.context = stepContext;
                 callerContext.workerIndex = 0;
+                callerContext.userTask = null;
                 b2SolverTask(callerContext);
+                callerContext.context = null;
 
                 // Finish constraint solve
                 for (int i = 0; i < workerCount; ++i)

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using System.Threading;
 using static Box2D.NET.B2Atomics;
 using static Box2D.NET.B2Constants;
 using static Box2D.NET.B2Diagnostics;
@@ -98,45 +99,60 @@ namespace Box2D.NET
             // No point enqueueing more tasks than blocks.
             int taskCount = b2MinInt(workerCount, blockCount);
 
-            B2ParallelForShared shared = new B2ParallelForShared
+            // A single task would just run every block in order: call the callback directly
+            // instead of going through the task system.
+            if (taskCount == 1)
             {
-                blockCount = blockCount,
-                blockSize = blockSize,
-                itemCount = itemCount,
-                callback = callback,
-                context = context,
-            };
-            b2AtomicStoreInt(ref shared.nextBlock, 0);
-
-            Span<B2ParallelForTask> tasks = new B2ParallelForTask[B2_MAX_WORKERS];
-            object[] handles = new object[B2_MAX_WORKERS];
-            for (int i = 0; i < taskCount; ++i)
-            {
-                tasks[i] = new B2ParallelForTask
-                {
-                    shared = shared,
-                    workerIndex = i,
-                };
-
-                if (world.taskCount < B2_MAX_TASKS)
-                {
-                    handles[i] = world.enqueueTaskFcn(b2ParallelForTrampoline, tasks[i], world.userTaskContext);
-                    world.taskCount += 1;
-                    world.activeTaskCount += handles[i] == null ? 0 : 1;
-                }
-                else
-                {
-                    handles[i] = null;
-                    b2ParallelForTrampoline(tasks[i]);
-                }
+                callback(0, itemCount, 0, context);
+                return;
             }
 
-            for (int i = 0; i < taskCount; ++i)
+            // Reuse the world's shared state unless a b2ParallelFor is already running on it.
+            bool reuse = Interlocked.CompareExchange(ref world.parallelForInUse, 1, 0) == 0;
+            B2ParallelForShared shared = reuse ? world.parallelForShared : new B2ParallelForShared();
+            shared.blockCount = blockCount;
+            shared.blockSize = blockSize;
+            shared.itemCount = itemCount;
+            shared.callback = callback;
+            shared.context = context;
+            b2AtomicStoreInt(ref shared.nextBlock, 0);
+
+            B2ParallelForTask[] tasks = shared.tasks;
+            object[] handles = shared.handles;
+            try
             {
-                if (handles[i] != null)
+                for (int i = 0; i < taskCount; ++i)
                 {
-                    world.finishTaskFcn(handles[i], world.userTaskContext);
-                    world.activeTaskCount -= 1;
+                    if (world.taskCount < B2_MAX_TASKS)
+                    {
+                        handles[i] = world.enqueueTaskFcn(b2ParallelForTrampoline, tasks[i], world.userTaskContext);
+                        world.taskCount += 1;
+                        world.activeTaskCount += handles[i] == null ? 0 : 1;
+                    }
+                    else
+                    {
+                        handles[i] = null;
+                        b2ParallelForTrampoline(tasks[i]);
+                    }
+                }
+
+                for (int i = 0; i < taskCount; ++i)
+                {
+                    if (handles[i] != null)
+                    {
+                        world.finishTaskFcn(handles[i], world.userTaskContext);
+                        world.activeTaskCount -= 1;
+                        handles[i] = null;
+                    }
+                }
+            }
+            finally
+            {
+                shared.callback = null;
+                shared.context = null;
+                if (reuse)
+                {
+                    Volatile.Write(ref world.parallelForInUse, 0);
                 }
             }
         }

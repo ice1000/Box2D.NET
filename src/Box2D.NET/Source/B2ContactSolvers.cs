@@ -44,6 +44,12 @@ namespace Box2D.NET
             Span<B2ContactConstraint> constraints = color.overflowConstraints;
 
             int contactCount = color.contactSims.count;
+            if (contactCount == 0)
+            {
+                b2TracyCZoneEnd(B2TracyCZone.prepare_overflow_contact);
+                return;
+            }
+
             B2ContactSim[] contacts = color.contactSims.data;
             B2BodyState[] states = context.states;
 
@@ -206,6 +212,12 @@ namespace Box2D.NET
             ref B2GraphColor color = ref graph.colors[B2_OVERFLOW_INDEX];
             Span<B2ContactConstraint> constraints = color.overflowConstraints;
             int contactCount = color.contactSims.count;
+            if (contactCount == 0)
+            {
+                b2TracyCZoneEnd(B2TracyCZone.warmstart_overflow_contact);
+                return;
+            }
+
             B2World world = context.world;
             B2SolverSet awakeSet = b2Array_Get(ref world.solverSets, (int)B2SolverSetType.b2_awakeSet);
             B2BodyState[] states = awakeSet.bodyStates.data;
@@ -282,6 +294,12 @@ namespace Box2D.NET
             ref B2GraphColor color = ref graph.colors[B2_OVERFLOW_INDEX];
             Span<B2ContactConstraint> constraints = color.overflowConstraints;
             int contactCount = color.contactSims.count;
+            if (contactCount == 0)
+            {
+                b2TracyCZoneEnd(B2TracyCZone.push_contact);
+                return;
+            }
+
             B2World world = context.world;
             B2SolverSet awakeSet = b2Array_Get(ref world.solverSets, (int)B2SolverSetType.b2_awakeSet);
             B2BodyState[] states = awakeSet.bodyStates.data;
@@ -419,6 +437,12 @@ namespace Box2D.NET
             ref B2GraphColor color = ref graph.colors[B2_OVERFLOW_INDEX];
             Span<B2ContactConstraint> constraints = color.overflowConstraints;
             int contactCount = color.contactSims.count;
+            if (contactCount == 0)
+            {
+                b2TracyCZoneEnd(B2TracyCZone.solve_contact);
+                return;
+            }
+
             B2World world = context.world;
             B2SolverSet awakeSet = b2Array_Get(ref world.solverSets, (int)B2SolverSetType.b2_awakeSet);
             B2BodyState[] states = awakeSet.bodyStates.data;
@@ -603,6 +627,12 @@ namespace Box2D.NET
             ref B2GraphColor color = ref graph.colors[B2_OVERFLOW_INDEX];
             Span<B2ContactConstraint> constraints = color.overflowConstraints;
             int contactCount = color.contactSims.count;
+            if (contactCount == 0)
+            {
+                b2TracyCZoneEnd(B2TracyCZone.overflow_resitution);
+                return;
+            }
+
             B2World world = context.world;
             B2SolverSet awakeSet = b2Array_Get(ref world.solverSets, (int)B2SolverSetType.b2_awakeSet);
             B2BodyState[] states = awakeSet.bodyStates.data;
@@ -724,6 +754,12 @@ namespace Box2D.NET
             ref B2GraphColor color = ref graph.colors[B2_OVERFLOW_INDEX];
             Span<B2ContactConstraint> constraints = color.overflowConstraints;
             int contactCount = color.contactSims.count;
+            if (contactCount == 0)
+            {
+                b2TracyCZoneEnd(B2TracyCZone.store_impulses);
+                return;
+            }
+
             B2ContactSim[] contactSims = color.contactSims.data;
             B2TaskContext taskContext = world.taskContexts.data[0];
             ref B2BitSet hitEventBitSet = ref taskContext.hitEventBitSet;

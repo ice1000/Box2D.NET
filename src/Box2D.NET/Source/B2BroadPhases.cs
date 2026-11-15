@@ -415,9 +415,11 @@ namespace Box2D.NET
             B2TreeNode[] nodes = tree.nodes;
             ArraySegment<int> siblingIndices = bp.movedSiblings;
 
-            B2PairContext pairContext = new B2PairContext();
+            B2TaskContext taskContext = world.taskContexts.data[workerIndex];
+            B2PairContext pairContext = taskContext.pairContext;
+            B2_ASSERT(pairContext.batchCount == 0);
             pairContext.world = world;
-            pairContext.taskContext = world.taskContexts.data[workerIndex];
+            pairContext.taskContext = taskContext;
 
             for (int i = startIndex; i < endIndex; ++i)
             {
@@ -504,9 +506,11 @@ namespace Box2D.NET
             B2TreeNode[] kinematicNodes = bp.trees[(int)B2BodyType.b2_kinematicBody].nodes;
             B2TreeNode[] dynamicNodes = bp.trees[(int)B2BodyType.b2_dynamicBody].nodes;
 
-            B2PairContext pairContext = new B2PairContext();
+            B2TaskContext taskContext = world.taskContexts.data[workerIndex];
+            B2PairContext pairContext = taskContext.pairContext;
+            B2_ASSERT(pairContext.batchCount == 0);
             pairContext.world = world;
-            pairContext.taskContext = world.taskContexts.data[workerIndex];
+            pairContext.taskContext = taskContext;
 
             for (int i = startIndex; i < endIndex; ++i)
             {
@@ -647,12 +651,10 @@ namespace Box2D.NET
                 int crossMoveCount = staticSeedCount + kinematicSeedCount;
 
                 // Collide the dynamic body tree against the static and kinematic trees.
-                B2CrossContext crossContext = new B2CrossContext
-                {
-                    world = world,
-                    seeds = crossSeeds,
-                    staticSeedCount = staticSeedCount,
-                };
+                B2CrossContext crossContext = world.crossContext;
+                crossContext.world = world;
+                crossContext.seeds = crossSeeds;
+                crossContext.staticSeedCount = staticSeedCount;
                 b2ParallelFor(world, b2CrossPairsTask, crossMoveCount, 1, crossContext);
 
                 // Collide the dynamic body tree against itself.

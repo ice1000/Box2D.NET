@@ -8,13 +8,11 @@ namespace Box2D.NET
     {
         public B2StepContext context;
         public int workerIndex;
-        public object userTask;
 
         public void Clear()
         {
             context = null;
             workerIndex = -1;
-            userTask = null;
         }
     }
 }

@@ -23,6 +23,38 @@ public class B2BroadPhasesTests
         return b2IsNodeMoved(tree.nodes[tree.proxies[proxyId].node]);
     }
 
+    private static void RunBatch(B2TaskBatch batch)
+    {
+        for (int i = 0; i < batch.count; ++i)
+        {
+            B2Task task = batch.tasks[i];
+            task.fcn(task.context);
+        }
+    }
+
+    // Start a zero length step with the pull model and run it through the broad-phase pair update.
+    // Returns the next pending batch, which must be passed to FinishStep.
+    private static B2TaskBatch BeginStepThroughPairs(B2WorldId worldId)
+    {
+        B2TaskBatch batch = b2World_BeginStep(worldId, 0.0f, 1);
+        while (batch.count > 0 && batch.tasks[batch.count - 1].type == B2TaskType.b2_taskPairs)
+        {
+            RunBatch(batch);
+            batch = b2World_ContinueStep(worldId);
+        }
+
+        return batch;
+    }
+
+    private static void FinishStep(B2WorldId worldId, B2TaskBatch batch)
+    {
+        while (batch.count > 0)
+        {
+            RunBatch(batch);
+            batch = b2World_ContinueStep(worldId);
+        }
+    }
+
     private static int GetProxyCount(B2BroadPhase bp)
     {
         int count = 0;
@@ -217,15 +249,9 @@ public class B2BroadPhasesTests
         Assert.That(b2HasTreeMoved(world.broadPhase.trees[(int)B2BodyType.b2_dynamicBody]), Is.True);
 
         // Act: Update broad phase pairs to detect collisions
-        b2UpdateBroadPhasePairs(world);
+        B2TaskBatch pending = BeginStepThroughPairs(worldId);
 
         // Assert
-
-        // 1. Every mark is consumed
-        for (int i = 0; i < (int)B2BodyType.b2_bodyTypeCount; ++i)
-        {
-            Assert.That(b2HasTreeMoved(world.broadPhase.trees[i]), Is.False, "marks should be cleared");
-        }
 
         // 2. Exactly two pairs: A-B and C-D
         Assert.That(world.contacts.count, Is.EqualTo(2),
@@ -251,9 +277,19 @@ public class B2BroadPhasesTests
         Assert.That(foundAB, Is.True, "Should have contact between shapes A and B");
         Assert.That(foundCD, Is.True, "Should have contact between shapes C and D");
 
+        FinishStep(worldId, pending);
+
+        // 1. Every mark is consumed. The movable trees are rebuilt by a deferred task that
+        // runs alongside the narrow-phase, so check after the step completes.
+        for (int i = 0; i < (int)B2BodyType.b2_bodyTypeCount; ++i)
+        {
+            Assert.That(b2HasTreeMoved(world.broadPhase.trees[i]), Is.False, "marks should be cleared");
+        }
+
         // 3. A second update finds nothing new
-        b2UpdateBroadPhasePairs(world);
+        pending = BeginStepThroughPairs(worldId);
         Assert.That(world.contacts.count, Is.EqualTo(2));
+        FinishStep(worldId, pending);
         B2_UNUSED(shapeIdE);
     }
 }

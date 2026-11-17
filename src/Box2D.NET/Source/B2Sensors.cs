@@ -238,7 +238,7 @@ namespace Box2D.NET
             b2TracyCZoneEnd(B2TracyCZone.sensor_task);
         }
 
-        internal static void b2OverlapSensors(B2World world)
+        internal static void b2BeginSensors(B2World world)
         {
             int sensorCount = world.sensors.count;
             if (sensorCount == 0)
@@ -248,8 +248,6 @@ namespace Box2D.NET
 
             B2_ASSERT(world.workerCount > 0);
 
-            b2TracyCZoneNC(B2TracyCZone.overlap_sensors, "Sensors", B2HexColor.b2_colorMediumPurple, true);
-
             for (int i = 0; i < world.workerCount; ++i)
             {
                 b2SetBitCountAndClear(ref world.sensorTaskContexts.data[i].eventBits, sensorCount);
@@ -257,9 +255,18 @@ namespace Box2D.NET
 
             // Parallel-for sensors overlaps
             int minRange = 16;
-            b2ParallelFor(world, b2SensorTask, sensorCount, minRange, world);
+            b2StageParallelFor(world, B2TaskType.b2_taskSensors, b2SensorTask, sensorCount, minRange, world);
+        }
 
-            b2TracyCZoneNC(B2TracyCZone.sensor_state, "Events", B2HexColor.b2_colorLightSlateGray, true);
+        internal static void b2EndSensors(B2World world)
+        {
+            int sensorCount = world.sensors.count;
+            if (sensorCount == 0)
+            {
+                return;
+            }
+
+            b2TracyCZoneNC(B2TracyCZone.sensor_state, "Sensor Events", B2HexColor.b2_colorLightSlateGray, true);
 
             ref B2BitSet bitSet = ref world.sensorTaskContexts.data[0].eventBits;
             for (int i = 1; i < world.workerCount; ++i)
@@ -365,7 +372,6 @@ namespace Box2D.NET
             }
 
             b2TracyCZoneEnd(B2TracyCZone.sensor_state);
-            b2TracyCZoneEnd(B2TracyCZone.overlap_sensors);
         }
 
         public static void b2DestroySensor(B2World world, B2Shape sensorShape)

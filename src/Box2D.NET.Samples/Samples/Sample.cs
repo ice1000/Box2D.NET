@@ -508,7 +508,8 @@ public class Sample : IDisposable
                     ImGui.Text($"shapes   {counters.shapeCount} / {capacity.staticShapeCount + capacity.dynamicShapeCount}");
                     ImGui.Text($"contacts {counters.contactCount} / {capacity.contactCount}");
                     ImGui.Text($"joints   {counters.jointCount}");
-                    ImGui.Text($"islands/tasks {counters.islandCount} / {counters.taskCount}");
+                    ImGui.Text($"islands  {counters.islandCount}");
+                    ImGui.Text($"tasks    {counters.enqueueCount} / {counters.taskCount}");
                     ImGui.Text($"tree height static/movable {counters.staticTreeHeight} / {counters.treeHeight}");
                     ImGui.Text($"alloc {counters.byteCount / 1024} K   stack {counters.stackUsed / 1024} K");
 

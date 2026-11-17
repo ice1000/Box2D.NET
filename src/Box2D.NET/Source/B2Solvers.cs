@@ -996,7 +996,12 @@ namespace Box2D.NET
             int startIndex = GetWorkerStartIndex(workerIndex, blockCount, context.workerCount);
             if (startIndex == B2_NULL_INDEX)
             {
-                return;
+                if (workerIndex != context.orchestratorIndex)
+                {
+                    return;
+                }
+
+                startIndex = 0;
             }
 
             B2_ASSERT(0 <= startIndex && startIndex < blockCount);
@@ -1028,7 +1033,7 @@ namespace Box2D.NET
         }
 
         /// <summary>
-        /// Execute a stage on worker 0 (main thread).
+        /// Execute a stage on the orchestrator, whichever solver task claimed that role.
         /// </summary>
         internal static void b2ExecuteMainStage(B2SolverStage stage, B2StepContext context, uint syncBits)
         {
@@ -1038,7 +1043,7 @@ namespace Box2D.NET
                 return;
             }
 
-            int workerIndex = 0;
+            int workerIndex = context.orchestratorIndex;
 
             if (blockCount == 1)
             {
@@ -1076,17 +1081,9 @@ namespace Box2D.NET
             ArraySegment<B2SolverStage> stages = context.stages;
             ref B2Profile profile = ref context.world.profile;
 
-            if (workerIndex == 0)
+            if (b2AtomicCompareExchangeInt(ref context.orchestratorClaimed, 0, 1))
             {
-                // The orchestrator slot is a race. The calling thread of b2World_Step also enters here
-                // as worker 0, so progress is guaranteed even if the user's task system schedules tasks
-                // out of order, has fewer threads than workerCount, or runs the task synchronously
-                // inside enqueueTaskFcn. Whoever wins the CAS becomes the orchestrator; the loser
-                // returns and lets the spinner-only path handle workers >0.
-                if (b2AtomicCompareExchangeInt(ref context.mainClaimed, 0, 1) == false)
-                {
-                    return;
-                }
+                context.orchestratorIndex = workerIndex;
 
                 // Main thread synchronizes the workers and does work itself.
                 //
@@ -1344,7 +1341,7 @@ namespace Box2D.NET
         /// <summary>
         /// Solve with graph coloring
         /// </summary>
-        internal static void b2Solve(B2World world, B2StepContext stepContext)
+        internal static bool b2BeginSolve(B2World world, B2StepContext stepContext)
         {
             // Only count steps that advance the simulation
             world.stepIndex += 1;
@@ -1354,8 +1351,10 @@ namespace Box2D.NET
             int awakeBodyCount = awakeSet.bodySims.count;
             if (awakeBodyCount == 0)
             {
-                return;
+                return false;
             }
+
+            stepContext.awakeBodyCount = awakeBodyCount;
 
             // Solve constraints using graph coloring
             {
@@ -1468,9 +1467,9 @@ namespace Box2D.NET
                 // Build the span table for the flat prepare/store parallel-for while I slice the
                 // wide constraint buffer across colors. One entry per active color plus a sentinel
                 // at wideContactCount.
-                B2ContactPrepareSpan[] contactPrepareSpans = world.contactPrepareSpans;
+                B2ContactPrepareSpan[] contactPrepareSpans = stepContext.contactPrepareSpans;
                 Array.Clear(contactPrepareSpans, 0, contactPrepareSpans.Length);
-                B2JointPrepareSpan[] jointPrepareSpans = world.jointPrepareSpans;
+                B2JointPrepareSpan[] jointPrepareSpans = stepContext.jointPrepareSpans;
                 Array.Clear(jointPrepareSpans, 0, jointPrepareSpans.Length);
 
                 // Distribute transient constraints to each graph color and prepare spans
@@ -1554,27 +1553,6 @@ namespace Box2D.NET
                 ArraySegment<B2SyncBlock> jointBlocks = b2StackAlloc<B2SyncBlock>(world.stack, jointPrepareDim.count, "joint blocks");
                 ArraySegment<B2SyncBlock> graphBlocks = b2StackAlloc<B2SyncBlock>(world.stack, graphBlockCount, "graph blocks");
 
-                // Split an awake island. This modifies:
-                // - stack allocator
-                // - world island array and solver set
-                // - island indices on bodies, contacts, and joints
-                // I'm squeezing this task in here because it may be expensive and this is a safe place to put it.
-                // Note: cannot split islands in parallel with FinalizeBodies
-                object splitIslandTask = null;
-                if (world.splitIslandId != B2_NULL_INDEX)
-                {
-                    if (world.taskCount < B2_MAX_TASKS)
-                    {
-                        splitIslandTask = world.enqueueTaskFcn(b2SplitIslandTask, world, world.userTaskContext);
-                        world.taskCount += 1;
-                        world.activeTaskCount += splitIslandTask == null ? 0 : 1;
-                    }
-                    else
-                    {
-                        b2SplitIslandTask(world);
-                    }
-                }
-
                 // Prepare body blocks
                 b2InitBlocks(bodyBlocks, bodyDim, awakeBodyCount, B2SolverBlockType.b2_bodyBlock, byte.MaxValue);
 
@@ -1623,30 +1601,21 @@ namespace Box2D.NET
                 B2_ASSERT((int)(stageIdx) == stageCount);
 
                 B2_ASSERT(workerCount <= B2_MAX_WORKERS);
-                B2_ASSERT(world.tempWorkerContext.Length <= B2_MAX_WORKERS);
-                //b2WorkerContext[] workerContext = new b2WorkerContext[B2_MAX_WORKERS];
-                Span<B2WorkerContext> workerContext = world.tempWorkerContext;
-                for (int i = 0; i < workerContext.Length; ++i)
-                {
-                    workerContext[i].Clear();
-                }
 
                 stepContext.graph = graph;
                 stepContext.activeColorCount = activeColorCount;
                 stepContext.workerCount = workerCount;
                 stepContext.stageCount = stageCount;
                 stepContext.stages = stages;
-                stepContext.contactPrepareSpans = contactPrepareSpans;
                 stepContext.wideContactCount = wideContactCount;
-                stepContext.jointPrepareSpans = jointPrepareSpans;
+                stepContext.bodyBlocks = bodyBlocks;
+                stepContext.contactBlocks = contactBlocks;
+                stepContext.jointBlocks = jointBlocks;
+                stepContext.graphBlocks = graphBlocks;
+                stepContext.overflowContacts = overflowContacts;
+                stepContext.orchestratorIndex = B2_NULL_INDEX;
                 b2AtomicStoreU32(ref stepContext.atomicSyncBits, 0);
-                b2AtomicStoreInt(ref stepContext.mainClaimed, 0);
-
-                world.profile.solverSetup = b2GetMillisecondsAndReset(ref setupTicks);
-                b2TracyCZoneEnd(B2TracyCZone.solver_setup);
-
-                b2TracyCZoneNC(B2TracyCZone.solve_constraints, "Solve Constraints", B2HexColor.b2_colorIndigo, true);
-                ulong constraintTicks = b2GetTicks();
+                b2AtomicStoreInt(ref stepContext.orchestratorClaimed, 0);
 
                 int jointIdCapacity = b2GetIdCapacity(world.jointIdPool);
                 int contactIdCapacity = b2GetIdCapacity(world.contactIdPool);
@@ -1656,98 +1625,82 @@ namespace Box2D.NET
                     b2SetBitCountAndClear(ref taskContext.jointStateBitSet, jointIdCapacity);
                     b2SetBitCountAndClear(ref taskContext.hitEventBitSet, contactIdCapacity);
                     taskContext.hasHitEvents = false;
-
-                    workerContext[i].context = stepContext;
-                    workerContext[i].workerIndex = i;
-
-                    if (world.taskCount < B2_MAX_TASKS)
-                    {
-                        workerContext[i].userTask = world.enqueueTaskFcn(b2SolverTask, workerContext[i], world.userTaskContext);
-                        world.taskCount += 1;
-                        world.activeTaskCount += workerContext[i].userTask == null ? 0 : 1;
-                    }
-                    else
-                    {
-                        workerContext[i].userTask = null;
-                        b2SolverTask(workerContext[i]);
-                    }
                 }
 
-                // The calling thread of b2World_Step also enters b2SolverTask as worker 0 and races for the
-                // orchestrator slot via the CAS inside. This guarantees progress even when the user's task
-                // system can't run the queued worker 0 promptly: it might schedule out of order, have fewer
-                // threads than workerCount, or invert priority by parking the calling thread in finishTaskFcn.
-                // Whoever wins the CAS becomes the orchestrator; the loser returns and lets the spinner-only
-                // path handle workers >0.
-                B2WorkerContext callerContext = world.callerWorkerContext;
-                callerContext.context = stepContext;
-                callerContext.workerIndex = 0;
-                callerContext.userTask = null;
-                b2SolverTask(callerContext);
-                callerContext.context = null;
+                // Split an awake island. This modifies:
+                // - stack allocator
+                // - world island array and solver set
+                // - island indices on bodies, contacts, and joints
+                // I'm squeezing this task in here because it may be expensive and this is a safe place to put it.
+                // Note: cannot split islands in parallel with FinalizeBodies
+                if (world.splitIslandId != B2_NULL_INDEX)
+                {
+                    b2AddTask(stepContext, B2TaskType.b2_taskIslandSplit, b2SplitIslandTask, world);
+                }
 
-                // Finish constraint solve
                 for (int i = 0; i < workerCount; ++i)
                 {
-                    if (workerContext[i].userTask != null)
-                    {
-                        world.finishTaskFcn(workerContext[i].userTask, world.userTaskContext);
-                        world.activeTaskCount -= 1;
-                    }
+                    B2WorkerContext workerContext = stepContext.workerContexts[i];
+                    workerContext.context = stepContext;
+                    workerContext.workerIndex = i;
+                    b2AddTask(stepContext, B2TaskType.b2_taskSolver, b2SolverTask, workerContext);
                 }
 
-                // Finish island split
-                if (splitIslandTask != null)
-                {
-                    world.finishTaskFcn(splitIslandTask, world.userTaskContext);
-                    world.activeTaskCount -= 1;
-                }
+                world.profile.solverSetup = b2GetMillisecondsAndReset(ref setupTicks);
+                b2TracyCZoneEnd(B2TracyCZone.solver_setup);
 
-                world.splitIslandId = B2_NULL_INDEX;
-
-                world.profile.constraints = b2GetMillisecondsAndReset(ref constraintTicks);
-                b2TracyCZoneEnd(B2TracyCZone.solve_constraints);
-
-                b2TracyCZoneNC(B2TracyCZone.update_transforms, "Update Transforms", B2HexColor.b2_colorMediumSeaGreen, true);
-                ulong transformTicks = b2GetTicks();
-
-                // Prepare contact, enlarged body, and island bit sets used in body finalization.
-                int awakeIslandCount = awakeSet.islandSims.count;
-                for (int i = 0; i < world.workerCount; ++i)
-                {
-                    B2TaskContext taskContext = world.taskContexts.data[i];
-                    b2Array_Clear(ref taskContext.sensorHits);
-                    b2SetBitCountAndClear(ref taskContext.enlargedSimBitSet, awakeBodyCount);
-                    b2SetBitCountAndClear(ref taskContext.awakeIslandBitSet, awakeIslandCount);
-                    taskContext.splitIslandId = B2_NULL_INDEX;
-                    taskContext.splitSleepTime = 0.0f;
-                }
-
-                // Finish the user tree task that was queued earlier in the time step. This must be complete before touching the
-                // broad-phase.
-                if (world.userTreeTask != null)
-                {
-                    world.finishTaskFcn(world.userTreeTask, world.userTaskContext);
-                    world.userTreeTask = null;
-                    world.activeTaskCount -= 1;
-                }
-
-                b2ValidateNoEnlarged(world.broadPhase);
-
-                // Finalize bodies. Must happen after the constraint solver and after island splitting.
-                b2ParallelFor(world, b2FinalizeBodiesTask, awakeBodyCount, 64, stepContext);
-
-                b2StackFree(world.stack, graphBlocks);
-                b2StackFree(world.stack, jointBlocks);
-                b2StackFree(world.stack, contactBlocks);
-                b2StackFree(world.stack, bodyBlocks);
-                b2StackFree(world.stack, stages);
-                b2StackFree(world.stack, overflowContacts);
-                contactSolverWide.Free(world.stack);
-
-                world.profile.transforms = b2GetMilliseconds(transformTicks);
-                b2TracyCZoneEnd(B2TracyCZone.update_transforms);
+                stepContext.constraintTicks = b2GetTicks();
             }
+
+            return true;
+        }
+
+        internal static void b2BeginFinalize(B2World world, B2StepContext stepContext)
+        {
+            world.splitIslandId = B2_NULL_INDEX;
+            world.profile.constraints = b2GetMilliseconds(stepContext.constraintTicks);
+
+            stepContext.transformTicks = b2GetTicks();
+
+            B2SolverSet awakeSet = b2Array_Get(ref world.solverSets, (int)B2SolverSetType.b2_awakeSet);
+            int awakeBodyCount = stepContext.awakeBodyCount;
+            B2_ASSERT(awakeBodyCount == awakeSet.bodySims.count);
+
+            // Prepare contact, enlarged body, and island bit sets used in body finalization.
+            int awakeIslandCount = awakeSet.islandSims.count;
+            for (int i = 0; i < world.workerCount; ++i)
+            {
+                B2TaskContext taskContext = world.taskContexts.data[i];
+                b2Array_Clear(ref taskContext.sensorHits);
+                b2SetBitCountAndClear(ref taskContext.enlargedSimBitSet, awakeBodyCount);
+                b2SetBitCountAndClear(ref taskContext.awakeIslandBitSet, awakeIslandCount);
+                taskContext.splitIslandId = B2_NULL_INDEX;
+                taskContext.splitSleepTime = 0.0f;
+            }
+
+            b2ValidateNoEnlarged(world.broadPhase);
+
+            // Finalize bodies. Must happen after the constraint solver and after island splitting.
+            b2StageParallelFor(world, B2TaskType.b2_taskFinalize, b2FinalizeBodiesTask, awakeBodyCount, 64, stepContext);
+        }
+
+        internal static void b2BeginBullets(B2World world, B2StepContext stepContext)
+        {
+            b2StackFree(world.stack, stepContext.graphBlocks);
+            b2StackFree(world.stack, stepContext.jointBlocks);
+            b2StackFree(world.stack, stepContext.contactBlocks);
+            b2StackFree(world.stack, stepContext.bodyBlocks);
+            b2StackFree(world.stack, stepContext.stages);
+            b2StackFree(world.stack, stepContext.overflowContacts);
+            world.contactSolverWide.Free(world.stack);
+            stepContext.graphBlocks = default;
+            stepContext.jointBlocks = default;
+            stepContext.contactBlocks = default;
+            stepContext.bodyBlocks = default;
+            stepContext.stages = default;
+            stepContext.overflowContacts = default;
+
+            world.profile.transforms = b2GetMilliseconds(stepContext.transformTicks);
 
             // Report joint events
             {
@@ -1939,13 +1892,23 @@ namespace Box2D.NET
             int bulletBodyCount = b2AtomicLoadInt(ref stepContext.bulletBodyCount);
             if (bulletBodyCount > 0)
             {
-                b2TracyCZoneNC(B2TracyCZone.bullets, "Bullets", B2HexColor.b2_colorLightYellow, true);
-                ulong bulletTicks = b2GetTicks();
+                stepContext.bulletTicks = b2GetTicks();
 
                 // Fast bullet bodies
                 // Note: a bullet body may be moving slow
                 int minRange = 8;
-                b2ParallelFor(world, b2BulletBodyTask, bulletBodyCount, minRange, stepContext);
+                b2StageParallelFor(world, B2TaskType.b2_taskContinuous, b2BulletBodyTask, bulletBodyCount, minRange, stepContext);
+            }
+        }
+
+        internal static void b2EndBullets(B2World world, B2StepContext stepContext)
+        {
+            B2SolverSet awakeSet = b2Array_Get(ref world.solverSets, (int)B2SolverSetType.b2_awakeSet);
+
+            int bulletBodyCount = b2AtomicLoadInt(ref stepContext.bulletBodyCount);
+            if (bulletBodyCount > 0)
+            {
+                b2TracyCZoneNC(B2TracyCZone.bullets, "Bullet Proxies", B2HexColor.b2_colorLightYellow, true);
 
                 B2BroadPhase broadPhase = world.broadPhase;
                 B2DynamicTree dynamicTree = broadPhase.trees[(int)B2BodyType.b2_dynamicBody];
@@ -1998,7 +1961,7 @@ namespace Box2D.NET
                     }
                 }
 
-                world.profile.bullets = b2GetMilliseconds(bulletTicks);
+                world.profile.bullets = b2GetMilliseconds(stepContext.bulletTicks);
                 b2TracyCZoneEnd(B2TracyCZone.bullets);
             }
 

@@ -9,5 +9,7 @@ namespace Box2D.NET
         public B2World world;
         public B2NodePair[] seeds;
         public int staticSeedCount;
+        public int crossMoveCount;
+        public int dynamicMoveCount;
     }
 }

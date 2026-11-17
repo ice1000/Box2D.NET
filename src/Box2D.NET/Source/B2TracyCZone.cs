@@ -47,5 +47,7 @@ namespace Box2D.NET
         contact_state,
         world_step,
         sensor_hits,
+        find_pairs,
+        sensors,
     }
 }

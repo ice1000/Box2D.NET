@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 using System;
+using static Box2D.NET.B2Constants;
 
 namespace Box2D.NET
 {
@@ -11,6 +12,50 @@ namespace Box2D.NET
     /// </summary>
     public class B2StepContext // TODO: @ikpil, check struct or class
     {
+        internal const int B2_STEP_TASK_CAPACITY = B2_MAX_WORKERS + 2;
+
+        public B2StepPhase phase;
+        public bool pairsUpdated;
+        public bool treeStaged;
+        public bool treeLaunched;
+        public bool solveSkipped;
+        public bool joinTree;
+        public bool signalSemaphores;
+
+        public int batchTaskBase;
+        public int batchTaskCount;
+        public int taskCount;
+        public int enqueueCount;
+
+        public readonly B2Task[] tasks = new B2Task[B2_STEP_TASK_CAPACITY];
+        internal readonly B2StepTask[] stepTasks = CreateArray<B2StepTask>(B2_STEP_TASK_CAPACITY);
+
+        internal readonly B2ParallelForShared parallelFor = new B2ParallelForShared();
+        internal readonly B2ParallelForTask[] parallelForTasks = CreateArray<B2ParallelForTask>(B2_MAX_WORKERS);
+        public readonly B2WorkerContext[] workerContexts = CreateArray<B2WorkerContext>(B2_MAX_WORKERS);
+
+        // Created only when the world has no finish task function. Preserved across Clear().
+        public B2Semaphore batchSemaphore;
+        public B2Semaphore treeSemaphore;
+
+        public ulong stepTicks;
+        public ulong pairTicks;
+        public ulong collideTicks;
+        public ulong solveTicks;
+        public ulong constraintTicks;
+        public ulong transformTicks;
+        public ulong bulletTicks;
+        public ulong sensorTicks;
+
+        public int awakeBodyCount;
+        public int collideContactCount;
+
+        public ArraySegment<B2SyncBlock> bodyBlocks;
+        public ArraySegment<B2SyncBlock> contactBlocks;
+        public ArraySegment<B2SyncBlock> jointBlocks;
+        public ArraySegment<B2SyncBlock> graphBlocks;
+        public ArraySegment<B2ContactConstraint> overflowContacts;
+
         /// <summary>
         /// time step
         /// </summary>
@@ -65,7 +110,7 @@ namespace Box2D.NET
         /// <summary>
         /// Graph color spans for the narrow-phase, includes non-touching contacts as well.
         /// </summary>
-        public B2ContactCollideSpan[] collideSpans;
+        public readonly B2ContactCollideSpan[] collideSpans = new B2ContactCollideSpan[B2_GRAPH_COLOR_COUNT + 2];
 
         /// <summary>
         /// Flat view of the wide contact constraint array used by prepare and store.
@@ -73,10 +118,10 @@ namespace Box2D.NET
         /// at wideContactCount. The wide constraints themselves are owned by
         /// world.contactSolverWide; colors[i].wideConstraintStart is each color's offset.
         /// </summary>
-        public B2ContactPrepareSpan[] contactPrepareSpans;
+        public readonly B2ContactPrepareSpan[] contactPrepareSpans = new B2ContactPrepareSpan[B2_GRAPH_COLOR_COUNT + 1];
         public int wideContactCount;
 
-        public B2JointPrepareSpan[] jointPrepareSpans;
+        public readonly B2JointPrepareSpan[] jointPrepareSpans = new B2JointPrepareSpan[B2_GRAPH_COLOR_COUNT + 1];
         public int jointCount;
 
         public int activeColorCount;
@@ -84,6 +129,7 @@ namespace Box2D.NET
 
         public ArraySegment<B2SolverStage> stages;
         public int stageCount;
+        public int orchestratorIndex;
         public bool enableWarmStarting;
 
         /// <summary>
@@ -105,22 +151,80 @@ namespace Box2D.NET
         /// </summary>
         public B2FixedArray64<byte> padding2;
 
-        /// <summary>
-        /// Race flag claimed by whichever runner reaches b2SolverTask with workerIndex 0 first.
-        /// The calling thread of b2World_Step also races for this slot so the orchestrator can
-        /// always make progress, regardless of how the user's task system schedules tasks (out
-        /// of order, fewer threads than workers, or synchronously inside enqueueTaskFcn). The
-        /// loser of the race no-ops as workerIndex 0.
-        /// </summary>
-        public B2AtomicInt mainClaimed;
+        public B2AtomicInt orchestratorClaimed;
 
         /// <summary>
         /// padding to prevent false sharing
         /// </summary>
         public B2FixedArray64<byte> padding3;
 
+        public B2AtomicInt pendingCount;
+        public B2AtomicInt treePending;
+
+        private static T[] CreateArray<T>(int count) where T : new()
+        {
+            T[] array = new T[count];
+            for (int i = 0; i < count; ++i)
+            {
+                array[i] = new T();
+            }
+
+            return array;
+        }
+
+        /// <summary>
+        /// Reset for a new time step. The semaphores and the preallocated arrays are kept.
+        /// </summary>
         public void Clear()
         {
+            phase = B2StepPhase.b2_stepIdle;
+            pairsUpdated = false;
+            treeStaged = false;
+            treeLaunched = false;
+            solveSkipped = false;
+            joinTree = false;
+            signalSemaphores = false;
+
+            batchTaskBase = 0;
+            batchTaskCount = 0;
+            taskCount = 0;
+            enqueueCount = 0;
+
+            Array.Clear(tasks, 0, tasks.Length);
+            foreach (B2StepTask stepTask in stepTasks)
+            {
+                stepTask.fcn = null;
+                stepTask.context = null;
+                stepTask.stepContext = null;
+                stepTask.deferred = false;
+            }
+
+            parallelFor.callback = null;
+            parallelFor.context = null;
+            parallelFor.nextBlock = default;
+            foreach (B2WorkerContext workerContext in workerContexts)
+            {
+                workerContext.Clear();
+            }
+
+            stepTicks = 0;
+            pairTicks = 0;
+            collideTicks = 0;
+            solveTicks = 0;
+            constraintTicks = 0;
+            transformTicks = 0;
+            bulletTicks = 0;
+            sensorTicks = 0;
+
+            awakeBodyCount = 0;
+            collideContactCount = 0;
+
+            bodyBlocks = default;
+            contactBlocks = default;
+            jointBlocks = default;
+            graphBlocks = default;
+            overflowContacts = default;
+
             dt = 0.0f;
             inv_dt = 0.0f;
             h = 0.0f;
@@ -139,18 +243,21 @@ namespace Box2D.NET
             bulletBodies = default;
             bulletBodyCount = default;
             anyRestitution = default;
-            collideSpans = null;
-            contactPrepareSpans = null;
+            Array.Clear(collideSpans, 0, collideSpans.Length);
+            Array.Clear(contactPrepareSpans, 0, contactPrepareSpans.Length);
             wideContactCount = 0;
-            jointPrepareSpans = null;
+            Array.Clear(jointPrepareSpans, 0, jointPrepareSpans.Length);
             jointCount = 0;
             activeColorCount = 0;
             workerCount = 0;
             stages = default;
             stageCount = 0;
+            orchestratorIndex = 0;
             enableWarmStarting = false;
             atomicSyncBits = default;
-            mainClaimed = default;
+            orchestratorClaimed = default;
+            pendingCount = default;
+            treePending = default;
         }
     }
 }

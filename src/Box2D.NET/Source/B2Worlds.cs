@@ -158,33 +158,6 @@ namespace Box2D.NET
             b2Array_Destroy(ref world.sensorTaskContexts);
         }
 
-        private static void b2UseSerialTaskSystem(B2World world)
-        {
-            if (world.scheduler != null)
-            {
-                b2DestroyScheduler(world.scheduler);
-            }
-
-            world.workerCount = 1;
-            world.enqueueTaskFcn = b2DefaultAddTaskFcn;
-            world.finishTaskFcn = b2DefaultFinishTaskFcn;
-            world.userTaskContext = null;
-            world.scheduler = null;
-        }
-
-        private static void b2UseBuiltInScheduler(B2World world, int workerCount)
-        {
-            if (world.scheduler != null)
-            {
-                b2DestroyScheduler(world.scheduler);
-            }
-
-            world.workerCount = b2MinInt(workerCount, B2_MAX_WORKERS);
-            world.scheduler = b2CreateScheduler(world.workerCount);
-            world.enqueueTaskFcn = b2SchedulerEnqueueTask;
-            world.finishTaskFcn = b2SchedulerFinishTask;
-            world.userTaskContext = world.scheduler;
-        }
         /// <summary>
         /// Create a world for rigid body simulation. A world contains bodies, shapes, and constraints. You make create
         /// up to 128 worlds. Each world is completely independent and may be simulated in parallel.

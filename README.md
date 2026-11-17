@@ -6,8 +6,9 @@ This is a fork of the [original Box2D.Net project].
 
 How does this project compare to the original?
 
-- This project (as of the last commit time of this README) is up to date with the original box2d repository.
-- I try (but not too hard) to get SIMD working in this project.
+- This project (as of the last commit time of this README) is up to date with the original box2d repository
+  except that I did not add the recording/snapshot related features and large worlds (double precision coordinates).
+- I try to get SIMD working in this project. It should be on-par with the C version as far as I know.
 - I will not keep .netstandard2.1 support, and use .net10 instead. This makes everything easier, especially when it comes to SIMD support.
 - The original has no signal of using AI, while my fork is AI-assisted. If you are allergic to AI, you may stick to the original project.
 

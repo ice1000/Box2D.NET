@@ -13,6 +13,9 @@ using static Box2D.NET.B2MathFunction;
 using static Box2D.NET.B2Ids;
 using static Box2D.NET.B2Constants;
 using static Box2D.NET.B2Joints;
+using static Box2D.NET.B2Arrays;
+using static Box2D.NET.B2MotorJoints;
+using static Box2D.NET.B2DistanceJoints;
 using static Box2D.NET.B2DynamicTrees;
 using static Box2D.NET.B2Diagnostics;
 using static Box2D.NET.Shared.Benchmarks;
@@ -1887,6 +1890,344 @@ public class B2WorldTest
         }
 
         Assert.That(counter.count - before, Is.EqualTo(0));
+
+        b2DestroyWorld(worldId);
+    }
+
+    // A body move index is only valid until the next step clears the move events. A body that leaves
+    // the awake set keeps its index, so putting it to sleep later must not touch another body's event.
+    [Test]
+    public void StaleMoveIndexSleepTest()
+    {
+        B2WorldDef worldDef = b2DefaultWorldDef();
+        B2WorldId worldId = b2CreateWorld(worldDef);
+
+        const int e_count = 16;
+
+        B2Circle circle = new B2Circle(new Vector2(0.0f, 0.0f), 0.5f);
+        B2BodyId[] bodyIds = new B2BodyId[e_count];
+        for (int i = 0; i < e_count; ++i)
+        {
+            B2BodyDef bodyDef = b2DefaultBodyDef();
+            bodyDef.type = B2BodyType.b2_dynamicBody;
+            bodyDef.position = new B2Pos(2.0f * i, 10.0f);
+            bodyIds[i] = b2CreateBody(worldId, bodyDef);
+            B2ShapeDef shapeDef = b2DefaultShapeDef();
+            b2CreateCircleShape(bodyIds[i], shapeDef, circle);
+        }
+
+        b2World_Step(worldId, 1.0f / 60.0f, 4);
+
+        // Disable and enable leave an index that now belongs to another body
+        b2Body_Disable(bodyIds[0]);
+        b2World_Step(worldId, 1.0f / 60.0f, 4);
+        b2Body_Enable(bodyIds[0]);
+        b2Body_SetAwake(bodyIds[0], false);
+        Assert.That(b2Body_IsAwake(bodyIds[0]), Is.False);
+
+        B2BodyEvents events = b2World_GetBodyEvents(worldId);
+        Assert.That(events.moveCount, Is.EqualTo(e_count - 1));
+        for (int i = 0; i < events.moveCount; ++i)
+        {
+            Assert.That(events.moveEvents[i].fellAsleep, Is.False);
+        }
+
+        // Disable and enable leave an index past the end of the events
+        b2Body_Disable(bodyIds[15]);
+        b2World_Step(worldId, 1.0f / 60.0f, 4);
+        b2Body_Enable(bodyIds[15]);
+        b2Body_SetAwake(bodyIds[15], false);
+        Assert.That(b2Body_IsAwake(bodyIds[15]), Is.False);
+
+        // A zero time step clears the events without assigning new indices
+        b2World_Step(worldId, 1.0f / 60.0f, 4);
+        b2World_Step(worldId, 0.0f, 4);
+        b2Body_SetAwake(bodyIds[1], false);
+        Assert.That(b2Body_IsAwake(bodyIds[1]), Is.False);
+        Assert.That(b2World_GetBodyEvents(worldId).moveCount, Is.EqualTo(0));
+
+        b2DestroyWorld(worldId);
+    }
+
+    public enum ReleaseCase
+    {
+        e_motorSpringForce,
+        e_motorLinearHertz,
+        e_motorVelocityForce,
+        e_motorSpringTorque,
+        e_motorAngularHertz,
+        e_motorVelocityTorque,
+        e_distanceHertz,
+        e_distanceLimit,
+    }
+
+    private static B2JointId CreateReleaseJoint(B2BodyId groundId, B2BodyId bodyId, ReleaseCase releaseCase)
+    {
+        switch (releaseCase)
+        {
+            case ReleaseCase.e_motorSpringForce:
+            case ReleaseCase.e_motorLinearHertz:
+            case ReleaseCase.e_motorVelocityForce:
+            case ReleaseCase.e_motorSpringTorque:
+            case ReleaseCase.e_motorAngularHertz:
+            case ReleaseCase.e_motorVelocityTorque:
+            {
+                B2MotorJointDef def = b2DefaultMotorJointDef();
+                def.@base.bodyIdA = groundId;
+                def.@base.bodyIdB = bodyId;
+                def.@base.localFrameA.p = new Vector2(0.0f, 4.0f);
+                if (releaseCase == ReleaseCase.e_motorSpringForce || releaseCase == ReleaseCase.e_motorLinearHertz)
+                {
+                    def.linearHertz = 5.0f;
+                    def.linearDampingRatio = 1.0f;
+                    def.maxSpringForce = 1000.0f;
+                }
+                else if (releaseCase == ReleaseCase.e_motorVelocityForce)
+                {
+                    def.maxVelocityForce = 1000.0f;
+                }
+                else if (releaseCase == ReleaseCase.e_motorVelocityTorque)
+                {
+                    def.maxVelocityTorque = 1000.0f;
+                }
+                else
+                {
+                    def.angularHertz = 5.0f;
+                    def.angularDampingRatio = 1.0f;
+                    def.maxSpringTorque = 1000.0f;
+                }
+
+                return b2CreateMotorJoint(b2Body_GetWorld(groundId), def);
+            }
+
+            default:
+            {
+                B2DistanceJointDef def = b2DefaultDistanceJointDef();
+                def.@base.bodyIdA = groundId;
+                def.@base.bodyIdB = bodyId;
+                def.@base.localFrameA.p = new Vector2(0.0f, 6.0f);
+                def.length = 2.0f;
+                def.enableSpring = true;
+                if (releaseCase == ReleaseCase.e_distanceHertz)
+                {
+                    def.hertz = 5.0f;
+                    def.dampingRatio = 1.0f;
+                }
+                else
+                {
+                    def.enableLimit = true;
+                    def.maxLength = 2.0f;
+                }
+
+                return b2CreateDistanceJoint(b2Body_GetWorld(groundId), def);
+            }
+        }
+    }
+
+    private static void ReleaseJoint(B2JointId jointId, ReleaseCase releaseCase)
+    {
+        switch (releaseCase)
+        {
+            case ReleaseCase.e_motorSpringForce:
+                b2MotorJoint_SetMaxSpringForce(jointId, 0.0f);
+                break;
+            case ReleaseCase.e_motorLinearHertz:
+                b2MotorJoint_SetLinearHertz(jointId, 0.0f);
+                break;
+            case ReleaseCase.e_motorVelocityForce:
+                b2MotorJoint_SetMaxVelocityForce(jointId, 0.0f);
+                break;
+            case ReleaseCase.e_motorSpringTorque:
+                b2MotorJoint_SetMaxSpringTorque(jointId, 0.0f);
+                break;
+            case ReleaseCase.e_motorAngularHertz:
+                b2MotorJoint_SetAngularHertz(jointId, 0.0f);
+                break;
+            case ReleaseCase.e_motorVelocityTorque:
+                b2MotorJoint_SetMaxVelocityTorque(jointId, 0.0f);
+                break;
+            case ReleaseCase.e_distanceHertz:
+                b2DistanceJoint_SetSpringHertz(jointId, 0.0f);
+                break;
+            default:
+                b2DistanceJoint_EnableLimit(jointId, false);
+                break;
+        }
+    }
+
+    // A joint term that is switched off must let go of a loaded body, not keep warm starting the impulse that held it
+    [Test]
+    public void JointReleasesLoadTest([Values] ReleaseCase releaseCase)
+    {
+        B2WorldDef worldDef = b2DefaultWorldDef();
+        worldDef.gravity = Vector2Zero;
+        B2WorldId worldId = b2CreateWorld(worldDef);
+
+        B2BodyDef bodyDef = b2DefaultBodyDef();
+        B2BodyId groundId = b2CreateBody(worldId, bodyDef);
+
+        bodyDef.type = B2BodyType.b2_dynamicBody;
+        bodyDef.position = new B2Pos(0.0f, 4.0f);
+        bodyDef.enableSleep = false;
+        B2BodyId bodyId = b2CreateBody(worldId, bodyDef);
+
+        // Unit square, so 1 kg and 1/6 kg m^2
+        B2ShapeDef shapeDef = b2DefaultShapeDef();
+        B2Polygon box = b2MakeBox(0.5f, 0.5f);
+        b2CreatePolygonShape(bodyId, shapeDef, box);
+
+        B2JointId jointId = CreateReleaseJoint(groundId, bodyId, releaseCase);
+
+        bool angular = releaseCase == ReleaseCase.e_motorSpringTorque || releaseCase == ReleaseCase.e_motorAngularHertz ||
+                       releaseCase == ReleaseCase.e_motorVelocityTorque;
+
+        Vector2 force = angular ? Vector2Zero : new Vector2(0.0f, -10.0f);
+        float torque = angular ? 1.0f : 0.0f;
+
+        for (int i = 0; i < 120; ++i)
+        {
+            if (i == 60)
+            {
+                Vector2 v = b2Body_GetLinearVelocity(bodyId);
+                float w = b2Body_GetAngularVelocity(bodyId);
+                Assert.That(b2Length(v) < 0.1f && b2AbsFloat(w) < 0.1f, Is.True);
+                ReleaseJoint(jointId, releaseCase);
+            }
+
+            b2Body_ApplyForceToCenter(bodyId, force, true);
+            b2Body_ApplyTorque(bodyId, torque, true);
+            b2World_Step(worldId, 1.0f / 60.0f, 4);
+        }
+
+        // Free motion after one second is 10 m/s and 6 rad/s
+        if (angular)
+        {
+            Assert.That(b2Body_GetAngularVelocity(bodyId), Is.GreaterThan(5.0f));
+        }
+        else
+        {
+            Assert.That(b2Body_GetLinearVelocity(bodyId).Y, Is.LessThan(-9.0f));
+        }
+
+        b2DestroyWorld(worldId);
+    }
+
+    // Box3D issue #167
+    [Test]
+    public void ShapeApplyWindWakeTest()
+    {
+        B2WorldDef worldDef = b2DefaultWorldDef();
+        worldDef.gravity = Vector2Zero;
+        B2WorldId worldId = b2CreateWorld(worldDef);
+
+        B2BodyDef bodyDef = b2DefaultBodyDef();
+        bodyDef.type = B2BodyType.b2_dynamicBody;
+        bodyDef.isAwake = false;
+        B2BodyId bodyId = b2CreateBody(worldId, bodyDef);
+
+        B2Polygon box = b2MakeBox(0.25f, 0.25f);
+        B2ShapeDef shapeDef = b2DefaultShapeDef();
+        B2ShapeId shapeId = b2CreatePolygonShape(bodyId, shapeDef, box);
+
+        Assert.That(b2Body_IsAwake(bodyId), Is.False);
+
+        b2Shape_ApplyWind(shapeId, new Vector2(20.0f, 0.0f), 1.0f, 0.0f, false);
+        Assert.That(b2Body_IsAwake(bodyId), Is.False);
+
+        b2Shape_ApplyWind(shapeId, new Vector2(20.0f, 0.0f), 1.0f, 0.0f, true);
+        Assert.That(b2Body_IsAwake(bodyId), Is.True);
+
+        b2World_Step(worldId, 1.0f / 60.0f, 4);
+
+        Assert.That(b2Body_GetLinearVelocity(bodyId).X, Is.GreaterThan(0.0f));
+
+        b2DestroyWorld(worldId);
+    }
+
+    private static void CheckShapeCentroid(B2ShapeId shapeId, Vector2 expected)
+    {
+        B2World world = b2GetWorldFromId(b2Shape_GetWorld(shapeId));
+        B2Shape shape = b2Array_Get(ref world.shapes, shapeId.index1 - 1);
+        Assert.That(b2Distance(shape.localCentroid, b2GetShapeCentroid(shape)), Is.LessThan(FLT_EPSILON));
+        Assert.That(b2Distance(shape.localCentroid, expected), Is.LessThan(1.0e-5f));
+    }
+
+    // Box3D issue #206
+    [Test]
+    public void ShapeSetGeometryCentroidTest()
+    {
+        B2WorldDef worldDef = b2DefaultWorldDef();
+        B2WorldId worldId = b2CreateWorld(worldDef);
+
+        B2BodyDef bodyDef = b2DefaultBodyDef();
+        bodyDef.type = B2BodyType.b2_dynamicBody;
+        B2BodyId bodyId = b2CreateBody(worldId, bodyDef);
+
+        B2Polygon box = b2MakeBox(0.5f, 0.5f);
+        B2ShapeDef shapeDef = b2DefaultShapeDef();
+        B2ShapeId shapeId = b2CreatePolygonShape(bodyId, shapeDef, box);
+        CheckShapeCentroid(shapeId, Vector2Zero);
+
+        Vector2 offset = new Vector2(2.0f, -1.0f);
+        B2Polygon offsetBox = b2MakeOffsetBox(0.5f, 0.5f, offset, b2Rot_identity);
+        b2Shape_SetPolygon(shapeId, ref offsetBox);
+        CheckShapeCentroid(shapeId, offset);
+
+        B2Circle movedCircle = new B2Circle(new Vector2(-3.0f, 1.0f), 0.5f);
+        b2Shape_SetCircle(shapeId, movedCircle);
+        CheckShapeCentroid(shapeId, movedCircle.center);
+
+        B2Capsule movedCapsule = new B2Capsule(new Vector2(1.0f, 2.0f), new Vector2(3.0f, 2.0f), 0.25f);
+        b2Shape_SetCapsule(shapeId, movedCapsule);
+        CheckShapeCentroid(shapeId, new Vector2(2.0f, 2.0f));
+
+        B2Segment movedSegment = new B2Segment(new Vector2(-1.0f, 3.0f), new Vector2(1.0f, 5.0f));
+        b2Shape_SetSegment(shapeId, movedSegment);
+        CheckShapeCentroid(shapeId, new Vector2(0.0f, 4.0f));
+
+        b2World_Step(worldId, 1.0f / 60.0f, 4);
+
+        b2DestroyWorld(worldId);
+    }
+
+    // A recycled contact skips the material update, so a material change must break recycling. Box3D issue #209.
+    [Test]
+    public void ShapeMaterialRecycleTest()
+    {
+        B2WorldDef worldDef = b2DefaultWorldDef();
+        B2WorldId worldId = b2CreateWorld(worldDef);
+
+        B2BodyDef bodyDef = b2DefaultBodyDef();
+        B2BodyId groundId = b2CreateBody(worldId, bodyDef);
+        B2Polygon groundBox = b2MakeBox(10.0f, 0.5f);
+        B2ShapeDef shapeDef = b2DefaultShapeDef();
+        B2ShapeId groundShapeId = b2CreatePolygonShape(groundId, shapeDef, groundBox);
+
+        bodyDef.type = B2BodyType.b2_dynamicBody;
+        bodyDef.position = new B2Pos(0.0f, 1.0f);
+        bodyDef.enableSleep = false;
+        B2BodyId crateId = b2CreateBody(worldId, bodyDef);
+        B2Polygon crateBox = b2MakeBox(0.5f, 0.5f);
+        b2CreatePolygonShape(crateId, shapeDef, crateBox);
+
+        float timeStep = 1.0f / 60.0f;
+        for (int i = 0; i < 60; ++i)
+        {
+            b2World_Step(worldId, timeStep, 4);
+        }
+
+        Assert.That(b2World_GetCounters(worldId).recycledContactCount, Is.GreaterThan(0));
+
+        B2SurfaceMaterial material = b2Shape_GetSurfaceMaterial(groundShapeId);
+        material.tangentSpeed = 1.0f;
+        b2Shape_SetSurfaceMaterial(groundShapeId, material);
+
+        for (int i = 0; i < 60; ++i)
+        {
+            b2World_Step(worldId, timeStep, 4);
+        }
+
+        Assert.That(b2AbsFloat(b2Body_GetLinearVelocity(crateId).X), Is.GreaterThan(0.9f));
 
         b2DestroyWorld(worldId);
     }

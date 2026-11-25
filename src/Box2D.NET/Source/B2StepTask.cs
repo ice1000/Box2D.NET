@@ -9,6 +9,7 @@ namespace Box2D.NET
         public b2TaskCallbackFcn fcn;
         public object context;
         public B2StepContext stepContext;
-        public bool deferred;
+        // index into B2StepContext.stepTasks/tasks (pointer arithmetic in C)
+        public int index;
     }
 }

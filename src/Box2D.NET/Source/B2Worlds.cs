@@ -997,7 +997,6 @@ namespace Box2D.NET
             if (deferred == false)
             {
                 context.tasks[0].deferred = false;
-                context.stepTasks[0].deferred = false;
                 b2AtomicStoreInt(ref context.treePending, 0);
             }
         }
@@ -1313,7 +1312,6 @@ namespace Box2D.NET
         public static void b2World_Step(B2WorldId worldId, float timeStep, int subStepCount)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(timeStep)) == false) return;
-            B2_ASSERT(0 < subStepCount);
 
             B2World world = b2GetWorldFromId(worldId);
             B2_ASSERT(world.locked == false);
@@ -1419,7 +1417,6 @@ namespace Box2D.NET
         public static B2TaskBatch b2World_BeginStep(B2WorldId worldId, float timeStep, int subStepCount)
         {
             if (B2_CHECK_INPUT(b2IsValidFloat(timeStep)) == false) return default;
-            B2_ASSERT(0 < subStepCount);
 
             B2World world = b2GetWorldFromId(worldId);
             B2_ASSERT(world.locked == false);

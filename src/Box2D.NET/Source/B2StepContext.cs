@@ -196,7 +196,6 @@ namespace Box2D.NET
                 stepTask.fcn = null;
                 stepTask.context = null;
                 stepTask.stepContext = null;
-                stepTask.deferred = false;
             }
 
             parallelFor.callback = null;

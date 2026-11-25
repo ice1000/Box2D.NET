@@ -889,7 +889,7 @@ namespace Box2D.NET
             }
         }
 
-        internal static Vector2 b2GetShapeCentroid(B2Shape shape)
+        public static Vector2 b2GetShapeCentroid(B2Shape shape)
         {
             switch (shape.type)
             {
@@ -1423,6 +1423,26 @@ namespace Box2D.NET
             return shape.density;
         }
 
+        private static void b2InvalidateContactRecycling(B2World world, B2Shape shape)
+        {
+            B2Body body = b2Array_Get(ref world.bodies, shape.bodyId);
+            int edgeKey = body.headContactKey;
+            while (edgeKey != B2_NULL_INDEX)
+            {
+                int contactId = edgeKey >> 1;
+                int edgeIndex = edgeKey & 1;
+
+                B2Contact contact = b2Array_Get(ref world.contacts, contactId);
+                if (contact.shapeIdA == shape.id || contact.shapeIdB == shape.id)
+                {
+                    B2ContactSim contactSim = b2GetContactSim(world, contact);
+                    contactSim.simFlags &= ~(uint)B2ContactFlags.b2_simRelativeTransformValid;
+                }
+
+                edgeKey = contact.edges[edgeIndex].nextKey;
+            }
+        }
+
         /// <summary>
         /// Set the friction on a shape
         /// </summary>
@@ -1439,6 +1459,7 @@ namespace Box2D.NET
 
             B2Shape shape = b2GetShape(world, shapeId);
             shape.material.friction = friction;
+            b2InvalidateContactRecycling(world, shape);
         }
         /// <summary>
         /// Get the friction of a shape
@@ -1465,6 +1486,7 @@ namespace Box2D.NET
 
             B2Shape shape = b2GetShape(world, shapeId);
             shape.material.restitution = restitution;
+            b2InvalidateContactRecycling(world, shape);
         }
         /// <summary>
         /// Get the shape restitution
@@ -1490,6 +1512,7 @@ namespace Box2D.NET
 
             B2Shape shape = b2GetShape(world, shapeId);
             shape.material.userMaterialId = material;
+            b2InvalidateContactRecycling(world, shape);
         }
 
         /// <summary>
@@ -1522,6 +1545,7 @@ namespace Box2D.NET
             B2World world = b2GetWorld(shapeId.world0);
             B2Shape shape = b2GetShape(world, shapeId);
             shape.material = surfaceMaterial;
+            b2InvalidateContactRecycling(world, shape);
         }
         /// <summary>
         /// Get the shape filter
@@ -1765,6 +1789,7 @@ namespace Box2D.NET
 
             B2Shape shape = b2GetShape(world, shapeId);
             shape.enableHitEvents = flag;
+            b2InvalidateContactRecycling(world, shape);
         }
         /// <summary>
         /// Returns true if hit events are enabled
@@ -1853,6 +1878,7 @@ namespace Box2D.NET
             B2Shape shape = b2GetShape(world, shapeId);
             shape.us.circle = new B2Circle(circle.center, circle.radius);
             shape.type = B2ShapeType.b2_circleShape;
+            shape.localCentroid = b2GetShapeCentroid(shape);
             shape.aabbMargin = b2ComputeShapeMargin(shape);
 
             bool destroyProxy = true;
@@ -1882,6 +1908,7 @@ namespace Box2D.NET
             B2Shape shape = b2GetShape(world, shapeId);
             shape.us.capsule = new B2Capsule(capsule.center1, capsule.center2, capsule.radius);
             shape.type = B2ShapeType.b2_capsuleShape;
+            shape.localCentroid = b2GetShapeCentroid(shape);
             shape.aabbMargin = b2ComputeShapeMargin(shape);
 
             bool destroyProxy = true;
@@ -1903,6 +1930,7 @@ namespace Box2D.NET
             B2Shape shape = b2GetShape(world, shapeId);
             shape.us.segment = new B2Segment(segment.point1, segment.point2);
             shape.type = B2ShapeType.b2_segmentShape;
+            shape.localCentroid = b2GetShapeCentroid(shape);
             shape.aabbMargin = b2ComputeShapeMargin(shape);
 
             bool destroyProxy = true;
@@ -1926,6 +1954,7 @@ namespace Box2D.NET
             B2Shape shape = b2GetShape(world, shapeId);
             shape.us.polygon = polygon;
             shape.type = B2ShapeType.b2_polygonShape;
+            shape.localCentroid = b2GetShapeCentroid(shape);
             shape.aabbMargin = b2ComputeShapeMargin(shape);
 
             bool destroyProxy = true;
@@ -1967,6 +1996,7 @@ namespace Box2D.NET
             shape.us.chainSegment.chainId = B2_NULL_INDEX;
             b2FixGhostVertices(ref shape.us.chainSegment);
             shape.type = B2ShapeType.b2_chainSegmentShape;
+            shape.localCentroid = b2GetShapeCentroid(shape);
             shape.aabbMargin = b2ComputeShapeMargin(shape);
 
             bool destroyProxy = true;
@@ -2244,8 +2274,6 @@ namespace Box2D.NET
                 return;
             }
 
-            B2BodySim sim = b2GetBodySim(world, body);
-
             if (body.setIndex != (int)B2SolverSetType.b2_awakeSet)
             {
                 // Must wake for state to exist
@@ -2254,6 +2282,7 @@ namespace Box2D.NET
 
             B2_ASSERT(body.setIndex == (int)B2SolverSetType.b2_awakeSet);
 
+            B2BodySim sim = b2GetBodySim(world, body);
             ref B2BodyState state = ref b2GetBodyState(world, body, out _);
             B2WorldTransform transform = sim.transform;
 

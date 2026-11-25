@@ -380,6 +380,26 @@ namespace Box2D.NET
                 joint.upperImpulse = 0.0f;
                 joint.motorImpulse = 0.0f;
             }
+            else
+            {
+                bool soft = joint.enableSpring && (joint.minLength < joint.maxLength || joint.enableLimit == false);
+
+                if (soft && (joint.hertz > 0.0f) == false)
+                {
+                    joint.impulse = 0.0f;
+                }
+
+                if (soft == false || joint.enableLimit == false)
+                {
+                    joint.lowerImpulse = 0.0f;
+                    joint.upperImpulse = 0.0f;
+                }
+
+                if (soft == false || joint.enableMotor == false)
+                {
+                    joint.motorImpulse = 0.0f;
+                }
+            }
         }
 
         internal static void b2WarmStartDistanceJoint(B2JointSim @base, B2StepContext context)

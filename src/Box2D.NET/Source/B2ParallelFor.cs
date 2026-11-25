@@ -31,7 +31,7 @@ namespace Box2D.NET
 
             task.fcn(task.context);
 
-            if (task.deferred)
+            if (stepContext.tasks[task.index].deferred)
             {
                 if (b2AtomicFetchAddInt(ref stepContext.treePending, -1) == 1 && stepContext.signalSemaphores)
                 {
@@ -67,7 +67,7 @@ namespace Box2D.NET
             stepTask.fcn = fcn;
             stepTask.context = context;
             stepTask.stepContext = stepContext;
-            stepTask.deferred = false;
+            stepTask.index = index;
 
             ref B2Task task = ref stepContext.tasks[index];
             task.fcn = s_runStepTask;
@@ -87,7 +87,7 @@ namespace Box2D.NET
             stepTask.fcn = fcn;
             stepTask.context = context;
             stepTask.stepContext = stepContext;
-            stepTask.deferred = true;
+            stepTask.index = 0;
 
             ref B2Task task = ref stepContext.tasks[0];
             task.fcn = s_runStepTask;

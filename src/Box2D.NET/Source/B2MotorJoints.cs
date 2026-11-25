@@ -323,6 +323,28 @@ namespace Box2D.NET
                 joint.linearSpringImpulse = Vector2Zero;
                 joint.angularSpringImpulse = 0.0f;
             }
+            else
+            {
+                if ((joint.maxSpringForce > 0.0f && joint.linearHertz > 0.0f) == false)
+                {
+                    joint.linearSpringImpulse = Vector2Zero;
+                }
+
+                if ((joint.maxVelocityForce > 0.0f) == false)
+                {
+                    joint.linearVelocityImpulse = Vector2Zero;
+                }
+
+                if ((joint.maxSpringTorque > 0.0f && joint.angularHertz > 0.0f) == false)
+                {
+                    joint.angularSpringImpulse = 0.0f;
+                }
+
+                if ((joint.maxVelocityTorque > 0.0f) == false)
+                {
+                    joint.angularVelocityImpulse = 0.0f;
+                }
+            }
         }
 
         internal static void b2WarmStartMotorJoint(B2JointSim @base, B2StepContext context)

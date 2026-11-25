@@ -10,19 +10,9 @@ namespace Box2D.NET
     public enum B2BodyFlags
     {
         /// <summary>
-        /// This body has fixed translation along the x-axis
-        /// </summary>
-        b2_lockLinearX = 0x00000001,
-
-        /// <summary>
-        /// This body has fixed translation along the y-axis
-        /// </summary>
-        b2_lockLinearY = 0x00000002,
-
-        /// <summary>
         /// This body has fixed rotation
         /// </summary>
-        b2_lockAngularZ = 0x00000004,
+        b2_fixedRotation = 0x00000001,
 
         /// <summary>
         /// This flag is used for debug draw and contact recycling. Only on b2BodySim.
@@ -71,16 +61,6 @@ namespace Box2D.NET
         b2_enableSleep = 0x00000800,
 
         b2_bodyEnableContactRecycling = 0x00001000,
-
-        /// <summary>
-        /// All lock flags
-        /// </summary>
-        b2_allLocks = b2_lockAngularZ | b2_lockLinearX | b2_lockLinearY,
-
-        /// <summary>
-        /// If this flag is set then the body has fixed rotation
-        /// </summary>
-        b2_fixedRotation = b2_lockAngularZ,
 
         /// <summary>
         /// These flags are transient per time step. These may be different across b2Body, b2BodySim, and b2BodyState.

@@ -384,12 +384,6 @@ namespace Box2D.NET
 
             int bodyId = b2AllocId(world.bodyIdPool);
 
-            uint lockFlags = 0;
-            lockFlags |= def.motionLocks.linearX ? (uint)B2BodyFlags.b2_lockLinearX : 0;
-            lockFlags |= def.motionLocks.linearY ? (uint)B2BodyFlags.b2_lockLinearY : 0;
-            lockFlags |= def.motionLocks.angularZ ? (uint)B2BodyFlags.b2_lockAngularZ : 0;
-
-
             B2SolverSet set = b2Array_Get(ref world.solverSets, setId);
             ref B2BodySim bodySim = ref b2Array_Emplace(ref set.bodySims);
             //*bodySim = ( b2BodySim ){ 0 };
@@ -405,7 +399,7 @@ namespace Box2D.NET
             bodySim.angularDamping = def.angularDamping;
             bodySim.gravityScale = def.gravityScale;
             bodySim.bodyId = bodyId;
-            bodySim.flags = lockFlags;
+            bodySim.flags = def.fixedRotation ? (uint)B2BodyFlags.b2_fixedRotation : 0;
             bodySim.flags |= def.isBullet ? (uint)B2BodyFlags.b2_isBullet : 0;
             bodySim.flags |= def.allowFastRotation ? (uint)B2BodyFlags.b2_allowFastRotation : 0;
             bodySim.flags |= def.type == B2BodyType.b2_dynamicBody ? (uint)B2BodyFlags.b2_dynamicFlag : 0;
@@ -420,7 +414,7 @@ namespace Box2D.NET
                 //*bodyState = ( b2BodyState ){ 0 }; 
                 bodyState.Clear();
                 bodyState.linearVelocity = def.linearVelocity;
-                bodyState.angularVelocity = def.angularVelocity;
+                bodyState.angularVelocity = def.fixedRotation ? 0.0f : def.angularVelocity;
                 bodyState.deltaRotation = b2Rot_identity;
                 bodyState.flags = bodySim.flags;
             }
@@ -681,6 +675,18 @@ namespace Box2D.NET
             return aabb;
         }
 
+        private static void b2UpdateInverseInertia(B2Body body, B2BodySim bodySim)
+        {
+            if (body.inertia > 0.0f && (body.flags & (uint)B2BodyFlags.b2_fixedRotation) == 0)
+            {
+                bodySim.invInertia = 1.0f / body.inertia;
+            }
+            else
+            {
+                bodySim.invInertia = 0.0f;
+            }
+        }
+
         internal static void b2UpdateBodyMassData(B2World world, B2Body body)
         {
             // Mass is no longer dirty
@@ -777,15 +783,7 @@ namespace Box2D.NET
 
             B2_ASSERT(body.inertia >= 0.0f);
 
-            if (body.inertia > 0.0f && (body.flags & (uint)B2BodyFlags.b2_fixedRotation) == 0)
-            {
-                bodySim.invInertia = 1.0f / body.inertia;
-            }
-            else
-            {
-                body.inertia = 0.0f;
-                bodySim.invInertia = 0.0f;
-            }
+            b2UpdateInverseInertia(body, bodySim);
 
             // Move center of mass.
             B2Pos oldCenter = bodySim.center;
@@ -1027,7 +1025,7 @@ namespace Box2D.NET
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
 
-            if (body.type == B2BodyType.b2_staticBody || 0 != (body.flags & (uint)B2BodyFlags.b2_lockAngularZ))
+            if (body.type == B2BodyType.b2_staticBody || 0 != (body.flags & (uint)B2BodyFlags.b2_fixedRotation))
             {
                 return;
             }
@@ -1082,7 +1080,9 @@ namespace Box2D.NET
             B2BodySim sim = b2GetBodySim(world, body);
 
             // Compute linear velocity. The center difference is taken in world precision then demoted
-            Vector2 delta = b2SubPos(b2TransformWorldPoint(target, sim.localCenter), sim.center);
+            bool fixedRotation = (body.flags & (uint)B2BodyFlags.b2_fixedRotation) != 0;
+            B2WorldTransform targetCenterTransform = new B2WorldTransform(target.p, fixedRotation ? sim.transform.q : target.q);
+            Vector2 delta = b2SubPos(b2TransformWorldPoint(targetCenterTransform, sim.localCenter), sim.center);
             float invTimeStep = 1.0f / timeStep;
             Vector2 linearVelocity = b2MulSV(invTimeStep, delta);
 
@@ -1090,7 +1090,7 @@ namespace Box2D.NET
             B2Rot q1 = sim.transform.q;
             B2Rot q2 = target.q;
             float deltaAngle = b2RelativeAngle(q1, q2);
-            float angularVelocity = invTimeStep * deltaAngle;
+            float angularVelocity = fixedRotation ? 0.0f : invTimeStep * deltaAngle;
 
             // Early out if the body is asleep already and the desired movement is small
             if (body.setIndex != (int)B2SolverSetType.b2_awakeSet)
@@ -1695,8 +1695,6 @@ namespace Box2D.NET
         /// Override the body's mass properties. Normally this is computed automatically using the
         /// shape geometry and density. This information is lost if a shape is added or removed or if the
         /// body type changes.
-        /// If motion locks are used to fix rotation then the rotational inertia value is ignored and
-        /// rotational inertia remains fixed at zero.
         /// </summary>
         public static void b2Body_SetMassData(B2BodyId bodyId, B2MassData massData)
         {
@@ -1731,7 +1729,7 @@ namespace Box2D.NET
             }
 
             bodySim.invMass = body.mass > 0.0f ? 1.0f / body.mass : 0.0f;
-            bodySim.invInertia = body.inertia > 0.0f ? 1.0f / body.inertia : 0.0f;
+            b2UpdateInverseInertia(body, bodySim);
 
             // Update extents using supplied mass center.
             bodySim.minExtent = B2_HUGE;
@@ -1760,13 +1758,6 @@ namespace Box2D.NET
 
                     edgeKey = contact.edges[edgeIndex].nextKey;
                 }
-            }
-
-            // Motion locks take priority over mass data.
-            if (0 != (body.flags & (uint)B2BodyFlags.b2_fixedRotation))
-            {
-                body.inertia = 0.0f;
-                bodySim.invInertia = 0.0f;
             }
 
             body.flags &= ~(uint)B2BodyFlags.b2_dirtyMass;
@@ -2227,10 +2218,10 @@ namespace Box2D.NET
         }
 
         /// <summary>
-        /// Set the motion locks on this body. This causes mass properties to be recomputed because
-        /// fixed rotation sets the rotational inertia to zero.
+        /// Fix the rotation of this body by setting the inverse inertia to zero in the solver. It doesn't affect the main
+        /// inertia value. Sets the angular velocity to zero.
         /// </summary>
-        public static void b2Body_SetMotionLocks(B2BodyId bodyId, B2MotionLocks locks)
+        public static void b2Body_SetFixedRotation(B2BodyId bodyId, bool flag)
         {
             B2World world = b2GetWorldLocked(bodyId.world0);
             if (world == null)
@@ -2238,58 +2229,44 @@ namespace Box2D.NET
                 return;
             }
 
-            uint newFlags = 0;
-            newFlags |= locks.linearX ? (uint)B2BodyFlags.b2_lockLinearX : 0;
-            newFlags |= locks.linearY ? (uint)B2BodyFlags.b2_lockLinearY : 0;
-            newFlags |= locks.angularZ ? (uint)B2BodyFlags.b2_lockAngularZ : 0;
-
             B2Body body = b2GetBodyFullId(world, bodyId);
-            if ((body.flags & (uint)B2BodyFlags.b2_allLocks) != newFlags)
+            bool fixedRotation = (body.flags & (uint)B2BodyFlags.b2_fixedRotation) != 0;
+            if (fixedRotation == flag)
             {
-                body.flags &= ~(uint)B2BodyFlags.b2_allLocks;
-                body.flags |= newFlags;
-
-                b2SyncBodyFlags(world, body);
-
-                ref B2BodyState state = ref b2GetBodyState(world, body, out bool awake);
-
-                if (awake)
-                {
-                    if (locks.linearX)
-                    {
-                        state.linearVelocity.X = 0.0f;
-                    }
-
-                    if (locks.linearY)
-                    {
-                        state.linearVelocity.Y = 0.0f;
-                    }
-
-                    if (locks.angularZ)
-                    {
-                        state.angularVelocity = 0.0f;
-                    }
-                }
-
-                // Motion locks can affect mass properties.
-                b2UpdateBodyMassData(world, body);
+                return;
             }
+
+            if (flag)
+            {
+                body.flags |= (uint)B2BodyFlags.b2_fixedRotation;
+            }
+            else
+            {
+                body.flags &= ~(uint)B2BodyFlags.b2_fixedRotation;
+            }
+
+            b2SyncBodyFlags(world, body);
+
+            ref B2BodyState state = ref b2GetBodyState(world, body, out bool awake);
+            if (awake && flag)
+            {
+                state.angularVelocity = 0.0f;
+            }
+
+            B2BodySim bodySim = b2GetBodySim(world, body);
+            b2UpdateInverseInertia(body, bodySim);
         }
 
         /// <summary>
-        /// Get the motion locks for this body.
+        /// Does this body have fixed rotation?
         /// </summary>
-        public static B2MotionLocks b2Body_GetMotionLocks(B2BodyId bodyId)
+        public static bool b2Body_IsFixedRotation(B2BodyId bodyId)
         {
             B2World world = b2GetWorld(bodyId.world0);
             B2Body body = b2GetBodyFullId(world, bodyId);
-
-            B2MotionLocks locks;
-            locks.linearX = 0 != (body.flags & (uint)B2BodyFlags.b2_lockLinearX);
-            locks.linearY = 0 != (body.flags & (uint)B2BodyFlags.b2_lockLinearY);
-            locks.angularZ = 0 != (body.flags & (uint)B2BodyFlags.b2_lockAngularZ);
-            return locks;
+            return (body.flags & (uint)B2BodyFlags.b2_fixedRotation) != 0;
         }
+
         /// <summary>
         /// Set this body to be a bullet. A bullet does continuous collision detection
         /// against dynamic bodies (but not other bullets).

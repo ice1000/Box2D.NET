@@ -25,6 +25,17 @@ namespace Box2D.NET
     public static class B2ContactSolvers
     {
         /// <summary>
+        /// Contact points get this separation the step after a TOI capture. This puts the contact in the speculative zone
+        /// which is more rigid.
+        /// </summary>
+        internal static float B2_TOI_RIGID_SEPARATION => (0.01f * B2_LINEAR_SLOP);
+
+        /// <summary>
+        /// This prevents deep contacts from getting tweaked into the speculative zone.
+        /// </summary>
+        internal static float B2_TOI_RIGID_SEPARATION_LIMIT => (-B2_LINEAR_SLOP);
+
+        /// <summary>
         /// contact separation for sub-stepping
         /// s = s0 + dot(cB + rB - cA - rA, normal)
         /// normal is held constant
@@ -150,6 +161,9 @@ namespace Box2D.NET
                 Vector2 normal = constraint.normal;
                 Vector2 tangent = b2RightPerp(constraint.normal);
 
+                // Separation tweak to make contacts more rigid after a TOI event.
+                float separationFloor = (contactSim.simFlags & (uint)B2ContactFlags.b2_simHadTimeOfImpact) != 0 ? B2_TOI_RIGID_SEPARATION : -float.MaxValue;
+
                 for (int j = 0; j < pointCount; ++j)
                 {
                     ref B2ManifoldPoint mp = ref manifold.points[j];
@@ -165,7 +179,14 @@ namespace Box2D.NET
 
                     cp.anchorA = rA;
                     cp.anchorB = rB;
-                    cp.baseSeparation = mp.separation - b2Dot(b2Sub(rB, rA), normal);
+
+                    float s = mp.separation;
+                    if (s > B2_TOI_RIGID_SEPARATION_LIMIT)
+                    {
+                        s = b2MaxFloat(s, separationFloor);
+                    }
+
+                    cp.baseSeparation = s - b2Dot(b2Sub(rB, rA), normal);
 
                     float rnA = b2Cross(rA, normal);
                     float rnB = b2Cross(rB, normal);

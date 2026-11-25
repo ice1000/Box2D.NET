@@ -23,8 +23,10 @@ public class MotionLocks : Sample
 
     public const int e_count = 6;
 
+    private B2BodyId m_lockGroundId;
     private B2BodyId[] m_bodyIds = new B2BodyId[e_count];
-    private B2MotionLocks m_motionLocks;
+    private B2JointId[] m_lockIds = new B2JointId[e_count];
+    private MotionLockFlags m_flags;
 
     private static Sample Create(SampleContext context)
     {
@@ -42,16 +44,20 @@ public class MotionLocks : Sample
         B2BodyDef bodyDef = b2DefaultBodyDef();
         B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
 
-        m_motionLocks = new B2MotionLocks(false, false, true);
+        bodyDef.name = "lock ground";
+        m_lockGroundId = b2CreateBody(m_worldId, bodyDef);
+        bodyDef.name = null;
+
+        m_flags = new MotionLockFlags(false, false, true);
 
         for (int i = 0; i < e_count; ++i)
         {
             m_bodyIds[i] = b2_nullBodyId;
+            m_lockIds[i] = b2_nullJointId;
         }
 
         Vector2 position = new Vector2(-12.5f, 10.0f);
         bodyDef.type = B2BodyType.b2_dynamicBody;
-        bodyDef.motionLocks = m_motionLocks;
 
         B2Polygon box = b2MakeBox(1.0f, 1.0f);
 
@@ -197,40 +203,35 @@ public class MotionLocks : Sample
 
         position.X += 5.0f;
         ++index;
+
+        ApplyLocks();
+    }
+
+    private void ApplyLocks()
+    {
+        for (int i = 0; i < e_count; ++i)
+        {
+            if (B2_IS_NON_NULL(m_lockIds[i]))
+            {
+                b2DestroyJoint(m_lockIds[i]);
+            }
+
+            m_lockIds[i] = CreateMotionLock(m_lockGroundId, m_bodyIds[i], m_flags);
+            b2Body_SetAwake(m_bodyIds[i], true);
+        }
     }
 
     public override bool DrawControls()
     {
+        bool changed = false;
+        changed = ImGui.Checkbox("Lock Linear X", ref m_flags.linearX) || changed;
+        changed = ImGui.Checkbox("Lock Linear Y", ref m_flags.linearY) || changed;
+        changed = ImGui.Checkbox("Fixed Rotation", ref m_flags.fixedRotation) || changed;
 
-
-        if (ImGui.Checkbox("Lock Linear X", ref m_motionLocks.linearX))
+        if (changed)
         {
-            for (int i = 0; i < e_count; ++i)
-            {
-                b2Body_SetMotionLocks(m_bodyIds[i], m_motionLocks);
-                b2Body_SetAwake(m_bodyIds[i], true);
-            }
+            ApplyLocks();
         }
-
-        if (ImGui.Checkbox("Lock Linear Y", ref m_motionLocks.linearY))
-        {
-            for (int i = 0; i < e_count; ++i)
-            {
-                b2Body_SetMotionLocks(m_bodyIds[i], m_motionLocks);
-                b2Body_SetAwake(m_bodyIds[i], true);
-            }
-        }
-
-        if (ImGui.Checkbox("Lock Angular Z", ref m_motionLocks.angularZ))
-        {
-            for (int i = 0; i < e_count; ++i)
-            {
-                b2Body_SetMotionLocks(m_bodyIds[i], m_motionLocks);
-                b2Body_SetAwake(m_bodyIds[i], true);
-            }
-        }
-
-
 
         return true;
     }

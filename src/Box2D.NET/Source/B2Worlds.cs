@@ -567,11 +567,23 @@ namespace Box2D.NET
                     contactSim.invIB = bodySimB.invInertia;
 
                     bool hadTimeOfImpact = ((bodySimA.flags | bodySimB.flags) & (uint)B2BodyFlags.b2_hadTimeOfImpact) != 0;
+                    if (hadTimeOfImpact)
+                    {
+                        contactSim.simFlags |= (uint)B2ContactFlags.b2_simHadTimeOfImpact;
+                    }
+                    else
+                    {
+                        contactSim.simFlags &= ~(uint)B2ContactFlags.b2_simHadTimeOfImpact;
+                    }
 
                     // Contact recycling optimization. Please cite this code if you use this optimization.
                     // This is inspired by persistent contact manifolds used in some physics engines, such as PhysX.
                     // However, this allows larger relative motion and has fewer tuning parameters (just one).
-                    if ((hadTimeOfImpact == false || wasTouching) && recycleDistance > 0.0f &&
+
+                    // It is risky to recycle non-touching chain segment contact.
+                    bool chainSegment = shapeA.type == B2ShapeType.b2_chainSegmentShape || shapeB.type == B2ShapeType.b2_chainSegmentShape;
+
+                    if ((hadTimeOfImpact == false || wasTouching) && (chainSegment == false || wasTouching) && recycleDistance > 0.0f &&
                         0 != (contactSim.simFlags & (uint)B2ContactFlags.b2_simRelativeTransformValid) &&
                         0 != (contactSim.simFlags & (uint)B2ContactFlags.b2_contactRecycleFlag))
                     {
@@ -2047,6 +2059,9 @@ namespace Box2D.NET
                         case B2JointType.b2_weldJoint:
                             hash = b2FnvMixVec2Bytes(hash, sim.uj.weldJoint.linearImpulse);
                             hash = b2FnvMixFloat(hash, sim.uj.weldJoint.angularImpulse);
+                            break;
+                        case B2JointType.b2_motionLockJoint:
+                            hash = b2FnvMixVec2Bytes(hash, sim.uj.motionLockJoint.linearImpulse);
                             break;
                         case B2JointType.b2_wheelJoint:
                             hash = b2FnvMixFloat(hash, sim.uj.wheelJoint.perpImpulse);

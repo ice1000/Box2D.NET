@@ -294,6 +294,7 @@ namespace Box2D.NET
                     ref B2ContactConstraintWide cw = ref wideBase[wideIndex];
                     int localWideIndex = wideIndex - colorWideStart;
                     uint hitEvents = 0;
+                    uint toiFlags = 0;
 
                     for (int laneIndex = 0; laneIndex < WIDTH; ++laneIndex)
                     {
@@ -306,6 +307,7 @@ namespace Box2D.NET
                             cw.indexA[laneIndex] = b2DecodeAwakeIndex(c.encodedBodySimA) + 1;
                             cw.indexB[laneIndex] = b2DecodeAwakeIndex(c.encodedBodySimB) + 1;
                             hitEvents |= (c.simFlags & (uint)B2ContactFlags.b2_simEnableHitEvent);
+                            toiFlags |= (c.simFlags & (uint)B2ContactFlags.b2_simHadTimeOfImpact);
 
 #if DEBUG
                             B2Body bodyA = bodies[c.bodyIdA];
@@ -341,6 +343,17 @@ namespace Box2D.NET
                     Vector4 pointCounts = b2SetW(l0.manifold.pointCount, l1.manifold.pointCount, l2.manifold.pointCount, l3.manifold.pointCount);
                     Vector4 twoPointMask = b2GreaterThanW(pointCounts, oneW);
 
+                    // Separation tweak to make contacts more rigid after a TOI event.
+                    Vector4 separationFloor = b2SplatW(-float.MaxValue);
+                    if (toiFlags != 0)
+                    {
+                        float floor0 = (l0.simFlags & (uint)B2ContactFlags.b2_simHadTimeOfImpact) != 0 ? B2_TOI_RIGID_SEPARATION : -float.MaxValue;
+                        float floor1 = (l1.simFlags & (uint)B2ContactFlags.b2_simHadTimeOfImpact) != 0 ? B2_TOI_RIGID_SEPARATION : -float.MaxValue;
+                        float floor2 = (l2.simFlags & (uint)B2ContactFlags.b2_simHadTimeOfImpact) != 0 ? B2_TOI_RIGID_SEPARATION : -float.MaxValue;
+                        float floor3 = (l3.simFlags & (uint)B2ContactFlags.b2_simHadTimeOfImpact) != 0 ? B2_TOI_RIGID_SEPARATION : -float.MaxValue;
+                        separationFloor = b2SetW(floor0, floor1, floor2, floor3);
+                    }
+
                     {
                         // Transpose gather of the first manifold point. Matches the upstream layout:
                         // anchorA, anchorB, separation, normalImpulse, tangentImpulse
@@ -357,7 +370,12 @@ namespace Box2D.NET
                         cw.normalImpulse1 = b2SetW(m1.normalImpulse, m2.normalImpulse, m3.normalImpulse, m4.normalImpulse);
                         cw.tangentImpulse1 = b2SetW(m1.tangentImpulse, m2.tangentImpulse, m3.tangentImpulse, m4.tangentImpulse);
 
-                        // separation1 = cw.baseSeparation1;
+                        if (toiFlags != 0)
+                        {
+                            Vector4 separation = cw.baseSeparation1;
+                            Vector4 liftMask = b2GreaterThanW(separation, b2SplatW(B2_TOI_RIGID_SEPARATION_LIMIT));
+                            cw.baseSeparation1 = b2BlendW(separation, b2MaxW(separation, separationFloor), liftMask);
+                        }
 
                         Vector4 offset = b2DotW(b2SubVW(cw.anchorB1, cw.anchorA1), cw.normal);
                         cw.baseSeparation1 = b2SubW(cw.baseSeparation1, offset);
@@ -404,7 +422,12 @@ namespace Box2D.NET
                         cw.normalImpulse2 = b2SetW(m1.normalImpulse, m2.normalImpulse, m3.normalImpulse, m4.normalImpulse);
                         cw.tangentImpulse2 = b2SetW(m1.tangentImpulse, m2.tangentImpulse, m3.tangentImpulse, m4.tangentImpulse);
 
-                        // separation2 = cw.baseSeparation2;
+                        if (toiFlags != 0)
+                        {
+                            Vector4 separation = cw.baseSeparation2;
+                            Vector4 liftMask = b2GreaterThanW(separation, b2SplatW(B2_TOI_RIGID_SEPARATION_LIMIT));
+                            cw.baseSeparation2 = b2BlendW(separation, b2MaxW(separation, separationFloor), liftMask);
+                        }
 
                         Vector4 offset = b2DotW(b2SubVW(cw.anchorB2, cw.anchorA2), cw.normal);
                         cw.baseSeparation2 = b2SubW(cw.baseSeparation2, offset);

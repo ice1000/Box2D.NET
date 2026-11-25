@@ -56,7 +56,7 @@ public class StaticVsBulletBug : Sample
             B2BodyDef bd = b2DefaultBodyDef();
             bd.position = b2ToPos(new Vector2(58.9243050f, 77.5401459f));
             bd.type = B2BodyType.b2_dynamicBody;
-            bd.motionLocks.angularZ = true;
+            bd.fixedRotation = true;
             bd.linearVelocity = new Vector2(104.868881f, -281.073883f);
             bd.isBullet = true;
 

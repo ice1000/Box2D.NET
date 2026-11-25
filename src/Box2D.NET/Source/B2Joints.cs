@@ -16,6 +16,7 @@ using static Box2D.NET.B2Worlds;
 using static Box2D.NET.B2DistanceJoints;
 using static Box2D.NET.B2MotorJoints;
 using static Box2D.NET.B2MoverJoints;
+using static Box2D.NET.B2MotionLockJoints;
 using static Box2D.NET.B2PogoJoints;
 using static Box2D.NET.B2PrismaticJoints;
 using static Box2D.NET.B2RevoluteJoints;
@@ -143,6 +144,18 @@ namespace Box2D.NET
             def.internalValue = B2_SECRET_COOKIE;
             return def;
         }
+        /// <summary>
+        /// Use this to initialize your joint definition.
+        /// @ingroup motion_lock_joint
+        /// </summary>
+        public static B2MotionLockJointDef b2DefaultMotionLockJointDef()
+        {
+            B2MotionLockJointDef def = new B2MotionLockJointDef();
+            def.@base = b2DefaultJointDef();
+            def.internalValue = B2_SECRET_COOKIE;
+            return def;
+        }
+
         /// <summary>
         /// Use this to initialize your joint definition
         /// @ingroup wheel_joint
@@ -841,6 +854,36 @@ namespace Box2D.NET
             return jointId;
         }
 
+        /// <summary>
+        /// Create a motion lock joint.
+        /// @see b2MotionLockJointDef for details
+        /// </summary>
+        public static B2JointId b2CreateMotionLockJoint(B2WorldId worldId, in B2MotionLockJointDef def)
+        {
+            B2_CHECK_DEF(def);
+            if (B2_CHECK_INPUT(b2IsValidJointDef(def.@base)) == false) return new B2JointId();
+
+            B2World world = b2GetWorldFromId(worldId);
+
+            B2_ASSERT(world.locked == false);
+
+            if (world.locked)
+            {
+                return new B2JointId();
+            }
+
+            B2JointPair pair = b2CreateJoint(world, def.@base, B2JointType.b2_motionLockJoint);
+
+            B2JointSim joint = pair.jointSim;
+
+            joint.uj.motionLockJoint = new B2MotionLockJoint();
+            joint.uj.motionLockJoint.lockLinear[0] = def.lockLinearX;
+            joint.uj.motionLockJoint.lockLinear[1] = def.lockLinearY;
+
+            B2JointId jointId = new B2JointId(joint.jointId + 1, world.worldId, pair.joint.generation);
+            return jointId;
+        }
+
         public static void b2DestroyJointInternal(B2World world, B2Joint joint)
         {
             int jointId = joint.jointId;
@@ -1179,6 +1222,10 @@ namespace Box2D.NET
                 }
                     break;
 
+                case B2JointType.b2_motionLockJoint:
+                    linearImpulse = b2Length(sim.uj.motionLockJoint.linearImpulse);
+                    break;
+
                 case B2JointType.b2_pogoJoint:
                 {
                     ref B2PogoJoint joint = ref sim.uj.pogoJoint;
@@ -1246,6 +1293,9 @@ namespace Box2D.NET
                 case B2JointType.b2_moverJoint:
                     return b2GetMoverJointForce(world, @base);
 
+                case B2JointType.b2_motionLockJoint:
+                    return b2GetMotionLockJointForce(world, @base);
+
                 case B2JointType.b2_filterJoint:
                     return Vector2Zero;
 
@@ -1286,6 +1336,9 @@ namespace Box2D.NET
                     return b2GetMotorJointTorque(world, @base);
 
                 case B2JointType.b2_filterJoint:
+                    return 0.0f;
+
+                case B2JointType.b2_motionLockJoint:
                     return 0.0f;
 
                 case B2JointType.b2_prismaticJoint:
@@ -1333,10 +1386,11 @@ namespace Box2D.NET
             B2Joint joint = b2GetJointFullId(world, jointId);
             B2JointSim @base = b2GetJointSim(world, joint);
 
-            // Relative to body A so the difference stays in float precision far from the origin
+            // Relative to anchor A so the difference stays in float precision far from the origin
             B2WorldTransform wxfA = b2GetBodyTransform(world, joint.edges[0].bodyId);
-            B2Transform xfA = b2ToRelativeTransform(wxfA, wxfA.p);
-            B2Transform xfB = b2ToRelativeTransform(b2GetBodyTransform(world, joint.edges[1].bodyId), wxfA.p);
+            B2Pos origin = b2MulWorldTransforms(wxfA, @base.localFrameA).p;
+            B2Transform xfA = b2ToRelativeTransform(wxfA, origin);
+            B2Transform xfB = b2ToRelativeTransform(b2GetBodyTransform(world, joint.edges[1].bodyId), origin);
 
             Vector2 pA = b2TransformPoint(xfA, @base.localFrameA.p);
             Vector2 pB = b2TransformPoint(xfB, @base.localFrameB.p);
@@ -1376,6 +1430,15 @@ namespace Box2D.NET
 
                 case B2JointType.b2_filterJoint:
                     return 0.0f;
+
+                case B2JointType.b2_motionLockJoint:
+                {
+                    ref B2MotionLockJoint motionLockJoint = ref @base.uj.motionLockJoint;
+                    Vector2 localDelta = b2InvRotateVector(b2MulRot(xfA.q, @base.localFrameA.q), dp);
+                    localDelta.X = motionLockJoint.lockLinear[0] ? localDelta.X : 0.0f;
+                    localDelta.Y = motionLockJoint.lockLinear[1] ? localDelta.Y : 0.0f;
+                    return b2Length(localDelta);
+                }
 
                 case B2JointType.b2_prismaticJoint:
                 {
@@ -1469,6 +1532,9 @@ namespace Box2D.NET
                     return 0.0f;
 
                 case B2JointType.b2_filterJoint:
+                    return 0.0f;
+
+                case B2JointType.b2_motionLockJoint:
                     return 0.0f;
 
                 case B2JointType.b2_prismaticJoint:
@@ -1637,6 +1703,10 @@ namespace Box2D.NET
                     b2PrepareWheelJoint(joint, context);
                     break;
 
+                case B2JointType.b2_motionLockJoint:
+                    b2PrepareMotionLockJoint(joint, context);
+                    break;
+
                 default:
                     B2_ASSERT(false);
                     break;
@@ -1682,6 +1752,10 @@ namespace Box2D.NET
                     b2WarmStartWheelJoint(joint, context);
                     break;
 
+                case B2JointType.b2_motionLockJoint:
+                    b2WarmStartMotionLockJoint(joint, context);
+                    break;
+
                 default:
                     B2_ASSERT(false);
                     break;
@@ -1725,6 +1799,10 @@ namespace Box2D.NET
 
                 case B2JointType.b2_wheelJoint:
                     b2SolveWheelJoint(joint, context, useBias);
+                    break;
+
+                case B2JointType.b2_motionLockJoint:
+                    b2SolveMotionLockJoint(joint, context, useBias);
                     break;
 
                 default:
@@ -1939,6 +2017,10 @@ namespace Box2D.NET
 
                 case B2JointType.b2_wheelJoint:
                     b2DrawWheelJoint(draw, jointSim, xfA, xfB, scale);
+                    break;
+
+                case B2JointType.b2_motionLockJoint:
+                    b2DrawMotionLockJoint(draw, jointSim, xfA, xfB, scale);
                     break;
 
                 default:

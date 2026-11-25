@@ -67,5 +67,10 @@ namespace Box2D.NET
         /// This contact has a cached relative transform
         /// </summary>
         b2_simRelativeTransformValid = 0x00400000,
+
+        /// <summary>
+        /// Did a body on this contact have a time of impact event?
+        /// </summary>
+        b2_simHadTimeOfImpact = 0x00800000,
     }
 }

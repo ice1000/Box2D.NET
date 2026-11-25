@@ -29,9 +29,10 @@ public class MixedLocks : Sample
             m_context.camera.zoom = 3.5f;
         }
 
+        B2BodyId groundId;
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
-            B2BodyId groundId = b2CreateBody(m_worldId, bodyDef);
+            groundId = b2CreateBody(m_worldId, bodyDef);
 
             B2ShapeDef shapeDef = b2DefaultShapeDef();
             B2Segment segment = new B2Segment(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
@@ -75,7 +76,7 @@ public class MixedLocks : Sample
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
                 bodyDef.position = b2ToPos(new Vector2(-1.0f, 1.0f));
-                bodyDef.motionLocks.angularZ = true;
+                bodyDef.fixedRotation = true;
                 bodyDef.name = "angular z";
 
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
@@ -86,36 +87,33 @@ public class MixedLocks : Sample
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
                 bodyDef.position = b2ToPos(new Vector2(-2.0f, 2.0f));
-                bodyDef.motionLocks.linearX = true;
                 bodyDef.name = "linear x";
 
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
                 b2CreatePolygonShape(bodyId, shapeDef, box);
+                CreateMotionLock(groundId, bodyId, new MotionLockFlags(true, false, false));
             }
 
             {
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
                 bodyDef.position = b2ToPos(new Vector2(-1.0f, 2.5f));
-                bodyDef.motionLocks.linearY = true;
-                bodyDef.motionLocks.angularZ = true;
                 bodyDef.name = "lin y ang z";
 
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
                 b2CreatePolygonShape(bodyId, shapeDef, box);
+                CreateMotionLock(groundId, bodyId, new MotionLockFlags(false, true, true));
             }
 
             {
                 B2BodyDef bodyDef = b2DefaultBodyDef();
                 bodyDef.type = B2BodyType.b2_dynamicBody;
                 bodyDef.position = b2ToPos(new Vector2(0.0f, 1.0f));
-                bodyDef.motionLocks.linearX = true;
-                bodyDef.motionLocks.linearY = true;
-                bodyDef.motionLocks.angularZ = true;
                 bodyDef.name = "full";
 
                 B2BodyId bodyId = b2CreateBody(m_worldId, bodyDef);
                 b2CreatePolygonShape(bodyId, shapeDef, box);
+                CreateMotionLock(groundId, bodyId, new MotionLockFlags(true, true, true));
             }
         }
     }

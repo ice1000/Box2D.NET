@@ -22,5 +22,6 @@ namespace Box2D.NET
         b2_revoluteJoint,
         b2_weldJoint,
         b2_wheelJoint,
+        b2_motionLockJoint,
     }
 }

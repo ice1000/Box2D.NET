@@ -666,9 +666,7 @@ public class B2WorldTest
             b2Body_SetBullet(bodyId, true);
             Assert.That(b2Body_IsBullet(bodyId), Is.True);
 
-            B2MotionLocks locks = new B2MotionLocks();
-            locks.linearX = true;
-            b2Body_SetMotionLocks(bodyId, locks);
+            b2Body_SetFixedRotation(bodyId, true);
 
             Assert.That(b2Body_IsBullet(bodyId), Is.True);
         }
@@ -684,9 +682,7 @@ public class B2WorldTest
             b2Body_SetBullet(bodyId, false);
             Assert.That(b2Body_IsBullet(bodyId), Is.False);
 
-            B2MotionLocks locks = new B2MotionLocks();
-            locks.linearX = true;
-            b2Body_SetMotionLocks(bodyId, locks);
+            b2Body_SetFixedRotation(bodyId, true);
 
             Assert.That(b2Body_IsBullet(bodyId), Is.False);
         }

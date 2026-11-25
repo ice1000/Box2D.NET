@@ -155,11 +155,6 @@ namespace Box2D.NET
                 Vector2 v = state.linearVelocity;
                 float w = state.angularVelocity;
 
-                // Motion locks - these can be viewed as a constraint that comes last
-                v.X = 0 != (state.flags & (uint)B2BodyFlags.b2_lockLinearX) ? 0.0f : v.X;
-                v.Y = 0 != (state.flags & (uint)B2BodyFlags.b2_lockLinearY) ? 0.0f : v.Y;
-                w = 0 != (state.flags & (uint)B2BodyFlags.b2_lockAngularZ) ? 0.0f : w;
-
                 // Clamp to max linear speed
                 if (b2Dot(v, v) > maxLinearSpeedSquared)
                 {
@@ -287,8 +282,27 @@ namespace Box2D.NET
 
                     float coreDistance = B2_CORE_FRACTION * fastBodySim.minExtent;
 
-                    if (separation1 < 0.0f ||
-                        (separation1 - separation2 < coreDistance && separation2 > coreDistance))
+                    // Consider if the center is over the chain segment by a convex vertex.
+                    bool behind = separation1 < 0.0f;
+                    if (behind)
+                    {
+                        const float convexTol = 0.01f;
+                        Vector2 g1 = b2TransformPoint(transform, shape.us.chainSegment.ghost1);
+                        Vector2 g2 = b2TransformPoint(transform, shape.us.chainSegment.ghost2);
+                        Vector2 e0 = b2Normalize(b2Sub(p1, g1));
+                        Vector2 e2 = b2Normalize(b2Sub(g2, p2));
+                        if (b2Cross(e0, e) >= convexTol && b2Cross(b2Sub(c1, p1), e0) >= 0.0f)
+                        {
+                            behind = false;
+                        }
+
+                        if (b2Cross(e, e2) >= convexTol && b2Cross(b2Sub(c1, p2), e2) >= 0.0f)
+                        {
+                            behind = false;
+                        }
+                    }
+
+                    if (behind || (separation1 - separation2 < coreDistance && separation2 > coreDistance))
                     {
                         // Minimal clipping
                         return true;
@@ -358,7 +372,55 @@ namespace Box2D.NET
                     hitFraction = output.fraction;
                     didHit = true;
                 }
-                else if (0.0f == output.fraction)
+
+                if (didHit == false && 0.0f == output.fraction &&
+                    (fastShape.type == B2ShapeType.b2_polygonShape || fastShape.type == B2ShapeType.b2_capsuleShape))
+                {
+                    // Shrink the shape.
+                    Vector2 centroid = b2GetShapeCentroid(fastShape);
+                    B2ShapeExtent extent = b2ComputeShapeExtent(fastShape, centroid);
+                    float inset = 0.5f * extent.minExtent;
+                    B2FixedArray8<Vector2> coreVertices = new B2FixedArray8<Vector2>();
+                    B2TOIInput coreInput = input;
+
+                    if (fastShape.type == B2ShapeType.b2_capsuleShape)
+                    {
+                        ref readonly B2Capsule capsule = ref fastShape.us.capsule;
+                        coreInput.proxyB = b2MakeProxy(capsule.center1, capsule.center2, 2, b2MaxFloat(capsule.radius - inset, 0.0f));
+                    }
+                    else
+                    {
+                        ref B2Polygon polygon = ref fastShape.us.polygon;
+                        int count = polygon.count;
+                        if (inset <= polygon.radius)
+                        {
+                            coreInput.proxyB = b2MakeProxy(polygon.vertices.AsSpan(), count, polygon.radius - inset);
+                        }
+                        else
+                        {
+                            float offset = inset - polygon.radius;
+                            for (int i = 0; i < count; ++i)
+                            {
+                                Vector2 n0 = polygon.normals[i > 0 ? i - 1 : count - 1];
+                                Vector2 n1 = polygon.normals[i];
+                                float scale = offset / (1.0f + b2Dot(n0, n1));
+                                coreVertices[i] = b2MulSub(polygon.vertices[i], scale, b2Add(n0, n1));
+                            }
+
+                            coreInput.proxyB = b2MakeProxy(coreVertices.AsSpan(), count, 0.0f);
+                        }
+                    }
+
+                    B2TOIOutput coreOutput = b2ComputeTimeOfImpact(coreInput);
+                    if (0.0f < coreOutput.fraction && coreOutput.fraction < continuousContext.fraction)
+                    {
+                        output = coreOutput;
+                        hitFraction = coreOutput.fraction;
+                        didHit = true;
+                    }
+                }
+
+                if (didHit == false && 0.0f == output.fraction)
                 {
                     // fallback to TOI of a small circle around the fast shape centroid
                     Vector2 centroid = b2GetShapeCentroid(fastShape);
@@ -488,8 +550,6 @@ namespace Box2D.NET
                 Vector2 v = fastBodyState.linearVelocity;
                 float timeLoss = (1.0f - context.fraction) * dt;
                 Vector2 dv = b2MulSV(-timeLoss * fastBodySim.gravityScale, world.gravity);
-                dv.X = 0 != (fastBodyState.flags & (uint)B2BodyFlags.b2_lockLinearX) ? 0.0f : dv.X;
-                dv.Y = 0 != (fastBodyState.flags & (uint)B2BodyFlags.b2_lockLinearY) ? 0.0f : dv.Y;
                 fastBodyState.linearVelocity = b2Add(v, dv);
 
                 // Update body move event

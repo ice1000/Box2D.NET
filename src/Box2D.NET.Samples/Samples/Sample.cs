@@ -41,6 +41,35 @@ public class Sample : IDisposable
     public const bool m_isDebug = false;
 #endif
 
+    /// <summary>
+    /// Holds the body to a static body with a motion lock joint anchored at its center of mass, so call it after
+    /// the body's shapes are created. Fixed rotation stays on the body. Returns a null id when the flags lock no
+    /// translation.
+    /// </summary>
+    public static B2JointId CreateMotionLock(B2BodyId groundId, B2BodyId bodyId, MotionLockFlags flags)
+    {
+        // Fixed rotation is a zero inverse inertia on the body, not a constraint
+        b2Body_SetFixedRotation(bodyId, flags.fixedRotation);
+
+        if (flags.linearX == false && flags.linearY == false)
+        {
+            return b2_nullJointId;
+        }
+
+        B2MotionLockJointDef jointDef = b2DefaultMotionLockJointDef();
+        jointDef.@base.bodyIdA = groundId;
+        jointDef.@base.bodyIdB = bodyId;
+        jointDef.@base.localFrameA.q = b2InvertRot(b2Body_GetRotation(groundId));
+        jointDef.@base.localFrameA.p = b2Body_GetLocalPoint(groundId, b2Body_GetWorldCenter(bodyId));
+        jointDef.@base.localFrameB.q = b2InvertRot(b2Body_GetRotation(bodyId));
+        jointDef.@base.localFrameB.p = b2Body_GetLocalCenter(bodyId);
+        jointDef.lockLinearX = flags.linearX;
+        jointDef.lockLinearY = flags.linearY;
+
+        B2WorldId worldId = b2Body_GetWorld(bodyId);
+        return b2CreateMotionLockJoint(worldId, jointDef);
+    }
+
     protected SampleContext m_context;
     protected Camera m_camera;
     protected Draw m_draw;

@@ -1393,6 +1393,22 @@ namespace Box2D.NET
 
                     if (type == B2NormalType.b2_normalAdmit)
                     {
+                        // Try to get two points for more reliable CCD.
+                        float faceSeparation = b2Dot(normal1, b2Sub(pB, p1));
+                        if (faceSeparation > output.distance - 0.1f * B2_LINEAR_SLOP)
+                        {
+                            int i2 = cache.indexB[0];
+                            int i1 = i2 > 0 ? i2 - 1 : count - 1;
+                            int faceIb1 = b2Dot(normal1, normals[i1]) < b2Dot(normal1, normals[i2]) ? i1 : i2;
+                            int faceIb2 = faceIb1 < count - 1 ? faceIb1 + 1 : 0;
+                            B2LocalManifold faceManifold = b2ClipSegments(p1, p2, vertices[faceIb1], vertices[faceIb2], normal1, 0.0f, radiusB,
+                                B2_MAKE_ID(0, faceIb2), B2_MAKE_ID(1, faceIb1));
+                            if (faceManifold.pointCount == 2)
+                            {
+                                return faceManifold;
+                            }
+                        }
+
                         manifold.normal = normal;
                         ref B2LocalManifoldPoint cp = ref manifold.points[0];
                         cp.point = pA;

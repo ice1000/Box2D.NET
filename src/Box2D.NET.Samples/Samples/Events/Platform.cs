@@ -97,7 +97,7 @@ public class Platform : Sample
         {
             B2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = B2BodyType.b2_dynamicBody;
-            bodyDef.motionLocks.angularZ = true;
+            bodyDef.fixedRotation = true;
             bodyDef.linearDamping = 0.5f;
             bodyDef.position = b2ToPos(new Vector2(0.0f, 1.0f));
             m_playerId = b2CreateBody(m_worldId, bodyDef);

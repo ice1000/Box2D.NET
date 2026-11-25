@@ -69,7 +69,7 @@ public class ChainDrop : Sample
         bodyDef.linearVelocity = new Vector2(0.0f, m_speed);
         bodyDef.position = b2ToPos(new Vector2(0.0f, 10.0f + m_yOffset));
         bodyDef.rotation = b2MakeRot(0.5f * B2_PI);
-        bodyDef.motionLocks.angularZ = true;
+        bodyDef.fixedRotation = true;
         m_bodyId = b2CreateBody(m_worldId, bodyDef);
 
         B2ShapeDef shapeDef = b2DefaultShapeDef();

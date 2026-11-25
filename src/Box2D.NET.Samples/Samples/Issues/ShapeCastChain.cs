@@ -89,7 +89,7 @@ public class ShapeCastChain : Sample
         characterBodyDef.gravityScale = 1.0f;
         characterBodyDef.enableSleep = true;
         characterBodyDef.isAwake = false;
-        characterBodyDef.motionLocks.angularZ = true;
+        characterBodyDef.fixedRotation = true;
         characterBodyDef.isEnabled = true;
         characterBodyDef.userData = B2UserData.Empty;
         characterBodyDef.type = B2BodyType.b2_kinematicBody;

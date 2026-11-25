@@ -89,10 +89,10 @@ namespace Box2D.NET
         public B2UserData userData;
         
         /// <summary>
-        /// Motions locks to restrict linear and angular movement.
-        /// Caution: may lead to softer constraints along the locked direction
+        /// Fully lock the rotation of this body by setting the inverse rotational inertia to zero. This also
+        /// keeps the angular velocity at zero. The main inertia value is not affected.
         /// </summary>
-        public B2MotionLocks motionLocks;
+        public bool fixedRotation;
 
         /// <summary>
         /// Set this flag to false if this body should never fall asleep.

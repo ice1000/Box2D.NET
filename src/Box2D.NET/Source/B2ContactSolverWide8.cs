@@ -405,7 +405,11 @@ namespace Box2D.NET
                     ref ConstraintW cw = ref wideBase[wideIndex];
                     int laneBase = WIDTH * (wideIndex - colorWideStart);
                     uint hitEvents = 0;
+                    uint toiFlags = 0;
                     Vector256<float> pointCounts = zeroW;
+
+                    // Separation tweak to make contacts more rigid after a TOI event.
+                    Vector256<float> separationFloor = b2SplatW(-float.MaxValue);
 
                     for (int j = 0; j < WIDTH; ++j)
                     {
@@ -419,6 +423,11 @@ namespace Box2D.NET
                             cw.indexA[j] = b2DecodeAwakeIndex(c.encodedBodySimA) + 1;
                             cw.indexB[j] = b2DecodeAwakeIndex(c.encodedBodySimB) + 1;
                             hitEvents |= (c.simFlags & (uint)B2ContactFlags.b2_simEnableHitEvent);
+                            toiFlags |= (c.simFlags & (uint)B2ContactFlags.b2_simHadTimeOfImpact);
+                            if ((c.simFlags & (uint)B2ContactFlags.b2_simHadTimeOfImpact) != 0)
+                            {
+                                b2LaneW(ref separationFloor, j) = B2ContactSolvers.B2_TOI_RIGID_SEPARATION;
+                            }
 
 #if DEBUG
                             B2Body bodyA = bodies[c.bodyIdA];
@@ -472,6 +481,13 @@ namespace Box2D.NET
                     Vector256<float> twoPointMask = b2GreaterThanW(pointCounts, oneW);
 
                     {
+                        if (toiFlags != 0)
+                        {
+                            Vector256<float> separation = cw.baseSeparation1;
+                            Vector256<float> liftMask = b2GreaterThanW(separation, b2SplatW(B2ContactSolvers.B2_TOI_RIGID_SEPARATION_LIMIT));
+                            cw.baseSeparation1 = b2BlendW(separation, b2MaxW(separation, separationFloor), liftMask);
+                        }
+
                         Vector256<float> offset = b2DotW(b2SubVW(cw.anchorB1, cw.anchorA1), cw.normal);
                         cw.baseSeparation1 = b2SubW(cw.baseSeparation1, offset);
                         cw.normalImpulse1 = b2MulW(warmStartScale, cw.normalImpulse1);
@@ -504,6 +520,13 @@ namespace Box2D.NET
                     }
 
                     {
+                        if (toiFlags != 0)
+                        {
+                            Vector256<float> separation = cw.baseSeparation2;
+                            Vector256<float> liftMask = b2GreaterThanW(separation, b2SplatW(B2ContactSolvers.B2_TOI_RIGID_SEPARATION_LIMIT));
+                            cw.baseSeparation2 = b2BlendW(separation, b2MaxW(separation, separationFloor), liftMask);
+                        }
+
                         Vector256<float> offset = b2DotW(b2SubVW(cw.anchorB2, cw.anchorA2), cw.normal);
                         cw.baseSeparation2 = b2SubW(cw.baseSeparation2, offset);
                         cw.normalImpulse2 = b2MulW(warmStartScale, cw.normalImpulse2);

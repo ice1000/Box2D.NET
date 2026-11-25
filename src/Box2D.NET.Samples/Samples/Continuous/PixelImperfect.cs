@@ -60,7 +60,7 @@ public class PixelImperfect : Sample
             //ballShapeDef.restitution = 1.f;
             b2CreatePolygonShape(m_ballId, ballShapeDef, ballShape);
             b2Body_SetLinearVelocity(m_ballId, new Vector2(0.0f, -5.0f));
-            b2Body_SetMotionLocks(m_ballId, new B2MotionLocks(false, false, true));
+            b2Body_SetFixedRotation(m_ballId, true);
         }
     }
 

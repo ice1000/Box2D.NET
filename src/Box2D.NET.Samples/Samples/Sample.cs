@@ -79,7 +79,7 @@ public class Sample : IDisposable
     //
     public B2WorldId m_worldId;
     private B2JointId m_mouseJointId;
-    private Vector2 m_mousePoint;
+    protected Vector2 m_mousePoint;
     protected float m_mouseForceScale;
     public int m_stepCount;
 
@@ -107,7 +107,7 @@ public class Sample : IDisposable
     private static bool s_forcePickerScroll;
     
     //
-    private bool m_didStep;
+    protected bool m_didStep;
 
     //
     private readonly float[] m_frameTimes;

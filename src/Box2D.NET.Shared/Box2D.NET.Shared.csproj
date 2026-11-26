@@ -7,7 +7,7 @@
     <Authors>ice1000</Authors>
     <Description>Box2D.NET - Box2D.NET - a port of Box2D, is a 2D physics engine for games, .NET C#</Description>
     <RepositoryType>git</RepositoryType>
-    <Version>0.2</Version>
+    <Version>0.4</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/ice1000/Box2D.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ice1000/Box2D.NET</RepositoryUrl>
